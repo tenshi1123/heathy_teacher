@@ -1,0 +1,46 @@
+name: heathy_teacher
+description: "application for heathy teacher"
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  intl: ^0.20.2
+  flutter_screenutil: ^5.9.3
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: ^2.5.3
+  flutter_svg: ^2.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true
+  fonts:
+  - family: Quicksand
+    fonts:
+      - asset: assets/fonts/Quicksand-VariableFont_wght.ttf
+  - family: QuicksandBold
+    fonts:
+      - asset: assets/fonts/Quicksand-Bold.ttf
+  - family: QuicksandRegular
+    fonts:
+      - asset: assets/fonts/Quicksand-Regular.ttf
+  - family: QuicksandMedium
+    fonts:
+      - asset: assets/fonts/Quicksand-Medium.ttf
+  - family: QuicksandSemiBold
+    fonts:
+      - asset: assets/fonts/Quicksand-SemiBold.ttf
+  assets:
+    - assets/
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+    
