@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
+import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
 import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -88,34 +89,42 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            height: 64.h,
-            width: 343.w,
-            decoration: BoxDecoration(
-              color: mainDarkGreen,
-              borderRadius: BorderRadius.all(Radius.circular(20.r)),
-            ),
-            child: Row(
-              children: [
-                SizedBox(width: 12.w),
-                Image.asset(
-                  'assets/images/schedule.png',
-                  height: 40.h,
-                  width: 40.w,
-                ),
-                SizedBox(width: 16.w),
-                Text(
-                  'Lịch học lớp trực tiếp',
-                  style: defaultText16B.copyWith(color: Colors.white),
-                ),
-                Spacer(),
-                Icon(
-                  Icons.keyboard_arrow_right,
-                  color: Colors.white,
-                  size: 30.r,
-                ),
-                SizedBox(width: 22.w),
-              ],
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => CalenderScreen())),
+              );
+            },
+            child: Container(
+              height: 64.h,
+              width: 343.w,
+              decoration: BoxDecoration(
+                color: mainDarkGreen,
+                borderRadius: BorderRadius.all(Radius.circular(20.r)),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(width: 12.w),
+                  Image.asset(
+                    'assets/images/schedule.png',
+                    height: 40.h,
+                    width: 40.w,
+                  ),
+                  SizedBox(width: 16.w),
+                  Text(
+                    'Lịch học lớp trực tiếp',
+                    style: defaultText16B.copyWith(color: Colors.white),
+                  ),
+                  Spacer(),
+                  Icon(
+                    Icons.keyboard_arrow_right,
+                    color: Colors.white,
+                    size: 30.r,
+                  ),
+                  SizedBox(width: 22.w),
+                ],
+              ),
             ),
           ),
           SizedBox(height: 28.h),
