@@ -5,6 +5,7 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_product_widget.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
+import 'package:intl/intl.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
   ShoppingCartScreen({super.key});
@@ -19,7 +20,7 @@ class ShoppingCartScreen extends StatefulWidget {
 
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   int selectedIndex = 0;
-
+  int quantity = 2;
   @override
   void initState() {
     super.initState();
@@ -121,7 +122,15 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                               ),
                               SizedBox(
                                 width: 200.w,
-                                child: QuantityCounter(title: '128.000đ'),
+                                child: QuantityCounter(
+                                  price: 128000,
+                                  quantity: quantity,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      quantity = value; // 👈 Cập nhật realtime
+                                    });
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -150,7 +159,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                           style: defaultText14SB.copyWith(fontSize: 16.sp),
                         ),
                         Text(
-                          '512.000đ',
+                          '${NumberFormat('#,###', 'vi_VN').format(128000 * quantity)} đ',
                           style: defaultText20B.copyWith(fontSize: 24.sp),
                         ),
                       ],

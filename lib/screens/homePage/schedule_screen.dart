@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/schedule_model.dart';
+import 'package:heathy_teacher/screens/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/utils.dart';
@@ -154,7 +155,12 @@ class _CalenderScreenState extends State<CalenderScreen> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => NotificationScreen())),
+              );
+            },
             child: SvgPicture.asset(
               'assets/icons/bell.svg',
               width: 20.w,

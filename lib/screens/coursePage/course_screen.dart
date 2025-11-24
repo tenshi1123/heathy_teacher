@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/screens/coursePage/list_class_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/online_class_screen.dart';
+import 'package:heathy_teacher/screens/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
@@ -33,11 +34,19 @@ class _CourseScreenState extends State<CourseScreen> {
         ),
         automaticallyImplyLeading: false,
         actions: [
-          SvgPicture.asset(
-            'assets/icons/bell.svg',
-            width: 20.w,
-            height: 20.h,
-            colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => NotificationScreen())),
+              );
+            },
+            child: SvgPicture.asset(
+              'assets/icons/bell.svg',
+              width: 20.w,
+              height: 20.h,
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            ),
           ),
           SizedBox(width: 16.w),
         ],

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:intl/intl.dart';
 
 class FilterMenuDrawer extends StatefulWidget {
   const FilterMenuDrawer({super.key});
@@ -123,20 +124,37 @@ class _FilterMenuDrawerState extends State<FilterMenuDrawer> {
 }
 
 class QuantityCounter extends StatefulWidget {
-  const QuantityCounter({super.key, required this.title});
-  final String title;
+  const QuantityCounter({
+    super.key,
+    required this.price,
+    required this.quantity,
+    required this.onChanged, // 👈 thêm callback
+  });
+
+  final int price;
+  final int quantity;
+  final Function(int quantity) onChanged; // 👈 trả quantity ra ngoài
+
   @override
   State<QuantityCounter> createState() => _QuantityCounterState();
 }
 
 class _QuantityCounterState extends State<QuantityCounter> {
-  int _quantity = 2;
+  late int _quantity;
   final int _minQuantity = 1;
   final int _maxQuantity = 10;
+  @override
+  void initState() {
+    super.initState();
+    _quantity = widget.quantity;
+  }
+
   void _incrementQuantity() {
     setState(() {
+      _quantity = widget.quantity;
       if (_quantity < _maxQuantity) {
         _quantity++;
+        widget.onChanged(_quantity);
       }
     });
   }
@@ -145,6 +163,7 @@ class _QuantityCounterState extends State<QuantityCounter> {
     setState(() {
       if (_quantity > _minQuantity) {
         _quantity--;
+        widget.onChanged(_quantity);
       }
     });
   }
@@ -184,7 +203,10 @@ class _QuantityCounterState extends State<QuantityCounter> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         // 1. Text "Số lượng:"
-        Text(widget.title, style: defaultText14SB.copyWith(fontSize: 16.sp)),
+        Text(
+          '${NumberFormat('#,###', 'vi_VN').format(widget.price)} đ',
+          style: defaultText14SB.copyWith(fontSize: 16.sp),
+        ),
         Spacer(),
         // 2. Nút Trừ (-)
         _buildControlButton(

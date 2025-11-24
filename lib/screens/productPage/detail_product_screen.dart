@@ -164,7 +164,11 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 child: SizedBox(
                   width: 181.w,
-                  child: QuantityCounter(title: 'Số lượng:'),
+                  child: QuantityCounter(
+                    price: 128000,
+                    quantity: 1,
+                    onChanged: (int quantity) {},
+                  ),
                 ),
               ),
               _overviewItem(label: 'Hàng CHÍNH HÃNG 100%, có tem phụ'),
