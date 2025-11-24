@@ -61,7 +61,7 @@ class FloatingCartButton extends StatelessWidget {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
+              color: Colors.black.withValues(alpha: 0.15),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -108,7 +108,7 @@ class RatingStars extends StatelessWidget {
       height: starSize,
       child: Stack(
         children: <Widget>[
-          _buildStars(color: emptyColor.withOpacity(0.5)),
+          _buildStars(color: emptyColor.withValues(alpha: 0.5)),
           ClipRect(
             child: Align(
               alignment: Alignment.centerLeft,
@@ -117,6 +117,121 @@ class RatingStars extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class PaginationWidget extends StatelessWidget {
+  final int currentPage;
+  final int totalPages;
+  final Function(int) onPageChanged;
+
+  const PaginationWidget({
+    super.key,
+    required this.currentPage,
+    required this.totalPages,
+    required this.onPageChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: _buildPagination(),
+    );
+  }
+
+  List<Widget> _buildPagination() {
+    List<Widget> items = [];
+    items.add(_navButton("«", currentPage > 1 ? 1 : null));
+    items.add(_navButton("‹", currentPage > 1 ? currentPage - 1 : null));
+    items.addAll(_buildPageNumbers());
+    items.add(
+      _navButton("›", currentPage < totalPages ? currentPage + 1 : null),
+    );
+    items.add(_navButton("»", currentPage < totalPages ? totalPages : null));
+    return items;
+  }
+
+  List<Widget> _buildPageNumbers() {
+    List<Widget> widgets = [];
+    if (totalPages <= 5) {
+      for (int i = 1; i <= totalPages; i++) {
+        widgets.add(_pageButton(i));
+      }
+      return widgets;
+    }
+    widgets.add(_pageButton(1));
+    if (currentPage > 3) {
+      widgets.add(_dots());
+    } else {
+      widgets.add(_pageButton(2));
+    }
+    if (currentPage > 2 && currentPage < totalPages - 1) {
+      widgets.add(_pageButton(currentPage));
+    }
+    if (currentPage < totalPages - 2) {
+      widgets.add(_dots());
+    } else {
+      widgets.add(_pageButton(totalPages - 1));
+    }
+    widgets.add(_pageButton(totalPages));
+    return widgets;
+  }
+
+  Widget _dots() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 6),
+      child: Text("...", style: TextStyle(fontSize: 16)),
+    );
+  }
+
+  Widget _pageButton(int page) {
+    final isActive = page == currentPage;
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => onPageChanged(page),
+      child: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: isActive ? Colors.green : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Text(
+          page.toString(),
+          style: TextStyle(
+            color: isActive ? Colors.white : Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _navButton(String label, int? goPage) {
+    final isEnabled = goPage != null;
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: isEnabled ? () => onPageChanged(goPage) : null,
+      child: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: isEnabled ? Colors.white : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(color: Colors.black87, fontSize: 18),
+        ),
       ),
     );
   }

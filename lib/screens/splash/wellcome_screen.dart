@@ -47,7 +47,14 @@ class WellcomeScreen extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: ((context) => const BottomBarScreen()),
+                  ),
+                );
+              },
               child: Container(
                 height: 48.h,
                 width: 340.w,

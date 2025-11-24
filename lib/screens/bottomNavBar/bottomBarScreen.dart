@@ -5,6 +5,7 @@ import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/screens/homePage/home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
+import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
@@ -31,7 +32,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
               HomeScreen(),
               CourseScreen(),
               ChatScreen(),
-              ProductScreen(),
+              ProductScreen(type: 1),
               HomeScreen(),
             ],
           ),
@@ -42,12 +43,14 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           ),
         ),
         Positioned(
-          right: 20,
-          bottom: 90, // nằm ngay trên bottom nav
+          right: 20.w,
+          bottom: 90.h, // nằm ngay trên bottom nav
           child: FloatingCartButton(
             onTap: () {
-              // hành động khi bấm
-              print("Cart tapped!");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
+              );
             },
           ),
         ),
@@ -78,7 +81,7 @@ class CustomBottomNavBar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/screens/coursePage/list_class_screen.dart';
+import 'package:heathy_teacher/screens/coursePage/online_class_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
@@ -61,75 +63,86 @@ class _CourseScreenState extends State<CourseScreen> {
           physics: const ClampingScrollPhysics(),
           itemCount: 2,
           itemBuilder: (BuildContext context, int index) {
-            return Container(
-              //height: 116.h,
-              width: 343.w,
-              margin: EdgeInsets.only(bottom: 20.h),
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-              decoration: BoxDecoration(
-                color: Color(0xffF5FAF5),
-                border: Border.all(
-                  color: mainDarkGreen.withValues(alpha: 0.28),
-                ),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.asset(
-                    'assets/images/course_icon_$index.png',
-                    width: 40.w,
-                    height: 40.h,
-                    fit: BoxFit.fitWidth,
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: ((context) =>
+                        index == 1 ? ListClassScreen() : OnlineClassScreen()),
                   ),
-                  Spacer(),
-                  SizedBox(
-                    width: 257.w,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Lớp Combo chuyên đề Eatclean nâng cao',
-                          style: defaultText16B,
-                        ),
-                        Text(
-                          index == 0
-                              ? 'Học online với video'
-                              : 'Học trực tiếp tại trung tâm',
-                          style: defaultText14Re,
-                        ),
-                        SizedBox(height: 12.h),
-                        Row(
-                          children: [
-                            Container(
-                              height: 8.h,
-                              width: 217.w,
-                              padding: EdgeInsets.only(right: 150.w),
-                              decoration: BoxDecoration(
-                                color: Color(0xffEDEDED),
-                                borderRadius: BorderRadius.circular(20.r),
-                              ),
-                              child: Container(
+                );
+              },
+              child: Container(
+                //height: 116.h,
+                width: 343.w,
+                margin: EdgeInsets.only(bottom: 20.h),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                decoration: BoxDecoration(
+                  color: Color(0xffF5FAF5),
+                  border: Border.all(
+                    color: mainDarkGreen.withValues(alpha: 0.28),
+                  ),
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      'assets/images/course_icon_$index.png',
+                      width: 40.w,
+                      height: 40.h,
+                      fit: BoxFit.fitWidth,
+                    ),
+                    Spacer(),
+                    SizedBox(
+                      width: 257.w,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Lớp Combo chuyên đề Eatclean nâng cao',
+                            style: defaultText16B,
+                          ),
+                          Text(
+                            index == 0
+                                ? 'Học online với video'
+                                : 'Học trực tiếp tại trung tâm',
+                            style: defaultText14Re,
+                          ),
+                          SizedBox(height: 12.h),
+                          Row(
+                            children: [
+                              Container(
                                 height: 8.h,
-                                width: 30.w,
+                                width: 217.w,
+                                padding: EdgeInsets.only(right: 150.w),
                                 decoration: BoxDecoration(
-                                  color: mainDarkGreen,
+                                  color: Color(0xffEDEDED),
                                   borderRadius: BorderRadius.circular(20.r),
                                 ),
+                                child: Container(
+                                  height: 8.h,
+                                  width: 30.w,
+                                  decoration: BoxDecoration(
+                                    color: mainDarkGreen,
+                                    borderRadius: BorderRadius.circular(20.r),
+                                  ),
+                                ),
                               ),
-                            ),
-                            Text(
-                              ' 26%',
-                              style: defaultText16B.copyWith(
-                                color: mainDarkGreen,
+                              Text(
+                                ' 26%',
+                                style: defaultText16B.copyWith(
+                                  color: mainDarkGreen,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
