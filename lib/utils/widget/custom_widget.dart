@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
 class CustomDotLine extends StatelessWidget {
@@ -80,6 +81,38 @@ class _HinhThucHocDropdownState extends State<HinhThucHocDropdown> {
             );
           }).toList(),
           onChanged: widget.onChanged,
+        ),
+      ),
+    );
+  }
+}
+
+class CustomTextField extends StatefulWidget {
+  const CustomTextField({super.key, required this.hintText});
+  final String hintText;
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 343.w,
+      height: 48.h,
+      margin: EdgeInsets.only(right: 12.w, bottom: 12.h),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F9FB), // nền giống ảnh
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextField(
+        //ontroller: widget.controller,
+        style: defaultText14B, // màu text nhập
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: widget.hintText,
+          hintStyle: TextStyle(color: colorText.withValues(alpha: 0.4)),
         ),
       ),
     );

@@ -69,22 +69,25 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: 28.h,
+                  bottom: 120.h,
                   right: 40.w,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        '03\n',
-                        style: defaultText16B.copyWith(color: Colors.white),
-                      ),
-                      Text(
-                        '03\n',
-                        style: defaultText16B.copyWith(color: Colors.white),
-                      ),
-                      Text('4.500.000 VNĐ', style: defaultText18B),
-                    ],
+                  child: Text(
+                    '03',
+                    style: defaultText16B.copyWith(color: Colors.white),
                   ),
+                ),
+                Positioned(
+                  bottom: 72.h,
+                  right: 40.w,
+                  child: Text(
+                    '03',
+                    style: defaultText16B.copyWith(color: Colors.white),
+                  ),
+                ),
+                Positioned(
+                  bottom: 26.h,
+                  right: 40.w,
+                  child: Text('4.500.000 VNĐ', style: defaultText18B),
                 ),
               ],
             ),

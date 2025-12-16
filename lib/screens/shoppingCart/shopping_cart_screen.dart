@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_product_widget.dart';
@@ -8,12 +9,7 @@ import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:intl/intl.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
-  ShoppingCartScreen({super.key});
-  final List<String> images = [
-    'assets/images/material1.png',
-    'assets/images/material2.png',
-    'assets/images/material3.png',
-  ];
+  const ShoppingCartScreen({super.key});
   @override
   State<ShoppingCartScreen> createState() => _ShoppingCartScreenState();
 }
@@ -185,7 +181,14 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   ],
                 ),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => OrderPaymentScreen()),
+                      ),
+                    );
+                  },
                   child: Container(
                     width: 343.w,
                     height: 50.h,
