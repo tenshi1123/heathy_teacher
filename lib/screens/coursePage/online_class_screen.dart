@@ -434,7 +434,7 @@ class Lesson {
 final List<Section> demoSections = [
   Section(
     index: 1,
-    title: 'Lorem Ipsum is simply',
+    title: ' is simply',
     subtitle: 'Bài giảng hướng dẫn',
     lessons: [
       Lesson(

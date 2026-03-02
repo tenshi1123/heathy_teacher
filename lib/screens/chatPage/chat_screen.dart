@@ -74,12 +74,12 @@ class ConversationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ChatScreen()),
-        );
-      },
+      // onTap: () async {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => ChatScreen()),
+      //   );
+      // },
       child: Container(
         height: 73.h,
         width: 350.w,

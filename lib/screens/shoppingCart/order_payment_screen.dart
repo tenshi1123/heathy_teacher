@@ -241,6 +241,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 120.h),
                 ],
               ),
             ),
