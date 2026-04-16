@@ -5,6 +5,7 @@ import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
+import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -59,10 +60,20 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                         Spacer(),
-                        Image.asset(
-                          'assets/images/bell.png',
-                          width: 25.w,
-                          height: 28.h,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: ((context) => NotificationScreen()),
+                              ),
+                            );
+                          },
+                          child: Image.asset(
+                            'assets/images/bell.png',
+                            width: 25.w,
+                            height: 28.h,
+                          ),
                         ),
                       ],
                     ),
