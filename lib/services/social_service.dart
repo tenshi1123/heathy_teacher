@@ -6,13 +6,14 @@ Future<dynamic> signInWithFacebook() async {
     final LoginResult loginResult = await FacebookAuth.instance.login();
 
     if (loginResult.status == LoginStatus.success) {
-      final userInfo = await FacebookAuth.instance.getUserData();
-      return userInfo;
-      //final AccessToken accessToken = loginResult.accessToken!;
-      // final OAuthCredential credential = FacebookAuthProvider.credential(
-      //   accessToken.tokenString,
-      // );
-      //return await FirebaseAuth.instance.signInWithCredential(credential);
+      //final userInfo = await FacebookAuth.instance.getUserData();
+      //return userInfo;
+      final AccessToken accessToken = loginResult.accessToken!;
+      final OAuthCredential credential = FacebookAuthProvider.credential(
+        accessToken.tokenString,
+      );
+      print('Facebook Access Token: ${accessToken.tokenString}');
+      return await FirebaseAuth.instance.signInWithCredential(credential);
     } else {
       throw FirebaseAuthException(
         code: 'Facebook Login Failed',

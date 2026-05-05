@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
+import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:screen_protector/screen_protector.dart';
@@ -133,7 +134,7 @@ class _WellcomeScreenState extends State<WellcomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: ((context) => const BottomBarScreen()),
+                    builder: ((context) => const CoGiaoHealthyScreen()),
                   ),
                 );
               },
