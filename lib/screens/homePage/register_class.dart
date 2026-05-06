@@ -151,6 +151,29 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                   ),
                 ),
               ),
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  height: 48.h,
+                  width: 340.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.r),
+                    color: Colors.white,
+                    border: Border.all(color: mainDarkGreen, width: 1.w),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/gio_hang.png'),
+                      Text(
+                        '  Thêm vào giỏ hàng',
+                        textAlign: TextAlign.center,
+                        style: defaultText16B.copyWith(color: mainDarkGreen),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Row(
                 children: [
                   SizedBox(width: 16.w),

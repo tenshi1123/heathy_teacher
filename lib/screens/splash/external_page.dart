@@ -1,10 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
+import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
+import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
@@ -19,10 +19,10 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
   // --- Dữ liệu giả lập ---
   // Bạn có thể thay đổi danh sách link ảnh web ở đây
   final List<String> _productImages = [
-    'https://cogiaohealthy.vn/wp-content/uploads/2026/03/4.jpg',
-    'https://cogiaohealthy.vn/wp-content/uploads/2026/01/ht6.jpg',
-    'https://cogiaohealthy.vn/wp-content/uploads/2025/12/8-min.jpg',
-    'https://cogiaohealthy.vn/wp-content/uploads/2026/01/ht2.jpg',
+    'assets/images/home1.jpg',
+    'assets/images/home2.jpg',
+    'assets/images/home3.jpg',
+    'assets/images/home4.jpg',
   ];
 
   // Màu sắc chủ đạo từ giao diện
@@ -112,40 +112,52 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                         ),
                         SizedBox(width: 1.w),
                         // Giỏ hàng
-                        Stack(
-                          children: [
-                            const Icon(
-                              Icons.shopping_cart_outlined,
-                              color: accentBrown,
-                              size: 35,
-                            ),
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: ((context) => ShoppingCartScreen()),
+                              ),
+                            );
+                          },
+                          child: Stack(
+                            children: [
+                              Icon(
+                                Icons.shopping_cart_outlined,
+                                color: mainDarkGreen,
+                                size: 35,
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
                                 child: Container(
-                                  padding: const EdgeInsets.all(1),
+                                  padding: const EdgeInsets.all(4),
                                   decoration: const BoxDecoration(
-                                    color: Color(0xFFFFF176), // Màu vàng của số
+                                    color: Colors.white,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Text(
-                                    ' 0 ',
-                                    style: TextStyle(
-                                      color: accentBrown,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(1),
+                                    decoration: const BoxDecoration(
+                                      color: Color(
+                                        0xFFFFF176,
+                                      ), // Màu vàng của số
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Text(
+                                      ' 0 ',
+                                      style: TextStyle(
+                                        color: accentBrown,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -198,12 +210,24 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                             });
                           },
                           itemBuilder: (context, index) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(10.r),
-                              child: Image.network(
-                                _productImages[index],
-                                width: double.infinity,
-                                fit: BoxFit.cover, // 🔥 QUAN TRỌNG
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: ((context) =>
+                                        const ListSpScreen()),
+                                  ),
+                                );
+                                // Xử lý khi người dùng nhấn vào ảnh (nếu cần)
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.r),
+                                child: Image.asset(
+                                  _productImages[index],
+                                  width: double.infinity,
+                                  fit: BoxFit.cover, // 🔥 QUAN TRỌNG
+                                ),
                               ),
                             );
                           },
@@ -558,38 +582,6 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
 }
 
 // Widget nhỏ tùy chỉnh cho các nút dịch vụ tròn
-class ServiceIconButton extends StatelessWidget {
-  final String iconPath; // 👈 đổi sang path SVG
-  final String title;
-
-  const ServiceIconButton({
-    super.key,
-    required this.iconPath,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            color: mainDarkGreen,
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            //if icons is png, use Image.asset, if svg, use SvgPicture.asset
-            child: buildIcon(iconPath, size: 28),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(title),
-      ],
-    );
-  }
-}
 
 Widget buildIcon(String iconPath, {double size = 28}) {
   if (iconPath.toLowerCase().endsWith('.svg')) {
@@ -618,27 +610,6 @@ Widget buildImage(String iconPath, {double size = 28}) {
       fit: BoxFit.contain,
     ),
   );
-}
-
-Future<Image> _getImage(String url) async {
-  final completer = Completer<Image>();
-  final image = Image.network(url);
-
-  image.image
-      .resolve(const ImageConfiguration())
-      .addListener(
-        ImageStreamListener((info, _) {
-          completer.complete(
-            Image(
-              image: image.image,
-              width: info.image.width.toDouble(),
-              height: info.image.height.toDouble(),
-            ),
-          );
-        }),
-      );
-
-  return completer.future;
 }
 
 class CourseItem extends StatelessWidget {

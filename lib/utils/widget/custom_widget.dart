@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
@@ -115,6 +116,163 @@ class _CustomTextFieldState extends State<CustomTextField> {
           hintStyle: TextStyle(color: colorText.withValues(alpha: 0.4)),
         ),
       ),
+    );
+  }
+}
+
+class CartItemWidget extends StatelessWidget {
+  final CartItem item;
+  final Function() onDelete;
+  final Function() onIncrease;
+  final Function() onDecrease;
+
+  const CartItemWidget({
+    super.key,
+    required this.item,
+    required this.onDelete,
+    required this.onIncrease,
+    required this.onDecrease,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// checkbox
+          Checkbox(value: false, onChanged: (_) {}),
+
+          /// image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              item.image,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          const SizedBox(width: 12),
+
+          /// content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// name + delete
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: onDelete,
+                      child: const Icon(Icons.delete, color: Colors.red),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 6),
+
+                /// price
+                Text(
+                  "${item.price} đ",
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                /// quantity
+                if (!item.isCourse) ...[
+                  const Text("Số lượng:"),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      _buildBtn("-", onDecrease),
+                      _buildQty(item.quantity),
+                      _buildBtn("+", onIncrease),
+                    ],
+                  ),
+                ] else
+                  Text("Số lượng: ${item.quantity}"),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBtn(String text, Function() onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 40,
+        height: 36,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.green),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(child: Text(text)),
+      ),
+    );
+  }
+
+  Widget _buildQty(int qty) {
+    return Container(
+      width: 40,
+      height: 36,
+      alignment: Alignment.center,
+      child: Text("$qty"),
+    );
+  }
+}
+
+class CartSection extends StatelessWidget {
+  final String title;
+  final List<CartItem> items;
+
+  const CartSection({super.key, required this.title, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "  $title (${items.length})",
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+
+        const SizedBox(height: 10),
+
+        ...items.map(
+          (item) => CartItemWidget(
+            item: item,
+            onDelete: () {},
+            onIncrease: () {
+              item.quantity++;
+            },
+            onDecrease: () {
+              if (item.quantity > 1) item.quantity--;
+            },
+          ),
+        ),
+      ],
     );
   }
 }

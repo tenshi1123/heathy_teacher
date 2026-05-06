@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -17,6 +18,25 @@ class ShoppingCartScreen extends StatefulWidget {
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   int selectedIndex = 0;
   int quantity = 2;
+  final List<CartItem> courses = [
+    CartItem(
+      id: "1",
+      name: "KHÓA HỌC DƯỠNG SINH THẢO MỘC ĐÔNG Y HIỆN ĐẠI",
+      image: "assets/images/sp1.jpg",
+      price: 16990000,
+      isCourse: true,
+    ),
+  ];
+
+  final List<CartItem> products = [
+    CartItem(
+      id: "2",
+      name: "Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300G",
+      image: "assets/images/sp2.jpg",
+      price: 120960,
+    ),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -56,84 +76,87 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 24.h),
-                  Container(
-                    height: 106.h,
-                    width: 343.w,
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 10.h,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Slidable(
-                      key: const ValueKey(0),
-                      endActionPane: ActionPane(
-                        motion: ScrollMotion(),
-                        children: [
-                          SlidableAction(
-                            onPressed: (BuildContext context) {},
-                            backgroundColor: Color(0xFFFE4A49),
-                            foregroundColor: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(16.r),
-                              bottomRight: Radius.circular(16.r),
-                            ),
-                            icon: Icons.delete,
-                            label: 'Delete',
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/material1.png',
-                            height: 90.h,
-                            width: 90.w,
-                            fit: BoxFit.fill,
-                          ),
-                          SizedBox(width: 12.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: 217.w,
-                                child: Text(
-                                  'Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300g',
-                                  style: defaultText14SB,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 200.w,
-                                child: QuantityCounter(
-                                  price: 128000,
-                                  quantity: quantity,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      quantity = value; // 👈 Cập nhật realtime
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   height: 106.h,
+                  //   width: 343.w,
+                  //   margin: EdgeInsets.symmetric(
+                  //     horizontal: 16.w,
+                  //     vertical: 10.h,
+                  //   ),
+                  //   padding: EdgeInsets.symmetric(
+                  //     horizontal: 8.w,
+                  //     vertical: 8.h,
+                  //   ),
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white,
+                  //     borderRadius: BorderRadius.circular(16.r),
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //         color: Colors.black.withValues(alpha: 0.1),
+                  //         blurRadius: 8,
+                  //         offset: const Offset(0, 4),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   child: Slidable(
+                  //     key: const ValueKey(0),
+                  //     endActionPane: ActionPane(
+                  //       motion: ScrollMotion(),
+                  //       children: [
+                  //         SlidableAction(
+                  //           onPressed: (BuildContext context) {},
+                  //           backgroundColor: Color(0xFFFE4A49),
+                  //           foregroundColor: Colors.white,
+                  //           borderRadius: BorderRadius.only(
+                  //             topRight: Radius.circular(16.r),
+                  //             bottomRight: Radius.circular(16.r),
+                  //           ),
+                  //           icon: Icons.delete,
+                  //           label: 'Delete',
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     child: Row(
+                  //       children: [
+                  //         Image.asset(
+                  //           'assets/images/material1.png',
+                  //           height: 90.h,
+                  //           width: 90.w,
+                  //           fit: BoxFit.fill,
+                  //         ),
+                  //         SizedBox(width: 12.w),
+                  //         Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //           children: [
+                  //             SizedBox(
+                  //               width: 217.w,
+                  //               child: Text(
+                  //                 'Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300g',
+                  //                 style: defaultText14SB,
+                  //               ),
+                  //             ),
+                  //             SizedBox(
+                  //               width: 200.w,
+                  //               child: QuantityCounter(
+                  //                 price: 128000,
+                  //                 quantity: quantity,
+                  //                 onChanged: (value) {
+                  //                   setState(() {
+                  //                     quantity = value; // 👈 Cập nhật realtime
+                  //                   });
+                  //                 },
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  CartSection(title: "Khóa học", items: courses),
+                  const SizedBox(height: 20),
+                  CartSection(title: "Nguyên liệu - Máy", items: products),
                   Padding(
                     padding: EdgeInsetsGeometry.symmetric(
                       horizontal: 16.w,
