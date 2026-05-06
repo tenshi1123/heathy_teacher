@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/main.dart';
+import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -186,6 +188,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
+                      cartItems.add(courses[0]);
                       return AlertDialog(
                         //title:  Text('Đã thêm vào giỏ hàng'),
                         content: const Text(

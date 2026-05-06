@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
-import 'package:heathy_teacher/screens/homePage/register_class.dart';
+import 'package:heathy_teacher/screens/listCourse/list_free_course.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CoGiaoHealthyScreen extends StatefulWidget {
@@ -553,21 +553,6 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
   }
 }
 
-// Widget nhỏ tùy chỉnh cho các nút dịch vụ tròn
-
-Widget buildIcon(String iconPath, {double size = 28}) {
-  if (iconPath.toLowerCase().endsWith('.svg')) {
-    return SvgPicture.asset(iconPath, width: size, height: size);
-  } else {
-    return Image.asset(
-      iconPath,
-      width: size,
-      height: size,
-      fit: BoxFit.contain,
-    );
-  }
-}
-
 Widget buildImage(String iconPath, {double size = 28}) {
   return Container(
     padding: EdgeInsets.all(6),
@@ -582,171 +567,6 @@ Widget buildImage(String iconPath, {double size = 28}) {
       fit: BoxFit.contain,
     ),
   );
-}
-
-class CourseItem extends StatelessWidget {
-  const CourseItem({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-      margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.r),
-                  border: Border.all(color: mainDarkGreen, width: 1.5),
-                  color: Colors.white,
-                ),
-                child: Text(
-                  'Đồ uống healthy',
-                  style: defaultText14M.copyWith(color: mainDarkGreen),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'KHÓA HỌC MÔ HÌNH KINH DOANH SỮA HẠT DƯỠNG SINH HIỆN ĐẠI - MASTER CLASS 2026',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: defaultText18B.copyWith(color: mainDarkGreen),
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Icon(
-                Icons.calendar_month_outlined,
-                color: mainDarkGreen,
-                size: 16,
-              ),
-              Text(
-                '  07/05/2026 - 09/05/2026',
-                style: defaultText14M.copyWith(color: mainDarkGreen),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Icon(Icons.location_on_outlined, color: mainDarkGreen, size: 16),
-              Text(
-                '  TP.HCM',
-                style: defaultText14M.copyWith(color: mainDarkGreen),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: mainDarkGreen.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                  color: Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.person_outline, color: Colors.yellow, size: 16),
-                    Text(
-                      '  1036 lượt học',
-                      style: defaultText12M.copyWith(color: mainDarkGreen),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '5,990,000đ',
-                    style: defaultText16B.copyWith(color: mainDarkGreen),
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    '6,990,000đ',
-                    style: defaultText12M.copyWith(
-                      color: colorText,
-                      decoration: TextDecoration.lineThrough,
-                    ),
-                  ),
-                ],
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: ((context) => RegisterClassOff(type: 'off')),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 8.h,
-                  ),
-
-                  margin: EdgeInsets.symmetric(horizontal: 8.w),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: mainDarkGreen.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                    color: mainDarkGreen,
-                  ),
-                  child: Text(
-                    'Đăng ký ngay',
-                    style: defaultText16B.copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class ServiceItem extends StatefulWidget {
@@ -857,7 +677,7 @@ class ServiceGrid extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const CoGiaoHealthyScreen()),
+            MaterialPageRoute(builder: (_) => const ListFreeCourse()),
           );
         },
       ),

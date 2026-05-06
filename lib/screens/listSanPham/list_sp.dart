@@ -1,11 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
-import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -261,7 +259,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: ((context) =>
-                                          const ListDetailSpScreen()),
+                                          ListDetailSpScreen(title: item.name)),
                                     ),
                                   );
                                 },
@@ -791,171 +789,6 @@ class _PulseIconState extends State<PulseIcon>
       width: 35,
       decoration: BoxDecoration(color: mainDarkGreen, shape: BoxShape.circle),
       child: Center(child: buildIcon(widget.iconPath, size: 18)),
-    );
-  }
-}
-
-class CourseItem extends StatelessWidget {
-  const CourseItem({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-      margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.r),
-                  border: Border.all(color: mainDarkGreen, width: 1.5),
-                  color: Colors.white,
-                ),
-                child: Text(
-                  'Đồ uống healthy',
-                  style: defaultText14M.copyWith(color: mainDarkGreen),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'KHÓA HỌC MÔ HÌNH KINH DOANH SỮA HẠT DƯỠNG SINH HIỆN ĐẠI - MASTER CLASS 2026',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: defaultText18B.copyWith(color: mainDarkGreen),
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Icon(
-                Icons.calendar_month_outlined,
-                color: mainDarkGreen,
-                size: 16,
-              ),
-              Text(
-                '  07/05/2026 - 09/05/2026',
-                style: defaultText14M.copyWith(color: mainDarkGreen),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Icon(Icons.location_on_outlined, color: mainDarkGreen, size: 16),
-              Text(
-                '  TP.HCM',
-                style: defaultText14M.copyWith(color: mainDarkGreen),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: mainDarkGreen.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                  color: Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.person_outline, color: Colors.yellow, size: 16),
-                    Text(
-                      '  1036 lượt học',
-                      style: defaultText12M.copyWith(color: mainDarkGreen),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '5,990,000đ',
-                    style: defaultText16B.copyWith(color: mainDarkGreen),
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    '6,990,000đ',
-                    style: defaultText12M.copyWith(
-                      color: colorText,
-                      decoration: TextDecoration.lineThrough,
-                    ),
-                  ),
-                ],
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: ((context) => RegisterClassOff(type: 'off')),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 8.h,
-                  ),
-
-                  margin: EdgeInsets.symmetric(horizontal: 8.w),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: mainDarkGreen.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                    color: mainDarkGreen,
-                  ),
-                  child: Text(
-                    'Đăng ký ngay',
-                    style: defaultText16B.copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
