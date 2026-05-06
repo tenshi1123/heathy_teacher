@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class Item {
   String headerText;
   List<String> bodyText;
@@ -142,3 +144,11 @@ final List<CourseModel> coursesDetail = [
     price: "75.600đ",
   ),
 ];
+
+class ServiceModel {
+  final String title;
+  final String icon;
+  final VoidCallback onTap;
+
+  ServiceModel({required this.title, required this.icon, required this.onTap});
+}

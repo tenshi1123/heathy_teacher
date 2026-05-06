@@ -5,6 +5,7 @@ import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegisterClassOff extends StatefulWidget {
   const RegisterClassOff({super.key, required this.type});
@@ -129,7 +130,36 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        //title:  Text('Đã thêm vào giỏ hàng'),
+                        content: const Text('Tiếp tục tư vấn'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Cancle'),
+                            child: const Text('Cancle'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              if (!await launchUrl(
+                                Uri.parse(
+                                  'https://www.messenger.com/t/104656608601884/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0',
+                                ),
+                              )) {
+                                throw Exception('Could not launch ');
+                              }
+                            },
+
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
                 child: Container(
                   height: 48.h,
                   width: 343.w,

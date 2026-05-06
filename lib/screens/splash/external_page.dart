@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CoGiaoHealthyScreen extends StatefulWidget {
   const CoGiaoHealthyScreen({super.key});
@@ -257,7 +259,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                       ],
                     ),
                   ),
-
+                  ServiceGrid(),
                   //list
                   CourseItem(),
                   CourseItem(),
@@ -544,37 +546,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.r),
-                topRight: Radius.circular(32.r),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
-                ServiceIconButton(
-                  title: 'Messenger',
-                  iconPath: 'assets/icons/fb_messsage.svg',
-                ),
-                ServiceIconButton(
-                  title: 'Zalo',
-                  iconPath: 'assets/icons/icon_zalo.svg',
-                ), // Cần custom icon Zalo thật
-                ServiceIconButton(
-                  title: 'Gọi hotline',
-                  iconPath: 'assets/images/call.png',
-                ),
-                ServiceIconButton(
-                  title: 'Hỗ trợ ngay',
-                  iconPath: 'assets/images/suport.png',
-                ),
-              ],
-            ),
-          ),
+          BottomCustom(),
         ],
       ),
     );
@@ -770,6 +742,253 @@ class CourseItem extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ServiceItem extends StatefulWidget {
+  final ServiceModel item;
+  final bool isHighlight;
+
+  const ServiceItem({super.key, required this.item, this.isHighlight = false});
+
+  @override
+  State<ServiceItem> createState() => _ServiceItemState();
+}
+
+class _ServiceItemState extends State<ServiceItem> {
+  bool isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => isPressed = true),
+      onTapUp: (_) {
+        setState(() => isPressed = false);
+        widget.item.onTap();
+      },
+      onTapCancel: () => setState(() => isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        transform: Matrix4.translationValues(
+          0,
+          isPressed ? 4 : 0, // 👈 hiệu ứng nhấn xuống
+          0,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: isPressed
+              ? []
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+        ),
+        child: Column(
+          children: [
+            /// icon tròn
+            SizedBox(
+              width: 70,
+              height: 70,
+
+              child: Center(
+                child: Image.asset(widget.item.icon, width: 70, height: 70),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            /// title
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                widget.item.title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF3F7D3A),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ServiceGrid extends StatelessWidget {
+  const ServiceGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final List<ServiceModel> services = [
+      ServiceModel(
+        title: "KHÓA HỌC TRỰC TIẾP",
+        icon: "assets/images/home1.png",
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CoGiaoHealthyScreen()),
+          );
+        },
+      ),
+      ServiceModel(
+        title: "KHÓA HỌC ONLINE",
+        icon: "assets/images/home2.png",
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CoGiaoHealthyScreen()),
+          );
+        },
+      ),
+      ServiceModel(
+        title: "HỌC THỬ MIỄN PHÍ",
+        icon: "assets/images/home3.png",
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CoGiaoHealthyScreen()),
+          );
+        },
+      ),
+      ServiceModel(
+        title: "GIAN HÀNG NGUYÊN LIỆU",
+        icon: "assets/images/home4.png",
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: ((context) => const ListSpScreen())),
+          );
+        },
+      ),
+      ServiceModel(
+        title: "HỖ TRỢ KỸ THUẬT SAU HỌC",
+        icon: "assets/images/home5.png",
+        onTap: () async {
+          if (!await launchUrl(Uri.parse('https://m.me/cogiaohealthy'))) {
+            throw Exception('Could not launch ');
+          }
+        },
+      ),
+      ServiceModel(
+        title: "ƯU ĐÃI VÀ KHUYẾN MÃI",
+        icon: "assets/images/home6.png",
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CoGiaoHealthyScreen()),
+          );
+        },
+      ),
+    ];
+
+    return Column(
+      children: [
+        const Text(
+          "DỊCH VỤ CỦA CHÚNG TÔI",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF3F7D3A),
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text("Các dịch vụ nổi bật tại Cô giáo healthy"),
+
+        const SizedBox(height: 16),
+
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: services.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            childAspectRatio: 0.9,
+          ),
+          itemBuilder: (context, index) {
+            return ServiceItem(
+              item: services[index],
+              isHighlight: index == 0, // 👈 item đầu nổi nền
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class BottomCustom extends StatelessWidget {
+  const BottomCustom({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(32.r),
+          topRight: Radius.circular(32.r),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          GestureDetector(
+            onTap: () async {
+              if (!await launchUrl(Uri.parse('https://m.me/cogiaohealthy'))) {
+                throw Exception('Could not launch ');
+              }
+            },
+            child: ServiceIconButton(
+              title: 'Messenger',
+              iconPath: 'assets/icons/fb_messsage.svg',
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              if (!await launchUrl(Uri.parse('https://zalo.me/0966912016'))) {
+                throw Exception('Could not launch ');
+              }
+            },
+            child: ServiceIconButton(
+              title: 'Zalo',
+              iconPath: 'assets/icons/icon_zalo.svg',
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              if (!await launchUrl(Uri(scheme: 'tel', path: '0966912016'))) {
+                throw Exception('Could not launch ');
+              }
+            },
+            child: ServiceIconButton(
+              title: 'Gọi hotline',
+              iconPath: 'assets/images/call.png',
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              if (!await launchUrl(Uri.parse('https://zalo.me/0966912016'))) {
+                throw Exception('Could not launch ');
+              }
+            },
+            child: ServiceIconButton(
+              title: 'Hỗ trợ ngay',
+              iconPath: 'assets/images/suport.png',
+            ),
           ),
         ],
       ),

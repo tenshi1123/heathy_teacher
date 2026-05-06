@@ -7,6 +7,7 @@ import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
+import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
@@ -607,37 +608,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.r),
-                topRight: Radius.circular(32.r),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
-                ServiceIconButton(
-                  title: 'Messenger',
-                  iconPath: 'assets/icons/fb_messsage.svg',
-                ),
-                ServiceIconButton(
-                  title: 'Zalo',
-                  iconPath: 'assets/icons/icon_zalo.svg',
-                ), // Cần custom icon Zalo thật
-                ServiceIconButton(
-                  title: 'Gọi hotline',
-                  iconPath: 'assets/images/call.png',
-                ),
-                ServiceIconButton(
-                  title: 'Hỗ trợ ngay',
-                  iconPath: 'assets/images/suport.png',
-                ),
-              ],
-            ),
-          ),
+          BottomCustom(),
         ],
       ),
     );
