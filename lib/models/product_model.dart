@@ -32,8 +32,13 @@ class CourseModel {
   final String id;
   final String name;
   final String image;
-
-  CourseModel({required this.id, required this.name, required this.image});
+  String? price;
+  CourseModel({
+    required this.id,
+    required this.name,
+    required this.image,
+    this.price,
+  });
 }
 
 final List<CourseModel> courses = [
@@ -97,5 +102,43 @@ final List<CourseModel> courses = [
     id: "13",
     name: "Nguyên liệu - máy lớp thạch trái cây kem sữa hạt healthy",
     image: "assets/images/sp13.jpg",
+  ),
+];
+final List<CourseModel> coursesDetail = [
+  CourseModel(
+    id: "1",
+    name: "Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300G",
+    image: "assets/images/detail1.png",
+    price: "150.000đ",
+  ),
+  CourseModel(
+    id: "2",
+    name: "Bột ớt paprika Mccomick 40g",
+    image: "assets/images/detail2.png",
+    price: "81.000đ",
+  ),
+  CourseModel(
+    id: "3",
+    name: "Dấm trắng Heinz 473ml",
+    image: "assets/images/detail3.png",
+    price: "71.280đ",
+  ),
+  CourseModel(
+    id: "4",
+    name: "Bột tỏi hữu cơ Vinasamex 50g",
+    image: "assets/images/detail4.png",
+    price: "83.280đ",
+  ),
+  CourseModel(
+    id: "5",
+    name: "Bột tỏi sả hữu cơ Vinasamex 50g",
+    image: "assets/images/detail5.png",
+    price: "75.600đ",
+  ),
+  CourseModel(
+    id: "6",
+    name: "Bột hành hữu cơ Vinasamex 50g",
+    image: "assets/images/detail6.png",
+    price: "75.600đ",
   ),
 ];

@@ -152,7 +152,25 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        //title:  Text('Đã thêm vào giỏ hàng'),
+                        content: const Text(
+                          'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'OK'),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
                 child: Container(
                   height: 48.h,
                   width: 340.w,

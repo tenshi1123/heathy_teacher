@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
+import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -19,29 +19,11 @@ class ListSpScreen extends StatefulWidget {
 }
 
 class _ListSpScreenState extends State<ListSpScreen> {
-  // --- Dữ liệu giả lập ---
-  // Bạn có thể thay đổi danh sách link ảnh web ở đây
-  final List<String> _productImages = [
-    'assets/images/home1.jpg',
-    'assets/images/home2.jpg',
-    'assets/images/home3.jpg',
-    'assets/images/home4.jpg',
-  ];
-
-  // Màu sắc chủ đạo từ giao diện
   static const Color primaryGreen = Color(0xFF689F38); // Màu xanh lá logo
   static const Color secondaryGreen = Color(
     0xFF7CB342,
   ); // Màu xanh nút đăng nhập
   static const Color accentBrown = Color(0xFFD4A76A); // Màu chữ và giỏ hàng
-  static const Color accentGreenText = Color(
-    0xFF558B2F,
-  ); // Màu xanh chữ tiêu đề
-
-  final int _currentSlide = 0; // Theo dõi slide hiện tại
-  final PageController _pageController =
-      PageController(); // Điều khiển PageView
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -274,7 +256,13 @@ class _ListSpScreenState extends State<ListSpScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  print("Click id: ${item.id}");
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: ((context) =>
+                                          const ListDetailSpScreen()),
+                                    ),
+                                  );
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -288,7 +276,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                   child: Center(
                                     child: Text(
                                       "Xem tất cả",
-                                      style: defaultText16B.copyWith(
+                                      style: defaultText14B.copyWith(
                                         color: Colors.white,
                                       ),
                                     ),
