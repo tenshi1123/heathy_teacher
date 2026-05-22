@@ -134,7 +134,10 @@ class _WellcomeScreenState extends State<WellcomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: ((context) => const CoGiaoHealthyScreen()),
+                    builder: ((context) => const CoGiaoHealthyScreen(
+                      type: 'home',
+                      place: 'Hà Nội',
+                    )),
                   ),
                 );
               },

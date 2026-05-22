@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FilterDropdownDialog extends StatelessWidget {
@@ -260,4 +261,241 @@ class LoginDialog extends StatelessWidget {
       ),
     );
   }
+}
+
+void showCitySelectionDialog({
+  required BuildContext context,
+  required Function(String city) onCitySelected, // 🔥 Callback truyền ra ngoài
+}) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.r),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "CHỌN KHU VỰC HỌC",
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent,
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Text(
+                "Vui lòng chọn thành phố bạn muốn tham gia học tập",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
+              ),
+              SizedBox(height: 20.h),
+
+              // Nút Hà Nội
+              _buildCityButton(
+                context: context,
+                cityName: "Hà Nội",
+                icon: Icons.location_city,
+                color: Colors.redAccent,
+                onTap: () {
+                  Navigator.pop(context); // Đóng popup trước
+                  onCitySelected("Hà Nội"); // Bắn dữ liệu ra bên ngoài xử lý
+                },
+              ),
+
+              SizedBox(height: 12.h),
+
+              // Nút TP. Hồ Chí Minh
+              _buildCityButton(
+                context: context,
+                cityName: "TP. Hồ Chí Minh",
+                icon: Icons.location_on,
+                color: Colors.blue,
+                onTap: () {
+                  Navigator.pop(context); // Đóng popup trước
+                  onCitySelected(
+                    "TP. Hồ Chí Minh",
+                  ); // Bắn dữ liệu ra bên ngoài xử lý
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+// Giao diện nút bấm giữ nguyên
+Widget _buildCityButton({
+  required BuildContext context,
+  required String cityName,
+  required IconData icon,
+  required Color color,
+  required VoidCallback onTap,
+}) {
+  return InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(10.r),
+    child: Container(
+      padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
+      decoration: BoxDecoration(
+        border: Border.all(color: color.withOpacity(0.5), width: 1.5),
+        borderRadius: BorderRadius.circular(10.r),
+        color: color.withOpacity(0.05),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 24.sp),
+          SizedBox(width: 15.w),
+          Text(
+            cityName,
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+          const Spacer(),
+          Icon(Icons.arrow_forward_ios, size: 16.sp, color: Colors.grey),
+        ],
+      ),
+    ),
+  );
+}
+
+void showOnlineCategoriesDialog({
+  required BuildContext context,
+  required Function(String category) onCategorySelected,
+}) {
+  final List<String> categories = const [
+    "Lớp học nấu ăn Eat Clean - Healthy",
+    "Các lớp học Dưỡng sinh - Thảo mộc - Đông y hiện đại",
+    "Lớp pha chế đồ uống - đồ tráng miệng lên men healthy",
+    "Các lớp học làm bánh - kẹo - ngũ cốc healthy",
+    "Combo mô hình kinh doanh Healthy Hot trend",
+    "Cộng đồng học viên VIP Cô Giáo Healthy",
+  ];
+
+  showDialog(
+    context: context,
+    barrierDismissible: true, // Bấm ra ngoài để đóng popup
+    builder: (BuildContext context) {
+      return Dialog(
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: 20.w,
+        ), // Khoảng cách popup với 2 rìa màn hình
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(20.w),
+          // Sử dụng Constraints để popup tự co giãn theo nội dung nhưng không vượt quá chiều cao màn hình
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Tiêu đề của Dialog
+              Text(
+                "DANH MỤC KHÓA HỌC ONLINE",
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green[800],
+                ),
+              ),
+              SizedBox(height: 4.h),
+              Container(
+                width: 60.w,
+                height: 3.h,
+                decoration: BoxDecoration(
+                  color: Colors.green[400],
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
+              ),
+              SizedBox(height: 20.h),
+
+              // Danh sách cuộn các khung dọc
+              Flexible(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: List.generate(categories.length, (index) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 12.h,
+                        ), // Khoảng cách giữa các khung dọc
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context); // 1. Đóng Dialog trước
+                            onCategorySelected(
+                              categories[index],
+                            ); // 2. Bắn dữ liệu ra ngoài xử lý
+                          },
+                          borderRadius: BorderRadius.circular(10.r),
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                              vertical: 16.h,
+                              horizontal: 16.w,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .green[600], // Khung xanh lá cây theo yêu cầu
+                              borderRadius: BorderRadius.circular(10.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.15),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.menu_book_rounded,
+                                  color: Colors.white.withOpacity(0.9),
+                                  size: 20.sp,
+                                ),
+                                SizedBox(width: 12.w),
+                                Expanded(
+                                  child: Text(
+                                    categories[index],
+                                    style: TextStyle(
+                                      color: Colors
+                                          .white, // Chữ trắng theo yêu cầu
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.3,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  color: Colors.white.withOpacity(0.7),
+                                  size: 14.sp,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

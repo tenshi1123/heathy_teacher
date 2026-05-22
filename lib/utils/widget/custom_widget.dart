@@ -4,6 +4,7 @@ import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 
 class CustomDotLine extends StatelessWidget {
   final double dotSize;
@@ -279,8 +280,9 @@ class CartSection extends StatelessWidget {
 }
 
 class CourseItem extends StatelessWidget {
-  const CourseItem({super.key});
-
+  const CourseItem({super.key, required this.type, required this.place});
+  final String type;
+  final String place;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -345,12 +347,28 @@ class CourseItem extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.location_on_outlined, color: mainDarkGreen, size: 16),
-              Text(
-                '  TP.HCM',
-                style: defaultText14M.copyWith(color: mainDarkGreen),
-              ),
+              if (type == 'on')
+                Text(
+                  '  Học online qua app',
+                  style: defaultText14M.copyWith(color: mainDarkGreen),
+                )
+              else
+                Text(
+                  '  Trực tiếp tại $place',
+                  style: defaultText14M.copyWith(color: mainDarkGreen),
+                ),
             ],
           ),
+          if (type == 'off')
+            Row(
+              children: [
+                Icon(Icons.person_outline, color: mainDarkGreen, size: 16),
+                Text(
+                  '  Giảng viên: Linh Phan',
+                  style: defaultText14M.copyWith(color: mainDarkGreen),
+                ),
+              ],
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -406,9 +424,15 @@ class CourseItem extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: ((context) => RegisterClassOff(type: 'off')),
+                      builder: ((context) => RegisterClassOff(type: type)),
                     ),
                   );
+                  // showCitySelectionDialog(
+                  //   context: context,
+                  //   onCitySelected: (selectedCity) {
+
+                  //   },
+                  // );
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(

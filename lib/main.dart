@@ -12,6 +12,4 @@ Future<void> main() async {
   ) {
     initializeDateFormatting().then((_) => runApp(const App()));
   });
-
-  //initializeDateFormatting().then((_) => runApp(const App()));
 }

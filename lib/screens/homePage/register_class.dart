@@ -34,7 +34,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
         title: Text(
           widget.type == 'off'
               ? 'Chi tiết lớp trực tiếp'
-              : 'Chi tiết khoá video',
+              : 'Chi tiết khoá online',
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         leading: IconButton(
@@ -93,10 +93,11 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                     '(4,6)',
                     style: defaultText14SB.copyWith(fontSize: 12.sp),
                   ),
-                  Text(
-                    ' • Giảng viên: HVG DTLOAN',
-                    style: defaultText14SB.copyWith(fontSize: 12.sp),
-                  ),
+                  if (widget.type == 'off')
+                    Text(
+                      ' • Giảng viên: HVG DTLOAN',
+                      style: defaultText14SB.copyWith(fontSize: 12.sp),
+                    ),
                 ],
               ),
               SizedBox(height: 12.h),

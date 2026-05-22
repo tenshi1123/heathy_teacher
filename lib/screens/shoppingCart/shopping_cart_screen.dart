@@ -4,8 +4,6 @@ import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
-import 'package:heathy_teacher/utils/widget/custom_product_widget.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:intl/intl.dart';
 

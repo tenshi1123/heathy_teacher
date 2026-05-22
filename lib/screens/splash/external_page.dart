@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/product_model.dart';
@@ -7,19 +9,23 @@ import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CoGiaoHealthyScreen extends StatefulWidget {
-  const CoGiaoHealthyScreen({super.key});
-
+  const CoGiaoHealthyScreen({
+    super.key,
+    required this.type,
+    required this.place,
+  });
+  final String type;
+  final String place;
   @override
   State<CoGiaoHealthyScreen> createState() => _CoGiaoHealthyScreenState();
 }
 
 class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
-  // --- Dữ liệu giả lập ---
-  // Bạn có thể thay đổi danh sách link ảnh web ở đây
   final List<String> _productImages = [
     'assets/images/home1.jpg',
     'assets/images/home2.jpg',
@@ -27,19 +33,57 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
     'assets/images/home4.jpg',
   ];
 
-  // Màu sắc chủ đạo từ giao diện
   static const Color primaryGreen = Color(0xFF689F38); // Màu xanh lá logo
-  static const Color secondaryGreen = Color(
-    0xFF7CB342,
-  ); // Màu xanh nút đăng nhập
+  static const Color secondaryGreen = Color(0xFF7CB342);
   static const Color accentBrown = Color(0xFFD4A76A); // Màu chữ và giỏ hàng
-  static const Color accentGreenText = Color(
-    0xFF558B2F,
-  ); // Màu xanh chữ tiêu đề
+  static const Color accentGreenText = Color(0xFF558B2F);
 
-  int _currentSlide = 0; // Theo dõi slide hiện tại
-  final PageController _pageController =
-      PageController(); // Điều khiển PageView
+  int _currentSlide = 0;
+  final PageController _pageController = PageController(initialPage: 0);
+
+  Timer? _timer;
+  @override
+  void initState() {
+    super.initState();
+    _startAutoPlay();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // 🔥 Hủy timer khi không dùng nữa để tránh leak memory
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _startAutoPlay() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (_pageController.hasClients) {
+        if (_currentSlide < _productImages.length - 1) {
+          _currentSlide++;
+
+          // Lướt sang trang kế tiếp
+          _pageController.animateToPage(
+            _currentSlide,
+            duration: const Duration(
+              milliseconds: 500,
+            ), // Tăng nhẹ thời gian lướt cho mượt
+            curve: Curves.easeInOut,
+          );
+        } else {
+          _currentSlide = 0; // Đặt về 0
+
+          // 🔥 Lướt mượt ngược từ cuối về đầu
+          _pageController.animateToPage(
+            _currentSlide,
+            duration: const Duration(
+              milliseconds: 800,
+            ), // Thời gian cuộn ngược dài hơn chút nhìn sẽ đẹp hơn
+            curve: Curves.easeInOut,
+          );
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +239,6 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                     ),
                   ),
 
-                  // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)
                   Container(
                     width: double.infinity,
                     height: 375.w * 4 / 3,
@@ -261,8 +304,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                   ),
                   ServiceGrid(),
                   //list
-                  CourseItem(),
-                  CourseItem(),
+                  CourseItem(type: widget.type, place: widget.place),
+                  CourseItem(type: widget.type, place: widget.place),
                   Container(
                     height: 160.h,
                     width: 375.w,
@@ -655,9 +698,19 @@ class ServiceGrid extends StatelessWidget {
         title: "KHÓA HỌC TRỰC TIẾP",
         icon: "assets/images/home1.png",
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const CoGiaoHealthyScreen()),
+          showCitySelectionDialog(
+            context: context,
+            onCitySelected: (selectedCity) {
+              // 🔥 Cả 2 thành phố đều vào chung 1 màn hình (Ví dụ: CoursesScreen)
+              // Truyền tên thành phố vừa chọn vào màn hình đó
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      CoGiaoHealthyScreen(type: 'off', place: selectedCity),
+                ),
+              );
+            },
           );
         },
       ),
@@ -665,9 +718,18 @@ class ServiceGrid extends StatelessWidget {
         title: "KHÓA HỌC ONLINE",
         icon: "assets/images/home2.png",
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const CoGiaoHealthyScreen()),
+          showOnlineCategoriesDialog(
+            context: context,
+            onCategorySelected: (selectedCategory) {
+              // 🔥 Cả 2 loại khóa học đều
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      const CoGiaoHealthyScreen(type: 'on', place: ''),
+                ),
+              );
+            },
           );
         },
       ),
@@ -706,7 +768,10 @@ class ServiceGrid extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const CoGiaoHealthyScreen()),
+            MaterialPageRoute(
+              builder: (_) =>
+                  const CoGiaoHealthyScreen(type: 'sale', place: ''),
+            ),
           );
         },
       ),
