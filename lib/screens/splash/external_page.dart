@@ -7,6 +7,7 @@ import 'package:heathy_teacher/models/schedule_model.dart';
 import 'package:heathy_teacher/screens/introduce_screen.dart';
 import 'package:heathy_teacher/screens/listCourse/list_free_course.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
+import 'package:heathy_teacher/screens/login_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
@@ -262,6 +263,14 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                   //list
                   CourseItem(type: widget.type, place: widget.place),
                   CourseItem(type: widget.type, place: widget.place),
+                  SizedBox(height: 20.h),
+                  Text(
+                    'KHOÁ HỌC ONLINE NỔI BẬT - ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG',
+                    textAlign: TextAlign.center,
+                    style: defaultText20B.copyWith(color: mainDarkGreen),
+                  ),
+                  CourseItemOnline(type: 'on', place: widget.place),
+                  SizedBox(height: 10.h),
                   FeedbackSlider(),
                   Container(
                     height: 160.h,
@@ -820,10 +829,11 @@ class BottomCustom extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: () async {
-              if (!await launchUrl(Uri.parse('https://zalo.me/0966912016'))) {
-                throw Exception('Could not launch ');
-              }
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => const LoginScreen())),
+              );
             },
             child: ServiceIconButton(
               title: 'Hỗ trợ ngay',

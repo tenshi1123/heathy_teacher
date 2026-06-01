@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
+import 'package:heathy_teacher/screens/login_screen.dart';
+import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
@@ -386,73 +388,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.r),
-                topRight: Radius.circular(32.r),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    if (!await launchUrl(
-                      Uri.parse('https://m.me/cogiaohealthy'),
-                    )) {
-                      throw Exception('Could not launch ');
-                    }
-                  },
-                  child: ServiceIconButton(
-                    title: 'Messenger',
-                    iconPath: 'assets/icons/fb_messsage.svg',
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    if (!await launchUrl(
-                      Uri.parse('https://zalo.me/0966912016'),
-                    )) {
-                      throw Exception('Could not launch ');
-                    }
-                  },
-                  child: ServiceIconButton(
-                    title: 'Zalo',
-                    iconPath: 'assets/icons/icon_zalo.svg',
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    if (!await launchUrl(
-                      Uri(scheme: 'tel', path: '0966912016'),
-                    )) {
-                      throw Exception('Could not launch ');
-                    }
-                  },
-                  child: ServiceIconButton(
-                    title: 'Gọi hotline',
-                    iconPath: 'assets/images/call.png',
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    if (!await launchUrl(
-                      Uri.parse('https://zalo.me/0966912016'),
-                    )) {
-                      throw Exception('Could not launch ');
-                    }
-                  },
-                  child: ServiceIconButton(
-                    title: 'Hỗ trợ ngay',
-                    iconPath: 'assets/images/suport.png',
-                  ),
-                ),
-              ],
-            ),
-          ),
+          BottomCustom(),
         ],
       ),
     );

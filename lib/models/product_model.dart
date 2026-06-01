@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 class Item {
@@ -151,4 +152,104 @@ class ServiceModel {
   final VoidCallback onTap;
 
   ServiceModel({required this.title, required this.icon, required this.onTap});
+}
+
+// Hàm helper để parse chuỗi JSON tổng (nếu cần)
+List<CourseSection> courseSectionFromJson(String str) =>
+    List<CourseSection>.from(
+      json.decode(str).map((x) => CourseSection.fromJson(x)),
+    );
+
+String courseSectionToJson(List<CourseSection> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class CourseSection {
+  final String? id;
+  final String? name;
+  final List<Lesson> lesson;
+
+  CourseSection({this.id, this.name, required this.lesson});
+
+  factory CourseSection.fromJson(Map<String, dynamic> json) {
+    return CourseSection(
+      id: json['id'],
+      name: json['name'],
+      // Kiểm tra nếu mảng lesson null thì trả về mảng rỗng
+      lesson: json['lesson'] != null
+          ? List<Lesson>.from(json['lesson'].map((x) => Lesson.fromJson(x)))
+          : [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'lesson': List<dynamic>.from(lesson.map((x) => x.toJson())),
+    };
+  }
+}
+
+class Lesson {
+  final String? lessonsId;
+  final String? name;
+  final String? slug;
+  final String? time;
+  final String? isTrial;
+  final String? documentFilesActive;
+  final String? examActive;
+  final String? locked;
+  final String? lessonContent;
+  final String? lessonType;
+  final String? streamingUrl;
+  final String? muxAssetId; // Trường này nhận giá trị null từ API
+
+  Lesson({
+    this.lessonsId,
+    this.name,
+    this.slug,
+    this.time,
+    this.isTrial,
+    this.documentFilesActive,
+    this.examActive,
+    this.locked,
+    this.lessonContent,
+    this.lessonType,
+    this.streamingUrl,
+    this.muxAssetId,
+  });
+
+  factory Lesson.fromJson(Map<String, dynamic> json) {
+    return Lesson(
+      lessonsId: json['lessons_id'],
+      name: json['name'],
+      slug: json['slug'],
+      time: json['time'],
+      isTrial: json['is_trial'],
+      documentFilesActive: json['document_files_active'],
+      examActive: json['exam_active'],
+      locked: json['locked'],
+      lessonContent: json['lesson_content'],
+      lessonType: json['lesson_type'],
+      streamingUrl: json['streaming_url'],
+      muxAssetId: json['mux_asset_id'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'lessons_id': lessonsId,
+      'name': name,
+      'slug': slug,
+      'time': time,
+      'is_trial': isTrial,
+      'document_files_active': documentFilesActive,
+      'exam_active': examActive,
+      'locked': locked,
+      'lesson_content': lessonContent,
+      'lesson_type': lessonType,
+      'streaming_url': streamingUrl,
+      'mux_asset_id': muxAssetId,
+    };
+  }
 }

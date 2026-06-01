@@ -3,11 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/models/schedule_model.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
+import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/screens/login_screen.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomDotLine extends StatelessWidget {
   final double dotSize;
@@ -463,6 +465,194 @@ class CourseItem extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CourseItemOnline extends StatelessWidget {
+  const CourseItemOnline({super.key, required this.type, required this.place});
+  final String type;
+  final String place;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+      margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Image.asset('assets/images/online.jpg'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6.r),
+                  border: Border.all(color: mainDarkGreen, width: 1.5),
+                  color: Colors.white,
+                ),
+                child: Text(
+                  'Đồ uống healthy',
+                  style: defaultText14M.copyWith(color: mainDarkGreen),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            '[ONLINE] KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG (ENERGY BOWL) VÀ CHẾ BIẾN THỰC PHẨM ĐÓNG GÓI SẴN ',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: defaultText18B.copyWith(color: mainDarkGreen),
+          ),
+          SizedBox(height: 8.h),
+
+          Row(
+            children: const [
+              Icon(
+                Icons.co_present_outlined, // Icon tương đối giống bản gốc
+                color: Color(0xFF3B7139),
+                size: 28,
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Linh Phan',
+                style: TextStyle(
+                  color: Color(0xFF3B7139),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Giá tiền
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: const [
+              Text(
+                '2,990,000đ',
+                style: TextStyle(
+                  color: Color(0xFF759E73),
+                  fontSize: 18,
+                  decoration: TextDecoration.lineThrough,
+                ),
+              ),
+              Text(
+                '1,990,000đ',
+                style: TextStyle(
+                  color: Color(0xFF3B7139),
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Các thông số (Pills)
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatBadge(
+                  icon: Icons.play_circle_fill,
+                  iconColor: const Color(0xFFFCD34D),
+                  text: '1 bài học',
+                ),
+              ),
+              const SizedBox(width: 30),
+              Expanded(
+                child: _buildStatBadge(
+                  icon: Icons.person,
+                  iconColor: const Color(0xFFFBBF24),
+                  text: '1089 lượt học',
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Nút Đăng ký
+          ElevatedButton(
+            onPressed: () {
+              // Xử lý sự kiện đăng ký
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: ((context) => RegisterClassON(type: 'on')),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF467D43),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 0,
+            ),
+            child: const Text(
+              'Đăng ký ngay',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatBadge({
+    required IconData icon,
+    required Color iconColor,
+    required String text,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: iconColor, size: 22),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: Color(0xFF41763E),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
@@ -1046,6 +1236,259 @@ class RecipeGridWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class VideoLessonPreviewWidget extends StatelessWidget {
+  const VideoLessonPreviewWidget({super.key});
+
+  // Hàm xử lý mở link YouTube
+  Future<void> _launchYouTubeVideo() async {
+    const String urlString = 'https://www.youtube.com/watch?v=vW5ZnHW95WM';
+    final Uri url = Uri.parse(urlString);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+        mode: LaunchMode
+            .externalApplication, // Mở bằng app YouTube bên ngoài (hoặc trình duyệt nếu không có app)
+      );
+    } else {
+      debugPrint('Không thể mở liên kết: $urlString');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 1. Phần tiêu đề Giảng viên
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          child: Row(
+            children: const [
+              Icon(Icons.co_present_outlined, color: Colors.black87, size: 22),
+              SizedBox(width: 8),
+              Text(
+                'Giảng viên: Linh Phan',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // 2. Khung Video chính (Dùng Stack)
+        AspectRatio(
+          aspectRatio: 16 / 10,
+          child: Stack(
+            children: [
+              // LỚP NỀN: ĐÃ ĐỔI THÀNH LINK THUMBNAIL CHUẨN CỦA VIDEO YOUTUBE BẠN CUNG CẤP
+              Positioned.fill(
+                child: Image.network(
+                  'https://i.ytimg.com/vi/vW5ZnHW95WM/maxresdefault.jpg',
+                  fit: BoxFit.cover,
+                  // Trường hợp ảnh lỗi hoặc đang tải thì hiện màu nền xám nhẹ
+                  errorBuilder: (context, error, stackTrace) =>
+                      Container(color: Colors.grey[300]),
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(color: Colors.grey[200]);
+                  },
+                ),
+              ),
+
+              // Lớp phủ mờ màu đen để làm nổi bật text và nút play
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.6),
+                        Colors.transparent,
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.4),
+                      ],
+                      stops: const [0.0, 0.2, 0.8, 1.0],
+                    ),
+                  ),
+                ),
+              ),
+
+              // NÚT PLAY: ĐÃ THÊM HÀM MỞ LINK YOUTUBE KHI CLICK
+              Center(
+                child: InkWell(
+                  onTap:
+                      _launchYouTubeVideo, // Gọi hàm mở link khi nhấn vào nút Play
+                  splashColor: Colors.white24,
+                  highlightColor: Colors.transparent,
+                  borderRadius: BorderRadius.circular(14),
+                  child: Container(
+                    width: 68,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF0000), // Đỏ YouTube
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(
+                      Icons.play_arrow_rounded,
+                      color: Colors.white,
+                      size: 36,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Thông tin tiêu đề video đè góc trên bên trái
+              Positioned(
+                top: 12,
+                left: 12,
+                right: 12,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: NetworkImage(
+                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(blurRadius: 4, color: Colors.black),
+                              ],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Cô Giáo Healthy',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFFE0E0E0),
+                              shadows: [
+                                Shadow(blurRadius: 4, color: Colors.black),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Nút Share & Watch Later góc dưới bên trái
+              Positioned(
+                bottom: 12,
+                left: 12,
+                child: Row(
+                  children: [
+                    _buildCircleOverlayButton(
+                      Icons.reply_outlined,
+                      onTap: _launchYouTubeVideo,
+                    ),
+                    const SizedBox(width: 8),
+                    _buildCircleOverlayButton(
+                      Icons.access_time,
+                      onTap: _launchYouTubeVideo,
+                    ),
+                  ],
+                ),
+              ),
+
+              // Chữ "Xem trên YouTube" góc dưới bên phải
+              Positioned(
+                bottom: 12,
+                right: 12,
+                child: InkWell(
+                  onTap:
+                      _launchYouTubeVideo, // Cho phép click luôn vào cụm chữ này để mở link
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Row(
+                      children: const [
+                        Text(
+                          'Xem trên ',
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        ),
+                        Icon(Icons.play_circle, color: Colors.red, size: 16),
+                        Text(
+                          'YouTube',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // 3. Thanh thông tin liên hệ màu xanh lá dưới đáy video
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          color: const Color(0xFF467D43),
+          child: const Text(
+            'Fanpage Linh Phan - Cô Giáo Healthy. Hotline: 0966 912 016. Địa chỉ: 214 Lạc Long Quân, Tây Hồ, Hà Nội',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCircleOverlayButton(IconData icon, {VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.5),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: Colors.white, size: 20),
       ),
     );
   }

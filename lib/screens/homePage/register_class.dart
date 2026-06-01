@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/product_model.dart';
-import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
-import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterClassOff extends StatefulWidget {
