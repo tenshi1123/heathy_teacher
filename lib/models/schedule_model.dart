@@ -41,3 +41,17 @@ class ScheduleModel {
     );
   }
 }
+
+class RecipeModel {
+  final String title;
+  final String imageUrl;
+  final String date;
+  final String? detail;
+
+  RecipeModel({
+    required this.title,
+    required this.imageUrl,
+    required this.date,
+    this.detail,
+  });
+}

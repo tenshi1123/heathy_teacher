@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/utils/constants/color.dart';
+import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FilterDropdownDialog extends StatelessWidget {
@@ -272,6 +274,7 @@ void showCitySelectionDialog({
     barrierDismissible: true,
     builder: (BuildContext context) {
       return Dialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.r),
         ),
@@ -282,17 +285,17 @@ void showCitySelectionDialog({
             children: [
               Text(
                 "CHỌN KHU VỰC HỌC",
-                style: TextStyle(
-                  fontSize: 18.sp,
+                style: defaultText16B.copyWith(
+                  color: mainDarkGreen,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
                 ),
               ),
               SizedBox(height: 10.h),
               Text(
                 "Vui lòng chọn thành phố bạn muốn tham gia học tập",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
+                style: defaultText14M.copyWith(color: mainDarkGreen),
               ),
               SizedBox(height: 20.h),
 
@@ -301,7 +304,7 @@ void showCitySelectionDialog({
                 context: context,
                 cityName: "Hà Nội",
                 icon: Icons.location_city,
-                color: Colors.redAccent,
+                color: mainOrange,
                 onTap: () {
                   Navigator.pop(context); // Đóng popup trước
                   onCitySelected("Hà Nội"); // Bắn dữ liệu ra bên ngoài xử lý
@@ -315,7 +318,7 @@ void showCitySelectionDialog({
                 context: context,
                 cityName: "TP. Hồ Chí Minh",
                 icon: Icons.location_on,
-                color: Colors.blue,
+                color: mainDarkGreen,
                 onTap: () {
                   Navigator.pop(context); // Đóng popup trước
                   onCitySelected(
@@ -347,22 +350,22 @@ Widget _buildCityButton({
       decoration: BoxDecoration(
         border: Border.all(color: color.withOpacity(0.5), width: 1.5),
         borderRadius: BorderRadius.circular(10.r),
-        color: color.withOpacity(0.05),
+        color: color,
       ),
       child: Row(
         children: [
-          Icon(icon, color: color, size: 24.sp),
+          Icon(icon, color: Colors.white, size: 24.sp),
           SizedBox(width: 15.w),
           Text(
             cityName,
-            style: TextStyle(
-              fontSize: 16.sp,
+            style: defaultText14B.copyWith(
+              color: Colors.white,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
             ),
           ),
           const Spacer(),
-          Icon(Icons.arrow_forward_ios, size: 16.sp, color: Colors.grey),
+          Icon(Icons.arrow_forward_ios, size: 18.sp, color: Colors.white),
         ],
       ),
     ),
@@ -390,6 +393,7 @@ void showOnlineCategoriesDialog({
         insetPadding: EdgeInsets.symmetric(
           horizontal: 20.w,
         ), // Khoảng cách popup với 2 rìa màn hình
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -447,8 +451,8 @@ void showOnlineCategoriesDialog({
                               horizontal: 16.w,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors
-                                  .green[600], // Khung xanh lá cây theo yêu cầu
+                              color:
+                                  mainDarkGreen, // Khung xanh lá cây theo yêu cầu
                               borderRadius: BorderRadius.circular(10.r),
                               boxShadow: [
                                 BoxShadow(
@@ -469,12 +473,10 @@ void showOnlineCategoriesDialog({
                                 Expanded(
                                   child: Text(
                                     categories[index],
-                                    style: TextStyle(
-                                      color: Colors
-                                          .white, // Chữ trắng theo yêu cầu
+                                    style: defaultText14B.copyWith(
+                                      color: Colors.white,
                                       fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      height: 1.3,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),

@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
+import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
@@ -42,18 +43,21 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          GestureDetector(
+          InkWell(
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: ((context) => NotificationScreen())),
+                MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
               );
             },
-            child: SvgPicture.asset(
-              'assets/icons/bell.svg',
-              width: 20.w,
-              height: 20.h,
-              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            child: Stack(
+              children: [
+                Icon(
+                  Icons.shopping_cart_outlined,
+                  color: Colors.white,
+                  size: 28, // Giảm size Icon giỏ hàng một chút
+                ),
+              ],
             ),
           ),
           SizedBox(width: 16.w),
@@ -73,6 +77,15 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(
+                width: 343.w,
+                child: Text(
+                  widget.type == 'off'
+                      ? 'Lớp nấu ăn Eatclean cơ bản cho gia đình'
+                      : 'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
+                  style: defaultText20B.copyWith(color: mainDarkGreen),
+                ),
+              ),
               Image.asset(
                 widget.type == 'off'
                     ? 'assets/images/off_class_4.png'
@@ -82,35 +95,6 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                 fit: BoxFit.fill,
               ),
               SizedBox(height: 20.h),
-              Row(
-                children: [
-                  SizedBox(width: 16.w),
-                  RatingStars(
-                    rating: 4.6, // Hiển thị 4.5 sao
-                    starSize: 16.r,
-                  ),
-                  Text(
-                    '(4,6)',
-                    style: defaultText14SB.copyWith(fontSize: 12.sp),
-                  ),
-                  if (widget.type == 'off')
-                    Text(
-                      ' • Giảng viên: HVG DTLOAN',
-                      style: defaultText14SB.copyWith(fontSize: 12.sp),
-                    ),
-                ],
-              ),
-              SizedBox(height: 12.h),
-              SizedBox(
-                width: 343.w,
-                child: Text(
-                  widget.type == 'off'
-                      ? 'Lớp nấu ăn Eatclean cơ bản cho gia đình'
-                      : 'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
-                  style: defaultText18B,
-                ),
-              ),
-              SizedBox(height: 28.h),
               SizedBox(
                 width: 343.w,
                 child: Row(
@@ -132,6 +116,52 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                   ],
                 ),
               ),
+              Row(
+                children: [
+                  SizedBox(width: 16.w),
+                  Icon(
+                    Icons.calendar_month_outlined,
+                    color: mainDarkGreen,
+                    size: 16,
+                  ),
+                  Text(
+                    '  07/05/2026 - 09/05/2026',
+                    style: defaultText14M.copyWith(color: mainDarkGreen),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(width: 16.w),
+                  Icon(
+                    Icons.location_on_outlined,
+                    color: mainDarkGreen,
+                    size: 16,
+                  ),
+                  if (widget.type == 'on')
+                    Text(
+                      '  Học online qua app',
+                      style: defaultText14M.copyWith(color: mainDarkGreen),
+                    )
+                  else
+                    Text(
+                      '  Trực tiếp tại Hà Nội',
+                      style: defaultText14M.copyWith(color: Colors.red),
+                    ),
+                ],
+              ),
+              if (widget.type == 'off')
+                Row(
+                  children: [
+                    SizedBox(width: 16.w),
+                    Icon(Icons.person_outline, color: mainDarkGreen, size: 16),
+                    Text(
+                      '  Giảng viên: Linh Phan',
+                      style: defaultText14M.copyWith(color: mainDarkGreen),
+                    ),
+                  ],
+                ),
+              SizedBox(height: 12.h),
               InkWell(
                 onTap: () {
                   showDialog(
@@ -226,6 +256,8 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                   ),
                 ),
               ),
+              SizedBox(height: 28.h),
+
               Row(
                 children: [
                   SizedBox(width: 16.w),
@@ -294,6 +326,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                       ),
                     )
                   : SizedBox(),
+
               SizedBox(height: 36.h),
             ],
           ),

@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/product_model.dart';
-import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
-import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ListSpScreen extends StatefulWidget {
@@ -18,11 +17,11 @@ class ListSpScreen extends StatefulWidget {
 }
 
 class _ListSpScreenState extends State<ListSpScreen> {
-  static const Color primaryGreen = Color(0xFF689F38); // Màu xanh lá logo
+  // Màu xanh lá logo
   static const Color secondaryGreen = Color(
     0xFF7CB342,
   ); // Màu xanh nút đăng nhập
-  static const Color accentBrown = Color(0xFFD4A76A); // Màu chữ và giỏ hàng
+  // Màu chữ và giỏ hàng
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,116 +35,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
                 children: [
                   const SizedBox(height: 50), // Khoảng cách cho status bar
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Nút Đăng nhập
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: ((context) => const BottomBarScreen()),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: mainGreen,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 8,
-                            ),
-                          ),
-                          child: const Text(
-                            'Đăng nhập',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-
-                        // LOGO
-                        Image.asset(
-                          'assets/images/logo.png', // Hãy thay bằng logo thật của bạn
-                          height: 80.h,
-                          errorBuilder: (context, error, stackTrace) => Column(
-                            children: const [
-                              Text(
-                                'Cô Giáo',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: accentBrown,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'healthy',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: primaryGreen,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 1.w),
-                        // Giỏ hàng
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: ((context) => ShoppingCartScreen()),
-                              ),
-                            );
-                          },
-                          child: Stack(
-                            children: [
-                              Icon(
-                                Icons.shopping_cart_outlined,
-                                color: mainDarkGreen,
-                                size: 35,
-                              ),
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(1),
-                                    decoration: const BoxDecoration(
-                                      color: Color(
-                                        0xFFFFF176,
-                                      ), // Màu vàng của số
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Text(
-                                      ' 0 ',
-                                      style: TextStyle(
-                                        color: accentBrown,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  DefaultAppBar(),
 
                   // 2. SEARCH BAR AREA
                   Padding(

@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/product_model.dart';
-import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
+import 'package:heathy_teacher/models/schedule_model.dart';
+import 'package:heathy_teacher/screens/introduce_screen.dart';
 import 'package:heathy_teacher/screens/listCourse/list_free_course.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
-import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
+import 'package:heathy_teacher/utils/widget/feedback_slider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CoGiaoHealthyScreen extends StatefulWidget {
@@ -26,17 +27,81 @@ class CoGiaoHealthyScreen extends StatefulWidget {
 }
 
 class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
-  final List<String> _productImages = [
-    'assets/images/home1.jpg',
-    'assets/images/home2.jpg',
-    'assets/images/home3.jpg',
-    'assets/images/home4.jpg',
+  final List<Map<String, dynamic>> _productImages = [
+    {'image': 'assets/images/home1.jpg', 'screen': const ListSpScreen()},
+    {'image': 'assets/images/home2.jpg', 'screen': const IntroduceScreen()},
+    {'image': 'assets/images/home3.jpg', 'screen': const ListFreeCourse()},
+    {'image': 'assets/images/home4.jpg', 'screen': const ListSpScreen()},
   ];
+  final List<RecipeModel> dummyLongList = List.generate(4, (index) {
+    // Luân phiên thay đổi nội dung để giao diện nhìn thực tế
+    if (index % 4 == 0) {
+      return RecipeModel(
+        title: "Bánh bao kẹp Đài Loan nguyên cám",
+        imageUrl: "assets/images/gift_formula.jpg",
+        date: "14/01/2026",
+      );
+    } else if (index % 4 == 1) {
+      return RecipeModel(
+        title: "Công thức Ginger Shot cho 7 ngày",
+        imageUrl: "assets/images/gift_formula2.jpg",
+        date: "14/01/2026",
+      );
+    } else if (index % 4 == 2) {
+      return RecipeModel(
+        title: "Ức gà bọc trứng",
+        imageUrl: "assets/images/gift_formula3.jpg",
+        date: "14/01/2026",
+      );
+    } else {
+      return RecipeModel(
+        title: "Tặng công thức cá hấp xì dầu cho bữa cơm nhà trở nên hấp dẫn",
+        imageUrl: "assets/images/gift_formula4.png",
+        date: "13/11/2025",
+      );
+    }
+  });
 
-  static const Color primaryGreen = Color(0xFF689F38); // Màu xanh lá logo
-  static const Color secondaryGreen = Color(0xFF7CB342);
-  static const Color accentBrown = Color(0xFFD4A76A); // Màu chữ và giỏ hàng
-  static const Color accentGreenText = Color(0xFF558B2F);
+  final List<RecipeModel> dummyLongList2 = List.generate(4, (index) {
+    // Luân phiên thay đổi nội dung để giao diện nhìn thực tế
+    if (index % 4 == 0) {
+      return RecipeModel(
+        title:
+            "Ngày 1 – Lớp học TRỰC TIẾP kinh doanh suất ăn healthy cao cấp có gì?",
+        imageUrl: "assets/images/dairy1.jpg",
+        date: "14/01/2026",
+        detail:
+            "Cùng khám phá lịch trình ngày 1 tại lớp trực tiếp của Cô Giáo Healthy nha",
+      );
+    } else if (index % 4 == 1) {
+      return RecipeModel(
+        title:
+            "Ngày 2 – Tiếp tục khám phá lớp học kinh doanh suất ăn healthy cao cấp có gì nha?",
+        imageUrl: "assets/images/dairy2.jpg",
+        date: "14/01/2026",
+        detail:
+            "Tiếp tục khám phá ngày 2 của lớp học kinh doanh suất ăn healthy cao cấp của Cô Giáo Healthy ",
+      );
+    } else if (index % 4 == 2) {
+      return RecipeModel(
+        title:
+            "Ngày 3 – Mô hình kinh doanh toàn diện, smoothie – nước ép kết hợp cùng suất ăn healthy cao cấp",
+        imageUrl: "assets/images/dairy3.jpg",
+        date: "14/01/2026",
+        detail:
+            "Từ một người yêu bếp trở thành người vận hành mô hình suất ăn lành mạnh – bắt đầu từ việc học bài bản và thực hành đúng cách. ",
+      );
+    } else {
+      return RecipeModel(
+        title:
+            "Nhật ký lớp học trà sữa hạt chuyên sâu trực tiếp: Trà sữa hạt thuần chay tại Cô Giáo Healthy có gì khác biệt so với trà sữa thông thường?",
+        imageUrl: "assets/images/dairy4.jpg",
+        date: "13/11/2025",
+        detail:
+            "Nhật ký lớp học trà sữa hạt chuyên sâu trực tiếp: Trà sữa hạt thuần chay tại Cô Giáo Healthy có gì khác biệt so với trà sữa thông thường?",
+      );
+    }
+  });
 
   int _currentSlide = 0;
   final PageController _pageController = PageController(initialPage: 0);
@@ -98,116 +163,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                 children: [
                   const SizedBox(height: 50), // Khoảng cách cho status bar
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Nút Đăng nhập
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: ((context) => const BottomBarScreen()),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: mainGreen,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 8,
-                            ),
-                          ),
-                          child: const Text(
-                            'Đăng nhập',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-
-                        // LOGO
-                        Image.asset(
-                          'assets/images/logo.png', // Hãy thay bằng logo thật của bạn
-                          height: 80.h,
-                          errorBuilder: (context, error, stackTrace) => Column(
-                            children: const [
-                              Text(
-                                'Cô Giáo',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: accentBrown,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'healthy',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: primaryGreen,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 1.w),
-                        // Giỏ hàng
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: ((context) => ShoppingCartScreen()),
-                              ),
-                            );
-                          },
-                          child: Stack(
-                            children: [
-                              Icon(
-                                Icons.shopping_cart_outlined,
-                                color: mainDarkGreen,
-                                size: 35,
-                              ),
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(1),
-                                    decoration: const BoxDecoration(
-                                      color: Color(
-                                        0xFFFFF176,
-                                      ), // Màu vàng của số
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Text(
-                                      ' 0 ',
-                                      style: TextStyle(
-                                        color: accentBrown,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  DefaultAppBar(),
 
                   // 2. SEARCH BAR AREA
                   Padding(
@@ -224,11 +180,11 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                           width: 1.5,
                         ),
                       ),
-                      child: const TextField(
+                      child: TextField(
                         decoration: InputDecoration(
                           hintText: 'Nhập để tìm kiếm...',
                           hintStyle: TextStyle(color: Colors.grey),
-                          prefixIcon: Icon(Icons.search, color: secondaryGreen),
+                          prefixIcon: Icon(Icons.search, color: mainDarkGreen),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 20,
@@ -241,7 +197,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
 
                   Container(
                     width: double.infinity,
-                    height: 375.w * 4 / 3,
+                    height: 470.w,
                     margin: EdgeInsets.symmetric(vertical: 16.h),
                     child: Stack(
                       alignment: Alignment.bottomCenter,
@@ -249,63 +205,64 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                         PageView.builder(
                           controller: _pageController,
                           itemCount: _productImages.length,
+
                           onPageChanged: (index) {
                             setState(() {
                               _currentSlide = index;
                             });
                           },
                           itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: ((context) =>
-                                        const ListSpScreen()),
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 6.w),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: ((context) =>
+                                          _productImages[index]['screen']
+                                              as Widget),
+                                    ),
+                                  );
+                                  // Xử lý khi người dùng nhấn vào ảnh (nếu cần)
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  child: Image.asset(
+                                    _productImages[index]['image'] as String,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover, // 🔥 QUAN TRỌNG
                                   ),
-                                );
-                                // Xử lý khi người dùng nhấn vào ảnh (nếu cần)
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10.r),
-                                child: Image.asset(
-                                  _productImages[index],
-                                  width: double.infinity,
-                                  fit: BoxFit.cover, // 🔥 QUAN TRỌNG
                                 ),
                               ),
                             );
                           },
                         ),
-
-                        /// DOT INDICATOR
-                        Positioned(
-                          bottom: 10.h,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              _productImages.length,
-                              (index) => Container(
-                                width: 8.w,
-                                height: 8.w,
-                                margin: EdgeInsets.symmetric(horizontal: 3.w),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _currentSlide == index
-                                      ? accentGreenText
-                                      : Colors.grey[400],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      _productImages.length,
+                      (index) => Container(
+                        width: 8.w,
+                        height: 8.w,
+                        margin: EdgeInsets.symmetric(horizontal: 3.w),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentSlide == index
+                              ? mainDarkGreen
+                              : Colors.grey[400],
+                        ),
+                      ),
                     ),
                   ),
                   ServiceGrid(),
                   //list
                   CourseItem(type: widget.type, place: widget.place),
                   CourseItem(type: widget.type, place: widget.place),
+                  FeedbackSlider(),
                   Container(
                     height: 160.h,
                     width: 375.w,
@@ -373,6 +330,29 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                       ],
                     ),
                   ),
+                  Text(
+                    'KIẾN THỨC & CÔNG THỨC TẶNG EATCLEAN - HEALTHY',
+                    textAlign: TextAlign.center,
+                    style: defaultText20B.copyWith(color: mainDarkGreen),
+                  ),
+                  Text(
+                    'Cập nhật liên tục công thức nấu ăn eatclean - healthy mới nhất',
+                    textAlign: TextAlign.center,
+                    style: defaultText14M.copyWith(color: mainDarkGreen),
+                  ),
+                  RecipeGridWidget(recipes: dummyLongList, type: 1),
+                  SizedBox(height: 10.h),
+                  Text(
+                    'NHẬT KÝ LỚP HỌC',
+                    textAlign: TextAlign.center,
+                    style: defaultText20B.copyWith(color: mainDarkGreen),
+                  ),
+                  Text(
+                    'Các lớp học nấu ăn healthy với những công thức bổ dưỡng, dễ làm và đầy màu sắc.',
+                    textAlign: TextAlign.center,
+                    style: defaultText14M.copyWith(color: mainDarkGreen),
+                  ),
+                  RecipeGridWidget(recipes: dummyLongList2, type: 2),
                   Container(
                     width: 375.w,
 
@@ -641,30 +621,14 @@ class _ServiceItemState extends State<ServiceItem> {
           isPressed ? 4 : 0, // 👈 hiệu ứng nhấn xuống
           0,
         ),
-        padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: isPressed
-              ? []
-              : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
         ),
         child: Column(
           children: [
-            /// icon tròn
-            SizedBox(
-              width: 70,
-              height: 70,
-
-              child: Center(
-                child: Image.asset(widget.item.icon, width: 70, height: 70),
-              ),
+            Center(
+              child: Image.asset(widget.item.icon, width: 80.dm, height: 80.dm),
             ),
 
             const SizedBox(height: 12),
@@ -675,10 +639,7 @@ class _ServiceItemState extends State<ServiceItem> {
               child: Text(
                 widget.item.title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF3F7D3A),
-                ),
+                style: defaultText16B.copyWith(color: mainDarkGreen),
               ),
             ),
           ],
@@ -779,18 +740,15 @@ class ServiceGrid extends StatelessWidget {
 
     return Column(
       children: [
-        const Text(
+        Text(
           "DỊCH VỤ CỦA CHÚNG TÔI",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF3F7D3A),
-          ),
+          style: defaultText20B.copyWith(color: mainDarkGreen),
         ),
         const SizedBox(height: 6),
-        const Text("Các dịch vụ nổi bật tại Cô giáo healthy"),
-
-        const SizedBox(height: 16),
+        Text(
+          "Các dịch vụ nổi bật tại Cô giáo healthy",
+          style: defaultText14M.copyWith(color: mainDarkGreen),
+        ),
 
         GridView.builder(
           shrinkWrap: true,
@@ -800,13 +758,10 @@ class ServiceGrid extends StatelessWidget {
             crossAxisCount: 2,
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
-            childAspectRatio: 0.9,
+            childAspectRatio: 1.2,
           ),
           itemBuilder: (context, index) {
-            return ServiceItem(
-              item: services[index],
-              isHighlight: index == 0, // 👈 item đầu nổi nền
-            );
+            return ServiceItem(item: services[index], isHighlight: index == 0);
           },
         ),
       ],
