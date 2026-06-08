@@ -4,7 +4,7 @@ import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/models/schedule_model.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
-import 'package:heathy_teacher/screens/login_screen.dart';
+import 'package:heathy_teacher/screens/authentication/login_screen.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -675,12 +675,11 @@ class DefaultAppBar extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: SizedBox(
-                // Truyền kích thước to hơn hẳn cho Logo ở đây
-                width: 150, // Ví dụ chiều rộng to
-                height: 150, // Ví dụ chiều cao to
+                //width: 150,
+                height: 150,
                 child: FittedBox(
                   // FittedBox giúp Logo tự scale vừa khít SizedBox
-                  fit: BoxFit.contain,
+                  fit: BoxFit.fitHeight,
                   child: LogoWidget(), // Widget Logo của bạn
                 ),
               ),
@@ -798,6 +797,7 @@ class LogoWidget extends StatelessWidget {
       child: Image.asset(
         'assets/images/logo.png', // Hãy thay bằng logo thật của bạn
         height: 88.h,
+        fit: BoxFit.fitHeight,
         errorBuilder: (context, error, stackTrace) => Column(
           children: [
             Text(

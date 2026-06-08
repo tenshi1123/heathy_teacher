@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/screens/authentication/login_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/services/fingerprint_service.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   // Các biến controller để lấy dữ liệu nhập vào
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -18,9 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Định nghĩa bảng màu theo thiết kế của bạn
   final Color mainGreen = const Color(0xFF76BA43); // Màu xanh lá chủ đạo
-  final Color inputBgColor = const Color(
-    0xFFFDFBF0,
-  ); // Màu nền ngả vàng nhẹ của ô nhập
+  final Color inputBgColor = const Color(0xFFFDFBF0);
 
   @override
   void dispose() {
@@ -34,10 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        bottom: false, // Để banner màu xanh tràn xuống hết đáy màn hình
+        bottom: false,
         child: Column(
           children: [
-            // PHẦN FORM ĐĂNG NHẬP (Chiếm phần trên)
             Expanded(
               flex: 6,
               child: SingleChildScrollView(
@@ -45,38 +44,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 40),
-
-                    // Tiêu đề Welcome
+                    SizedBox(height: 10.h),
                     Text(
-                      'Welcome!',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: mainGreen,
-                      ),
+                      'Bạn cần một tài khoản mới !',
+                      style: defaultText20B.copyWith(color: mainGreen),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
 
-                    // Lời chào
-                    const Text(
-                      'Chào mừng bạn quay trở lại với Cô Giáo Healthy.',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                        height: 1.4,
-                      ),
+                    Text(
+                      'Đăng ký tài khoản để có thể trải nghiệm những khóa học',
+                      style: defaultText16M.copyWith(color: Colors.black87),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
 
-                    // Ô nhập Số điện thoại
                     TextField(
                       controller: _phoneController,
-                      keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
-                        hintText: 'Số điện thoại',
-                        hintStyle: const TextStyle(
-                          color: Colors.black38,
+                        hintText: 'Họ và tên',
+                        hintStyle: defaultText16M.copyWith(
                           fontStyle: FontStyle.italic,
                         ),
                         fillColor: inputBgColor,
@@ -91,7 +76,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
+                    // Ô nhập Số điện thoại
+                    TextField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: 'Số điện thoại',
+                        hintStyle: defaultText16M.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
+                        fillColor: inputBgColor,
+                        filled: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 16,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
 
                     // Ô nhập Mật khẩu
                     TextField(
@@ -99,8 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: _isPasswordObscured,
                       decoration: InputDecoration(
                         hintText: 'Mật khẩu',
-                        hintStyle: const TextStyle(
-                          color: Colors.black38,
+                        hintStyle: defaultText16M.copyWith(
                           fontStyle: FontStyle.italic,
                         ),
                         fillColor: inputBgColor,
@@ -128,9 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
 
-                    // Nút ĐĂNG NHẬP
+                    // Nút ĐĂNG KÝ
                     SizedBox(
                       width: double.infinity,
                       height: 54,
@@ -142,14 +148,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
 
                           print('test5 $fingerprint');
-                          // Xử lý logic đăng nhập tại đây
+                          // Xử lý logic đăng ký tại đây
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: ((context) => (CoGiaoHealthyScreen(
-                                type: 'home',
-                                place: 'Hà Nội',
-                              ))),
+                              builder: ((context) => (LoginScreen())),
                             ),
                           );
                         },
@@ -162,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         child: Text(
-                          'ĐĂNG NHẬP',
+                          'ĐĂNG KÝ',
                           style: defaultText16B.copyWith(color: Colors.white),
                         ),
                       ),
@@ -170,24 +173,34 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 24),
 
                     // Hàng Đăng ký tài khoản
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.black87,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
                           ),
-                          children: [
-                            const TextSpan(text: 'Bạn chưa có tài khoản? '),
-                            TextSpan(
-                              text: 'Đăng ký',
-                              style: TextStyle(
-                                color: mainGreen,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              // Muốn bấm được thì thêm recognizer vào đây nếu cần
+                        );
+                      },
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.black87,
                             ),
-                          ],
+                            children: [
+                              const TextSpan(text: 'Bạn đã có tài khoản? '),
+                              TextSpan(
+                                text: 'Đăng nhập',
+                                style: TextStyle(
+                                  color: mainGreen,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                // Muốn bấm được thì thêm recognizer vào đây nếu cần
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

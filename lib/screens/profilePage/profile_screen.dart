@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
+import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/screens/splash/onboarding.dart';
 import 'package:heathy_teacher/screens/splash/wellcome_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -302,7 +303,10 @@ Future<void> _dialogBuilder(BuildContext context) {
             onPressed: () async {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: ((context) => const Onbonding())),
+                MaterialPageRoute(
+                  builder: ((context) =>
+                      const CoGiaoHealthyScreen(type: 'home', place: 'Hà Nội')),
+                ),
               );
             },
           ),

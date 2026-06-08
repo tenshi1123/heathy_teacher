@@ -210,7 +210,6 @@ class LoginDialog extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
-                // TODO: login facebook
               },
               child: Container(
                 width: double.infinity,
@@ -221,7 +220,7 @@ class LoginDialog extends StatelessWidget {
                 ),
                 child: const Center(
                   child: Text(
-                    "Đăng nhập tài khoản Facebook",
+                    "Đăng nhập/Đăng ký",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,

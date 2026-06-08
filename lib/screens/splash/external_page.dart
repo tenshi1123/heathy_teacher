@@ -7,7 +7,7 @@ import 'package:heathy_teacher/models/schedule_model.dart';
 import 'package:heathy_teacher/screens/introduce_screen.dart';
 import 'package:heathy_teacher/screens/listCourse/list_free_course.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
-import 'package:heathy_teacher/screens/login_screen.dart';
+import 'package:heathy_teacher/screens/authentication/login_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';

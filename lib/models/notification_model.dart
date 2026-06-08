@@ -1,15 +1,31 @@
 class NotificationModel {
+  final String id;
   final String title;
-  final String image;
-  final DateTime time;
-  bool isRead;
+  final String content;
+  final String link;
+  final String customerId;
+  final DateTime createdAt;
 
   NotificationModel({
+    required this.id,
     required this.title,
-    required this.image,
-    required this.time,
-    this.isRead = false,
+    required this.content,
+    required this.link,
+    required this.customerId,
+    required this.createdAt,
   });
+  factory NotificationModel.fromJson(Map<String, dynamic> json) {
+    return NotificationModel(
+      id: json["id"] ?? '',
+      title: json["title"] ?? '',
+      content: json["content"] ?? '',
+      link: json["link"] ?? '',
+      customerId: json["customer_id"] ?? '',
+      createdAt: DateTime.parse(
+        json["created_at"] ?? DateTime.now().toString(),
+      ),
+    );
+  }
 }
 
 String getDateTitle(DateTime date) {
@@ -31,7 +47,7 @@ Map<String, List<NotificationModel>> groupNotifications(
   Map<String, List<NotificationModel>> grouped = {};
 
   for (var item in notifications) {
-    String key = getDateTitle(item.time);
+    String key = getDateTitle(item.createdAt);
 
     if (!grouped.containsKey(key)) {
       grouped[key] = [];

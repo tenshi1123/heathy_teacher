@@ -4,12 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
-import 'package:heathy_teacher/screens/login_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ListSpScreen extends StatefulWidget {
   const ListSpScreen({super.key});

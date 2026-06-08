@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/notification_model.dart';
+import 'package:heathy_teacher/repo/notication_repo.dart';
 import 'package:heathy_teacher/screens/notification/notification_detail_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -13,30 +14,17 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  List<NotificationModel> notifications = [
-    NotificationModel(
-      title: 'Khoá học nấu ăn của bạn có album mới',
-      image: 'assets/images/notification.png',
-      time: DateTime.now().subtract(const Duration(minutes: 2)),
-      isRead: false,
-    ),
-    NotificationModel(
-      title: 'Khoá học nấu ăn của bạn có album mới',
-      image: 'assets/images/notification.png',
-      time: DateTime.now().subtract(const Duration(hours: 3)),
-      isRead: false,
-    ),
-    NotificationModel(
-      title: 'Khoá học nấu ăn của bạn có album mới',
-      image: 'assets/images/notification.png',
-      time: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-    NotificationModel(
-      title: 'Khoá học nấu ăn của bạn có album mới',
-      image: 'assets/images/notification.png',
-      time: DateTime.now().subtract(const Duration(days: 2)),
-    ),
-  ];
+  List<NotificationModel> notifications = [];
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    notifications = await NotiRepo().getNotifications();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,19 +92,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget notificationItem(NotificationModel model) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          model.isRead = true;
-        });
-
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => NotificationDetailScreen(
               title: model.title,
-              image: model.image,
-              time: '20:05 - 28/10/2022',
-              content:
-                  'Lớp học nấu ăn của bạn đã có album mới, hãy vào xem ngay nhé!',
+
+              time: model.createdAt.toString(),
+              content: model.content,
             ),
           ),
         );
@@ -125,13 +108,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
         margin: EdgeInsets.only(bottom: 16.h),
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          color: model.isRead ? Colors.white : const Color(0xffFFF3B5),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(model.image, width: 64.w),
             SizedBox(width: 12.w),
             Expanded(
               child: Column(
@@ -139,7 +121,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 children: [
                   Text(model.title, style: defaultText14B),
                   SizedBox(height: 4.h),
-                  Text('2 phút trước', style: defaultText14Re),
+                  Text(model.content, style: defaultText14Re),
+                  SizedBox(height: 4.h),
+                  Text(
+                    '${model.createdAt.hour}:${model.createdAt.minute}',
+                    style: defaultText14B,
+                  ),
                 ],
               ),
             ),

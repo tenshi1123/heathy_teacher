@@ -3,7 +3,6 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
-import 'package:heathy_teacher/screens/splash/onboarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> removeToken() async {

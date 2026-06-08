@@ -5,14 +5,14 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 
 class NotificationDetailScreen extends StatelessWidget {
   final String title;
-  final String image;
+
   final String time;
   final String content;
 
   const NotificationDetailScreen({
     super.key,
     required this.title,
-    required this.image,
+
     required this.time,
     required this.content,
   });
@@ -49,17 +49,6 @@ class NotificationDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// IMAGE
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.r),
-                child: Image.asset(
-                  image,
-                  width: double.infinity,
-                  height: 220.h,
-                  fit: BoxFit.cover,
-                ),
-              ),
-
               SizedBox(height: 16.h),
 
               /// TITLE

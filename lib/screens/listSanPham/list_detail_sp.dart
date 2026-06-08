@@ -175,7 +175,10 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
 
                             /// BUTTON
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 2.w,
+                                vertical: 4.h,
+                              ),
                               child: GestureDetector(
                                 onTap: () {
                                   showDialog(
@@ -198,8 +201,8 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                   );
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 4,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 2.h,
                                     horizontal: 6,
                                   ),
                                   decoration: BoxDecoration(
@@ -209,7 +212,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                   child: Center(
                                     child: Text(
                                       "Thêm vào giỏ hàng",
-                                      style: defaultText14B.copyWith(
+                                      style: defaultText12B.copyWith(
                                         color: Colors.white,
                                       ),
                                     ),
