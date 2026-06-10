@@ -703,7 +703,7 @@ class DefaultAppBar extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: mainGreen,
+                    backgroundColor: backGroundGreen,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -1134,14 +1134,12 @@ class RecipeGridWidget extends StatelessWidget {
       shrinkWrap: true, // <--- Ép co kích thước theo content
       physics: const NeverScrollableScrollPhysics(),
       itemCount: recipes.length,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, // Chia làm 2 cột bên trái và bên phải
         crossAxisSpacing: 12, // Khoảng cách giữa 2 cột
         mainAxisSpacing: 12, // Khoảng cách giữa các hàng
-        childAspectRatio: type == 2
-            ? 0.6
-            : 0.8, // Tỷ lệ Chiều rộng / Chiều cao để vừa vặn text và ảnh
+        childAspectRatio: type == 2 ? 0.65 : 0.8,
       ),
       itemBuilder: (context, index) {
         final item = recipes[index];
@@ -1154,7 +1152,7 @@ class RecipeGridWidget extends StatelessWidget {
   Widget _buildRecipeCard(RecipeModel item) {
     return Container(
       decoration: BoxDecoration(
-        color: mainGreen, // Màu nền xanh lá phía dưới card
+        color: backGroundGreen, // Màu nền xanh lá phía dưới card
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -1169,7 +1167,9 @@ class RecipeGridWidget extends StatelessWidget {
         children: [
           // 1. Phần hình ảnh phía trên (Bo góc trên trái, trên phải)
           Expanded(
-            flex: 11, // Chiếm phần lớn diện tích cho ảnh hiển thị đẹp
+            flex: type == 2
+                ? 12
+                : 22, // Chiếm phần lớn diện tích cho ảnh hiển thị đẹp
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -1196,40 +1196,22 @@ class RecipeGridWidget extends StatelessWidget {
           Expanded(
             flex: 9, // Phần không gian dành cho chữ và ngày tháng
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: EdgeInsets.only(left: 8.w, right: 8.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  // Tiêu đề bài viết
                   Text(
-                    item.title.toUpperCase(), // Chuyển chữ hoa như mẫu
+                    item.title.toUpperCase(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: defaultText14B.copyWith(color: Colors.white),
+                    style: defaultText16B.copyWith(color: Colors.white),
                   ),
                   Text(
-                    item.detail ??
-                        '', // Hiển thị chi tiết nếu có, nếu không hiển thị chuỗi rỗng
-                    maxLines: 2,
+                    item.detail ?? '',
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: defaultText12M.copyWith(color: Colors.white),
-                  ),
-                  // Ngày tháng năm (Đẩy xuống sát góc phải dưới)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Icon(
-                        Icons.calendar_month,
-                        color: Colors.white,
-                        size: 14,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        item.date,
-                        style: defaultText12M.copyWith(color: Colors.white),
-                      ),
-                    ],
+                    style: defaultText14M.copyWith(color: Colors.white),
                   ),
                 ],
               ),

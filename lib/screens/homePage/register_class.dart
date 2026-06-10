@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:heathy_teacher/main.dart';
-import 'package:heathy_teacher/models/product_model.dart';
+import 'package:heathy_teacher/models/course_model.dart';
+import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterClassOff extends StatefulWidget {
@@ -16,9 +18,20 @@ class RegisterClassOff extends StatefulWidget {
 
 class _RegisterClassOffState extends State<RegisterClassOff> {
   late int currentPage = 1;
+  bool isLoading = true;
+  late CourseDetailModel courses;
   @override
   void initState() {
     super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    isLoading = true;
+    courses = await ExternalRepo().getDetailCourseExternal();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -78,26 +91,23 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                 width: 343.w,
                 child: Text(
                   widget.type == 'off'
-                      ? 'Lớp nấu ăn Eatclean cơ bản cho gia đình'
+                      ? courses.title ?? ''
                       : 'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
                   style: defaultText20B.copyWith(color: mainDarkGreen),
                 ),
               ),
-              Image.asset(
-                widget.type == 'off'
-                    ? 'assets/images/off_class_4.png'
-                    : 'assets/images/online_class_1.png',
-                width: 343.w,
-                height: 280.h,
-                fit: BoxFit.fill,
-              ),
+              SizedBox(height: 6.h),
+              Image.network(courses.image ?? '', width: 343.w, height: 280.h),
+
               SizedBox(height: 20.h),
               SizedBox(
                 width: 343.w,
                 child: Row(
                   children: [
                     Text(
-                      '3.000.000đ',
+                      NumberFormat.decimalPattern(
+                        'vi_VN',
+                      ).format(int.parse(courses.price ?? '')),
                       style: defaultText16B.copyWith(
                         color: mainDarkGreen,
                         fontSize: 24.sp,
@@ -105,7 +115,9 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                     ),
                     SizedBox(width: 12.w),
                     Text(
-                      '4.000.000đ',
+                      NumberFormat.decimalPattern(
+                        'vi_VN',
+                      ).format(int.parse(courses.priceOld ?? '')),
                       style: defaultText14Re.copyWith(
                         decoration: TextDecoration.lineThrough,
                       ),
@@ -216,7 +228,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      cartItems.add(courses[0]);
+                      //cartItems.add(courses[0]);
                       return AlertDialog(
                         //title:  Text('Đã thêm vào giỏ hàng'),
                         content: const Text(
@@ -254,76 +266,11 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                 ),
               ),
               SizedBox(height: 28.h),
+              Html(data: courses.description ?? ''),
+              _buildVideoSection(),
 
-              Row(
-                children: [
-                  SizedBox(width: 16.w),
-                  Text(
-                    'Điểm nổi bật của khoá học:',
-                    style: defaultText16B.copyWith(color: Colors.black),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              _overviewItem(
-                label:
-                    'Học và thực hành trực tiếp tại trung tâm với Cô giáo và đội ngũ trợ giảng',
-              ),
-              _overviewItem(
-                label:
-                    'Hướng dẫn học viên tự pha và thực hành gần 20 lọại sauce Healthy và ứng dụng',
-              ),
-              _overviewItem(
-                label: 'Hướng dẫn thực hành các món ăn Eatclean đa dạng',
-              ),
-              _overviewItem(
-                label:
-                    'Hướng dẫn lên món, phối kết hợp các nguyên liệu để thuận tiện trong việc chế biến bữa ăn gia đình hoặc lên Set menu kinh doanh Online',
-              ),
-              _overviewItem(
-                label:
-                    'Sau khóa học vẫn được hỗ trợ 1:1 và học lại nếu cần thiết',
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 16.h, bottom: 8.h),
-                child: Row(
-                  children: [
-                    SizedBox(width: 16.w),
-                    Text('Nội dung khoá học:', style: defaultText16B),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Text(
-                  'Khóa học này chính là lựa chọn lý tưởng dành cho bạn! Với lộ trình bài bản, giảng viên giàu kinh nghiệm và môi trường học tập hiện đại, bạn sẽ được hướng dẫn từng bước – từ kỹ thuật cơ bản đến cách trình bày món ăn đẹp mắt.',
-                  style: defaultText14M,
-                ),
-              ),
-              widget.type == 'off'
-                  ? Padding(
-                      padding: EdgeInsets.only(top: 16.h, bottom: 8.h),
-                      child: Row(
-                        children: [
-                          SizedBox(width: 16.w),
-                          Text(
-                            'Lịch khai giảng tháng 8',
-                            style: defaultText16B,
-                          ),
-                        ],
-                      ),
-                    )
-                  : SizedBox(),
-              widget.type == 'off'
-                  ? Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Text(
-                        'Khóa học này chính là lựa chọn lý tưởng dành cho bạn! Với lộ trình bài bản, giảng viên giàu kinh nghiệm và môi trường học tập hiện đại, bạn sẽ được hướng dẫn từng bước – từ kỹ thuật cơ bản đến cách trình bày món ăn đẹp mắt.',
-                        style: defaultText14M,
-                      ),
-                    )
-                  : SizedBox(),
-
+              _buildCourseContent(),
+              _buildFeedbackSection(),
               SizedBox(height: 36.h),
             ],
           ),
@@ -331,24 +278,232 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
       ),
     );
   }
-}
 
-Widget _overviewItem({required String label}) {
-  return Row(
-    mainAxisSize: MainAxisSize.min,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Image.asset(
-        'assets/images/tick_2.png',
-        width: 16.w,
-        height: 16.h,
-        fit: BoxFit.fill,
+  Widget _buildVideoSection() {
+    if (courses.youtubeUrl == null || courses.youtubeUrl!.isEmpty) {
+      return const SizedBox.shrink(); // Không có link thì ẩn
+    }
+
+    // Tạm thời hiển thị thumbnail giả lập có nút Play.
+    // Trong thực tế, bạn gắn package `youtube_player_flutter` vào đây
+    return Container(
+      width: double.infinity,
+      height: 220.h,
+      margin: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: Colors.black87,
+        borderRadius: BorderRadius.circular(12.r),
+        image: courses.image != null
+            ? DecorationImage(
+                image: NetworkImage(courses.image!), // Gắn URL thật vào
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.4),
+                  BlendMode.darken,
+                ),
+              )
+            : null,
       ),
-      SizedBox(width: 8.w),
-      SizedBox(
-        width: 310.w,
-        child: Text(label, style: defaultText14SB),
+      child: Center(
+        child: Icon(Icons.play_circle_fill, color: Colors.white, size: 60.w),
       ),
-    ],
-  );
+    );
+  }
+
+  Widget _buildCourseContent() {
+    final topicals = courses.topicals ?? [];
+    if (topicals.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Nội dung bài học",
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 12.h),
+          // Danh sách các chương
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: topicals.length,
+            itemBuilder: (context, index) {
+              final topic = topicals[index];
+              final lessons = topic.lessons ?? [];
+
+              return Card(
+                elevation: 0,
+                color: const Color(0xffF5FAF5),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.green.withValues(alpha: 0.2)),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                margin: EdgeInsets.only(bottom: 12.h),
+                // Mở rộng/Thu gọn bài học
+                child: ExpansionTile(
+                  title: Text(
+                    topic.name ?? 'Chưa cập nhật',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  children: lessons.map((lesson) {
+                    return ListTile(
+                      leading: Icon(
+                        Icons.play_circle_outline,
+                        color: Colors.green,
+                        size: 20.w,
+                      ),
+                      title: Text(
+                        lesson.name ?? '',
+                        style: TextStyle(fontSize: 13.sp),
+                      ),
+                      trailing: Text(
+                        lesson.time ?? '',
+                        style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              );
+            },
+          ),
+          SizedBox(height: 24.h),
+        ],
+      ),
+    );
+  }
+
+  // ================= 4. FEEDBACK CHẠY (Bản cập nhật có Ảnh) =================
+  Widget _buildFeedbackSection() {
+    final feedbacks = courses.feedbacks ?? [];
+    if (feedbacks.isEmpty) return const SizedBox.shrink();
+
+    // Thay domain thật của bạn vào đây để nối với đường dẫn ảnh tương đối
+    const String baseUrl = 'https://lms.cogiaohealthy.vn';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Text(
+            "Đánh giá từ học viên",
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(height: 16.h),
+        SizedBox(
+          height: 170.h, // Nới chiều cao lên một chút để chứa ảnh đẹp hơn
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            itemCount: feedbacks.length,
+            itemBuilder: (context, index) {
+              final fb = feedbacks[index];
+              final String? imgPath = fb['img'];
+              final bool hasImage = imgPath != null && imgPath.isNotEmpty;
+
+              return Container(
+                width: 320.w, // Rộng ra chút để đủ chỗ cho cả chữ và ảnh
+                margin: EdgeInsets.only(right: 16.w),
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16.r),
+                  border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Cột trái: Tên user và Nội dung feedback
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 14.r,
+                                backgroundColor: Colors.green[100],
+                                child: Text(
+                                  fb['user_name']?.substring(0, 1) ?? 'U',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12.sp,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: Text(
+                                  fb['user_name'] ?? 'Học viên',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.sp,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 12.h),
+                          Expanded(
+                            child: Text(
+                              fb['content'] ?? '',
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.grey[800],
+                                height: 1.4,
+                              ),
+                              maxLines: 4,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Cột phải: Hiển thị ảnh trả bài (Nếu có)
+                    if (hasImage) ...[
+                      SizedBox(width: 12.w),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: Image.network(
+                          '$baseUrl$imgPath',
+                          width: 80.w,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                width: 80.w,
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.image_not_supported,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 }

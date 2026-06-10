@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/models/home_model.dart';
+import 'package:heathy_teacher/repo/home_repo.dart';
 import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/screens/homePage/home_screen.dart';
@@ -19,25 +21,82 @@ class BottomBarScreen extends StatefulWidget {
 }
 
 class _BottomBarScreenState extends State<BottomBarScreen> {
+  CustomerModel? customerModel;
+  UserModel? userModel;
+
+  bool isLoading = true;
   int currentIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      customerModel = await HomeRepo().getCustomer();
+      userModel = await HomeRepo().getUserProfile();
+    } catch (e) {
+      debugPrint("Lỗi tải dữ liệu người dùng: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Image.asset(
+          "assets/images/splash.png",
+          height: 844.h,
+          width: 390.w,
+          fit: BoxFit.fill,
+        ),
+      );
+    }
+
+    if (userModel == null) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Không thể tải dữ liệu người dùng."),
+              TextButton(
+                onPressed: () {
+                  setState(() => isLoading = true);
+                  _fetchData();
+                },
+                child: const Text("Thử lại"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Stack(
       children: [
         Scaffold(
           backgroundColor: Colors.white,
           body: IndexedStack(
             index: currentIndex,
-            children: const [
-              HomeScreen(),
+            children: [
+              HomeScreen(userModel: userModel!, customerModel: customerModel!),
               CourseScreen(),
               ChatScreen(),
               ProductScreen(type: 1),
-              ProfileScreen(),
+              ProfileScreen(userModel: userModel!),
             ],
           ),
-
           bottomNavigationBar: CustomBottomNavBar(
             currentIndex: currentIndex,
             onTap: (i) => setState(() => currentIndex = i),
@@ -45,7 +104,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
         ),
         Positioned(
           right: 20.w,
-          bottom: 90.h, // nằm ngay trên bottom nav
+          bottom: 90.h,
           child: FloatingCartButton(
             onTap: () {
               Navigator.push(

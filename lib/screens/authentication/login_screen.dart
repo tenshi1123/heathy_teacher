@@ -3,6 +3,7 @@ import 'package:heathy_teacher/repo/login_repo.dart';
 import 'package:heathy_teacher/screens/authentication/sign_up_screen.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 import 'package:heathy_teacher/services/fingerprint_service.dart';
+import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordObscured = true;
 
   // Định nghĩa bảng màu theo thiết kế của bạn
-  final Color mainGreen = const Color(0xFF76BA43); // Màu xanh lá chủ đạo
+
   final Color inputBgColor = const Color(0xFFFDFBF0);
 
   @override
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 10),
                     Text(
                       'Welcome!',
-                      style: defaultText20B.copyWith(color: mainGreen),
+                      style: defaultText20B.copyWith(color: backGroundGreen),
                     ),
                     const SizedBox(height: 16),
 
@@ -160,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: mainGreen,
+                          backgroundColor: backGroundGreen,
                           foregroundColor: Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -197,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextSpan(
                                 text: 'Đăng ký',
                                 style: TextStyle(
-                                  color: mainGreen,
+                                  color: backGroundGreen,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 // Muốn bấm được thì thêm recognizer vào đây nếu cần
@@ -217,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
               flex: 4,
               child: Container(
                 width: double.infinity,
-                color: mainGreen, // Nền xanh lá của banner
+                color: backGroundGreen, // Nền xanh lá của banner
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   // Thay 'assets/teacher_image.png' bằng đường dẫn ảnh cô giáo của bạn

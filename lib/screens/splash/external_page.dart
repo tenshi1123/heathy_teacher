@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/models/schedule_model.dart';
 import 'package:heathy_teacher/screens/introduce_screen.dart';
 import 'package:heathy_teacher/screens/listCourse/list_free_course.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
-import 'package:heathy_teacher/screens/authentication/login_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
@@ -778,69 +778,228 @@ class ServiceGrid extends StatelessWidget {
   }
 }
 
+// Định nghĩa màu sắc xanh lá cây
+const Color appPrimaryColor = Color(
+  0xFF4CAF50,
+); // Xanh lá cây đậm của icon và text
+const Color appRippleColor = Color(0xFFA1D0A3); // Xanh lá cây nhạt cho ripple
+
 class BottomCustom extends StatelessWidget {
   const BottomCustom({super.key});
+
+  // Hàm trợ giúp để launch URL
+  Future<void> _launchUrl(
+    BuildContext context,
+    String url, {
+    bool isPhone = false,
+  }) async {
+    final Uri uri = isPhone ? Uri(scheme: 'tel', path: url) : Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      // Có thể hiển thị SnackBar nếu cần
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Không thể mở $url')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Tinh chỉnh khoảng trắng và bo tròn
+    final double horizontalPadding = 16.w;
+    final double verticalPadding =
+        2.h; // Giảm đáng kể khoảng trắng dọc để thanh mỏng
+    final double barBorderRadius = 20.r; // Bo tròn nhẹ nhàng hơn
+
+    // Danh sách dữ liệu cấu hình các nút
+    final List<Map<String, dynamic>> items = [
+      {
+        'title': 'Messenger',
+        'iconPath': 'assets/icons/fb_messsage.svg',
+        'url': 'https://m.me/cogiaohealthy',
+        'type': 'url',
+      },
+      {
+        'title': 'Zalo',
+        'iconPath': 'assets/icons/icon_zalo.svg',
+        'url': 'https://zalo.me/0966912016',
+        'type': 'url',
+      },
+      {
+        'title': 'Gọi hotline',
+        'iconPath': 'assets/images/call.png',
+        'url': '0966912016',
+        'type': 'phone',
+      },
+      {
+        'title': 'Hỗ trợ ngay',
+        'iconPath': 'assets/images/suport.png',
+        'type': 'login',
+      },
+    ];
+
+    return Container(
+      // Padding dọc rất thấp để giảm khoảng trắng
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: verticalPadding,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(barBorderRadius),
+          topRight: Radius.circular(barBorderRadius),
+        ),
+        // Thêm một shadow cực nhẹ
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: Offset(0, -1),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: items.map((item) {
+          return GestureDetector(
+            onTap: () async {
+              if (item['type'] == 'url') {
+                await _launchUrl(context, item['url']);
+              } else if (item['type'] == 'phone') {
+                await _launchUrl(context, item['url'], isPhone: true);
+              } else if (item['type'] == 'login') {
+                // Tương tác trực tiếp, không dùng async/await vì nó là Navigator.push
+                // Đảm bảo LoginScreen được import
+                /*
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: ((context) => const LoginScreen())),
+                );
+                */
+                print("Navigating to Login Screen");
+              }
+            },
+            child: _BottomNavItem(
+              title: item['title'],
+              iconPath: item['iconPath'],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+// Widget con cho mỗi mục
+class _BottomNavItem extends StatelessWidget {
+  final String title;
+  final String iconPath;
+
+  const _BottomNavItem({required this.title, required this.iconPath});
+
+  @override
+  Widget build(BuildContext context) {
+    // Điều chỉnh kích thước của icon và ripple
+    final double totalRippleSize = 50.r; // Kích thước của vòng ngoài cùng
+    final double centralIconSize = 24.r; // Kích thước của icon chính
+    final double textFontSize = 11.sp; // Chữ hơi lớn hơn để dễ đọc
+
+    return Column(
+      mainAxisSize: MainAxisSize.min, // Giảm chiều cao tối thiểu của Column
+      children: [
+        // Hiệu ứng icon với ripple concentric
+        _ConcentricRippleIcon(
+          iconPath: iconPath,
+          centralSize: centralIconSize,
+          totalSize: totalRippleSize,
+        ),
+        SizedBox(height: 1.h), // Khoảng cách cực nhỏ giữa icon và text
+        Text(
+          title,
+          style: TextStyle(
+            color: appPrimaryColor,
+            fontSize: textFontSize,
+            fontWeight: FontWeight.w400, // Regular weight, giống ảnh mẫu
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// Widget con chuyên biệt cho hiệu ứng concentric ripple
+class _ConcentricRippleIcon extends StatelessWidget {
+  final String iconPath;
+  final double centralSize;
+  final double totalSize;
+
+  const _ConcentricRippleIcon({
+    required this.iconPath,
+    required this.centralSize,
+    required this.totalSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Để mô phỏng hiệu ứng vòng tròn concentric lan tỏa, chúng ta dùng Stack
+    // Xếp chồng các vòng mờ với độ mờ khác nhau
+    return SizedBox(
+      width: totalSize,
+      height: totalSize,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Vòng ripple ngoài cùng (nhất)
+          _RippleCircle(size: totalSize, opacity: 0.1),
+          // Vòng ripple thứ hai
+          _RippleCircle(size: totalSize * 0.82, opacity: 0.25),
+          // Vòng ripple thứ ba
+          _RippleCircle(size: totalSize * 0.65, opacity: 0.4),
+          // Vòng ripple thứ tư (nhất, mờ nhất)
+          _RippleCircle(size: totalSize * 0.5, opacity: 0.5),
+
+          // Icon chính ở trung tâm
+          Container(
+            width: centralSize,
+            height: centralSize,
+            decoration: BoxDecoration(
+              color: appPrimaryColor,
+              shape: BoxShape.circle,
+            ),
+            child: Center(child: _buildIconWidget(iconPath, centralSize * 0.6)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Hàm trợ giúp để tạo Widget icon từ đường dẫn
+  Widget _buildIconWidget(String path, double size) {
+    if (path.endsWith('.svg')) {
+      // Giả định SvgPicture được import (package:flutter_svg/svg.dart)
+      return SvgPicture.asset(path, width: size, height: size);
+    } else {
+      // Dùng Image.asset cho png
+      return Image.asset(path, width: size, height: size);
+    }
+  }
+}
+
+// Widget đơn giản cho một vòng ripple concentric
+class _RippleCircle extends StatelessWidget {
+  final double size;
+  final double opacity;
+
+  const _RippleCircle({required this.size, required this.opacity});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      width: size,
+      height: size,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(32.r),
-          topRight: Radius.circular(32.r),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          GestureDetector(
-            onTap: () async {
-              if (!await launchUrl(Uri.parse('https://m.me/cogiaohealthy'))) {
-                throw Exception('Could not launch ');
-              }
-            },
-            child: ServiceIconButton(
-              title: 'Messenger',
-              iconPath: 'assets/icons/fb_messsage.svg',
-            ),
-          ),
-          GestureDetector(
-            onTap: () async {
-              if (!await launchUrl(Uri.parse('https://zalo.me/0966912016'))) {
-                throw Exception('Could not launch ');
-              }
-            },
-            child: ServiceIconButton(
-              title: 'Zalo',
-              iconPath: 'assets/icons/icon_zalo.svg',
-            ),
-          ),
-          GestureDetector(
-            onTap: () async {
-              if (!await launchUrl(Uri(scheme: 'tel', path: '0966912016'))) {
-                throw Exception('Could not launch ');
-              }
-            },
-            child: ServiceIconButton(
-              title: 'Gọi hotline',
-              iconPath: 'assets/images/call.png',
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: ((context) => const LoginScreen())),
-              );
-            },
-            child: ServiceIconButton(
-              title: 'Hỗ trợ ngay',
-              iconPath: 'assets/images/suport.png',
-            ),
-          ),
-        ],
+        color: appRippleColor.withOpacity(opacity),
+        shape: BoxShape.circle,
       ),
     );
   }

@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app_links/app_links.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Tuỳ thuộc vào project của bạn
 
 Future<void> removeToken() async {
   final prefs = await SharedPreferences.getInstance();
@@ -20,20 +21,40 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
+
+  // Biến cờ để theo dõi xem app đã được mở từ Deep Link chưa
+  bool _openedFromDeepLink = false;
+
   @override
   void initState() {
     super.initState();
     initDeepLinks();
-    Timer(
-      const Duration(seconds: 3),
-      () => Navigator.pushReplacement(
+    _checkTokenAndNavigate();
+  }
+
+  Future<void> _checkTokenAndNavigate() async {
+    // Chờ 3 giây để hiển thị splash image
+    // await Future.delayed(const Duration(milliseconds: 10));
+    if (_openedFromDeepLink) return;
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (!mounted) return;
+
+    if (token != null && token.isNotEmpty) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const BottomBarScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) =>
               const CoGiaoHealthyScreen(type: 'home', place: 'Hà Nội'),
         ),
-      ),
-    );
+      );
+    }
   }
 
   void initDeepLinks() async {
@@ -42,6 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // 1. Xử lý link khi app đang TẮT và được mở lên
     final appLink = await _appLinks.getInitialLink();
     if (appLink != null) {
+      _openedFromDeepLink = true; // Đánh dấu đã mở từ Deep Link
       _handleNavigation(appLink);
     }
 
@@ -53,7 +75,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _handleNavigation(Uri uri) {
     print('Điều hướng đến: $uri');
-    // Dùng Navigator hoặc GoRouter để đẩy học sinh đi đúng trang
+    // TODO: Dùng Navigator hoặc GoRouter để đẩy học sinh đi đúng trang
+    // Lưu ý: Nhớ dùng pushReplacement nếu chuyển hướng thẳng từ Splash
   }
 
   @override

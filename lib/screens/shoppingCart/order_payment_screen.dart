@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
-import 'package:heathy_teacher/utils/constants/mediaqury.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_product_widget.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';

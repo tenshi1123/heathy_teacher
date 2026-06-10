@@ -1,0 +1,171 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+
+class CourseScheduleModel {
+  final String? courseId;
+  final String? courseName;
+  final String? courseScheduleId;
+  final String? courseScheduleName;
+  final String? slug;
+  final String? img;
+  final String? metaDescription;
+  final String? soBuoiHoc;
+  final String? lessonNumber;
+  final String? settingCourseTypeId;
+  final String? settingCourseTypeName;
+  final String? settingCourseTypeType;
+  final String? price;
+  final int? percentLearning;
+
+  CourseScheduleModel({
+    this.courseId,
+    this.courseName,
+    this.courseScheduleId,
+    this.courseScheduleName,
+    this.slug,
+    this.img,
+    this.metaDescription,
+    this.soBuoiHoc,
+    this.lessonNumber,
+    this.settingCourseTypeId,
+    this.settingCourseTypeName,
+    this.settingCourseTypeType,
+    this.price,
+    this.percentLearning,
+  });
+
+  factory CourseScheduleModel.fromJson(Map<String, dynamic> json) {
+    return CourseScheduleModel(
+      courseId: json['course_id'],
+      courseName: json['course_name'],
+      courseScheduleId: json['course_schedule_id'],
+      courseScheduleName: json['course_schedule_name'],
+      slug: json['slug'],
+      img: json['img'],
+      metaDescription: json['meta_description'],
+      soBuoiHoc: json['so_buoi_hoc'],
+      lessonNumber: json['lesson_number'],
+      settingCourseTypeName: json['setting_course_type_name'],
+      settingCourseTypeType: json['setting_course_type_type'],
+      price: json['price'],
+      percentLearning: json['percent_learning'],
+    );
+  }
+}
+
+class LessonModel {
+  final String? lessonsId;
+  final String? name;
+  final String? time;
+
+  LessonModel({this.lessonsId, this.name, this.time});
+
+  factory LessonModel.fromJson(Map<String, dynamic> json) => LessonModel(
+    lessonsId: json['lessons_id'],
+    name: json['name'],
+    time: json['time'],
+  );
+}
+
+class DocumentModel {
+  final String? id;
+  final String? name;
+  final String? url;
+
+  DocumentModel({this.id, this.name, this.url});
+
+  factory DocumentModel.fromJson(Map<String, dynamic> json) =>
+      DocumentModel(id: json['id'], name: json['name'], url: json['url']);
+}
+
+class TopicalModel {
+  final String? id;
+  final String? name;
+  final List<LessonModel>? lessons;
+  final List<DocumentModel>? documents;
+
+  TopicalModel({this.id, this.name, this.lessons, this.documents});
+
+  factory TopicalModel.fromJson(Map<String, dynamic> json) => TopicalModel(
+    id: json['id'],
+    name: json['name'],
+    // Quét list lesson và document, nếu null thì trả về mảng rỗng
+    lessons:
+        (json['lesson'] as List?)
+            ?.map((e) => LessonModel.fromJson(e))
+            .toList() ??
+        [],
+    documents:
+        (json['document'] as List?)
+            ?.map((e) => DocumentModel.fromJson(e))
+            .toList() ??
+        [],
+  );
+}
+
+class CourseDetailModel {
+  final String? id;
+  final String? title;
+  final String? description;
+  final String? image;
+  final String? price;
+  final String? priceOld;
+  final String? youtubeUrl;
+  final List<TopicalModel>? topicals;
+  final List<dynamic>? feedbacks; // Thêm list feedback
+
+  CourseDetailModel({
+    this.id,
+    this.title,
+    this.description,
+    this.image,
+    this.price,
+    this.priceOld,
+    this.youtubeUrl,
+    this.topicals,
+    this.feedbacks,
+  });
+
+  factory CourseDetailModel.fromJson(Map<String, dynamic> json) {
+    final rootObj =
+        json['course'] ??
+        (json['data'] != null ? json['data']['value'] : json) ??
+        {};
+
+    // Xử lý chuỗi JSON của Feedback
+    List<dynamic> parsedFeedbacks = [];
+    if (rootObj['feedback'] != null &&
+        rootObj['feedback'] is String &&
+        rootObj['feedback'].isNotEmpty) {
+      try {
+        final fbData = jsonDecode(rootObj['feedback']);
+        parsedFeedbacks = fbData['value'] ?? [];
+      } catch (e) {
+        debugPrint("Lỗi parse feedback: $e");
+      }
+    }
+
+    return CourseDetailModel(
+      id: rootObj['course_id'] ?? rootObj['id'],
+      title: rootObj['course_name'] ?? rootObj['name'] ?? json['title'],
+      description:
+          rootObj['meta_description'] ??
+          rootObj['description'] ??
+          json['description'],
+      image: rootObj['img'] ?? json['image'],
+      price: rootObj['price']?.toString(),
+      priceOld: rootObj['price_old']?.toString(),
+      // Lấy link youtube
+      youtubeUrl: rootObj['url_youtube_2']?.toString().isNotEmpty == true
+          ? rootObj['url_youtube_2']
+          : rootObj['url_youtube'],
+      topicals:
+          (json['topical'] as List?)
+              ?.map((e) => TopicalModel.fromJson(e))
+              .toList() ??
+          [],
+      feedbacks: parsedFeedbacks,
+    );
+  }
+}

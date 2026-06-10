@@ -9,7 +9,6 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
 
 class RegisterClassON extends StatefulWidget {
   const RegisterClassON({super.key, required this.type});
@@ -20,58 +19,9 @@ class RegisterClassON extends StatefulWidget {
 
 class _RegisterClassONState extends State<RegisterClassON> {
   late int currentPage = 1;
-  List<CourseSection> _sections = [];
-  bool _isLoading = true;
-  String? _errorMessage;
   @override
   void initState() {
     super.initState();
-    _fetchData();
-  }
-
-  Future<void> _fetchData() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-    try {
-      final response = await http.post(
-        Uri.parse('https://lms.cogiaohealthy.vn/api/chi-tiet-khoa-hoc'),
-        // THÊM VÀO ĐÂY NHÉ:
-        headers: {
-          'Content-Type': 'application/json',
-          'Token': 'Healthy1234567890HVG',
-        },
-        body: jsonEncode({
-          "course_type_id": "163", // Thay bằng course_id thực tế nếu cần
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        // Giải mã utf8 để không bị lỗi font Tiếng Việt
-        final Map<String, dynamic> jsonList = json.decode(
-          utf8.decode(response.bodyBytes),
-        );
-
-        if (mounted) {
-          setState(() {
-            _sections = jsonList['topical']
-                .map((json) => CourseSection.fromJson(json))
-                .toList();
-            _isLoading = false;
-          });
-        }
-      } else {
-        throw Exception('Mã lỗi hệ thống: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = 'Không thể tải bài học. Vui lòng thử lại!';
-          _isLoading = false;
-        });
-      }
-    }
   }
 
   @override

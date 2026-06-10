@@ -15,6 +15,7 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   List<NotificationModel> notifications = [];
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -22,7 +23,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Future<void> _fetchData() async {
+    isLoading = true;
     notifications = await NotiRepo().getNotifications();
+    isLoading = false;
     setState(() {});
   }
 
@@ -56,35 +59,37 @@ class _NotificationScreenState extends State<NotificationScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: ListView.builder(
-          padding: EdgeInsets.all(16.w),
-          itemCount: keys.length,
-          itemBuilder: (context, index) {
-            String date = keys[index];
-            List<NotificationModel> items = grouped[date]!;
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                padding: EdgeInsets.all(16.w),
+                itemCount: keys.length,
+                itemBuilder: (context, index) {
+                  String date = keys[index];
+                  List<NotificationModel> items = grouped[date]!;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// TITLE DATE
-                Padding(
-                  padding: EdgeInsets.only(bottom: 12.h),
-                  child: Text(
-                    date,
-                    style: defaultText16M.copyWith(
-                      color: const Color(0xffFFD54F),
-                    ),
-                  ),
-                ),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// TITLE DATE
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 12.h),
+                        child: Text(
+                          date,
+                          style: defaultText16M.copyWith(
+                            color: const Color(0xffFFD54F),
+                          ),
+                        ),
+                      ),
 
-                /// LIST ITEM
-                ...items.map((e) => notificationItem(e)),
+                      /// LIST ITEM
+                      ...items.map((e) => notificationItem(e)),
 
-                SizedBox(height: 16.h),
-              ],
-            );
-          },
-        ),
+                      SizedBox(height: 16.h),
+                    ],
+                  );
+                },
+              ),
       ),
     );
   }

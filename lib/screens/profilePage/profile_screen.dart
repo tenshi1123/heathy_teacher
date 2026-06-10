@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
-import 'package:heathy_teacher/screens/splash/onboarding.dart';
-import 'package:heathy_teacher/screens/splash/wellcome_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
-
+  const ProfileScreen({super.key, required this.userModel});
+  final UserModel userModel;
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
@@ -123,19 +122,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           SizedBox(height: 16.h),
           Text(
-            'Dương Huyền Anh',
+            widget.userModel.fullName ?? 'không xác định',
             style: defaultText18B,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 4.h),
           Text(
-            '097 111 6262',
+            widget.userModel.phone ?? 'không xác định',
             style: defaultText14M.copyWith(
               color: colorText.withValues(alpha: 0.6),
             ),
           ),
           Text(
-            'Abcxyz@cogiaohealthy.com',
+            widget.userModel.email ?? 'không xác định',
             style: defaultText14M.copyWith(
               color: colorText.withValues(alpha: 0.6),
             ),
@@ -225,7 +224,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () => _dialogBuilder(context),
+            onTap: () => _dialogBuilder(context, type: 0),
+            child: Container(
+              margin: EdgeInsets.only(top: 16.h),
+              width: 343.w,
+              height: 60.h,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0F2F4),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36.w,
+                      height: 36.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Center(child: Icon(Icons.delete)),
+                    ),
+                    SizedBox(width: 12.w),
+                    Text("Xóa tài khoản", style: defaultText14B),
+                    Spacer(),
+                    Icon(Icons.arrow_forward_ios, size: 20.r, color: colorText),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () => _dialogBuilder(context, type: 1),
             child: Container(
               margin: EdgeInsets.only(top: 16.h),
               width: 343.w,
@@ -271,14 +302,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-Future<void> _dialogBuilder(BuildContext context) {
+Future<void> _dialogBuilder(BuildContext context, {required int type}) {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: Text('Đăng xuất', style: defaultText16B),
-        content: Text('Bạn có chắc muốn đăng xuất ?', style: defaultText14M),
+        title: Text(
+          type == 0 ? 'Cảnh báo !!' : 'Đăng xuất',
+          style: defaultText16B,
+        ),
+        content: Text(
+          type == 0
+              ? 'Bạn có chắc muốn xóa tài khoản ?'
+              : 'Bạn có chắc muốn đăng xuất ?',
+          style: defaultText14M,
+        ),
         actions: <Widget>[
           TextButton(
             style: TextButton.styleFrom(
@@ -297,7 +336,7 @@ Future<void> _dialogBuilder(BuildContext context) {
               textStyle: Theme.of(context).textTheme.labelLarge,
             ),
             child: Text(
-              'Đăng xuất',
+              type == 0 ? 'Xóa Tài Khoản' : 'Đăng xuất',
               style: defaultText14B.copyWith(color: Colors.red),
             ),
             onPressed: () async {

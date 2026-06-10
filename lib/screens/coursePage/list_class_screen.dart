@@ -202,7 +202,7 @@ class _ListClassScreenState extends State<ListClassScreen> {
                       height: 34.h,
                       padding: EdgeInsets.symmetric(horizontal: 8.w),
                       decoration: BoxDecoration(
-                        color: mainGreen,
+                        color: backGroundGreen,
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Row(
@@ -277,7 +277,7 @@ class _ListClassScreenState extends State<ListClassScreen> {
                     height: 34.h,
                     padding: EdgeInsets.symmetric(horizontal: 8.w),
                     decoration: BoxDecoration(
-                      color: mainGreen,
+                      color: backGroundGreen,
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Row(

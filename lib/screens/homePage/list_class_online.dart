@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
+import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
@@ -70,7 +71,7 @@ class _ListClassOnlineState extends State<ListClassOnline> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: ((context) => RegisterClassOff(type: 'on')),
+                        builder: ((context) => RegisterClassON(type: 'on')),
                       ),
                     );
                   },

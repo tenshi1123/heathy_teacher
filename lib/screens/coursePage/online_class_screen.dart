@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/models/course_model.dart';
+import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OnlineClassScreen extends StatefulWidget {
-  const OnlineClassScreen({super.key});
-
+  const OnlineClassScreen({super.key, required this.course});
+  final CourseScheduleModel course;
   @override
   State<OnlineClassScreen> createState() => _OnlineClassScreenState();
 }
@@ -15,10 +19,24 @@ class OnlineClassScreen extends StatefulWidget {
 class _OnlineClassScreenState extends State<OnlineClassScreen> {
   late int currentPage = 1;
   int? expandedIndex;
-
+  bool isLoading = true;
+  late CourseDetailModel courses;
   @override
   void initState() {
     super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    isLoading = true;
+    courses = await CourseRepo().getCourseDetail(
+      courseId: widget.course.courseId ?? '89',
+      settingCourseTypeId: widget.course.settingCourseTypeId ?? '1',
+      courseScheduleId: widget.course.courseScheduleId ?? '54',
+    );
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -66,165 +84,174 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(
-                'assets/images/online_course.png',
-                width: 343.w,
-                height: 200.h,
-                fit: BoxFit.fill,
-              ),
-
-              SizedBox(height: 12.h),
-              SizedBox(
-                width: 343.w,
-                child: Text(
-                  'Lớp Combo chuyên đề Eatclean nâng cao',
-                  style: defaultText18B,
-                ),
-              ),
-              Text('Học online với video', style: defaultText14Re),
-              Row(
-                children: [
-                  Container(
-                    height: 8.h,
-                    width: 303.w,
-                    padding: EdgeInsets.only(right: 223.w),
-                    decoration: BoxDecoration(
-                      color: Color(0xffEDEDED),
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Container(
-                      height: 8.h,
-                      width: 30.w,
-                      decoration: BoxDecoration(
-                        color: mainDarkGreen,
-                        borderRadius: BorderRadius.circular(20.r),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    ' 26%',
-                    style: defaultText16B.copyWith(color: mainDarkGreen),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    height: 44.h,
-                    width: 162.w,
-                    decoration: BoxDecoration(
-                      color: Color(0xffEEF5EC),
-                      border: Border.all(
-                        color: mainDarkGreen.withValues(alpha: 0.28),
-                      ),
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/chat.svg',
-                          width: 20.w,
-                          height: 20.h,
-                          colorFilter: ColorFilter.mode(
-                            mainDarkGreen,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Text('Chat hỗ trợ', style: defaultText14SB),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 44.h,
-                    width: 162.w,
-                    decoration: BoxDecoration(
-                      color: Color(0xffEEF5EC),
-                      border: Border.all(
-                        color: mainDarkGreen.withValues(alpha: 0.28),
-                      ),
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/tra_bai.svg',
-                          width: 20.w,
-                          height: 20.h,
-                          colorFilter: ColorFilter.mode(
-                            mainDarkGreen,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Text('Trả bài', style: defaultText14SB),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20.h),
-              Container(
-                width: 343.w,
-                height: 44.h,
-                decoration: BoxDecoration(
-                  color: mainGreen,
-                  border: Border.all(
-                    color: mainDarkGreen.withValues(alpha: 0.08),
-                  ),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SvgPicture.asset(
-                      'assets/icons/bling.svg',
-                      width: 20.w,
-                      height: 20.h,
+                    Image.asset(
+                      'assets/images/online_course.png',
+                      width: 343.w,
+                      height: 200.h,
+                      fit: BoxFit.fill,
                     ),
-                    Text(
-                      ' Sản phẩm tiêu biểu',
-                      style: defaultText14SB.copyWith(color: Colors.white),
+
+                    SizedBox(height: 12.h),
+                    SizedBox(
+                      width: 343.w,
+                      child: Text(
+                        courses.title ??
+                            'Lớp Combo chuyên đề Eatclean nâng cao',
+                        style: defaultText18B,
+                      ),
                     ),
+                    Html(
+                      data: courses.description ?? '',
+                      // style: {
+                      //   'p': Style(
+                      //     fontSize: FontSize(14.sp),
+                      //     color: const Color(0xff3C3C3C).withValues(alpha: 0.6),
+                      //   ),
+                      // },
+                    ),
+                    // Text(
+                    //   courses.description ?? 'Học online với video',
+                    //   style: defaultText14Re,
+                    // ),
+                    Row(
+                      children: [
+                        Container(
+                          height: 8.h,
+                          width: 270.w,
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(
+                            color: const Color(0xffEDEDED),
+                            borderRadius: BorderRadius.circular(20.r),
+                          ),
+                          child: Container(
+                            height: 8.h,
+                            width:
+                                270.w * (widget.course.percentLearning! / 100),
+                            decoration: BoxDecoration(
+                              color: mainDarkGreen,
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                          ),
+                        ),
+
+                        Text(
+                          '  ${widget.course.percentLearning!}%',
+                          style: defaultText16B.copyWith(color: mainDarkGreen),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          height: 44.h,
+                          width: 162.w,
+                          decoration: BoxDecoration(
+                            color: Color(0xffEEF5EC),
+                            border: Border.all(
+                              color: mainDarkGreen.withValues(alpha: 0.28),
+                            ),
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/chat.svg',
+                                width: 20.w,
+                                height: 20.h,
+                                colorFilter: ColorFilter.mode(
+                                  mainDarkGreen,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              Text('Chat hỗ trợ', style: defaultText14SB),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 44.h,
+                          width: 162.w,
+                          decoration: BoxDecoration(
+                            color: Color(0xffEEF5EC),
+                            border: Border.all(
+                              color: mainDarkGreen.withValues(alpha: 0.28),
+                            ),
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/tra_bai.svg',
+                                width: 20.w,
+                                height: 20.h,
+                                colorFilter: ColorFilter.mode(
+                                  mainDarkGreen,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              Text('Trả bài', style: defaultText14SB),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.h),
+                    Container(
+                      width: 343.w,
+                      height: 44.h,
+                      decoration: BoxDecoration(
+                        color: mainGreen,
+                        border: Border.all(
+                          color: mainDarkGreen.withValues(alpha: 0.08),
+                        ),
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/bling.svg',
+                            width: 20.w,
+                            height: 20.h,
+                          ),
+                          Text(
+                            ' Sản phẩm tiêu biểu',
+                            style: defaultText14SB.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 28.h),
+                    Text('Nội dung khoá học', style: defaultText16B),
+
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: courses.topicals?.length ?? 0,
+                      itemBuilder: (BuildContext context, int index) {
+                        return LessonItem(
+                          index: index,
+                          topicModel: courses.topicals![index],
+                        );
+                      },
+                    ),
+                    SizedBox(height: 36.h),
                   ],
                 ),
               ),
-              SizedBox(height: 28.h),
-              Text('Nội dung khoá học', style: defaultText16B),
-
-              // ListView.builder(
-              //   shrinkWrap: true,
-              //   physics: const NeverScrollableScrollPhysics(),
-              //   padding: EdgeInsets.zero,
-              //   itemCount: demoSections.length,
-              //   itemBuilder: (context, index) {
-              //     final question = demoSections[index];
-              //     return SectionCard(section: question);
-              //   },
-              // ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
-                itemCount: demoSections.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return LessonItem(
-                    index: index,
-                    topicModel: demoSections[index],
-                  );
-                },
-              ),
-              SizedBox(height: 36.h),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -233,14 +260,14 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
 class LessonItem extends StatefulWidget {
   const LessonItem({super.key, required this.index, required this.topicModel});
   final int index;
-  final Section topicModel;
+  final TopicalModel topicModel;
   @override
   State<LessonItem> createState() => _LessonItemState();
 }
 
 class _LessonItemState extends State<LessonItem> {
   bool isExpanded = false;
-  List<Lesson> listLessonVideoModels = demoSections.first.lessons;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -277,7 +304,6 @@ class _LessonItemState extends State<LessonItem> {
                   width: 28.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-
                     color: mainDarkGreen,
                   ),
                   child: Center(
@@ -294,11 +320,14 @@ class _LessonItemState extends State<LessonItem> {
                     SizedBox(
                       width: 226.w,
                       child: Text(
-                        widget.topicModel.title,
+                        widget.topicModel.name ?? ' Không có tên chủ đề',
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                     ),
-                    Text('3 bài giảng / 2 tài liệu', style: defaultText12M),
+                    Text(
+                      '${widget.topicModel.lessons?.length ?? 0} bài giảng / ${widget.topicModel.documents?.length ?? 0} tài liệu',
+                      style: defaultText12M,
+                    ),
                   ],
                 ),
                 const Spacer(),
@@ -311,11 +340,33 @@ class _LessonItemState extends State<LessonItem> {
 
         if (isExpanded)
           Column(
-            children: listLessonVideoModels
+            children: widget.topicModel.lessons!
                 .map(
                   (e) => GestureDetector(
                     onTap: () async {},
-                    child: DetailItem(title: e.title, type: e.subtitle),
+                    child: DetailItem(
+                      title: e.name ?? 'Không có tên bài giảng',
+                      type: e.time ?? 'video',
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        if (isExpanded)
+          Column(
+            children: widget.topicModel.documents!
+                .map(
+                  (e) => GestureDetector(
+                    onTap: () async {
+                      //open url
+                      if (!await launchUrl(Uri.parse(e.url ?? ''))) {
+                        throw Exception('Could not launch ');
+                      }
+                    },
+                    child: DetailItem(
+                      title: e.name ?? 'Không có tên bài giảng',
+                      type: 'tài liệu',
+                    ),
                   ),
                 )
                 .toList(),
@@ -336,26 +387,28 @@ class DetailItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          children: [
-            Icon(Icons.check_circle, size: 12.r, color: mainGreen),
-            Container(
-              height: 32.h,
-              width: 1.w,
-              margin: EdgeInsets.symmetric(vertical: 8.h),
-              decoration: const BoxDecoration(color: Colors.green),
-            ),
-          ],
-        ),
-
+        // Column(
+        //   children: [
+        //     Icon(Icons.check_circle, size: 12.r, color: mainGreen),
+        //     Container(
+        //       height: 32.h,
+        //       width: 1.w,
+        //       margin: EdgeInsets.symmetric(vertical: 8.h),
+        //       decoration: const BoxDecoration(color: Colors.green),
+        //     ),
+        //   ],
+        // ),
         Column(
           children: [
             SizedBox(height: 12.h),
-            SvgPicture.asset(
-              'assets/icons/video.svg',
-              width: 22.w,
-              height: 22.h,
-            ),
+            if (type == 'tài liệu')
+              Icon(Icons.document_scanner_outlined)
+            else
+              SvgPicture.asset(
+                'assets/icons/video.svg',
+                width: 22.w,
+                height: 22.h,
+              ),
           ],
         ),
         SizedBox(width: 16.w),
@@ -370,17 +423,10 @@ class DetailItem extends StatelessWidget {
             SizedBox(
               width: 280.w,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    type,
-                    style: defaultText12M.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xff3C3C3C).withValues(alpha: 0.6),
-                    ),
-                  ),
-                  Text(
-                    '10 Phút',
+                    type == 'tài liệu' ? 'tài liệu' : 'Thời lượng $type',
                     style: defaultText12M.copyWith(
                       fontWeight: FontWeight.w500,
                       color: const Color(0xff3C3C3C).withValues(alpha: 0.6),
@@ -401,90 +447,3 @@ class DetailItem extends StatelessWidget {
     );
   }
 }
-
-// --- Demo data classes ---
-class Section {
-  final int index;
-  final String title;
-  final String subtitle;
-  final List<Lesson> lessons;
-
-  Section({
-    required this.index,
-    required this.title,
-    required this.subtitle,
-    required this.lessons,
-  });
-}
-
-class Lesson {
-  final String title;
-  final String subtitle;
-  final String duration;
-  final bool completed;
-
-  Lesson({
-    required this.title,
-    required this.subtitle,
-    required this.duration,
-    this.completed = false,
-  });
-}
-
-final List<Section> demoSections = [
-  Section(
-    index: 1,
-    title: ' is simply',
-    subtitle: 'Bài giảng hướng dẫn',
-    lessons: [
-      Lesson(
-        title: 'Duis aute irure dolor in reprehenderit',
-        subtitle: 'Bài giảng',
-        duration: '10 Phút',
-        completed: true,
-      ),
-      Lesson(
-        title: 'It is a long established fact that a reader',
-        subtitle: 'Bài giảng hướng dẫn',
-        duration: '10 Phút',
-        completed: true,
-      ),
-      Lesson(
-        title: 'It is a long established fact that a reader',
-        subtitle: 'Bài giảng hướng dẫn',
-        duration: '10 Phút',
-        completed: true,
-      ),
-      Lesson(
-        title: 'It is a long established fact that a reader',
-        subtitle: 'Bài giảng hướng dẫn',
-        duration: '15 phút',
-        completed: false,
-      ),
-      Lesson(
-        title: 'It is a long established fact that a reader',
-        subtitle: 'Bài giảng hướng dẫn',
-        duration: '',
-        completed: false,
-      ),
-    ],
-  ),
-  Section(
-    index: 2,
-    title: 'There are many variations',
-    subtitle: '5 bài giảng / 6 bài tập',
-    lessons: [],
-  ),
-  Section(
-    index: 3,
-    title: 'There are many variations',
-    subtitle: '3 bài giảng / 2 tài liệu',
-    lessons: [],
-  ),
-  Section(
-    index: 4,
-    title: 'There are many variations',
-    subtitle: '5 bài giảng / 6 bài tập',
-    lessons: [],
-  ),
-];

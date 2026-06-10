@@ -80,7 +80,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                       vertical: 12.h,
                     ),
                     decoration: BoxDecoration(
-                      color: mainGreen,
+                      color: backGroundGreen,
                       borderRadius: BorderRadius.circular(16.r),
                     ),
                     child: Column(
@@ -316,7 +316,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                           ),
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: mainGreen,
+                            color: backGroundGreen,
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: Column(

@@ -1,28 +1,58 @@
-import 'package:heathy_teacher/models/product_model.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:heathy_teacher/models/course_model.dart';
+import 'package:heathy_teacher/utils/DioClient.dart';
+import 'package:heathy_teacher/utils/constants/api_path.dart';
 
-Future<List<CourseSection>> fetchCourseData() async {
-  final response = await http.post(
-    Uri.parse('https://lms.cogiaohealthy.vn/api/chi-tiet-khoa-hoc'),
-    // THÊM VÀO ĐÂY NHÉ:
-    headers: {
-      'Content-Type': 'application/json',
-      'Token': 'Healthy1234567890HVG',
-    },
-    body: jsonEncode({
-      "course_type_id": "163", // Thay bằng course_id thực tế nếu cần
-    }),
-  );
+class CourseRepo {
+  Future<List<CourseScheduleModel>> getCourse() async {
+    try {
+      final dio = await DioClient.getInstance();
+      final response = await dio.post(ApiPath.course);
+      if (response.data != null &&
+          response.data['data'] != null &&
+          response.data['data']['value'] != null) {
+        final List listData = response.data['data']['value'] as List;
 
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> jsonList = json.decode(
-      utf8.decode(response.bodyBytes),
-    );
-    return jsonList['topical']
-        .map((json) => CourseSection.fromJson(json))
-        .toList();
-  } else {
-    throw Exception('Lỗi tải dữ liệu hoặc Token hết hạn');
+        return listData
+            .map((e) => CourseScheduleModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else {
+        return [];
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
+
+  Future<CourseDetailModel> getCourseDetail({
+    required String courseId,
+    required String settingCourseTypeId,
+    required String courseScheduleId,
+  }) async {
+    try {
+      final dio = await DioClient.getInstance();
+      final response = await dio.post(
+        ApiPath.courseDetail,
+        data: {
+          'course_id': courseId,
+          'setting_course_type_id': settingCourseTypeId,
+          'course_schedule_id': courseScheduleId,
+        },
+      );
+      if (response.data != null &&
+          response.data['data'] != null &&
+          response.data['data']['value'] != null) {
+        final data = response.data['data'] as Map<String, dynamic>;
+        return CourseDetailModel.fromJson(data);
+      } else {
+        throw Exception('Dữ liệu không hợp lệ');
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
   }
 }

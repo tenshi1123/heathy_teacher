@@ -9,4 +9,7 @@ class ApiPath {
   static String course = '$baseUrl/customer/course';
   static String courseDetail = '$baseUrl/customer/course/detail';
   static String products = '$baseUrl/customer/products';
+
+  //web ngoai
+  static String detailCourse = '$baseUrl/chi-tiet-khoa-hoc';
 }

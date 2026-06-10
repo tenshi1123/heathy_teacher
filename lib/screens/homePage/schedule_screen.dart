@@ -54,9 +54,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
     final key = '${date.year}-${date.month.toString().padLeft(2, '0')}';
     if (_loadedMonths.contains(key)) return;
 
-    final start = DateTime(date.year, date.month, 1);
-    final end = DateTime(date.year, date.month + 1, 0);
-
     // final fetchedEvents = await DiemdanhRepo().getScheduleList(
     //   DateFormat('dd-MM-yyyy').format(start),
     //   DateFormat('dd-MM-yyyy').format(end),
@@ -316,20 +313,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
               ValueListenableBuilder<List<ScheduleModel>>(
                 valueListenable: _selectedEvents,
                 builder: (context, value, _) {
-                  List list1;
                   if (selectedHinhThuc == 'Lịch học ở trung tâm') {
-                    list1 = value
-                        .where((item) => item.typeLearn == "off")
-                        .toList();
                   } else if (selectedHinhThuc == 'Lịch học Zoom') {
-                    list1 = value
-                        .where((item) => item.typeLearn == "zoom")
-                        .toList();
                   } else if (selectedHinhThuc == 'Lịch học phụ đạo - học bù') {
-                    list1 = [];
-                  } else {
-                    list1 = value;
-                  }
+                  } else {}
                   return
                   // list1.isEmpty
                   //     ? Center(

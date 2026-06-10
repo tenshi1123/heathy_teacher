@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/screens/authentication/login_screen.dart';
-import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/services/fingerprint_service.dart';
+import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -18,8 +18,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordObscured = true;
 
-  // Định nghĩa bảng màu theo thiết kế của bạn
-  final Color mainGreen = const Color(0xFF76BA43); // Màu xanh lá chủ đạo
   final Color inputBgColor = const Color(0xFFFDFBF0);
 
   @override
@@ -47,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: 10.h),
                     Text(
                       'Bạn cần một tài khoản mới !',
-                      style: defaultText20B.copyWith(color: mainGreen),
+                      style: defaultText20B.copyWith(color: backGroundGreen),
                     ),
                     SizedBox(height: 16.h),
 
@@ -157,7 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: mainGreen,
+                          backgroundColor: backGroundGreen,
                           foregroundColor: Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -194,7 +192,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               TextSpan(
                                 text: 'Đăng nhập',
                                 style: TextStyle(
-                                  color: mainGreen,
+                                  color: backGroundGreen,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 // Muốn bấm được thì thêm recognizer vào đây nếu cần
@@ -214,7 +212,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               flex: 4,
               child: Container(
                 width: double.infinity,
-                color: mainGreen, // Nền xanh lá của banner
+                color: backGroundGreen,
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   // Thay 'assets/teacher_image.png' bằng đường dẫn ảnh cô giáo của bạn

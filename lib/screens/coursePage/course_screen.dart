@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/models/course_model.dart';
+import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:heathy_teacher/screens/coursePage/list_class_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/online_class_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
@@ -15,9 +17,20 @@ class CourseScreen extends StatefulWidget {
 }
 
 class _CourseScreenState extends State<CourseScreen> {
+  bool isLoading = true;
+  List<CourseScheduleModel> courses = [];
   @override
   void initState() {
     super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    isLoading = true;
+    courses = await CourseRepo().getCourse();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -70,25 +83,30 @@ class _CourseScreenState extends State<CourseScreen> {
             top: 16.h,
           ),
           physics: const ClampingScrollPhysics(),
-          itemCount: 2,
+          itemCount: courses.length,
           itemBuilder: (BuildContext context, int index) {
+            // 1. Lấy ra item hiện tại
+            final course = courses[index];
+            final int percent = course.percentLearning ?? 0;
+
             return GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: ((context) =>
-                        index == 1 ? ListClassScreen() : OnlineClassScreen()),
+                        course.settingCourseTypeType == 'online'
+                        ? OnlineClassScreen(course: course)
+                        : ListClassScreen()),
                   ),
                 );
               },
               child: Container(
-                //height: 116.h,
                 width: 343.w,
                 margin: EdgeInsets.only(bottom: 20.h),
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                 decoration: BoxDecoration(
-                  color: Color(0xffF5FAF5),
+                  color: const Color(0xffF5FAF5),
                   border: Border.all(
                     color: mainDarkGreen.withValues(alpha: 0.28),
                   ),
@@ -97,26 +115,39 @@ class _CourseScreenState extends State<CourseScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      'assets/images/course_icon_$index.png',
-                      width: 40.w,
-                      height: 40.h,
-                      fit: BoxFit.fitWidth,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: Image.network(
+                        'https://lms.cogiaohealthy.vn/images/${course.img}',
+                        width: 40.w,
+                        height: 40.h,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Image.asset(
+                              'assets/images/course_icon_0.png',
+                              width: 40.w,
+                              height: 40.h,
+                              fit: BoxFit.cover,
+                            ),
+                      ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     SizedBox(
                       width: 257.w,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Lớp Combo chuyên đề Eatclean nâng cao',
+                            course.courseName ?? 'Chưa cập nhật tên khoá học',
                             style: defaultText16B,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
+                          SizedBox(height: 4.h),
+
                           Text(
-                            index == 0
-                                ? 'Học online với video'
-                                : 'Học trực tiếp tại trung tâm',
+                            course.settingCourseTypeName ??
+                                'Đang cập nhật hình thức',
                             style: defaultText14Re,
                           ),
                           SizedBox(height: 12.h),
@@ -125,22 +156,23 @@ class _CourseScreenState extends State<CourseScreen> {
                               Container(
                                 height: 8.h,
                                 width: 217.w,
-                                padding: EdgeInsets.only(right: 150.w),
+                                alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
-                                  color: Color(0xffEDEDED),
+                                  color: const Color(0xffEDEDED),
                                   borderRadius: BorderRadius.circular(20.r),
                                 ),
                                 child: Container(
                                   height: 8.h,
-                                  width: 30.w,
+                                  width: 217.w * (percent / 100),
                                   decoration: BoxDecoration(
                                     color: mainDarkGreen,
                                     borderRadius: BorderRadius.circular(20.r),
                                   ),
                                 ),
                               ),
+
                               Text(
-                                ' 26%',
+                                ' $percent%',
                                 style: defaultText16B.copyWith(
                                   color: mainDarkGreen,
                                 ),

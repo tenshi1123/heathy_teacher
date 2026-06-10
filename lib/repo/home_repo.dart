@@ -24,7 +24,7 @@ class HomeRepo {
   Future<UserModel> getUserProfile() async {
     try {
       final dio = await DioClient.getInstance();
-      final response = await dio.post(ApiPath.home);
+      final response = await dio.post(ApiPath.info);
 
       if (response.data != null && response.data['data']['value'] != null) {
         return UserModel.fromJson(response.data['data']['value']);

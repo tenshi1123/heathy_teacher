@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
+import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
@@ -13,8 +15,13 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
+  const HomeScreen({
+    super.key,
+    required this.userModel,
+    required this.customerModel,
+  });
+  final UserModel userModel;
+  final CustomerModel customerModel;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -51,7 +58,7 @@ class HomeScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Hi, Dương Huyền Anh',
+                              'Hi, ${userModel.fullName}',
                               style: defaultText18B.copyWith(
                                 color: Colors.white,
                               ),
@@ -83,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                   bottom: 120.h,
                   right: 40.w,
                   child: Text(
-                    '03',
+                    customerModel.course.toString(),
                     style: defaultText16B.copyWith(color: Colors.white),
                   ),
                 ),
@@ -91,14 +98,17 @@ class HomeScreen extends StatelessWidget {
                   bottom: 72.h,
                   right: 40.w,
                   child: Text(
-                    '03',
+                    customerModel.product.toString(),
                     style: defaultText16B.copyWith(color: Colors.white),
                   ),
                 ),
                 Positioned(
                   bottom: 26.h,
                   right: 40.w,
-                  child: Text('4.500.000 VNĐ', style: defaultText18B),
+                  child: Text(
+                    '${customerModel.paymentHistory.toStringAsFixed(0)} VNĐ',
+                    style: defaultText18B,
+                  ),
                 ),
               ],
             ),
@@ -325,7 +335,7 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: ((context) => RegisterClassOff(type: 'on')),
+                        builder: ((context) => RegisterClassON(type: 'on')),
                       ),
                     );
                   },

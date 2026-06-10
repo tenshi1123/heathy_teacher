@@ -292,7 +292,7 @@ void showCitySelectionDialog({
               ),
               SizedBox(height: 10.h),
               Text(
-                "Vui lòng chọn thành phố bạn muốn tham gia học tập",
+                "Vui lòng chọn thành phố bạn muốn tham gia lớp trực tiếp",
                 textAlign: TextAlign.center,
                 style: defaultText14M.copyWith(color: mainDarkGreen),
               ),
@@ -463,19 +463,13 @@ void showOnlineCategoriesDialog({
                             ),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.menu_book_rounded,
-                                  color: Colors.white.withOpacity(0.9),
-                                  size: 20.sp,
-                                ),
                                 SizedBox(width: 12.w),
                                 Expanded(
                                   child: Text(
                                     categories[index],
-                                    style: defaultText14B.copyWith(
+                                    style: defaultText16B.copyWith(
                                       color: Colors.white,
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
