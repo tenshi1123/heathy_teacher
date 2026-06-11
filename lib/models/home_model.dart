@@ -12,13 +12,24 @@ class CustomerModel {
     this.product,
     this.accumulatedPoint,
   );
+
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
+    int parseInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is int) return value;
+      if (value is double) return value.toInt();
+      if (value is String) {
+        return int.tryParse(value) ?? 0;
+      }
+      return 0; // Các trường hợp kiểu dữ liệu lạ khác
+    }
+
     return CustomerModel(
-      json["course"] ?? 0,
-      json["paymentHistory"] ?? 0,
-      json["pendingPayment"] ?? 0,
-      json["product"] ?? 0,
-      json["accumulatedPoint"] ?? 0,
+      parseInt(json["course"]),
+      parseInt(json["payment_history"]),
+      parseInt(json["pending_payment"]),
+      parseInt(json["product"]),
+      parseInt(json["accumulated_point"]),
     );
   }
 }

@@ -13,6 +13,7 @@ import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -76,10 +77,10 @@ class HomeScreen extends StatelessWidget {
                               ),
                             );
                           },
-                          child: Image.asset(
-                            'assets/images/bell.png',
-                            width: 25.w,
-                            height: 28.h,
+                          child: SvgPicture.asset(
+                            'assets/icons/bell.svg',
+                            width: 20.w,
+                            height: 20.h,
                           ),
                         ),
                       ],
@@ -106,7 +107,8 @@ class HomeScreen extends StatelessWidget {
                   bottom: 26.h,
                   right: 40.w,
                   child: Text(
-                    '${customerModel.paymentHistory.toStringAsFixed(0)} VNĐ',
+                    '${NumberFormat.decimalPattern('vi_VN').format(customerModel.paymentHistory)} VNĐ',
+
                     style: defaultText18B,
                   ),
                 ),

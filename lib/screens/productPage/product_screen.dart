@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart'; // Thêm thư viện này để format tiền tệ (nếu cần)
+
 import 'package:heathy_teacher/models/product_model.dart';
+import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
-import 'package:heathy_teacher/utils/widget/custom_product_widget.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key, required this.type});
@@ -17,16 +19,58 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   late int currentPage = 1;
+  bool isLoading = true;
+  List<ProductModel> products = [];
+  final int itemsPerPage = 5;
+
   @override
   void initState() {
     super.initState();
+
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    products = await CourseRepo().getListProduct();
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  // Hàm hỗ trợ format tiền (VD: 399000 -> 399.000)
+  String formatPrice(String? priceString) {
+    if (priceString == null || priceString.isEmpty) return '0';
+    try {
+      final int price = int.parse(priceString);
+      return NumberFormat.decimalPattern('vi').format(price);
+    } catch (e) {
+      return priceString; // Nếu lỗi parse thì trả về chuỗi gốc
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    int startIndex = (currentPage - 1) * itemsPerPage;
+    int endIndex = startIndex + itemsPerPage;
+
+    // Đảm bảo endIndex không vượt quá độ dài thực tế của mảng
+    if (endIndex > products.length) {
+      endIndex = products.length;
+    }
+
+    // 3. Tạo mảng con chỉ chứa các sản phẩm của trang hiện tại
+    List<ProductModel> displayedProducts = [];
+    if (products.isNotEmpty && startIndex < products.length) {
+      displayedProducts = products.sublist(startIndex, endIndex);
+    }
     return Scaffold(
       backgroundColor: mainDarkGreen,
-      endDrawer: const FilterMenuDrawer(),
+      // endDrawer: const FilterMenuDrawer(), // Tạm comment nếu bạn chưa dùng
       appBar: AppBar(
         backgroundColor: mainDarkGreen,
         elevation: 0,
@@ -36,7 +80,7 @@ class _ProductScreenState extends State<ProductScreen> {
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         leading: widget.type == 1
-            ? SizedBox()
+            ? const SizedBox()
             : IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                 onPressed: () => Navigator.pop(context),
@@ -45,9 +89,7 @@ class _ProductScreenState extends State<ProductScreen> {
           Builder(
             builder: (BuildContext innerContext) {
               return GestureDetector(
-                // SỬ DỤNG innerContext MỚI TỪ BUILDER
                 onTap: () {
-                  // Lệnh này tìm kiếm Scaffold gần nhất và mở EndDrawer
                   Scaffold.of(innerContext).openEndDrawer();
                 },
                 child: SvgPicture.asset(
@@ -75,260 +117,228 @@ class _ProductScreenState extends State<ProductScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: isLoading
+            // 1. HIỂN THỊ LOADING KHI ĐANG GỌI API
+            ? Center(child: CircularProgressIndicator(color: mainDarkGreen))
+            : Stack(
                 children: [
-                  SizedBox(height: 24.h),
-                  Padding(
-                    padding: EdgeInsets.only(left: 16.w),
-                    child: Text(
-                      'Nguyên liệu lớp nấu ăn chay',
-                      style: defaultText16B,
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.only(
-                      left: 16.w,
-                      right: 16.w,
-                      bottom: 20.w,
-                    ),
-                    physics: const ClampingScrollPhysics(),
-                    itemCount: 6,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: ((context) => DetailProductScreen()),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          width: 343.w,
-                          //height: 106.h,
-                          margin: EdgeInsets.only(bottom: 16.h),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 8.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(
-                                  0xff062905,
-                                ).withValues(alpha: 0.16),
-                                spreadRadius: 0,
-                                blurRadius: 8,
-                                offset: const Offset(
-                                  0,
-                                  4,
-                                ), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                'assets/images/material1.png',
-                                height: 90.h,
-                                fit: BoxFit.fitHeight,
-                              ),
-                              SizedBox(width: 12.w),
-                              SizedBox(
-                                width: 217.w,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        RatingStars(
-                                          rating: 4.6, // Hiển thị 4.5 sao
-                                          starSize: 16.r,
-                                        ),
-                                        Text(
-                                          '(4,6)',
-                                          style: defaultText14SB.copyWith(
-                                            fontSize: 12.sp,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      'Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300g',
-                                      style: defaultText14SB,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('128.000đ', style: defaultText16B),
-                                        Text(
-                                          '250.000đ',
-                                          style: defaultText12Re.copyWith(
-                                            decoration:
-                                                TextDecoration.lineThrough,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                  SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 24.h),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16.w),
+                          child: Text(
+                            'Danh sách sản phẩm/khóa học',
+                            style: defaultText16B,
                           ),
                         ),
-                      );
-                    },
+                        SizedBox(height: 20.h),
+
+                        // 2. NẾU KHÔNG CÓ DỮ LIỆU THÌ HIỂN THỊ THÔNG BÁO
+                        products.isEmpty
+                            ? Center(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 50.h),
+                                  child: Text(
+                                    'Chưa có sản phẩm nào.',
+                                    style: defaultText14SB,
+                                  ),
+                                ),
+                              )
+                            // 3. RENDER DANH SÁCH TỪ API
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.only(
+                                  left: 16.w,
+                                  right: 16.w,
+                                  bottom: 20.w,
+                                ),
+                                physics: const ClampingScrollPhysics(),
+                                itemCount: displayedProducts.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Lấy ra sản phẩm tại vị trí index
+                                  final product = displayedProducts[index];
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          // Bạn có thể truyền product vào DetailProductScreen để hiển thị chi tiết
+                                          builder: ((context) =>
+                                              DetailProductScreen()),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 343.w,
+                                      margin: EdgeInsets.only(bottom: 16.h),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 8.w,
+                                        vertical: 8.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(
+                                          20.r,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(
+                                              0xff062905,
+                                            ).withValues(alpha: 0.16),
+                                            spreadRadius: 0,
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          // THAY ẢNH CỨNG BẰNG ẢNH MẠNG (TỪ API)
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                            child: Image.network(
+                                              product.detail?[0].img ??
+                                                  'https://lms.cogiaohealthy.vn/${product.img}',
+                                              height: 90.h,
+                                              width: 90
+                                                  .w, // Nên set cứng width để UI không bị vỡ nếu ảnh lỗi
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                    // Hiển thị icon mặc định nếu link ảnh lỗi hoặc null
+                                                    return Container(
+                                                      height: 90.h,
+                                                      width: 90.w,
+                                                      color:
+                                                          Colors.grey.shade200,
+                                                      child: const Icon(
+                                                        Icons
+                                                            .image_not_supported,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    );
+                                                  },
+                                            ),
+                                          ),
+                                          SizedBox(width: 12.w),
+                                          Expanded(
+                                            // Dùng Expanded thay vì SizedBox fix width để UI linh hoạt hơn
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment
+                                                      .start, // Căn trái text
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    RatingStars(
+                                                      rating:
+                                                          5.0, // Tạm fix vì JSON của bạn chưa có trường rating
+                                                      starSize: 16.r,
+                                                    ),
+                                                    Text(
+                                                      '(5,0)',
+                                                      style: defaultText14SB
+                                                          .copyWith(
+                                                            fontSize: 12.sp,
+                                                          ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 4.h,
+                                                ), // Thêm khoảng cách nhỏ cho thoáng
+                                                // THAY TÊN SẢN PHẨM BẰNG DATA API
+                                                Text(
+                                                  product.detail?[0].name ??
+                                                      ' Chưa cập nhật tên',
+                                                  style: defaultText14SB,
+                                                  maxLines:
+                                                      2, // Giới hạn 2 dòng để không bị tràn UI
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+
+                                                SizedBox(height: 8.h),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    // THAY GIÁ SẢN PHẨM BẰNG DATA API
+                                                    Text(
+                                                      '${NumberFormat.decimalPattern('vi_VN').format(int.tryParse(product.detail?[0].price ?? '0'))} VNĐ',
+                                                      style: defaultText16B
+                                                          .copyWith(
+                                                            color:
+                                                                mainDarkGreen,
+                                                          ), // Đổi màu giá để nổi bật
+                                                    ),
+                                                    // Giá gốc bị gạch ngang (Tạm ẩn nếu API không có giá khuyến mãi)
+                                                    // Text(
+                                                    //   '250.000đ',
+                                                    //   style: defaultText12Re.copyWith(
+                                                    //     decoration: TextDecoration.lineThrough,
+                                                    //   ),
+                                                    // ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                        SizedBox(
+                          height: 80.h,
+                        ), // Tăng padding bottom để không bị che bởi thanh Pagination
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 52.h),
+
+                  // Phần phân trang (Pagination) giữ nguyên
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      height: 60.h,
+                      width: double.infinity,
+                      padding: EdgeInsets.only(bottom: 8.h, top: 4.h),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, -2),
+                          ),
+                        ],
+                      ),
+                      child: PaginationWidget(
+                        currentPage: currentPage,
+                        // THAY ĐỔI Ở ĐÂY: Dùng biến vừa tính toán
+                        totalPages: (products.length / itemsPerPage).ceil() == 0
+                            ? 1
+                            : (products.length / itemsPerPage).ceil(),
+                        onPageChanged: (page) {
+                          setState(() {
+                            currentPage = page;
+                            // Vì dữ liệu đã có sẵn trong list 'products',
+                            // ta chỉ cần setState để UI tự render lại list con, không cần gọi lại API
+                          });
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                height: 60.h,
-                width: 375.w,
-                padding: EdgeInsets.only(bottom: 8.h, top: 4.h),
-                decoration: BoxDecoration(color: Colors.white),
-                child: PaginationWidget(
-                  currentPage: currentPage,
-                  totalPages: 6,
-                  onPageChanged: (page) {
-                    setState(() {
-                      currentPage = page;
-                    });
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-List<Item> _data = [
-  Item(
-    headerText: 'NGUYÊN LIỆU LỚP NẤU ĂN CƠ BẢN',
-    bodyText: [
-      'NGUYÊN LIỆU NẤU ĂN',
-      'CÁC NGUYÊN LIỆU TRONG BẾP GIA ĐÌNH NÀO CŨNG CẦN CÓ',
-      'NGUYÊN LIỆU CÁC MÓN CHAY VIỆT HIỆN ĐẠI',
-    ],
-    isExpanded: true, // Mục này đang mở trong hình
-  ),
-  Item(
-    headerText: 'NGUYÊN LIỆU LỚP NẤU ĂN NÂNG CAO',
-    bodyText: ['Nguyên liệu cho món Tây', 'Nguyên liệu đặc biệt'],
-  ),
-  Item(
-    headerText: 'NGUYÊN LIỆU LỚP NẤU ĂN CHAY',
-    bodyText: ['Thực phẩm chay khô', 'Thực phẩm chay tươi'],
-  ),
-  Item(
-    headerText: 'NGUYÊN LIỆU WORKSHOP SỮA HẠT VÀ KẸO DẺO TRÁI CÂY',
-    bodyText: ['Các loại hạt', 'Trái cây sấy'],
-  ),
-  Item(
-    headerText: 'WORKSHOP BỮA SÁNG GIÀU CHẤT XƠ',
-    bodyText: ['Bột yến mạch', 'Hạt chia'],
-  ),
-];
-
-class CategoryMenu extends StatefulWidget {
-  const CategoryMenu({super.key});
-
-  @override
-  State<CategoryMenu> createState() => _CategoryMenuState();
-}
-
-class _CategoryMenuState extends State<CategoryMenu> {
-  // Hàm này nên được đặt trong State của Widget
-  @override
-  void initState() {
-    super.initState();
-    // Khởi tạo _data (Lưu ý: Bạn nên đưa nó vào State hoặc Provider)
-    _data[0].isExpanded = true;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Để tái tạo giao diện thẻ bo tròn và màu nền trắng
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      padding: const EdgeInsets.all(16.0),
-      // Bọc trong SingleChildScrollView để có thể cuộn nếu danh sách dài
-      child: SingleChildScrollView(
-        child: ExpansionPanelList(
-          // Loại bỏ đường gạch mặc định giữa các panel
-          elevation: 0,
-          expandedHeaderPadding: EdgeInsets.zero,
-          dividerColor: Colors.transparent, // Không có đường phân cách
-          // Xử lý khi người dùng bấm vào tiêu đề
-          expansionCallback: (int index, bool isExpanded) {
-            setState(() {
-              // Đóng/mở panel khi bấm vào
-              _data[index].isExpanded = !isExpanded;
-            });
-          },
-
-          // Xây dựng danh sách các ExpansionPanel
-          children: _data.map<ExpansionPanel>((Item item) {
-            return ExpansionPanel(
-              backgroundColor: Colors.white,
-              // Tiêu đề của mục
-              headerBuilder: (BuildContext context, bool isExpanded) {
-                return ListTile(
-                  title: Text(
-                    item.headerText,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Colors.black87,
-                    ),
-                  ),
-                );
-              },
-
-              // Nội dung xổ ra (các mục con)
-              body: Padding(
-                padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: item.bodyText.map((text) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        text,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-
-              isExpanded: item.isExpanded,
-
-              // Tùy chỉnh icon mở/đóng (Sử dụng Icon + hoặc Icon -)
-              canTapOnHeader: true,
-            );
-          }).toList(),
-        ),
       ),
     );
   }

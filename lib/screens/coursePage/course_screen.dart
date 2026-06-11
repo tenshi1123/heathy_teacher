@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/repo/course_repo.dart';
-import 'package:heathy_teacher/screens/coursePage/list_class_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/online_class_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';

@@ -253,3 +253,139 @@ class Lesson {
     };
   }
 }
+
+class ProductModel {
+  String? wardName;
+  String? districtName;
+  String? provinceName;
+  String? address;
+  String? paymentMethodName;
+  String? customerFullName;
+  String? customerPhone;
+  String? customerEmail;
+  String? img;
+  String? orderStatusName;
+  String? promoCodeAmount;
+  String? promoCode;
+  String? orderId;
+  String? cashDeduction;
+  String? percent;
+  String? valuePercent;
+  String? freeShip;
+  String? accumulatePoint;
+  List<OrderDetail>? detail;
+
+  ProductModel({
+    this.wardName,
+    this.districtName,
+    this.provinceName,
+    this.address,
+    this.paymentMethodName,
+    this.customerFullName,
+    this.customerPhone,
+    this.customerEmail,
+    this.img,
+    this.orderStatusName,
+    this.promoCodeAmount,
+    this.promoCode,
+    this.orderId,
+    this.cashDeduction,
+    this.percent,
+    this.valuePercent,
+    this.freeShip,
+    this.accumulatePoint,
+    this.detail,
+  });
+
+  factory ProductModel.fromJson(Map<String, dynamic> json) {
+    return ProductModel(
+      wardName: json['ward_name'],
+      districtName: json['district_name'],
+      provinceName: json['province_name'],
+      address: json['address'],
+      paymentMethodName: json['payment_method_name'],
+      customerFullName: json['customer_full_name'],
+      customerPhone: json['customer_phone'],
+      customerEmail: json['customer_email'],
+      img: json['img'],
+      orderStatusName: json['order_status_name'],
+      promoCodeAmount: json['promo_code_amount'],
+      promoCode: json['promo_code'],
+      orderId: json['order_id'],
+      cashDeduction: json['cash_deduction'],
+      percent: json['percent'],
+      valuePercent: json['value_percent'],
+      freeShip: json['free_ship'],
+      accumulatePoint: json['accumulate_point'],
+      detail: json['detail'] != null
+          ? (json['detail'] as List)
+                .map((i) => OrderDetail.fromJson(i))
+                .toList()
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ward_name': wardName,
+      'district_name': districtName,
+      'province_name': provinceName,
+      'address': address,
+      'payment_method_name': paymentMethodName,
+      'customer_full_name': customerFullName,
+      'customer_phone': customerPhone,
+      'customer_email': customerEmail,
+      'img': img,
+      'order_status_name': orderStatusName,
+      'promo_code_amount': promoCodeAmount,
+      'promo_code': promoCode,
+      'order_id': orderId,
+      'cash_deduction': cashDeduction,
+      'percent': percent,
+      'value_percent': valuePercent,
+      'free_ship': freeShip,
+      'accumulate_point': accumulatePoint,
+      'detail': detail?.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class OrderDetail {
+  String? name;
+  String? productId;
+  String? img;
+  String? price;
+  String? type;
+  String? quantity;
+
+  OrderDetail({
+    this.name,
+    this.productId,
+    this.img,
+    this.price,
+    this.type,
+    this.quantity,
+  });
+
+  factory OrderDetail.fromJson(Map<String, dynamic> json) {
+    return OrderDetail(
+      name: json['name'],
+      productId: json['product_id'],
+      img: json['img'],
+      price: json['price'],
+      type: json['type'],
+      quantity: json['quantity'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'product_id': productId,
+      'img': img,
+      'price': price,
+      'type': type,
+      'quantity': quantity,
+    };
+  }
+}
