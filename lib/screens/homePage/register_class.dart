@@ -85,195 +85,214 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
           ),
         ),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                width: 343.w,
-                child: Text(
-                  widget.type == 'off'
-                      ? courses.title ?? ''
-                      : 'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
-                  style: defaultText20B.copyWith(color: mainDarkGreen),
-                ),
-              ),
-              SizedBox(height: 6.h),
-              Image.network(courses.image ?? '', width: 343.w, height: 280.h),
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    SizedBox(
+                      width: 343.w,
+                      child: Text(
+                        widget.type == 'off'
+                            ? courses.title ?? ''
+                            : 'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
+                        style: defaultText20B.copyWith(color: mainDarkGreen),
+                      ),
+                    ),
+                    SizedBox(height: 6.h),
+                    Image.network(
+                      courses.image ?? '',
+                      width: 343.w,
+                      height: 280.h,
+                    ),
 
-              SizedBox(height: 20.h),
-              SizedBox(
-                width: 343.w,
-                child: Row(
-                  children: [
-                    Text(
-                      NumberFormat.decimalPattern(
-                        'vi_VN',
-                      ).format(int.parse(courses.price ?? '')),
-                      style: defaultText16B.copyWith(
-                        color: mainDarkGreen,
-                        fontSize: 24.sp,
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Text(
-                      NumberFormat.decimalPattern(
-                        'vi_VN',
-                      ).format(int.parse(courses.priceOld ?? '')),
-                      style: defaultText14Re.copyWith(
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                children: [
-                  SizedBox(width: 16.w),
-                  Icon(
-                    Icons.calendar_month_outlined,
-                    color: mainDarkGreen,
-                    size: 16,
-                  ),
-                  Text(
-                    '  07/05/2026 - 09/05/2026',
-                    style: defaultText14M.copyWith(color: mainDarkGreen),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  SizedBox(width: 16.w),
-                  Icon(
-                    Icons.location_on_outlined,
-                    color: mainDarkGreen,
-                    size: 16,
-                  ),
-                  if (widget.type == 'on')
-                    Text(
-                      '  Học online qua app',
-                      style: defaultText14M.copyWith(color: mainDarkGreen),
-                    )
-                  else
-                    Text(
-                      '  Trực tiếp tại Hà Nội',
-                      style: defaultText14M.copyWith(color: Colors.red),
-                    ),
-                ],
-              ),
-              if (widget.type == 'off')
-                Row(
-                  children: [
-                    SizedBox(width: 16.w),
-                    Icon(Icons.person_outline, color: mainDarkGreen, size: 16),
-                    Text(
-                      '  Giảng viên: Linh Phan',
-                      style: defaultText14M.copyWith(color: mainDarkGreen),
-                    ),
-                  ],
-                ),
-              SizedBox(height: 12.h),
-              InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        //title:  Text('Đã thêm vào giỏ hàng'),
-                        content: const Text('Tiếp tục tư vấn'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancle'),
-                            child: const Text('Cancle'),
+                    SizedBox(height: 20.h),
+                    SizedBox(
+                      width: 343.w,
+                      child: Row(
+                        children: [
+                          Text(
+                            NumberFormat.decimalPattern(
+                              'vi_VN',
+                            ).format(int.parse(courses.price ?? '')),
+                            style: defaultText16B.copyWith(
+                              color: mainDarkGreen,
+                              fontSize: 24.sp,
+                            ),
                           ),
-                          TextButton(
-                            onPressed: () async {
-                              if (!await launchUrl(
-                                Uri.parse(
-                                  'https://www.messenger.com/t/104656608601884/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0',
-                                ),
-                              )) {
-                                throw Exception('Could not launch ');
-                              }
-                            },
-
-                            child: const Text('OK'),
+                          SizedBox(width: 12.w),
+                          Text(
+                            NumberFormat.decimalPattern(
+                              'vi_VN',
+                            ).format(int.parse(courses.priceOld ?? '')),
+                            style: defaultText14Re.copyWith(
+                              decoration: TextDecoration.lineThrough,
+                            ),
                           ),
                         ],
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  height: 48.h,
-                  width: 343.w,
-                  margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                    color: mainDarkGreen,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/lingting.png'),
-                      Text(
-                        '  Đăng ký ngay',
-                        textAlign: TextAlign.center,
-                        style: defaultText16B.copyWith(color: Colors.white),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      //cartItems.add(courses[0]);
-                      return AlertDialog(
-                        //title:  Text('Đã thêm vào giỏ hàng'),
-                        content: const Text(
-                          'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(width: 16.w),
+                        Icon(
+                          Icons.calendar_month_outlined,
+                          color: mainDarkGreen,
+                          size: 16,
                         ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text('OK'),
+                        Text(
+                          '  07/05/2026 - 09/05/2026',
+                          style: defaultText14M.copyWith(color: mainDarkGreen),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(width: 16.w),
+                        Icon(
+                          Icons.location_on_outlined,
+                          color: mainDarkGreen,
+                          size: 16,
+                        ),
+                        if (widget.type == 'on')
+                          Text(
+                            '  Học online qua app',
+                            style: defaultText14M.copyWith(
+                              color: mainDarkGreen,
+                            ),
+                          )
+                        else
+                          Text(
+                            '  Trực tiếp tại Hà Nội',
+                            style: defaultText14M.copyWith(color: Colors.red),
+                          ),
+                      ],
+                    ),
+                    if (widget.type == 'off')
+                      Row(
+                        children: [
+                          SizedBox(width: 16.w),
+                          Icon(
+                            Icons.person_outline,
+                            color: mainDarkGreen,
+                            size: 16,
+                          ),
+                          Text(
+                            '  Giảng viên: Linh Phan',
+                            style: defaultText14M.copyWith(
+                              color: mainDarkGreen,
+                            ),
                           ),
                         ],
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  height: 48.h,
-                  width: 340.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                    color: Colors.white,
-                    border: Border.all(color: mainDarkGreen, width: 1.w),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/gio_hang.png'),
-                      Text(
-                        '  Thêm vào giỏ hàng',
-                        textAlign: TextAlign.center,
-                        style: defaultText16B.copyWith(color: mainDarkGreen),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 28.h),
-              Html(data: courses.description ?? ''),
-              _buildVideoSection(),
+                    SizedBox(height: 12.h),
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              //title:  Text('Đã thêm vào giỏ hàng'),
+                              content: const Text('Tiếp tục tư vấn'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancle'),
+                                  child: const Text('Cancle'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    if (!await launchUrl(
+                                      Uri.parse(
+                                        'https://www.messenger.com/t/104656608601884/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0',
+                                      ),
+                                    )) {
+                                      throw Exception('Could not launch ');
+                                    }
+                                  },
 
-              _buildCourseContent(),
-              _buildFeedbackSection(),
-              SizedBox(height: 36.h),
-            ],
-          ),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        height: 48.h,
+                        width: 343.w,
+                        margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          color: mainDarkGreen,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/images/lingting.png'),
+                            Text(
+                              '  Đăng ký ngay',
+                              textAlign: TextAlign.center,
+                              style: defaultText16B.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            //cartItems.add(courses[0]);
+                            return AlertDialog(
+                              //title:  Text('Đã thêm vào giỏ hàng'),
+                              content: const Text(
+                                'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        height: 48.h,
+                        width: 340.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          color: Colors.white,
+                          border: Border.all(color: mainDarkGreen, width: 1.w),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/images/gio_hang.png'),
+                            Text(
+                              '  Thêm vào giỏ hàng',
+                              textAlign: TextAlign.center,
+                              style: defaultText16B.copyWith(
+                                color: mainDarkGreen,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 28.h),
+                    Html(data: courses.description ?? ''),
+                    _buildVideoSection(),
+
+                    _buildCourseContent(),
+                    _buildFeedbackSection(),
+                    SizedBox(height: 36.h),
+                  ],
+                ),
         ),
       ),
     );

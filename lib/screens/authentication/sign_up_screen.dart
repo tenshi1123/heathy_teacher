@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/repo/login_repo.dart';
 import 'package:heathy_teacher/screens/authentication/login_screen.dart';
 import 'package:heathy_teacher/services/fingerprint_service.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -14,6 +15,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   // Các biến controller để lấy dữ liệu nhập vào
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordObscured = true;
@@ -24,6 +26,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void dispose() {
     _phoneController.dispose();
     _passwordController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -56,7 +59,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: 32.h),
 
                     TextField(
-                      controller: _phoneController,
+                      controller: _nameController,
                       decoration: InputDecoration(
                         hintText: 'Họ và tên',
                         hintStyle: defaultText16M.copyWith(
@@ -144,15 +147,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               await FingerprintService.generateFingerprint(
                                 context,
                               );
-
-                          print('test5 $fingerprint');
-                          // Xử lý logic đăng ký tại đây
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: ((context) => (LoginScreen())),
-                            ),
+                          String message = await LoginRepo().signUp(
+                            _phoneController.text,
+                            _passwordController.text,
+                            _nameController.text,
+                            fingerprint,
                           );
+                          if (message != 'Đăng nhập thành công') {
+                            // Hiển thị thông báo lỗi nếu đăng nhập thất bại
+                            // show dialog thay cho snackbar để người dùng dễ thấy hơn
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Lỗi đăng ký'),
+                                content: Text(message),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('Đóng'),
+                                  ),
+                                ],
+                              ),
+                            );
+                            return;
+                          }
+                          if (message == 'Đăng nhập thành công') {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Đăng ký thành công'),
+                                content: Text(message),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: ((context) =>
+                                              (LoginScreen())),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text('Đóng'),
+                                  ),
+                                ],
+                              ),
+                            );
+                            return;
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: backGroundGreen,
