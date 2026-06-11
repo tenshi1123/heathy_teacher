@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/screens/profilePage/profile_screen.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
+import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
@@ -76,6 +77,21 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
                   _fetchData();
                 },
                 child: const Text("Thử lại"),
+              ),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) => const CoGiaoHealthyScreen(
+                        type: 'home',
+                        place: 'Hà Nội',
+                      )),
+                    ),
+                  );
+                },
+                child: const Text("Quay lại trang ngoài"),
               ),
             ],
           ),

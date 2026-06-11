@@ -74,120 +74,130 @@ class _CourseScreenState extends State<CourseScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: ListView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.only(
-            left: 16.w,
-            right: 16.w,
-            bottom: 20.h,
-            top: 16.h,
-          ),
-          physics: const ClampingScrollPhysics(),
-          itemCount: courses.length,
-          itemBuilder: (BuildContext context, int index) {
-            // 1. Lấy ra item hiện tại
-            final course = courses[index];
-            final int percent = course.percentLearning ?? 0;
-
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: ((context) =>
-                        course.settingCourseTypeType == 'online'
-                        ? OnlineClassScreen(course: course)
-                        : ListClassScreen()),
-                  ),
-                );
-              },
-              child: Container(
-                width: 343.w,
-                margin: EdgeInsets.only(bottom: 20.h),
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-                decoration: BoxDecoration(
-                  color: const Color(0xffF5FAF5),
-                  border: Border.all(
-                    color: mainDarkGreen.withValues(alpha: 0.28),
-                  ),
-                  borderRadius: BorderRadius.circular(16.r),
+        child: courses.isEmpty
+            ? Center(
+                child: Text('Bạn chưa có khóa học nào!', style: defaultText16M),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.only(
+                  left: 16.w,
+                  right: 16.w,
+                  bottom: 20.h,
+                  top: 16.h,
                 ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8.r),
-                      child: Image.network(
-                        'https://lms.cogiaohealthy.vn/images/${course.img}',
-                        width: 40.w,
-                        height: 40.h,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Image.asset(
-                              'assets/images/course_icon_0.png',
+                physics: const ClampingScrollPhysics(),
+                itemCount: courses.length,
+                itemBuilder: (BuildContext context, int index) {
+                  // 1. Lấy ra item hiện tại
+                  final course = courses[index];
+                  final int percent = course.percentLearning ?? 0;
+
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) =>
+                              OnlineClassScreen(course: course)),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 343.w,
+                      margin: EdgeInsets.only(bottom: 20.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 12.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffF5FAF5),
+                        border: Border.all(
+                          color: mainDarkGreen.withValues(alpha: 0.28),
+                        ),
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8.r),
+                            child: Image.network(
+                              'https://lms.cogiaohealthy.vn/images/${course.img}',
                               width: 40.w,
                               height: 40.h,
                               fit: BoxFit.cover,
-                            ),
-                      ),
-                    ),
-                    const Spacer(),
-                    SizedBox(
-                      width: 257.w,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            course.courseName ?? 'Chưa cập nhật tên khoá học',
-                            style: defaultText16B,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 4.h),
-
-                          Text(
-                            course.settingCourseTypeName ??
-                                'Đang cập nhật hình thức',
-                            style: defaultText14Re,
-                          ),
-                          SizedBox(height: 12.h),
-                          Row(
-                            children: [
-                              Container(
-                                height: 8.h,
-                                width: 217.w,
-                                alignment: Alignment.centerLeft,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xffEDEDED),
-                                  borderRadius: BorderRadius.circular(20.r),
-                                ),
-                                child: Container(
-                                  height: 8.h,
-                                  width: 217.w * (percent / 100),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    borderRadius: BorderRadius.circular(20.r),
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.asset(
+                                    'assets/images/course_icon_0.png',
+                                    width: 40.w,
+                                    height: 40.h,
+                                    fit: BoxFit.cover,
                                   ),
+                            ),
+                          ),
+                          const Spacer(),
+                          SizedBox(
+                            width: 257.w,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  course.courseName ??
+                                      'Chưa cập nhật tên khoá học',
+                                  style: defaultText16B,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
+                                SizedBox(height: 4.h),
 
-                              Text(
-                                ' $percent%',
-                                style: defaultText16B.copyWith(
-                                  color: mainDarkGreen,
+                                Text(
+                                  course.settingCourseTypeName ??
+                                      'Đang cập nhật hình thức',
+                                  style: defaultText14Re,
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 12.h),
+                                Row(
+                                  children: [
+                                    Container(
+                                      height: 8.h,
+                                      width: 217.w,
+                                      alignment: Alignment.centerLeft,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffEDEDED),
+                                        borderRadius: BorderRadius.circular(
+                                          20.r,
+                                        ),
+                                      ),
+                                      child: Container(
+                                        height: 8.h,
+                                        width: 217.w * (percent / 100),
+                                        decoration: BoxDecoration(
+                                          color: mainDarkGreen,
+                                          borderRadius: BorderRadius.circular(
+                                            20.r,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    Text(
+                                      ' $percent%',
+                                      style: defaultText16B.copyWith(
+                                        color: mainDarkGreen,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }
