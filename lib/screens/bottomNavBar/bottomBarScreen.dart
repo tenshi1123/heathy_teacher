@@ -106,7 +106,20 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           body: IndexedStack(
             index: currentIndex,
             children: [
-              HomeScreen(userModel: userModel!, customerModel: customerModel!),
+              HomeScreen(
+                userModel: userModel!,
+                customerModel: customerModel!,
+                onCourseTabRequested: () {
+                  setState(() {
+                    currentIndex = 1;
+                  });
+                },
+                onProductTabRequested: () {
+                  setState(() {
+                    currentIndex = 3;
+                  });
+                },
+              ),
               CourseScreen(),
               ChatScreen(),
               ProductScreen(type: 1),

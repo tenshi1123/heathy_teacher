@@ -1,43 +1,75 @@
-import 'package:intl/intl.dart';
-
 class ScheduleModel {
-  final String courseName;
-  final String buoiHoc;
-  final DateTime createdDate;
-  final String timeStart;
-  final String timeEnd;
-  final String? phongHocName;
+  final String id;
+  final String name;
+  final String? title;
+  final String? className;
+  final String? nameLesson;
+  final String? address;
+
+  final String? courseScheduleName;
   final String? cosoName;
-  final String? checkinOffId;
-  final String? linkZoom;
-  final String? meetingId;
-  final String typeLearn;
+  final String? phongHocName;
+  final String? gvStatus;
+
+  // Thời gian đã được đưa về chung kiểu DateTime
+  final DateTime? startTime;
+  final DateTime? endTime;
+
   ScheduleModel({
-    required this.courseName,
-    required this.buoiHoc,
-    required this.createdDate,
-    required this.timeStart,
-    required this.timeEnd,
-    this.phongHocName,
+    required this.id,
+    required this.name,
+    this.title,
+    this.className,
+    this.nameLesson,
+    this.address,
+    this.courseScheduleName,
     this.cosoName,
-    this.checkinOffId,
-    this.linkZoom,
-    this.meetingId,
-    required this.typeLearn,
+    this.phongHocName,
+    this.gvStatus,
+    this.startTime,
+    this.endTime,
   });
+
   factory ScheduleModel.fromJson(Map<String, dynamic> json) {
+    // 1. Xử lý Start Time (Gộp Data 1 hoặc ghép chuỗi Data 2)
+    DateTime? parsedStartTime;
+    if (json["start"] != null) {
+      parsedStartTime = DateTime.tryParse(json["start"]);
+    } else if (json["created_date"] != null && json["time_start"] != null) {
+      // Nối "2025-12-26" và "08:54:00" thành "2025-12-26 08:54:00" rồi mới parse
+      parsedStartTime = DateTime.tryParse(
+        "${json['created_date']} ${json['time_start']}",
+      );
+    }
+
+    // 2. Xử lý End Time (Gộp Data 1 hoặc ghép chuỗi Data 2)
+    DateTime? parsedEndTime;
+    if (json["end"] != null) {
+      parsedEndTime = DateTime.tryParse(json["end"]);
+    } else if (json["created_date"] != null && json["time_end"] != null) {
+      parsedEndTime = DateTime.tryParse(
+        "${json['created_date']} ${json['time_end']}",
+      );
+    }
+
     return ScheduleModel(
-      courseName: json["course_name"] ?? '',
-      buoiHoc: json["buoi_hoc"] ?? '',
-      createdDate: DateFormat("dd-MM-yyyy").parse(json["created_date"] ?? ''),
-      timeStart: json["time_start"] ?? '',
-      timeEnd: json["time_end"] ?? '',
-      phongHocName: json["phonghoc_name"],
+      id: json["id"] ?? '',
+      name: json["name"] ?? '',
+      title: json["title"],
+      className: json["className"],
+      nameLesson: json["name_lesson"],
+
+      // Vẫn giữ cơ chế gộp address như trước
+      address: json["address"] ?? json["coso_address"],
+
+      courseScheduleName: json["course_schedule_name"],
       cosoName: json["coso_name"],
-      checkinOffId: json["checkin_off_id"],
-      linkZoom: json["link_zoom"],
-      meetingId: json["meeting_id"],
-      typeLearn: json["type_learn"] ?? '',
+      phongHocName: json["phonghoc_name"],
+      gvStatus: json["gv_status"],
+
+      // Gắn DateTime đã parse vào đây
+      startTime: parsedStartTime,
+      endTime: parsedEndTime,
     );
   }
 }

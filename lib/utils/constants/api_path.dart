@@ -11,6 +11,7 @@ class ApiPath {
   static String products = '$baseUrl/customer/products';
   static String calendarOff = "$baseUrl/customer/calendar/off";
   static String pendingPayment = "$baseUrl/customer/pending_payment";
+  static String paymentHistory = "$baseUrl/customer/payment_history";
 
   //web ngoai
   static String detailCourse = '$baseUrl/chi-tiet-khoa-hoc';

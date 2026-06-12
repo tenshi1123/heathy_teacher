@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
+import 'package:heathy_teacher/screens/payment/hoc_phi_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -216,6 +217,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     SizedBox(width: 12.w),
                     Text("Đổi mật khẩu", style: defaultText14B),
+                    Spacer(),
+                    Icon(Icons.arrow_forward_ios, size: 20.r, color: colorText),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => HocPhiScreen())),
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 16.h),
+              width: 343.w,
+              height: 60.h,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0F2F4),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36.w,
+                      height: 36.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Center(child: Icon(Icons.payment)),
+                    ),
+                    SizedBox(width: 12.w),
+                    Text("Học phí và thanh toán", style: defaultText14B),
                     Spacer(),
                     Icon(Icons.arrow_forward_ios, size: 20.r, color: colorText),
                   ],

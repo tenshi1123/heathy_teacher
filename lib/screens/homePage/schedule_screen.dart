@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/schedule_model.dart';
+import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -80,8 +81,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
     required String dayStart,
     required String dayEnd,
   }) async {
-    // _listLichHoc = await DiemdanhRepo().getScheduleList(dayStart, dayEnd);
-    // _selectedEvents.value = _listLichHoc;
+    _listLichHoc = await CourseRepo().getListEventSchedule();
+    _selectedEvents.value = _listLichHoc;
   }
 
   List<ScheduleModel> _getEventsForDay(DateTime day) {
@@ -229,13 +230,14 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   calendarBuilders: CalendarBuilders(
                     markerBuilder: (context, date, events) {
                       List<ScheduleModel> list1;
-                      if (selectedHinhThuc == 'Lịch học ở trung tâm') {
+                      if (selectedHinhThuc == 'calendar') {
                         list1 = events
-                            .where((item) => item.typeLearn == "off")
+                            .where((item) => item.title != null)
                             .toList();
-                      } else if (selectedHinhThuc == 'Lịch học Zoom') {
+                      } else if (selectedHinhThuc ==
+                          'customer_zoom_google_offline') {
                         list1 = events
-                            .where((item) => item.typeLearn == "zoom")
+                            .where((item) => item.title == null)
                             .toList();
                       } else if (selectedHinhThuc ==
                           'Lịch học phụ đạo - học bù') {
@@ -313,122 +315,32 @@ class _CalenderScreenState extends State<CalenderScreen> {
               ValueListenableBuilder<List<ScheduleModel>>(
                 valueListenable: _selectedEvents,
                 builder: (context, value, _) {
-                  if (selectedHinhThuc == 'Lịch học ở trung tâm') {
-                  } else if (selectedHinhThuc == 'Lịch học Zoom') {
+                  List<ScheduleModel> list1;
+                  if (selectedHinhThuc == 'calendar') {
+                    list1 = value.where((item) => item.title != null).toList();
+                  } else if (selectedHinhThuc ==
+                      'customer_zoom_google_offline') {
+                    list1 = value.where((item) => item.title == null).toList();
                   } else if (selectedHinhThuc == 'Lịch học phụ đạo - học bù') {
-                  } else {}
-                  return
-                  // list1.isEmpty
-                  //     ? Center(
-                  //         child: Text(
-                  //           'Không có lịch học',
-                  //           style: defaultText16B,
-                  //         ),
-                  //       )
-                  //     :
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const ScrollPhysics(),
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          width: 343.w,
-                          height: 218.h,
-                          margin: EdgeInsets.only(
-                            bottom: 16.h,
-                            left: 16.w,
-                            right: 16.w,
+                    list1 = [];
+                  } else {
+                    list1 = value;
+                  }
+                  return list1.isEmpty
+                      ? Center(
+                          child: Text(
+                            'Không có lịch học',
+                            style: defaultText16B,
                           ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 12.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(
-                                  0xff062905,
-                                ).withValues(alpha: 0.16),
-                                spreadRadius: 0,
-                                blurRadius: 8,
-                                offset: const Offset(
-                                  0,
-                                  4,
-                                ), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: 318.w,
-                                height: 34.h,
-                                padding: EdgeInsets.symmetric(horizontal: 8.w),
-                                decoration: BoxDecoration(
-                                  color: mainGreen,
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/calender_icon.png',
-                                    ),
-                                    SizedBox(width: 8.w),
-                                    Text(
-                                      '01, tháng 12',
-                                      style: defaultText14SB.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 16.h,
-                                      width: 2.w,
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: 12.w,
-                                      ),
-                                      color: Colors.white.withValues(
-                                        alpha: 0.48,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Thứ 6 (08:30 - 10:30)',
-                                      style: defaultText14SB.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              SizedBox(
-                                width: 318.w,
-                                child: Text(
-                                  'Buổi 1: 3 món ăn healthy dễ làm cho nhân viên văn phòng',
-                                  style: defaultText16B.copyWith(
-                                    color: Color(0xff09204E),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 318.w,
-                                child: Text(
-                                  '• Học và thực hành trực tiếp tại trung tâm với\n  Cô giáo và đội ngũ trợ giảng\n• Hướng dẫn học viên tự pha và thực hành\n  gần 20 lọại sauce Healthy và ứng dụng',
-                                  style: defaultText14Re.copyWith(
-                                    color: Color(0xff09204E),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemCount: list1.length,
+                          itemBuilder: (context, index) {
+                            return ItemTableCalender(model: list1[index]);
+                          },
+                        );
                 },
               ),
               SizedBox(height: 24.h),
@@ -529,7 +441,7 @@ class _ItemTableCalenderState extends State<ItemTableCalender> {
                           borderRadius: BorderRadius.all(Radius.circular(12.r)),
                         ),
                         child: Text(
-                          '${widget.model.createdDate.day}, Tháng ${widget.model.createdDate.month}',
+                          'Ngày ${widget.model.startTime?.day}, Tháng ${widget.model.startTime?.month}',
                           style: defaultText14B.copyWith(color: Colors.white),
                         ),
                       ),
@@ -543,37 +455,26 @@ class _ItemTableCalenderState extends State<ItemTableCalender> {
                           BlendMode.srcIn,
                         ),
                       ),
-                      Text(
-                        ' Phòng ${widget.model.phongHocName} ${widget.model.cosoName}',
-                        style: defaultText14SB,
-                      ),
+                      if (widget.model.phongHocName != null)
+                        Expanded(
+                          child: Text(
+                            '${widget.model.phongHocName} ${widget.model.cosoName}',
+                            style: defaultText14SB,
+                          ),
+                        ),
                     ],
                   ),
                   SizedBox(height: 10.h),
-                  Text(widget.model.courseName, style: defaultText16B),
+                  Text(widget.model.name, style: defaultText16B),
+                  if (widget.model.title != null)
+                    Text('${widget.model.title}', style: defaultText16M),
+                  if (widget.model.title == null)
+                    Text(widget.model.address ?? '', style: defaultText16M),
                   Text(
-                    '${widget.model.timeStart.replaceRange(5, 8, '')} - ${widget.model.timeEnd.replaceRange(5, 8, '')}',
+                    '${widget.model.startTime?.hour}:${widget.model.startTime?.minute} - ${widget.model.endTime?.hour}:${widget.model.endTime?.minute}',
                     style: defaultText14M,
                   ),
                   SizedBox(height: 6.h),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      width: 311.w,
-                      height: 40.h,
-                      decoration: BoxDecoration(
-                        color: const Color(0xffFBF4F4),
-                        borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                        border: Border.all(color: const Color(0xffF2C6C6)),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Xin nghỉ',
-                          style: defaultText14M.copyWith(color: Colors.red),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

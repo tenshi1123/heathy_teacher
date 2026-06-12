@@ -61,11 +61,7 @@ class HinhThucHocDropdown extends StatefulWidget {
 }
 
 class _HinhThucHocDropdownState extends State<HinhThucHocDropdown> {
-  final List<String> options = [
-    "Lịch học ở trung tâm",
-    "Lịch học Zoom",
-    "Lịch học phụ đạo - học bù",
-  ];
+  final List<String> options = ["calendar", "customer_zoom_google_offline"];
 
   @override
   Widget build(BuildContext context) {

@@ -8,6 +8,7 @@ import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
+import 'package:heathy_teacher/screens/payment/hoc_phi_screen.dart';
 import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -20,9 +21,13 @@ class HomeScreen extends StatelessWidget {
     super.key,
     required this.userModel,
     required this.customerModel,
+    this.onCourseTabRequested,
+    this.onProductTabRequested,
   });
   final UserModel userModel;
   final CustomerModel customerModel;
+  final VoidCallback? onCourseTabRequested;
+  final VoidCallback? onProductTabRequested;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -30,28 +35,28 @@ class HomeScreen extends StatelessWidget {
         children: [
           SizedBox(
             width: 375.w,
-            height: 296.h,
+            height: 296.w,
             child: Stack(
               children: [
                 Image.asset(
                   'assets/images/home_background.png',
                   width: 375.w,
-                  height: 296.h,
-                  fit: BoxFit.fill,
+                  height: 296.w,
+                  fit: BoxFit.cover,
                 ),
                 Positioned(
-                  top: 72.h,
+                  top: 72.w,
                   left: 16.w,
                   child: SizedBox(
                     width: 343.w,
-                    //height: 52.h,
+                    //height: 52.w,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
                           'assets/images/avatar.png',
                           width: 48.w,
-                          //height: 48.h,
+                          //height: 48.w,
                           fit: BoxFit.fitWidth,
                         ),
                         SizedBox(width: 16.w),
@@ -80,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                           child: SvgPicture.asset(
                             'assets/icons/bell.svg',
                             width: 20.w,
-                            height: 20.h,
+                            height: 20.w,
                           ),
                         ),
                       ],
@@ -88,28 +93,44 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: 120.h,
+                  bottom: 117.w,
                   right: 40.w,
-                  child: Text(
-                    customerModel.course.toString(),
-                    style: defaultText16B.copyWith(color: Colors.white),
+                  child: GestureDetector(
+                    onTap: onCourseTabRequested,
+                    child: Text(
+                      customerModel.course.toString(),
+                      style: defaultText16B.copyWith(color: Colors.white),
+                    ),
                   ),
                 ),
                 Positioned(
-                  bottom: 72.h,
+                  bottom: 69.w,
                   right: 40.w,
-                  child: Text(
-                    customerModel.product.toString(),
-                    style: defaultText16B.copyWith(color: Colors.white),
+                  child: GestureDetector(
+                    onTap: onProductTabRequested,
+                    child: Text(
+                      customerModel.product.toString(),
+                      style: defaultText16B.copyWith(color: Colors.white),
+                    ),
                   ),
                 ),
                 Positioned(
-                  bottom: 26.h,
+                  bottom: 20.w,
                   right: 40.w,
-                  child: Text(
-                    '${NumberFormat.decimalPattern('vi_VN').format(customerModel.paymentHistory)} VNĐ',
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) => HocPhiScreen()),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      '${NumberFormat.decimalPattern('vi_VN').format(customerModel.paymentHistory)} VNĐ',
 
-                    style: defaultText18B,
+                      style: defaultText18B,
+                    ),
                   ),
                 ),
               ],
@@ -192,105 +213,7 @@ class HomeScreen extends StatelessWidget {
               physics: const ScrollPhysics(),
               itemCount: 3,
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => RegisterClassOff(type: 'off')),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 264.h,
-                    width: 200.w,
-                    margin: EdgeInsets.only(
-                      left: 16.w,
-                      right: index == 2 ? 16.w : 4.w,
-                      top: 20.h,
-                      bottom: 28.h,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20.r)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xff062905).withValues(alpha: 0.16),
-                          spreadRadius: 0,
-                          blurRadius: 8,
-                          offset: const Offset(
-                            0,
-                            4,
-                          ), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.asset(
-                          'assets/images/off_class_${index + 1}.png',
-                          height: 103.h,
-                          width: 184.w,
-                          fit: BoxFit.fill,
-                        ),
-                        Row(
-                          children: [
-                            RatingStars(
-                              rating: 4.5, // Hiển thị 4.5 sao
-                              starSize: 16.r,
-                            ),
-                            Text(
-                              '(4,5)',
-                              style: defaultText14SB.copyWith(fontSize: 12.sp),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          'Lớp nấu ăn Eatclean cơ bản dành cho gia đình',
-                          style: defaultText14SB,
-                        ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('3.000.000đ', style: defaultText16B),
-                            Text(
-                              '4.000.000đ',
-                              style: defaultText12Re.copyWith(
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 32.h,
-                          width: 184.w,
-                          decoration: BoxDecoration(
-                            color: mainDarkGreen,
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Tham gia ngay ',
-                                style: defaultText14SB.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Icon(Icons.arrow_right_alt, color: Colors.white),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                return _OfflineClassCard(index: index);
               },
             ),
           ),
@@ -332,146 +255,7 @@ class HomeScreen extends StatelessWidget {
               physics: const ScrollPhysics(),
               itemCount: 3,
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => RegisterClassON(type: 'on')),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 294.h,
-                    width: 200.w,
-                    margin: EdgeInsets.only(
-                      left: 16.w,
-                      right: index == 2 ? 16.w : 4.w,
-                      top: 20.h,
-                      bottom: 28.h,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20.r)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xff062905).withValues(alpha: 0.16),
-                          spreadRadius: 0,
-                          blurRadius: 8,
-                          offset: const Offset(
-                            0,
-                            4,
-                          ), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          height: 103.h,
-                          width: 184.w,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.r),
-                            image: DecorationImage(
-                              image: AssetImage(
-                                'assets/images/online_class_${index + 1}.png',
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            RatingStars(
-                              rating: 4.5, // Hiển thị 4.5 sao
-                              starSize: 16.r,
-                            ),
-                            Text(
-                              '(4,5)',
-                              style: defaultText14SB.copyWith(fontSize: 12.sp),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
-                          style: defaultText14SB,
-                        ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('8.000.000đ', style: defaultText16B),
-                            Text(
-                              '9.000.000đ',
-                              style: defaultText12Re.copyWith(
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 32.h,
-                          width: 184.w,
-                          decoration: BoxDecoration(
-                            color: Color(0xff73BB43),
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(width: 8.w),
-                              Image.asset(
-                                'assets/images/play_icon.png',
-                                height: 16.h,
-                                width: 16.w,
-                                fit: BoxFit.fill,
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                '15 bài học',
-                                style: defaultText14SB.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: 32.h,
-                          width: 184.w,
-                          decoration: BoxDecoration(
-                            color: Color(0xff73BB43),
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(width: 8.w),
-                              Image.asset(
-                                'assets/images/play_icon.png',
-                                height: 16.h,
-                                width: 16.w,
-                                fit: BoxFit.fill,
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                '12 lượt đã học',
-                                style: defaultText14SB.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                return _OnlineClassCard(index: index);
               },
             ),
           ),
@@ -523,87 +307,310 @@ class HomeScreen extends StatelessWidget {
               physics: const ScrollPhysics(),
               itemCount: 3,
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => DetailProductScreen()),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 297.h,
-                    width: 200.w,
-                    margin: EdgeInsets.only(
-                      left: 16.w,
-                      right: index == 2 ? 16.w : 4.w,
-                      top: 20.h,
-                      bottom: 28.h,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20.r)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xff062905).withValues(alpha: 0.16),
-                          spreadRadius: 0,
-                          blurRadius: 8,
-                          offset: const Offset(
-                            0,
-                            4,
-                          ), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.asset(
-                          'assets/images/material${index + 1}.png',
-                          width: 184.w,
-                          height: 184.h,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        Row(
-                          children: [
-                            RatingStars(rating: 4.5, starSize: 16.r),
-                            Text(
-                              '(4,5)',
-                              style: defaultText14SB.copyWith(fontSize: 12.sp),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          'Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300g',
-                          style: defaultText14SB,
-                        ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('128.000đ', style: defaultText16B),
-                            Text(
-                              '250.000đ',
-                              style: defaultText12Re.copyWith(
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                return _MaterialProductCard(index: index);
               },
             ),
           ),
           SizedBox(height: 12.h),
         ],
+      ),
+    );
+  }
+}
+
+class _OfflineClassCard extends StatelessWidget {
+  final int index;
+  const _OfflineClassCard({required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: ((context) => const RegisterClassOff(type: 'off')),
+          ),
+        );
+      },
+      child: Container(
+        height: 264.h,
+        width: 200.w,
+        margin: EdgeInsets.only(
+          left: 16.w,
+          right: index == 2 ? 16.w : 4.w,
+          top: 20.h,
+          bottom: 28.h,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20.r)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xff062905).withValues(alpha: 0.16),
+              spreadRadius: 0,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Image.asset(
+              'assets/images/off_class_${index + 1}.png',
+              height: 103.h,
+              width: 184.w,
+              fit: BoxFit.fill,
+            ),
+            Row(
+              children: [
+                RatingStars(rating: 4.5, starSize: 16.r),
+                Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
+              ],
+            ),
+            Text(
+              'Lớp nấu ăn Eatclean cơ bản dành cho gia đình',
+              style: defaultText14SB,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('3.000.000đ', style: defaultText16B),
+                Text(
+                  '4.000.000đ',
+                  style: defaultText12Re.copyWith(
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              height: 32.h,
+              width: 184.w,
+              decoration: BoxDecoration(
+                color: mainDarkGreen,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Tham gia ngay ',
+                    style: defaultText14SB.copyWith(color: Colors.white),
+                  ),
+                  const Icon(Icons.arrow_right_alt, color: Colors.white),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OnlineClassCard extends StatelessWidget {
+  final int index;
+  const _OnlineClassCard({required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: ((context) => const RegisterClassON(type: 'on')),
+          ),
+        );
+      },
+      child: Container(
+        height: 294.h,
+        width: 200.w,
+        margin: EdgeInsets.only(
+          left: 16.w,
+          right: index == 2 ? 16.w : 4.w,
+          top: 20.h,
+          bottom: 28.h,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20.r)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xff062905).withValues(alpha: 0.16),
+              spreadRadius: 0,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              height: 103.h,
+              width: 184.w,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                image: DecorationImage(
+                  image: AssetImage(
+                    'assets/images/online_class_${index + 1}.png',
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                RatingStars(rating: 4.5, starSize: 16.r),
+                Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
+              ],
+            ),
+            Text(
+              'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
+              style: defaultText14SB,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('8.000.000đ', style: defaultText16B),
+                Text(
+                  '9.000.000đ',
+                  style: defaultText12Re.copyWith(
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              height: 32.h,
+              width: 184.w,
+              decoration: BoxDecoration(
+                color: const Color(0xff73BB43),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 8.w),
+                  Image.asset(
+                    'assets/images/play_icon.png',
+                    height: 16.h,
+                    width: 16.w,
+                    fit: BoxFit.fill,
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    '15 bài học',
+                    style: defaultText14SB.copyWith(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 32.h,
+              width: 184.w,
+              decoration: BoxDecoration(
+                color: const Color(0xff73BB43),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 8.w),
+                  Image.asset(
+                    'assets/images/play_icon.png',
+                    height: 16.h,
+                    width: 16.w,
+                    fit: BoxFit.fill,
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    '12 lượt đã học',
+                    style: defaultText14SB.copyWith(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MaterialProductCard extends StatelessWidget {
+  final int index;
+  const _MaterialProductCard({required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: ((context) => DetailProductScreen())),
+        );
+      },
+      child: Container(
+        height: 297.h,
+        width: 200.w,
+        margin: EdgeInsets.only(
+          left: 16.w,
+          right: index == 2 ? 16.w : 4.w,
+          top: 20.h,
+          bottom: 28.h,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20.r)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xff062905).withValues(alpha: 0.16),
+              spreadRadius: 0,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Image.asset(
+              'assets/images/material${index + 1}.png',
+              width: 184.w,
+              height: 184.h,
+              fit: BoxFit.fitWidth,
+            ),
+            Row(
+              children: [
+                RatingStars(rating: 4.5, starSize: 16.r),
+                Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
+              ],
+            ),
+            Text(
+              'Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300g',
+              style: defaultText14SB,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('128.000đ', style: defaultText16B),
+                Text(
+                  '250.000đ',
+                  style: defaultText12Re.copyWith(
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
