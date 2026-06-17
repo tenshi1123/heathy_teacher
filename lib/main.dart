@@ -9,6 +9,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
 
 List<CourseModel> cartItems = [];
+String isShow = '';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initApiConfig();
@@ -29,9 +30,10 @@ Future<void> initApiConfig() async {
             'https://612ced09ab461c00178b5fbb.mockapi.io/api/users/kiddo',
           ),
         )
-        .timeout(const Duration(seconds: 8));
+        .timeout(const Duration(seconds: 3));
     final data = jsonDecode(res.body);
     ApiPath.baseUrl = data[2]['domain'] + 'api';
+    isShow = data[4]['domain'];
     debugPrint('[initApiConfig] ✅ Cấu hình API thành công: ${ApiPath.baseUrl}');
   } catch (e) {
     // Fallback: giữ nguyên giá trị mặc định đã được khai báo trong ApiPath/ApiPathTeacher

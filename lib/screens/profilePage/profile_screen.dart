@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/screens/payment/hoc_phi_screen.dart';
+import 'package:heathy_teacher/screens/profilePage/detail_info_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -110,11 +111,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.white,
                       shape: BoxShape.circle,
                     ),
-                    child: Image.asset(
-                      'assets/images/avatar1.png',
-                      width: 100.w,
-                      //height: 48.h,
-                      fit: BoxFit.fitWidth,
+                    child: ClipOval(
+                      child: Image.network(
+                        'https://lms.cogiaohealthy.vn/${widget.userModel.img}',
+                        width: 80.w,
+                        height: 80.h,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -142,13 +145,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           GestureDetector(
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) =>
-              //         DetailInfoScreen(model: profileModel),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      DetailInfoScreen(model: widget.userModel),
+                ),
+              );
             },
             child: Container(
               margin: EdgeInsets.only(top: 16.h),

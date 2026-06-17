@@ -329,7 +329,7 @@ class _OfflineClassCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: ((context) => const RegisterClassOff(type: 'off')),
+            builder: ((context) => const RegisterClassOff()),
           ),
         );
       },
@@ -422,7 +422,7 @@ class _OnlineClassCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: ((context) => const RegisterClassON(type: 'on')),
+            builder: ((context) => const RegisterClassON()),
           ),
         );
       },

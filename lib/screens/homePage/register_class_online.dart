@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/main.dart';
@@ -11,8 +9,7 @@ import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterClassON extends StatefulWidget {
-  const RegisterClassON({super.key, required this.type});
-  final String type;
+  const RegisterClassON({super.key});
   @override
   State<RegisterClassON> createState() => _RegisterClassONState();
 }
@@ -33,9 +30,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          widget.type == 'off'
-              ? 'Chi tiết lớp trực tiếp'
-              : 'Chi tiết khoá online',
+          'Chi tiết khoá online',
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         leading: IconButton(
@@ -80,16 +75,12 @@ class _RegisterClassONState extends State<RegisterClassON> {
               SizedBox(
                 width: 343.w,
                 child: Text(
-                  widget.type == 'off'
-                      ? 'Lớp nấu ăn Eatclean cơ bản cho gia đình'
-                      : 'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
+                  'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
                   style: defaultText20B.copyWith(color: mainDarkGreen),
                 ),
               ),
               Image.asset(
-                widget.type == 'off'
-                    ? 'assets/images/off_class_4.png'
-                    : 'assets/images/online_class_1.png',
+                'assets/images/online_class_1.png',
                 width: 343.w,
                 height: 280.h,
                 fit: BoxFit.fill,
@@ -138,29 +129,12 @@ class _RegisterClassONState extends State<RegisterClassON> {
                     color: mainDarkGreen,
                     size: 16,
                   ),
-                  if (widget.type == 'on')
-                    Text(
-                      '  Học online qua app',
-                      style: defaultText14M.copyWith(color: mainDarkGreen),
-                    )
-                  else
-                    Text(
-                      '  Trực tiếp tại Hà Nội',
-                      style: defaultText14M.copyWith(color: Colors.red),
-                    ),
+                  Text(
+                    '  Học online qua app',
+                    style: defaultText14M.copyWith(color: mainDarkGreen),
+                  ),
                 ],
               ),
-              if (widget.type == 'off')
-                Row(
-                  children: [
-                    SizedBox(width: 16.w),
-                    Icon(Icons.person_outline, color: mainDarkGreen, size: 16),
-                    Text(
-                      '  Giảng viên: Linh Phan',
-                      style: defaultText14M.copyWith(color: mainDarkGreen),
-                    ),
-                  ],
-                ),
               SizedBox(height: 12.h),
               InkWell(
                 onTap: () {
@@ -265,29 +239,6 @@ class _RegisterClassONState extends State<RegisterClassON> {
                   style: defaultText14M,
                 ),
               ),
-              widget.type == 'off'
-                  ? Padding(
-                      padding: EdgeInsets.only(top: 16.h, bottom: 8.h),
-                      child: Row(
-                        children: [
-                          SizedBox(width: 16.w),
-                          Text(
-                            'Lịch khai giảng tháng 8',
-                            style: defaultText16B,
-                          ),
-                        ],
-                      ),
-                    )
-                  : SizedBox(),
-              widget.type == 'off'
-                  ? Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Text(
-                        'Khóa học này chính là lựa chọn lý tưởng dành cho bạn! Với lộ trình bài bản, giảng viên giàu kinh nghiệm và môi trường học tập hiện đại, bạn sẽ được hướng dẫn từng bước – từ kỹ thuật cơ bản đến cách trình bày món ăn đẹp mắt.',
-                        style: defaultText14M,
-                      ),
-                    )
-                  : SizedBox(),
               VideoLessonPreviewWidget(),
               Padding(
                 padding: EdgeInsets.only(top: 16.h, bottom: 8.h),

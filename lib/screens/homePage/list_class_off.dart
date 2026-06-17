@@ -79,7 +79,7 @@ class _ListClassOffState extends State<ListClassOff> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: ((context) => RegisterClassOff(type: 'off')),
+                        builder: ((context) => const RegisterClassOff()),
                       ),
                     );
                   },

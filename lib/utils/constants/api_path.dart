@@ -12,7 +12,15 @@ class ApiPath {
   static String calendarOff = "$baseUrl/customer/calendar/off";
   static String pendingPayment = "$baseUrl/customer/pending_payment";
   static String paymentHistory = "$baseUrl/customer/payment_history";
+  static String feedBack = '$baseUrl/customer/feedback';
+  static String editProfile = '$baseUrl/customer/profile/edit';
+  static String changeAvatar = '$baseUrl/customer/profile/change_avatar';
 
   //web ngoai
+  static String listCourse = '$baseUrl/danh-sach-khoa-hoc';
+  static String courseCatalog = '$baseUrl/danh-muc-khoa-hoc';
   static String detailCourse = '$baseUrl/chi-tiet-khoa-hoc';
+  static String listProduct = '$baseUrl/danh-sach-san-pham';
+  static String productCatalog = '$baseUrl/danh-muc-san-pham';
+  static String detailProduct = '$baseUrl/chi-tiet-san-pham';
 }

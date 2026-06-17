@@ -10,6 +10,7 @@ import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CustomDotLine extends StatelessWidget {
   final double dotSize;
@@ -425,7 +426,9 @@ class CourseItem extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: ((context) => RegisterClassOff(type: type)),
+                      builder: ((context) => type == 'on'
+                          ? const RegisterClassON()
+                          : const RegisterClassOff()),
                     ),
                   );
                   // showCitySelectionDialog(
@@ -593,7 +596,7 @@ class CourseItemOnline extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: ((context) => RegisterClassON(type: 'on')),
+                  builder: ((context) => const RegisterClassON()),
                 ),
               );
             },
@@ -1469,5 +1472,78 @@ class VideoLessonPreviewWidget extends StatelessWidget {
         child: Icon(icon, color: Colors.white, size: 20),
       ),
     );
+  }
+}
+
+class AppImage extends StatelessWidget {
+  final String url;
+  final double? width;
+  final double? height;
+  final BoxFit? fit;
+  final double? borderRadius;
+  final Widget? errorWidget;
+  final Widget? placeholder;
+
+  const AppImage({
+    super.key,
+    required this.url,
+    this.width,
+    this.height,
+    this.fit,
+    this.borderRadius,
+    this.errorWidget,
+    this.placeholder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Widget defaultPlaceholder() {
+      return Container(
+        width: width,
+        height: height,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.grey.shade200,
+        ),
+        child: Icon(
+          Icons.image_outlined,
+          color: Colors.grey.shade400,
+          size: 32,
+        ),
+      );
+    }
+
+    final image = CachedNetworkImage(
+      imageUrl: url,
+      width: width,
+      height: height,
+      fit: fit ?? BoxFit.cover,
+      placeholder: (context, url) {
+        return placeholder ?? defaultPlaceholder();
+      },
+      errorWidget: (context, url, error) {
+        return errorWidget ??
+            Container(
+              width: width,
+              height: height,
+              color: Colors.grey.shade200,
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.broken_image_outlined,
+                color: Colors.grey.shade400,
+              ),
+            );
+      },
+    );
+
+    if (borderRadius != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius!),
+        child: image,
+      );
+    }
+
+    return image;
   }
 }

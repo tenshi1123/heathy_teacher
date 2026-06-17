@@ -10,8 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterClassOff extends StatefulWidget {
-  const RegisterClassOff({super.key, required this.type});
-  final String type;
+  const RegisterClassOff({super.key});
   @override
   State<RegisterClassOff> createState() => _RegisterClassOffState();
 }
@@ -43,9 +42,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          widget.type == 'off'
-              ? 'Chi tiết lớp trực tiếp'
-              : 'Chi tiết khoá online',
+          'Chi tiết lớp trực tiếp',
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         leading: IconButton(
@@ -92,9 +89,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                     SizedBox(
                       width: 343.w,
                       child: Text(
-                        widget.type == 'off'
-                            ? courses.title ?? ''
-                            : 'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
+                        courses.title ?? '',
                         style: defaultText20B.copyWith(color: mainDarkGreen),
                       ),
                     ),
@@ -153,37 +148,28 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                           color: mainDarkGreen,
                           size: 16,
                         ),
-                        if (widget.type == 'on')
-                          Text(
-                            '  Học online qua app',
-                            style: defaultText14M.copyWith(
-                              color: mainDarkGreen,
-                            ),
-                          )
-                        else
-                          Text(
-                            '  Trực tiếp tại Hà Nội',
-                            style: defaultText14M.copyWith(color: Colors.red),
-                          ),
+                        Text(
+                          '  Trực tiếp tại Hà Nội',
+                          style: defaultText14M.copyWith(color: Colors.red),
+                        ),
                       ],
                     ),
-                    if (widget.type == 'off')
-                      Row(
-                        children: [
-                          SizedBox(width: 16.w),
-                          Icon(
-                            Icons.person_outline,
+                    Row(
+                      children: [
+                        SizedBox(width: 16.w),
+                        Icon(
+                          Icons.person_outline,
+                          color: mainDarkGreen,
+                          size: 16,
+                        ),
+                        Text(
+                          '  Giảng viên: Linh Phan',
+                          style: defaultText14M.copyWith(
                             color: mainDarkGreen,
-                            size: 16,
                           ),
-                          Text(
-                            '  Giảng viên: Linh Phan',
-                            style: defaultText14M.copyWith(
-                              color: mainDarkGreen,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 12.h),
                     InkWell(
                       onTap: () {
