@@ -6,6 +6,7 @@ import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
+import 'package:heathy_teacher/main.dart';
 
 class ListClassOff extends StatefulWidget {
   const ListClassOff({super.key});
@@ -137,18 +138,19 @@ class _ListClassOffState extends State<ListClassOff> {
                                 'Lớp nấu ăn Eatclean cơ bản dành cho gia đình',
                                 style: defaultText14SB,
                               ),
-                              Row(
-                                children: [
-                                  Text('3.000.000đ', style: defaultText16B),
-                                  SizedBox(width: 12.w),
-                                  Text(
-                                    '4.000.000đ',
-                                    style: defaultText12Re.copyWith(
-                                      decoration: TextDecoration.lineThrough,
+                              if (isShow == 'true')
+                                Row(
+                                  children: [
+                                    Text('3.000.000đ', style: defaultText16B),
+                                    SizedBox(width: 12.w),
+                                    Text(
+                                      '4.000.000đ',
+                                      style: defaultText12Re.copyWith(
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                ),
                             ],
                           ),
                         ),

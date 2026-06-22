@@ -9,6 +9,7 @@ import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
+import 'package:heathy_teacher/main.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key, required this.type});
@@ -265,29 +266,30 @@ class _ProductScreenState extends State<ProductScreen> {
                                                 ),
 
                                                 SizedBox(height: 8.h),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    // THAY GIÁ SẢN PHẨM BẰNG DATA API
-                                                    Text(
-                                                      '${NumberFormat.decimalPattern('vi_VN').format(int.tryParse(product.detail?[0].price ?? '0'))} VNĐ',
-                                                      style: defaultText16B
-                                                          .copyWith(
-                                                            color:
-                                                                mainDarkGreen,
-                                                          ), // Đổi màu giá để nổi bật
-                                                    ),
-                                                    // Giá gốc bị gạch ngang (Tạm ẩn nếu API không có giá khuyến mãi)
-                                                    // Text(
-                                                    //   '250.000đ',
-                                                    //   style: defaultText12Re.copyWith(
-                                                    //     decoration: TextDecoration.lineThrough,
-                                                    //   ),
-                                                    // ),
-                                                  ],
-                                                ),
+                                                if (isShow == 'true')
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      // THAY GIÁ SẢN PHẨM BẰNG DATA API
+                                                      Text(
+                                                        '${NumberFormat.decimalPattern('vi_VN').format(int.tryParse(product.detail?[0].price ?? '0'))} VNĐ',
+                                                        style: defaultText16B
+                                                            .copyWith(
+                                                              color:
+                                                                  mainDarkGreen,
+                                                            ), // Đổi màu giá để nổi bật
+                                                      ),
+                                                      // Giá gốc bị gạch ngang (Tạm ẩn nếu API không có giá khuyến mãi)
+                                                      // Text(
+                                                      //   '250.000đ',
+                                                      //   style: defaultText12Re.copyWith(
+                                                      //     decoration: TextDecoration.lineThrough,
+                                                      //   ),
+                                                      // ),
+                                                    ],
+                                                  ),
                                               ],
                                             ),
                                           ),

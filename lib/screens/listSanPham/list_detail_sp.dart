@@ -9,6 +9,7 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
+import 'package:heathy_teacher/main.dart';
 
 class ListDetailSpScreen extends StatefulWidget {
   final String title;
@@ -163,63 +164,65 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                 ),
                               ),
                             ),
-                            Text(
-                              item.price ?? '',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: defaultText20B.copyWith(
-                                color: mainDarkGreen,
+                            if (isShow == 'true') ...[
+                              Text(
+                                item.price ?? '',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: defaultText20B.copyWith(
+                                  color: mainDarkGreen,
+                                ),
                               ),
-                            ),
-                            const Spacer(),
+                              const Spacer(),
 
-                            /// BUTTON
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 2.w,
-                                vertical: 4.h,
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        //title:  Text('Đã thêm vào giỏ hàng'),
-                                        content: const Text(
-                                          'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
-                                        ),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context, 'OK'),
-                                            child: const Text('OK'),
+                              /// BUTTON
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 2.w,
+                                  vertical: 4.h,
+                                ),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          //title:  Text('Đã thêm vào giỏ hàng'),
+                                          content: const Text(
+                                            'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
                                           ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 2.h,
-                                    horizontal: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "Thêm vào giỏ hàng",
-                                      style: defaultText12B.copyWith(
-                                        color: Colors.white,
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, 'OK'),
+                                              child: const Text('OK'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 2.h,
+                                      horizontal: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: mainDarkGreen,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "Thêm vào giỏ hàng",
+                                        style: defaultText12B.copyWith(
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       );

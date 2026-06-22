@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
@@ -328,9 +329,7 @@ class _OfflineClassCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: ((context) => const RegisterClassOff()),
-          ),
+          MaterialPageRoute(builder: ((context) => const RegisterClassOff())),
         );
       },
       child: Container(
@@ -374,18 +373,19 @@ class _OfflineClassCard extends StatelessWidget {
               'Lớp nấu ăn Eatclean cơ bản dành cho gia đình',
               style: defaultText14SB,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('3.000.000đ', style: defaultText16B),
-                Text(
-                  '4.000.000đ',
-                  style: defaultText12Re.copyWith(
-                    decoration: TextDecoration.lineThrough,
+            if (isShow == 'true')
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('3.000.000đ', style: defaultText16B),
+                  Text(
+                    '4.000.000đ',
+                    style: defaultText12Re.copyWith(
+                      decoration: TextDecoration.lineThrough,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             Container(
               height: 32.h,
               width: 184.w,
@@ -421,9 +421,7 @@ class _OnlineClassCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: ((context) => const RegisterClassON()),
-          ),
+          MaterialPageRoute(builder: ((context) => const RegisterClassON())),
         );
       },
       child: Container(

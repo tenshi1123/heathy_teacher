@@ -5,6 +5,7 @@ import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:intl/intl.dart';
+import 'package:heathy_teacher/main.dart';
 
 class FilterMenuDrawer extends StatefulWidget {
   const FilterMenuDrawer({super.key});
@@ -203,10 +204,16 @@ class _QuantityCounterState extends State<QuantityCounter> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         // 1. Text "Số lượng:"
-        Text(
-          '${NumberFormat('#,###', 'vi_VN').format(widget.price)} đ',
-          style: defaultText14SB.copyWith(fontSize: 16.sp),
-        ),
+        if (isShow == 'true')
+          Text(
+            '${NumberFormat('#,###', 'vi_VN').format(widget.price)} đ',
+            style: defaultText14SB.copyWith(fontSize: 16.sp),
+          )
+        else
+          Text(
+            'Số lượng',
+            style: defaultText14SB.copyWith(fontSize: 16.sp),
+          ),
         Spacer(),
         // 2. Nút Trừ (-)
         _buildControlButton(

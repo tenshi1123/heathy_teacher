@@ -38,23 +38,24 @@ class _RegisterClassONState extends State<RegisterClassON> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
-              );
-            },
-            child: Stack(
-              children: [
-                Icon(
-                  Icons.shopping_cart_outlined,
-                  color: Colors.white,
-                  size: 28, // Giảm size Icon giỏ hàng một chút
-                ),
-              ],
+          if (isShow == 'true')
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
+                );
+              },
+              child: Stack(
+                children: [
+                  Icon(
+                    Icons.shopping_cart_outlined,
+                    color: Colors.white,
+                    size: 28, // Giảm size Icon giỏ hàng một chút
+                  ),
+                ],
+              ),
             ),
-          ),
           SizedBox(width: 16.w),
         ],
       ),
@@ -86,27 +87,28 @@ class _RegisterClassONState extends State<RegisterClassON> {
                 fit: BoxFit.fill,
               ),
               SizedBox(height: 20.h),
-              SizedBox(
-                width: 343.w,
-                child: Row(
-                  children: [
-                    Text(
-                      '3.000.000đ',
-                      style: defaultText16B.copyWith(
-                        color: mainDarkGreen,
-                        fontSize: 24.sp,
+              if (isShow == 'true')
+                SizedBox(
+                  width: 343.w,
+                  child: Row(
+                    children: [
+                      Text(
+                        '3.000.000đ',
+                        style: defaultText16B.copyWith(
+                          color: mainDarkGreen,
+                          fontSize: 24.sp,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Text(
-                      '4.000.000đ',
-                      style: defaultText14Re.copyWith(
-                        decoration: TextDecoration.lineThrough,
+                      SizedBox(width: 12.w),
+                      Text(
+                        '4.000.000đ',
+                        style: defaultText14Re.copyWith(
+                          decoration: TextDecoration.lineThrough,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
               Row(
                 children: [
                   SizedBox(width: 16.w),
@@ -136,100 +138,117 @@ class _RegisterClassONState extends State<RegisterClassON> {
                 ],
               ),
               SizedBox(height: 12.h),
-              InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        //title:  Text('Đã thêm vào giỏ hàng'),
-                        content: const Text('Tiếp tục tư vấn'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancle'),
-                            child: const Text('Cancle'),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              if (!await launchUrl(
-                                Uri.parse(
-                                  'https://www.messenger.com/t/104656608601884/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0',
-                                ),
-                              )) {
-                                throw Exception('Could not launch ');
-                              }
-                            },
+              if (isShow == 'true') ...[
+                InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          //title:  Text('Đã thêm vào giỏ hàng'),
+                          content: const Text('Tiếp tục tư vấn'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancle'),
+                              child: const Text('Cancle'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                if (!await launchUrl(
+                                  Uri.parse(
+                                    'https://www.messenger.com/t/104656608601884/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0',
+                                  ),
+                                )) {
+                                  throw Exception('Could not launch ');
+                                }
+                              },
 
-                            child: const Text('OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    height: 48.h,
+                    width: 343.w,
+                    margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.r),
+                      color: mainDarkGreen,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/lingting.png'),
+                        Text(
+                          '  Đăng ký ngay',
+                          textAlign: TextAlign.center,
+                          style: defaultText16B.copyWith(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        cartItems.add(courses[0]);
+                        return AlertDialog(
+                          //title:  Text('Đã thêm vào giỏ hàng'),
+                          content: const Text(
+                            'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
                           ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: Container(
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    height: 48.h,
+                    width: 340.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.r),
+                      color: Colors.white,
+                      border: Border.all(color: mainDarkGreen, width: 1.w),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/gio_hang.png'),
+                        Text(
+                          '  Thêm vào giỏ hàng',
+                          textAlign: TextAlign.center,
+                          style: defaultText16B.copyWith(color: mainDarkGreen),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ] else ...[
+                Container(
                   height: 48.h,
                   width: 343.w,
                   margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16.r),
-                    color: mainDarkGreen,
+                    color: Colors.grey,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/lingting.png'),
-                      Text(
-                        '  Đăng ký ngay',
-                        textAlign: TextAlign.center,
-                        style: defaultText16B.copyWith(color: Colors.white),
-                      ),
-                    ],
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Đã khóa',
+                    style: defaultText16B.copyWith(color: Colors.white),
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      cartItems.add(courses[0]);
-                      return AlertDialog(
-                        //title:  Text('Đã thêm vào giỏ hàng'),
-                        content: const Text(
-                          'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  height: 48.h,
-                  width: 340.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                    color: Colors.white,
-                    border: Border.all(color: mainDarkGreen, width: 1.w),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/gio_hang.png'),
-                      Text(
-                        '  Thêm vào giỏ hàng',
-                        textAlign: TextAlign.center,
-                        style: defaultText16B.copyWith(color: mainDarkGreen),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              ],
               SizedBox(height: 28.h),
 
               Padding(

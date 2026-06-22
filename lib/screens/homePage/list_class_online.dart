@@ -5,6 +5,7 @@ import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
+import 'package:heathy_teacher/main.dart';
 
 class ListClassOnline extends StatefulWidget {
   const ListClassOnline({super.key});
@@ -137,19 +138,20 @@ class _ListClassOnlineState extends State<ListClassOnline> {
                                     'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
                                     style: defaultText14SB,
                                   ),
-                                  Row(
-                                    children: [
-                                      Text('8.000.000đ', style: defaultText16B),
-                                      SizedBox(width: 12.w),
-                                      Text(
-                                        '9.000.000đ',
-                                        style: defaultText12Re.copyWith(
-                                          decoration:
-                                              TextDecoration.lineThrough,
+                                  if (isShow == 'true')
+                                    Row(
+                                      children: [
+                                        Text('8.000.000đ', style: defaultText16B),
+                                        SizedBox(width: 12.w),
+                                        Text(
+                                          '9.000.000đ',
+                                          style: defaultText12Re.copyWith(
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
+                                      ],
+                                    ),
                                 ],
                               ),
                             ),

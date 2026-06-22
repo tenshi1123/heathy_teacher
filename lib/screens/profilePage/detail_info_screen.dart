@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/home_model.dart';
+import 'package:heathy_teacher/repo/home_repo.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
-import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 class DetailInfoScreen extends StatefulWidget {
@@ -20,6 +20,7 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
   bool isFilled = false;
   late TextEditingController fullNameController;
   late TextEditingController emailController;
+  TextEditingController birthdayController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -104,18 +105,57 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
                     bottom: 0,
                     left: 138.w,
                     child: Container(
-                      padding: EdgeInsets.all(12.dg),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
                       child: ClipOval(
-                        child: AppImage(
-                          url:
-                              'https://lms.cogiaohealthy.vn/img/avatar/customer_1147/1775228294_69cfd5867c120.jpg',
+                        child: Image.network(
+                          widget.model!.img!.contains('https://')
+                              ? '${widget.model!.img}'
+                              : 'https://lms.cogiaohealthy.vn/${widget.model!.img}',
                           width: 80.w,
                           height: 80.h,
                           fit: BoxFit.cover,
+                          // Hiển thị Icon mặc định khi lỗi tải ảnh
+                          errorBuilder:
+                              (
+                                BuildContext context,
+                                Object exception,
+                                StackTrace? stackTrace,
+                              ) {
+                                return Container(
+                                  width: 80.w,
+                                  height: 80.h,
+                                  color: Colors
+                                      .grey[200], // Màu nền của icon mặc định
+                                  child: Icon(
+                                    Icons
+                                        .person, // Hoặc Icons.error_outline tuỳ ý bạn
+                                    size: 40.w,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
+                          // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
+                          loadingBuilder:
+                              (
+                                BuildContext context,
+                                Widget child,
+                                ImageChunkEvent? loadingProgress,
+                              ) {
+                                if (loadingProgress == null) {
+                                  return child; // Đã tải xong
+                                }
+                                return Container(
+                                  width: 80.w,
+                                  height: 80.h,
+                                  color: Colors.grey[100],
+                                  child: const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              },
                         ),
                       ),
                     ),
@@ -206,23 +246,29 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
               },
               hasIcon: true,
             ),
+            buildLabeledField(
+              label: 'Sinh nhật',
+              controller: birthdayController,
+              context: context,
+              isDateField: true,
+            ),
             SizedBox(height: 200.h),
             GestureDetector(
               onTap: isFilled
                   ? () async {
-                      // CustomerRepo().changeInfo(
-                      //     name: fullNameController.text,
-                      //     email: emailController.text,
-                      //     dob: widget.model?.birthday ?? '');
+                      String message = await HomeRepo().changeInfo(
+                        name: fullNameController.text,
+                        email: emailController.text,
+                        dob: '',
+                        phone: '',
+                      );
+                      if (!context.mounted) return;
 
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text(
-                              'Cập nhật thành công',
-                              style: defaultText16B,
-                            ),
+                            title: Text(message, style: defaultText16B),
                             actionsPadding: const EdgeInsets.symmetric(
                               horizontal: 10.0,
                             ),
@@ -274,6 +320,7 @@ class MyTextFormField extends StatefulWidget {
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
   final bool hasIcon;
+
   const MyTextFormField({
     super.key,
     required this.labelText,
@@ -663,4 +710,64 @@ Future<void> pickImageFromCamera1(BuildContext context) async {
       },
     );
   }
+}
+
+Widget buildLabeledField({
+  required BuildContext context,
+  required String label,
+  required TextEditingController controller,
+  bool isDateField = false,
+  void Function(DateTime)? onDateSelected,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: defaultText14B.copyWith(color: const Color(0xFF102B61)),
+      ),
+      const SizedBox(height: 8),
+      GestureDetector(
+        onTap: isDateField
+            ? () async {
+                FocusScope.of(context).unfocus();
+                final selectedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime(2100),
+                );
+                if (!context.mounted) return;
+                if (selectedDate != null) {
+                  controller.text =
+                      '${selectedDate.day.toString().padLeft(2, '0')}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.year}';
+                  if (onDateSelected != null) onDateSelected(selectedDate);
+                }
+              }
+            : null,
+        child: AbsorbPointer(
+          absorbing: isDateField,
+          child: Container(
+            width: 343.w,
+            //height: 66.h,
+            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              color: Colors.white,
+              border: Border.all(
+                color: const Color(0xff292929).withAlpha(50),
+                width: 1,
+              ),
+            ),
+            child: TextField(
+              controller: controller,
+              style: defaultText14M.copyWith(color: colorText),
+              decoration: const InputDecoration.collapsed(hintText: ''),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
 }

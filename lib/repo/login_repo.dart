@@ -21,7 +21,7 @@ class LoginRepo {
         data: jsonEncode({
           'phone': phone,
           'password': password,
-          'fingerprint': fingerprint,
+          'fingerprint': '106acc9d',
         }),
       );
     } on DioException {

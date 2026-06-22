@@ -4,6 +4,7 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:heathy_teacher/utils/widget/custom_product_widget.dart';
+import 'package:heathy_teacher/main.dart';
 
 class DetailProductScreen extends StatefulWidget {
   DetailProductScreen({super.key});
@@ -140,88 +141,92 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                 'Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300g',
                 style: defaultText18B,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '128.000đ',
-                    style: defaultText20B.copyWith(
-                      fontSize: 24.sp,
-                      color: mainDarkGreen,
+              if (isShow == 'true') ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '128.000đ',
+                      style: defaultText20B.copyWith(
+                        fontSize: 24.sp,
+                        color: mainDarkGreen,
+                      ),
                     ),
-                  ),
-                  Text(
-                    '250.000đ',
-                    style: defaultText14Re.copyWith(
-                      decoration: TextDecoration.lineThrough,
+                    Text(
+                      '250.000đ',
+                      style: defaultText14Re.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                      ),
                     ),
-                  ),
-                  Text(' • Tiết kiệm: 121.480đ', style: defaultText14SB),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                child: SizedBox(
-                  width: 181.w,
-                  child: QuantityCounter(
-                    price: 128000,
-                    quantity: 1,
-                    onChanged: (int quantity) {},
+                    Text(' • Tiết kiệm: 121.480đ', style: defaultText14SB),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  child: SizedBox(
+                    width: 181.w,
+                    child: QuantityCounter(
+                      price: 128000,
+                      quantity: 1,
+                      onChanged: (int quantity) {},
+                    ),
                   ),
                 ),
-              ),
+              ],
               _overviewItem(label: 'Hàng CHÍNH HÃNG 100%, có tem phụ'),
               _overviewItem(label: 'Chính sách ưu đãi cho HỌC VIÊN hấp dẫn'),
               _overviewItem(label: 'Giao hàng TOÀN QUỐC, MIỄN PHÍ vận chuyển'),
               _overviewItem(label: 'Liên hệ nhận GIÁ SỈ tốt nhất'),
               SizedBox(height: 28.h),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  height: 48.h,
-                  width: 340.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                    color: Colors.white,
-                    border: Border.all(color: mainDarkGreen, width: 1.w),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/gio_hang.png'),
-                      Text(
-                        '  Thêm vào giỏ hàng',
-                        textAlign: TextAlign.center,
-                        style: defaultText16B.copyWith(color: mainDarkGreen),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  height: 48.h,
-                  width: 343.w,
-                  margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                    color: mainDarkGreen,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/lingting.png'),
-                      Text(
-                        '  Mua ngay',
-                        textAlign: TextAlign.center,
-                        style: defaultText16B.copyWith(color: Colors.white),
-                      ),
-                    ],
+              if (isShow == 'true') ...[
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    height: 48.h,
+                    width: 340.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.r),
+                      color: Colors.white,
+                      border: Border.all(color: mainDarkGreen, width: 1.w),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/gio_hang.png'),
+                        Text(
+                          '  Thêm vào giỏ hàng',
+                          textAlign: TextAlign.center,
+                          style: defaultText16B.copyWith(color: mainDarkGreen),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    height: 48.h,
+                    width: 343.w,
+                    margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.r),
+                      color: mainDarkGreen,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/lingting.png'),
+                        Text(
+                          '  Mua ngay',
+                          textAlign: TextAlign.center,
+                          style: defaultText16B.copyWith(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
               Container(
                 height: 50.h,
                 width: 375.w,

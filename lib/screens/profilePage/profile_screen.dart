@@ -107,16 +107,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   bottom: 0,
                   left: 138.w,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
                     ),
                     child: ClipOval(
                       child: Image.network(
-                        'https://lms.cogiaohealthy.vn/${widget.userModel.img}',
+                        widget.userModel.img!.contains('https://')
+                            ? '${widget.userModel.img}'
+                            : 'https://lms.cogiaohealthy.vn/${widget.userModel.img}',
                         width: 80.w,
                         height: 80.h,
                         fit: BoxFit.cover,
+                        // Hiển thị Icon mặc định khi lỗi tải ảnh
+                        errorBuilder:
+                            (
+                              BuildContext context,
+                              Object exception,
+                              StackTrace? stackTrace,
+                            ) {
+                              return Container(
+                                width: 80.w,
+                                height: 80.h,
+                                color: Colors
+                                    .grey[200], // Màu nền của icon mặc định
+                                child: Icon(
+                                  Icons
+                                      .person, // Hoặc Icons.error_outline tuỳ ý bạn
+                                  size: 40.w,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            },
+                        // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
+                        loadingBuilder:
+                            (
+                              BuildContext context,
+                              Widget child,
+                              ImageChunkEvent? loadingProgress,
+                            ) {
+                              if (loadingProgress == null) {
+                                return child; // Đã tải xong
+                              }
+                              return Container(
+                                width: 80.w,
+                                height: 80.h,
+                                color: Colors.grey[100],
+                                child: const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            },
                       ),
                     ),
                   ),
@@ -189,44 +230,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              margin: EdgeInsets.only(top: 16.h),
-              width: 343.w,
-              height: 60.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0F2F4),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 36.w,
-                      height: 36.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/icons/key.svg',
-                          width: 20.w,
-                          height: 20.h,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Text("Đổi mật khẩu", style: defaultText14B),
-                    Spacer(),
-                    Icon(Icons.arrow_forward_ios, size: 20.r, color: colorText),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: () {},
+          //   child: Container(
+          //     margin: EdgeInsets.only(top: 16.h),
+          //     width: 343.w,
+          //     height: 60.h,
+          //     decoration: BoxDecoration(
+          //       color: const Color(0xFFF0F2F4),
+          //       borderRadius: BorderRadius.circular(16.r),
+          //     ),
+          //     child: Padding(
+          //       padding: EdgeInsets.symmetric(horizontal: 16.w),
+          //       child: Row(
+          //         children: [
+          //           Container(
+          //             width: 36.w,
+          //             height: 36.h,
+          //             decoration: BoxDecoration(
+          //               color: Colors.white,
+          //               borderRadius: BorderRadius.circular(12.r),
+          //             ),
+          //             child: Center(
+          //               child: SvgPicture.asset(
+          //                 'assets/icons/key.svg',
+          //                 width: 20.w,
+          //                 height: 20.h,
+          //               ),
+          //             ),
+          //           ),
+          //           SizedBox(width: 12.w),
+          //           Text("Đổi mật khẩu", style: defaultText14B),
+          //           Spacer(),
+          //           Icon(Icons.arrow_forward_ios, size: 20.r, color: colorText),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
           GestureDetector(
             onTap: () {
               Navigator.push(

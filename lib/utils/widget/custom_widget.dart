@@ -11,6 +11,7 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:heathy_teacher/main.dart';
 
 class CustomDotLine extends StatelessWidget {
   final double dotSize;
@@ -190,13 +191,14 @@ class CartItemWidget extends StatelessWidget {
                 const SizedBox(height: 6),
 
                 /// price
-                Text(
-                  "${item.price} đ",
-                  style: const TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.w600,
+                if (isShow == 'true')
+                  Text(
+                    "${item.price} đ",
+                    style: const TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
 
                 const SizedBox(height: 8),
 
@@ -543,28 +545,29 @@ class CourseItemOnline extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Giá tiền
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: const [
-              Text(
-                '2,990,000đ',
-                style: TextStyle(
-                  color: Color(0xFF759E73),
-                  fontSize: 18,
-                  decoration: TextDecoration.lineThrough,
+          if (isShow == 'true')
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: const [
+                Text(
+                  '2,990,000đ',
+                  style: TextStyle(
+                    color: Color(0xFF759E73),
+                    fontSize: 18,
+                    decoration: TextDecoration.lineThrough,
+                  ),
                 ),
-              ),
-              Text(
-                '1,990,000đ',
-                style: TextStyle(
-                  color: Color(0xFF3B7139),
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+                Text(
+                  '1,990,000đ',
+                  style: TextStyle(
+                    color: Color(0xFF3B7139),
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           const SizedBox(height: 24),
 
           // Các thông số (Pills)
@@ -590,30 +593,48 @@ class CourseItemOnline extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Nút Đăng ký
-          ElevatedButton(
-            onPressed: () {
-              // Xử lý sự kiện đăng ký
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: ((context) => const RegisterClassON()),
+          if (isShow == 'true')
+            ElevatedButton(
+              onPressed: () {
+                // Xử lý sự kiện đăng ký
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: ((context) => const RegisterClassON()),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF467D43),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF467D43),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                elevation: 0,
               ),
-              elevation: 0,
+              child: const Text(
+                'Đăng ký ngay',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.grey,
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                'Đã khóa',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
             ),
-            child: const Text(
-              'Đăng ký ngay',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
         ],
       ),
     );
@@ -724,51 +745,54 @@ class DefaultAppBar extends StatelessWidget {
                 ),
 
                 // Giỏ hàng (Bên phải - kích thước nhỏ)
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => ShoppingCartScreen()),
-                      ),
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      Icon(
-                        Icons.shopping_cart_outlined,
-                        color: mainDarkGreen,
-                        size: 28, // Giảm size Icon giỏ hàng một chút
-                      ),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(3), // Padding nhỏ hơn
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
+                if (isShow == 'true')
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) => ShoppingCartScreen()),
+                        ),
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        Icon(
+                          Icons.shopping_cart_outlined,
+                          color: mainDarkGreen,
+                          size: 28, // Giảm size Icon giỏ hàng một chút
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
                           child: Container(
-                            padding: const EdgeInsets.all(1),
+                            padding: const EdgeInsets.all(3), // Padding nhỏ hơn
                             decoration: const BoxDecoration(
-                              color: Color(0xFFFFF176),
+                              color: Colors.white,
                               shape: BoxShape.circle,
                             ),
-                            child: const Text(
-                              ' 0 ',
-                              style: TextStyle(
-                                color: accentBrown,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 8, // Font chữ số nhỏ hơn
+                            child: Container(
+                              padding: const EdgeInsets.all(1),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFFFF176),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Text(
+                                ' 0 ',
+                                style: TextStyle(
+                                  color: accentBrown,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 8, // Font chữ số nhỏ hơn
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
               ],
             ),
           ],
