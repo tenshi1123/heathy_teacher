@@ -368,62 +368,55 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
           width: 1,
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(widget.labelText, style: defaultText16Re),
-              SizedBox(
-                height: 30.h,
-                width: 300.w,
-                child: TextFormField(
-                  readOnly: !widget.hasIcon,
-                  controller: widget.controller,
-                  keyboardType: widget.keyboardType,
-                  style: defaultText16M,
-                  focusNode: _focusNode,
-                  onChanged: widget.onChanged,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 1),
-                    suffixIcon: widget.hasIcon
-                        ? !_focusNode.hasFocus
-                              ? Container(
-                                  padding: EdgeInsets.symmetric(vertical: 6.h),
-                                  child: SvgPicture.asset(
-                                    'assets/icons/pencil.svg',
-                                    height: 10.h,
-                                    fit: BoxFit.fitHeight,
-                                  ),
-                                )
-                              : GestureDetector(
-                                  onTap: () {
-                                    FocusScope.of(context).unfocus();
-                                    setState(() {});
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 6.h,
-                                    ),
-                                    child: SvgPicture.asset(
-                                      'assets/icons/unfocus.svg',
-                                      height: 10.h,
-                                      fit: BoxFit.fitHeight,
-                                    ),
-                                  ),
-                                )
-                        : const SizedBox(),
-                  ),
-                ),
+          Text(widget.labelText, style: defaultText16Re),
+          SizedBox(
+            height: 30.h,
+            width: 300.w,
+            child: TextFormField(
+              readOnly: !widget.hasIcon,
+              controller: widget.controller,
+              keyboardType: widget.keyboardType,
+              style: defaultText16M,
+              focusNode: _focusNode,
+              onChanged: widget.onChanged,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(vertical: 1),
+                suffixIcon: widget.hasIcon
+                    ? !_focusNode.hasFocus
+                          ? Container(
+                              padding: EdgeInsets.symmetric(vertical: 6.h),
+                              child: SvgPicture.asset(
+                                'assets/icons/pencil.svg',
+                                height: 10.h,
+                                fit: BoxFit.fitHeight,
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).unfocus();
+                                setState(() {});
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 6.h),
+                                child: SvgPicture.asset(
+                                  'assets/icons/unfocus.svg',
+                                  height: 10.h,
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              ),
+                            )
+                    : const SizedBox(),
               ),
-              // SizedBox(
-              //   height: 8.h,
-              // ),
-            ],
+            ),
           ),
+          // SizedBox(
+          //   height: 8.h,
+          // ),
         ],
       ),
     );
@@ -719,47 +712,41 @@ Widget buildLabeledField({
   bool isDateField = false,
   void Function(DateTime)? onDateSelected,
 }) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: defaultText14B.copyWith(color: const Color(0xFF102B61)),
-      ),
-      const SizedBox(height: 8),
-      GestureDetector(
-        onTap: isDateField
-            ? () async {
-                FocusScope.of(context).unfocus();
-                final selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime(2100),
-                );
-                if (!context.mounted) return;
-                if (selectedDate != null) {
-                  controller.text =
-                      '${selectedDate.day.toString().padLeft(2, '0')}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.year}';
-                  if (onDateSelected != null) onDateSelected(selectedDate);
+  return Container(
+    width: 343.w,
+    //height: 66.h,
+    margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(16.r),
+      color: Colors.white,
+      border: Border.all(color: Color(0xff292929).withAlpha(50), width: 1),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: defaultText16Re),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: isDateField
+              ? () async {
+                  FocusScope.of(context).unfocus();
+                  final selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime(2100),
+                  );
+                  if (!context.mounted) return;
+                  if (selectedDate != null) {
+                    controller.text =
+                        '${selectedDate.day.toString().padLeft(2, '0')}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.year}';
+                    if (onDateSelected != null) onDateSelected(selectedDate);
+                  }
                 }
-              }
-            : null,
-        child: AbsorbPointer(
-          absorbing: isDateField,
-          child: Container(
-            width: 343.w,
-            //height: 66.h,
-            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
-              color: Colors.white,
-              border: Border.all(
-                color: const Color(0xff292929).withAlpha(50),
-                width: 1,
-              ),
-            ),
+              : null,
+          child: AbsorbPointer(
+            absorbing: isDateField,
             child: TextField(
               controller: controller,
               style: defaultText14M.copyWith(color: colorText),
@@ -767,7 +754,7 @@ Widget buildLabeledField({
             ),
           ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 }
