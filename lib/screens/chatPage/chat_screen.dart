@@ -10,7 +10,6 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:camera_camera/camera_camera.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.model});
@@ -23,20 +22,17 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageController = TextEditingController();
   List<File> photos = <File>[];
   String id = '';
-
-  void openCamera() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => CameraCamera(
-          onFile: (file) async {
-            Navigator.pop(context);
-            photos.add(file);
-            setState(() {});
-          },
-        ),
-      ),
+  final ImagePicker _picker = ImagePicker();
+  Future<void> openCamera() async {
+    final XFile? file = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 90,
     );
+
+    if (file != null) {
+      photos.add(File(file.path));
+      setState(() {});
+    }
   }
 
   Future _pickImageFromGallery() async {

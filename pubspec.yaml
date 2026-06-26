@@ -28,7 +28,6 @@ dependencies:
   flutter_html: ^3.0.0
   cached_network_image: ^3.4.1
   image_picker: ^1.2.1
-  camera_camera: ^3.0.0
   webview_flutter: ^4.13.1
 
 dev_dependencies:
