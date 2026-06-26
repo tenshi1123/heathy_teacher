@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/utils/DioClient.dart';
@@ -73,5 +75,18 @@ class HomeRepo {
       }
       return 'Đã xảy ra lỗi: ${e.toString()}';
     }
+  }
+
+  Future<String> changeAvatar(File photo) async {
+    final dio = await DioClient.getInstance();
+    Response response;
+    var formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        photo.path,
+        filename: photo.path.split('/').last,
+      ),
+    });
+    response = await dio.post(ApiPath.changeAvatar, data: formData);
+    return response.data['message'];
   }
 }

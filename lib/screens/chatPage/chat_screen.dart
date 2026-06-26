@@ -1,122 +1,435 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/models/chat_models.dart';
+import 'package:heathy_teacher/repo/chat_repo.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:camera_camera/camera_camera.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
-
+  const ChatScreen({super.key, required this.model});
+  final LecturerModel model;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
-    await launchUrl(launchUri);
+  TextEditingController messageController = TextEditingController();
+  List<File> photos = <File>[];
+  String id = '';
+
+  void openCamera() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CameraCamera(
+          onFile: (file) async {
+            Navigator.pop(context);
+            photos.add(file);
+            setState(() {});
+          },
+        ),
+      ),
+    );
+  }
+
+  Future _pickImageFromGallery() async {
+    final returnedImage = await ImagePicker().pickMultiImage();
+    if (!mounted) return;
+    photos.addAll(List<File>.from((returnedImage).map((e) => File(e.path))));
+    setState(() {});
+  }
+
+  Future<void> _getIdUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    id = prefs.getString('id_user') ?? '';
+    setState(() {
+      // Cập nhật trạng thái để hiển thị dữ liệu mới
+    });
+  }
+
+  bool isLoading = true;
+  List<MessageModel> listMessage = [];
+
+  Future<void> fetchData() async {
+    try {
+      final response = await ChatRepo().getListMessage(
+        lectureId: widget.model.userId ?? '',
+      );
+      setState(() {
+        listMessage = response;
+        isLoading = false;
+      });
+    } catch (e) {
+      // Xử lý lỗi nếu cần
+      debugPrint('Lỗi khi gọi API: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   void initState() {
+    //listMessage = widget.model.messages;
+    _getIdUser();
+    fetchData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: mainDarkGreen,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: mainDarkGreen,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Chat',
-          style: defaultText18B.copyWith(color: Colors.white),
-        ),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.phone, color: Colors.white),
-            onPressed: () {
-              _makePhoneCall('19008978');
-            },
-          ),
-          SizedBox(width: 16.w),
-        ],
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24.r),
-            topRight: Radius.circular(24.r),
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 24.h),
-              ConversationItem(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ConversationItem extends StatelessWidget {
-  const ConversationItem({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      // onTap: () async {
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => ChatScreen()),
-      //   );
-      // },
-      child: Container(
-        height: 73.h,
-        width: 350.w,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(16.r)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.2),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        title: Row(
           children: [
-            CircleAvatar(
-              radius: 21.r,
-              backgroundImage: AssetImage('assets/images/avatar1.png'),
-              backgroundColor: Colors.transparent,
+            ClipOval(
+              child: Image.network(
+                widget.model.avatar ?? '',
+                height: 42.r,
+                width: 42.r,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 42.r,
+                    width: 42.r,
+                    color: Colors.grey.shade300,
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.grey.shade600,
+                      size: 24.r,
+                    ),
+                  );
+                },
+              ),
             ),
+            SizedBox(width: 10.w),
             SizedBox(
-              width: 220.w,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Hỗ trợ', style: defaultText14B),
-                  Text('Tôi có thể giúp gì cho bạn', style: defaultText12M),
-                ],
+              width: 230.w,
+              child: Text(
+                widget.model.fullName ?? 'Không xác định',
+                style: defaultText18B.copyWith(color: Colors.white),
               ),
             ),
           ],
         ),
+        toolbarHeight: 60.h,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment(0.8, 1),
+              colors: [backGroundGreen.withValues(alpha: 0.8), backGroundGreen],
+            ),
+          ),
+        ),
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(
+        //       Icons.phone,
+        //       color: Colors.white,
+        //     ),
+        //     onPressed: () {
+        //       _makePhoneCall('19008978');
+        //     },
+        //   ),
+        // ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              itemCount: listMessage.length,
+              itemBuilder: (context, index) {
+                final current = listMessage[index];
+                final previous = index > 0 ? listMessage[index - 1] : null;
+
+                bool showTimeLabel = false;
+                String timeLabel = '';
+
+                if (previous == null) {
+                  showTimeLabel = true;
+                  timeLabel = DateFormat(
+                    'dd/MM/yyyy HH:mm',
+                  ).format(current.createdAt);
+                } else {
+                  final difference = current.createdAt.difference(
+                    previous.createdAt,
+                  );
+                  if (current.createdAt.day != previous.createdAt.day) {
+                    showTimeLabel = true;
+                    timeLabel = DateFormat(
+                      'dd/MM/yyyy HH:mm',
+                    ).format(current.createdAt);
+                  } else if (difference.inHours >= 1) {
+                    showTimeLabel = true;
+                    timeLabel = DateFormat('HH:mm').format(current.createdAt);
+                  }
+                }
+
+                return Column(
+                  children: [
+                    // 🕓 Thời gian giữa tin nhắn — fade-in nhẹ
+                    if (showTimeLabel)
+                      AnimatedOpacity(
+                        opacity: 1.0,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.h),
+                          child: Text(
+                            timeLabel,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colors.grey.shade600,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      ),
+                    // 💬 Tin nhắn
+                    Align(
+                      alignment: (current.type == "0" || current.type == '1')
+                          ? Alignment.topRight
+                          : Alignment.topLeft,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 6.h),
+                        constraints: BoxConstraints(maxWidth: 300.w),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.r),
+                          color: (current.type == "0" || current.type == '1')
+                              ? backGroundGreen
+                              : Colors.grey.shade200,
+                        ),
+                        padding: EdgeInsets.all(16.r),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (current.content.isNotEmpty)
+                              Text(
+                                current.content,
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color:
+                                      (current.type == "0" ||
+                                          current.type == '1')
+                                      ? Colors.white
+                                      : Colors.black87,
+                                ),
+                              ),
+                            if (current.image.isNotEmpty)
+                              ...current.image.map((url) {
+                                return Container(
+                                  margin: EdgeInsets.only(
+                                    top: current.content.isNotEmpty ? 8.h : 0,
+                                  ),
+                                  constraints: BoxConstraints(maxHeight: 200.h),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    child: url.startsWith('http')
+                                        ? Image.network(
+                                            url,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                                  return Icon(
+                                                    Icons.broken_image,
+                                                    color: Colors.grey,
+                                                  );
+                                                },
+                                          )
+                                        : Image.file(
+                                            File(url),
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                                  return Icon(
+                                                    Icons.broken_image,
+                                                    color: Colors.grey,
+                                                  );
+                                                },
+                                          ),
+                                  ),
+                                );
+                              }),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 10.w, bottom: 20.h, top: 10.h),
+            color: Colors.white,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        openCamera();
+                      },
+                      child: SvgPicture.asset('assets/icons/camera_icon.svg'),
+                    ),
+                    SizedBox(width: 15.w),
+                    GestureDetector(
+                      onTap: () {
+                        _pickImageFromGallery();
+                      },
+                      child: SvgPicture.asset('assets/icons/picture_icon.svg'),
+                    ),
+                    SizedBox(width: 20.w),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: state1,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        child: TextField(
+                          controller: messageController,
+                          decoration: InputDecoration(
+                            hintText: "Nhập tin nhắn...",
+                            hintStyle: TextStyle(
+                              color: Colors.black.withValues(alpha: 0.95),
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          style: defaultText14M,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 16.w),
+                    GestureDetector(
+                      onTap: () async {
+                        ChatRepo().sendMessage(
+                          widget.model.userId ?? '',
+                          messageController.text,
+                          photo: photos.isNotEmpty ? photos.first : null,
+                        );
+                        setState(() {
+                          listMessage.insert(
+                            listMessage.length,
+                            MessageModel(
+                              content: messageController.text,
+                              image: photos.map((e) => e.path).toList(),
+                              createdAt: DateTime.now(),
+                              id: '',
+                              chatMessageId: '',
+                              customerId: '',
+                              lectureId: '',
+                              type: "0",
+                            ),
+                          );
+                          photos.clear();
+                        });
+                        messageController.clear();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CupertinoAlertDialog(
+                              title: const Text('Tin nhắn đã được gửi'),
+                              actions: <Widget>[
+                                CupertinoDialogAction(
+                                  isDefaultAction: true,
+                                  child: Text(
+                                    'ok',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: mainOrange,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(
+                                      context,
+                                      rootNavigator: true,
+                                    ).pop((_) => false);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: SvgPicture.asset('assets/icons/plane_outline.svg'),
+                    ),
+                    SizedBox(width: 16.w),
+                  ],
+                ),
+                if (photos.isNotEmpty)
+                  Container(
+                    height: 90.h,
+                    margin: EdgeInsets.only(top: 10.h),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: photos.length,
+                      itemBuilder: (context, index) {
+                        return Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(right: 15.w, top: 10.h),
+                              height: 70.h,
+                              width: 70.h,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.r),
+                                image: DecorationImage(
+                                  image: FileImage(photos[index]),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 5.w,
+                              top: 0,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    photos.removeAt(index);
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(4.r),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                    size: 14.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

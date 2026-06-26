@@ -655,6 +655,7 @@ Future<void> pickImageFromCamera1(BuildContext context) async {
                       InkWell(
                         onTap: () async {
                           //await CustomerRepo().changeAvatar(photos.last);
+                          await HomeRepo().changeAvatar(photos.last);
                           if (!context.mounted) return;
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(

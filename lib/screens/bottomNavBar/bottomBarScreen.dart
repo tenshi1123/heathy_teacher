@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/repo/home_repo.dart';
-import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
+import 'package:heathy_teacher/screens/chatPage/list_chat_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/screens/homePage/home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -121,7 +121,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
                 },
               ),
               CourseScreen(),
-              ChatScreen(),
+              ListChatScreen(),
               ProductScreen(type: 1),
               ProfileScreen(userModel: userModel!),
             ],

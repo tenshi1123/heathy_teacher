@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
             child: Stack(
               children: [
                 Image.asset(
-                  'assets/images/home_background.png',
+                  'assets/images/home_background2.png',
                   width: 375.w,
                   height: 296.w,
                   fit: BoxFit.cover,
@@ -94,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: 117.w,
+                  bottom: 97.w,
                   right: 40.w,
                   child: GestureDetector(
                     onTap: onCourseTabRequested,
@@ -105,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: 69.w,
+                  bottom: 48.w,
                   right: 40.w,
                   child: GestureDetector(
                     onTap: onProductTabRequested,
@@ -115,25 +115,25 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Positioned(
-                  bottom: 20.w,
-                  right: 40.w,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => HocPhiScreen()),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      '${NumberFormat.decimalPattern('vi_VN').format(customerModel.paymentHistory)} VNĐ',
+                // Positioned(
+                //   bottom: 20.w,
+                //   right: 40.w,
+                //   child: GestureDetector(
+                //     onTap: () {
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: ((context) => HocPhiScreen()),
+                //         ),
+                //       );
+                //     },
+                //     child: Text(
+                //       '${NumberFormat.decimalPattern('vi_VN').format(customerModel.paymentHistory)} VNĐ',
 
-                      style: defaultText18B,
-                    ),
-                  ),
-                ),
+                //       style: defaultText18B,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -189,7 +189,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   SvgPicture.asset('assets/icons/class_off.svg'),
                   Text(
-                    '  Lớp học trực tiếp',
+                    ' Gợi ý các khóa học liên quan',
                     style: defaultText16B.copyWith(color: Colors.black),
                   ),
                   Spacer(),
@@ -231,7 +231,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   SvgPicture.asset('assets/icons/class_online.svg'),
                   Text(
-                    '  Khoá học online',
+                    ' Gợi ý các khóa học online',
                     style: defaultText16B.copyWith(color: Colors.black),
                   ),
                   Spacer(),

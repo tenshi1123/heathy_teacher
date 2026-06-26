@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:heathy_teacher/main.dart';
 
 import 'package:heathy_teacher/utils/DioClient.dart';
 import 'package:heathy_teacher/utils/constants/api_path.dart';
@@ -21,10 +22,11 @@ class LoginRepo {
         data: jsonEncode({
           'phone': phone,
           'password': password,
-          'fingerprint': '106acc9d',
+          'fingerprint': (isShow == 'true') ? fingerprint : '106acc9d',
         }),
       );
-    } on DioException {
+    } on DioException catch (e) {
+      print(e);
       return 'Đăng nhập thất bại';
     }
 

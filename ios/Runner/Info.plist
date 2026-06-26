@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+		<string>Ứng dụng cần quyền truy cập Camera để bạn có thể chụp ảnh đại diện.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+		<string>Ứng dụng cần quyền truy cập Thư viện ảnh để bạn có thể chọn ảnh đại diện.</string>
+	<key>NSMicrophoneUsageDescription</key>
+		<string>Ứng dụng cần quyền truy cập Micro để quay video (nếu thư viện camera của bạn yêu cầu).</string>
 </dict>
 </plist>

@@ -1,6 +1,6 @@
 class ApiPath {
   //baseurl
-  static String baseUrl = '';
+  static String baseUrl = 'https://lms.cogiaohealthy.vn/api';
   static String login = '$baseUrl/customer/login';
   static String signup = '$baseUrl/customer/signup';
   static String home = '$baseUrl/customer';
@@ -15,6 +15,11 @@ class ApiPath {
   static String feedBack = '$baseUrl/customer/feedback';
   static String editProfile = '$baseUrl/customer/profile/edit';
   static String changeAvatar = '$baseUrl/customer/profile/change_avatar';
+  static String chatCourse = '$baseUrl/customer/chat_course';
+  static String sendChatCourse = '$baseUrl/customer/send_chat_course';
+  static String infoChatLecturers = '$baseUrl/customer/info_chat_lecturers';
+  static String detailChatLecturer = '$baseUrl/customer/detail_chat_lecturers';
+  static String sendChatLecturers = '$baseUrl/customer/send_chat_lecturers';
 
   //web ngoai
   static String listCourse = '$baseUrl/danh-sach-khoa-hoc';
@@ -23,4 +28,5 @@ class ApiPath {
   static String listProduct = '$baseUrl/danh-sach-san-pham';
   static String productCatalog = '$baseUrl/danh-muc-san-pham';
   static String detailProduct = '$baseUrl/chi-tiet-san-pham';
+  static String playVideo = '$baseUrl/play-video';
 }

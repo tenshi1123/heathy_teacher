@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/repo/course_repo.dart';
+import 'package:heathy_teacher/repo/external_repo.dart';
+import 'package:heathy_teacher/screens/coursePage/video_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -343,7 +345,20 @@ class _LessonItemState extends State<LessonItem> {
             children: widget.topicModel.lessons!
                 .map(
                   (e) => GestureDetector(
-                    onTap: () async {},
+                    onTap: () async {
+                      String url = await ExternalRepo().getStreamingUrl(
+                        lessonId: e.lessonsId ?? '',
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) => (DetailVideo(
+                            streamingUrl: url,
+                            name: e.name ?? 'Không có tên bài giảng',
+                          ))),
+                        ),
+                      );
+                    },
                     child: DetailItem(
                       title: e.name ?? 'Không có tên bài giảng',
                       type: e.time ?? 'video',
