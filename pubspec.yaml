@@ -24,7 +24,6 @@ dependencies:
   app_links: ^6.4.1
   crypto: ^3.0.7
   device_info_plus: ^12.4.0
-  font_awesome_flutter: ^10.9.1
   dio: ^5.8.0+1
   flutter_html: ^3.0.0
   cached_network_image: ^3.4.1
