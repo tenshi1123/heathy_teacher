@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/home_model.dart';
@@ -455,6 +456,12 @@ Future<void> _dialogBuilder(BuildContext context, {required int type}) {
               style: defaultText14B.copyWith(color: Colors.red),
             ),
             onPressed: () async {
+              //remove token
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('token');
+              await prefs.remove('id_user');
+
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
