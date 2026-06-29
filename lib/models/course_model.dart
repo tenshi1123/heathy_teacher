@@ -169,3 +169,63 @@ class CourseDetailModel {
     );
   }
 }
+
+class CourseModel {
+  final String? categoryName;
+  final String? topicName;
+  final String? courseId;
+  final String? courseName;
+  final String? slug;
+  final String? description;
+  final String? img;
+  final String? lessonNumber;
+  final String? startCount;
+  final String? categoryId;
+  final String? courseTypeName;
+  final String? courseTypeId;
+  final String? price;
+  final String? priceOld;
+  final String? totalEnrollments;
+  final String? lecturerName;
+
+  CourseModel({
+    this.categoryName,
+    this.topicName,
+    this.courseId,
+    this.courseName,
+    this.slug,
+    this.description,
+    this.img,
+    this.lessonNumber,
+    this.startCount,
+    this.categoryId,
+    this.courseTypeName,
+    this.courseTypeId,
+    this.price,
+    this.priceOld,
+    this.totalEnrollments,
+    this.lecturerName,
+  });
+
+  // Parse từ JSON sang Object
+  factory CourseModel.fromJson(Map<String, dynamic> json) {
+    return CourseModel(
+      categoryName: json['category_name'] as String?,
+      topicName: json['topic_name'] as String?,
+      courseId: json['course_id'] as String?,
+      courseName: json['course_name'] as String?,
+      slug: json['slug'] as String?,
+      description: json['description'] as String?,
+      img: json['img'] as String?,
+      lessonNumber: json['lesson_number'] as String?,
+      startCount: json['start_count'] as String?,
+      categoryId: json['category_id'] as String?,
+      courseTypeName: json['course_type_name'] as String?,
+      courseTypeId: json['course_type_id'] as String?,
+      price: json['price'] as String?,
+      priceOld: json['price_old'] as String?,
+      totalEnrollments: json['total_enrollments'] as String?,
+      lecturerName: json['lecturer_name'] as String?,
+    );
+  }
+}

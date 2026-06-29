@@ -28,7 +28,6 @@ class _ChatScreenState extends State<ChatScreen> {
       source: ImageSource.camera,
       imageQuality: 90,
     );
-
     if (file != null) {
       photos.add(File(file.path));
       setState(() {});
@@ -52,7 +51,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool isLoading = true;
   List<MessageModel> listMessage = [];
-
   Future<void> fetchData() async {
     try {
       final response = await ChatRepo().getListMessage(

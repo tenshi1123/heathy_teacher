@@ -1,7 +1,7 @@
 name: heathy_teacher
 description: "application for heathy teacher"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 0.0.2+2
+version: 0.0.2+3
 
 environment:
   sdk: ^3.8.1
@@ -19,7 +19,7 @@ dependencies:
   url_launcher: ^6.3.2
   table_calendar: ^3.2.0
   flutter_facebook_auth: ^7.1.6
-  screen_protector: ^1.5.1
+  screen_protector: ^1.5.2
   firebase_auth: ^6.4.0
   app_links: ^6.4.1
   crypto: ^3.0.7

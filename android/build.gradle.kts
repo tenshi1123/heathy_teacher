@@ -19,3 +19,14 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+
+// Chỉ áp dụng ép kiểu JVM Target cho thư viện bị lỗi để tránh ảnh hưởng thư viện khác
+subprojects {
+    if (project.name == "screen_protector") {
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+        }
+    }
+}

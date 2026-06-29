@@ -153,11 +153,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             return;
                           }
-                          Navigator.push(
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
                               builder: ((context) => (BottomBarScreen())),
                             ),
+                            (Route<dynamic> route) => false,
                           );
                         },
                         style: ElevatedButton.styleFrom(

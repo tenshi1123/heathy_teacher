@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/course_model.dart';
+import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:heathy_teacher/screens/coursePage/online_class_screen.dart';
+import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
 class CourseScreen extends StatefulWidget {
-  const CourseScreen({super.key});
-
+  const CourseScreen({super.key, required this.userModel});
+  final UserModel userModel;
   @override
   State<CourseScreen> createState() => _CourseScreenState();
 }
@@ -44,7 +46,17 @@ class _CourseScreenState extends State<CourseScreen> {
           'Khoá học',
           style: defaultText18B.copyWith(color: Colors.white),
         ),
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.menu, color: Colors.white), // Icon 3 gạch
+              onPressed: () {
+                Scaffold.of(context).openDrawer(); // Lệnh gọi Drawer trượt ra
+              },
+            );
+          },
+        ),
         actions: [
           GestureDetector(
             onTap: () {
@@ -63,6 +75,7 @@ class _CourseScreenState extends State<CourseScreen> {
           SizedBox(width: 16.w),
         ],
       ),
+      drawer: MyCustomDrawer(userModel: widget.userModel, selectedIndex: 1),
       body: Container(
         width: double.infinity,
         height: double.infinity,

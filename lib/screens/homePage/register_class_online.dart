@@ -43,7 +43,9 @@ class _RegisterClassONState extends State<RegisterClassON> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
+                  MaterialPageRoute(
+                    builder: ((context) => ShoppingCartScreen()),
+                  ),
                 );
               },
               child: Stack(
@@ -196,7 +198,6 @@ class _RegisterClassONState extends State<RegisterClassON> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        cartItems.add(courses[0]);
                         return AlertDialog(
                           //title:  Text('Đã thêm vào giỏ hàng'),
                           content: const Text(

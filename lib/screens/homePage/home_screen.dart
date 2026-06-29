@@ -3,19 +3,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/home_model.dart';
+import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
-import 'package:heathy_teacher/screens/payment/hoc_phi_screen.dart';
 import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
-import 'package:intl/intl.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -31,289 +30,322 @@ class HomeScreen extends StatelessWidget {
   final VoidCallback? onProductTabRequested;
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            width: 375.w,
-            height: 296.w,
-            child: Stack(
-              children: [
-                Image.asset(
-                  'assets/images/home_background2.png',
-                  width: 375.w,
-                  height: 296.w,
-                  fit: BoxFit.cover,
-                ),
-                Positioned(
-                  top: 72.w,
-                  left: 16.w,
-                  child: SizedBox(
-                    width: 343.w,
-                    //height: 52.w,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/avatar.png',
-                          width: 48.w,
-                          //height: 48.w,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        SizedBox(width: 16.w),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Hi, ${userModel.fullName}',
-                              style: defaultText18B.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            dateTimeDisplayWidget(),
-                          ],
-                        ),
-                        Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: ((context) => NotificationScreen()),
-                              ),
-                            );
-                          },
-                          child: SvgPicture.asset(
-                            'assets/icons/bell.svg',
-                            width: 20.w,
-                            height: 20.w,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 97.w,
-                  right: 40.w,
-                  child: GestureDetector(
-                    onTap: onCourseTabRequested,
-                    child: Text(
-                      customerModel.course.toString(),
-                      style: defaultText16B.copyWith(color: Colors.white),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 48.w,
-                  right: 40.w,
-                  child: GestureDetector(
-                    onTap: onProductTabRequested,
-                    child: Text(
-                      customerModel.product.toString(),
-                      style: defaultText16B.copyWith(color: Colors.white),
-                    ),
-                  ),
-                ),
-                // Positioned(
-                //   bottom: 20.w,
-                //   right: 40.w,
-                //   child: GestureDetector(
-                //     onTap: () {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //           builder: ((context) => HocPhiScreen()),
-                //         ),
-                //       );
-                //     },
-                //     child: Text(
-                //       '${NumberFormat.decimalPattern('vi_VN').format(customerModel.paymentHistory)} VNĐ',
-
-                //       style: defaultText18B,
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: ((context) => CalenderScreen())),
-              );
-            },
-            child: Container(
-              height: 64.h,
-              width: 343.w,
-              decoration: BoxDecoration(
-                color: mainDarkGreen,
-                borderRadius: BorderRadius.all(Radius.circular(20.r)),
-              ),
-              child: Row(
+    return Scaffold(
+      drawer: MyCustomDrawer(userModel: userModel, selectedIndex: 0),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              width: 375.w,
+              height: 296.w,
+              child: Stack(
                 children: [
-                  SizedBox(width: 12.w),
                   Image.asset(
-                    'assets/images/schedule.png',
-                    height: 40.h,
-                    width: 40.w,
+                    'assets/images/home_background2.png',
+                    width: 375.w,
+                    height: 296.w,
+                    fit: BoxFit.cover,
                   ),
-                  SizedBox(width: 16.w),
-                  Text(
-                    'Lịch học lớp trực tiếp',
-                    style: defaultText16B.copyWith(color: Colors.white),
+
+                  Positioned(
+                    top: 72.w,
+                    left: 16.w,
+                    child: SizedBox(
+                      width: 343.w,
+                      //height: 52.w,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Builder(
+                            builder: (BuildContext context) {
+                              return IconButton(
+                                icon: const Icon(
+                                  Icons.menu,
+                                  size: 32,
+                                  color: Colors.white,
+                                ), // Nút 3 gạch tự tạo
+                                onPressed: () {
+                                  // Gọi lệnh mở Drawer
+                                  Scaffold.of(context).openDrawer();
+                                },
+                              );
+                            },
+                          ),
+                          avatar(userModel.img),
+
+                          SizedBox(width: 16.w),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Hi, ${userModel.fullName}',
+                                style: defaultText18B.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              //dateTimeDisplayWidget(),
+                              SelectableText.rich(
+                                TextSpan(
+                                  style: defaultText14M.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  children: [
+                                    TextSpan(text: 'Mã giới thiệu: '),
+                                    TextSpan(
+                                      text: userModel.customerCode,
+                                      style: defaultText14B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: ((context) => NotificationScreen()),
+                                ),
+                              );
+                            },
+                            child: SvgPicture.asset(
+                              'assets/icons/bell.svg',
+                              width: 20.w,
+                              height: 20.w,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  Spacer(),
-                  Icon(
-                    Icons.keyboard_arrow_right,
-                    color: Colors.white,
-                    size: 30.r,
+                  Positioned(
+                    bottom: 97.w,
+                    right: 40.w,
+                    child: GestureDetector(
+                      onTap: onCourseTabRequested,
+                      child: Text(
+                        customerModel.course.toString(),
+                        style: defaultText16B.copyWith(color: Colors.white),
+                      ),
+                    ),
                   ),
-                  SizedBox(width: 22.w),
+                  Positioned(
+                    bottom: 48.w,
+                    right: 40.w,
+                    child: GestureDetector(
+                      onTap: onProductTabRequested,
+                      child: Text(
+                        customerModel.product.toString(),
+                        style: defaultText16B.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  // Positioned(
+                  //   bottom: 20.w,
+                  //   right: 40.w,
+                  //   child: GestureDetector(
+                  //     onTap: () {
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //           builder: ((context) => HocPhiScreen()),
+                  //         ),
+                  //       );
+                  //     },
+                  //     child: Text(
+                  //       '${NumberFormat.decimalPattern('vi_VN').format(customerModel.paymentHistory)} VNĐ',
+
+                  //       style: defaultText18B,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
-          ),
-          SizedBox(height: 28.h),
-          SizedBox(
-            width: 343.w,
-            child: GestureDetector(
+            GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: ((context) => ListClassOff())),
+                  MaterialPageRoute(builder: ((context) => CalenderScreen())),
                 );
               },
-              child: Row(
-                children: [
-                  SvgPicture.asset('assets/icons/class_off.svg'),
-                  Text(
-                    ' Gợi ý các khóa học liên quan',
-                    style: defaultText16B.copyWith(color: Colors.black),
-                  ),
-                  Spacer(),
-                  Text(
-                    'Xem tất cả  ',
-                    style: defaultText14SB.copyWith(
-                      color: mainDarkGreen,
-                      fontSize: 12.sp,
+              child: Container(
+                height: 64.h,
+                width: 343.w,
+                decoration: BoxDecoration(
+                  color: mainDarkGreen,
+                  borderRadius: BorderRadius.all(Radius.circular(20.r)),
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(width: 12.w),
+                    Image.asset(
+                      'assets/images/schedule.png',
+                      height: 40.h,
+                      width: 40.w,
                     ),
-                  ),
-                  Icon(Icons.keyboard_arrow_right, color: mainDarkGreen),
-                ],
+                    SizedBox(width: 16.w),
+                    Text(
+                      'Lịch học lớp trực tiếp',
+                      style: defaultText16B.copyWith(color: Colors.white),
+                    ),
+                    Spacer(),
+                    Icon(
+                      Icons.keyboard_arrow_right,
+                      color: Colors.white,
+                      size: 30.r,
+                    ),
+                    SizedBox(width: 22.w),
+                  ],
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            width: 375.w,
-            height: (264 + 48).h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return _OfflineClassCard(index: index);
-              },
+            SizedBox(height: 28.h),
+            SizedBox(
+              width: 343.w,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: ((context) => ListClassOff())),
+                  );
+                },
+                child: Row(
+                  children: [
+                    SvgPicture.asset('assets/icons/class_off.svg'),
+                    Text(
+                      ' Gợi ý các khóa học liên quan',
+                      style: defaultText16B.copyWith(color: Colors.black),
+                    ),
+                    Spacer(),
+                    Text(
+                      'Xem tất cả  ',
+                      style: defaultText14SB.copyWith(
+                        color: mainDarkGreen,
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_right, color: mainDarkGreen),
+                  ],
+                ),
+              ),
             ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: ((context) => ListClassOnline())),
-              );
-            },
-            child: SizedBox(
+            SizedBox(
+              width: 375.w,
+              height: (264 + 48).h,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return _OfflineClassCard(index: index);
+                },
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: ((context) => ListClassOnline())),
+                );
+              },
+              child: SizedBox(
+                width: 343.w,
+                child: Row(
+                  children: [
+                    SvgPicture.asset('assets/icons/class_online.svg'),
+                    Text(
+                      ' Gợi ý các khóa học online',
+                      style: defaultText16B.copyWith(color: Colors.black),
+                    ),
+                    Spacer(),
+                    Text(
+                      'Xem tất cả  ',
+                      style: defaultText14SB.copyWith(
+                        color: mainDarkGreen,
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_right, color: mainDarkGreen),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 375.w,
+              height: (294 + 48).h,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return _OnlineClassCard(index: index);
+                },
+              ),
+            ),
+            SizedBox(
               width: 343.w,
               child: Row(
                 children: [
-                  SvgPicture.asset('assets/icons/class_online.svg'),
+                  SvgPicture.asset('assets/icons/material_icon.svg'),
                   Text(
-                    ' Gợi ý các khóa học online',
+                    '  Gian hàng nguyên liệu',
                     style: defaultText16B.copyWith(color: Colors.black),
                   ),
                   Spacer(),
-                  Text(
-                    'Xem tất cả  ',
-                    style: defaultText14SB.copyWith(
-                      color: mainDarkGreen,
-                      fontSize: 12.sp,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  ProductScreen(type: 2, userModel: userModel),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Xem tất cả  ',
+                      style: defaultText14SB.copyWith(
+                        color: mainDarkGreen,
+                        fontSize: 12.sp,
+                      ),
                     ),
                   ),
                   Icon(Icons.keyboard_arrow_right, color: mainDarkGreen),
                 ],
               ),
             ),
-          ),
-          SizedBox(
-            width: 375.w,
-            height: (294 + 48).h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return _OnlineClassCard(index: index);
-              },
+            SizedBox(
+              width: 375.w,
+              height: (297 + 48).h,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return _MaterialProductCard(index: index);
+                },
+              ),
             ),
-          ),
-          SizedBox(
-            width: 343.w,
-            child: Row(
-              children: [
-                SvgPicture.asset('assets/icons/material_icon.svg'),
-                Text(
-                  '  Gian hàng nguyên liệu',
-                  style: defaultText16B.copyWith(color: Colors.black),
-                ),
-                Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            ProductScreen(type: 2),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              );
-                            },
-                      ),
-                    );
-                  },
-                  child: Text(
-                    'Xem tất cả  ',
-                    style: defaultText14SB.copyWith(
-                      color: mainDarkGreen,
-                      fontSize: 12.sp,
-                    ),
-                  ),
-                ),
-                Icon(Icons.keyboard_arrow_right, color: mainDarkGreen),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 375.w,
-            height: (297 + 48).h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return _MaterialProductCard(index: index);
-              },
-            ),
-          ),
-          SizedBox(height: 12.h),
-        ],
+            SizedBox(height: 12.h),
+          ],
+        ),
       ),
     );
   }

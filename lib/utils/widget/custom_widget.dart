@@ -12,6 +12,8 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 
 class CustomDotLine extends StatelessWidget {
   final double dotSize;
@@ -680,9 +682,35 @@ class CourseItemOnline extends StatelessWidget {
   }
 }
 
-class DefaultAppBar extends StatelessWidget {
+class DefaultAppBar extends StatefulWidget {
   const DefaultAppBar({super.key});
+
+  @override
+  State<DefaultAppBar> createState() => _DefaultAppBarState();
+}
+
+class _DefaultAppBarState extends State<DefaultAppBar> {
   static const Color accentBrown = Color(0xFFD4A76A);
+  bool _isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token != null && token.isNotEmpty) {
+      if (mounted) {
+        setState(() {
+          _isLoggedIn = true;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -715,12 +743,21 @@ class DefaultAppBar extends StatelessWidget {
                 // Nút Đăng nhập (Bên trái - kích thước nhỏ)
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => const LoginScreen()),
-                      ),
-                    );
+                    if (_isLoggedIn) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) => const BottomBarScreen()),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) => const LoginScreen()),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: backGroundGreen,
@@ -735,9 +772,9 @@ class DefaultAppBar extends StatelessWidget {
                       vertical: 8,
                     ),
                   ),
-                  child: const Text(
-                    'Đăng nhập',
-                    style: TextStyle(
+                  child: Text(
+                    _isLoggedIn ? 'Tài khoản' : 'Đăng nhập',
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 12, // Giảm font size một chút nếu cần
                     ),

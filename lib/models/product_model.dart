@@ -31,121 +31,6 @@ class CartItem {
   });
 }
 
-class CourseModel {
-  final String id;
-  final String name;
-  final String image;
-  String? price;
-  CourseModel({
-    required this.id,
-    required this.name,
-    required this.image,
-    this.price,
-  });
-}
-
-final List<CourseModel> courses = [
-  CourseModel(
-    id: "1",
-    name: "Nguyên liệu - máy lớp nấu ăn Eatclean",
-    image: "assets/images/sp1.jpg",
-  ),
-  CourseModel(
-    id: "2",
-    name: "Nguyên liệu - máy lớp chuyển giao mô hình kinh doanh chay ",
-    image: "assets/images/sp2.jpg",
-  ),
-  CourseModel(
-    id: "3",
-    name: "Nguyên liệu - máy lớp bánh lạnh nguyên cám chuyên sâu",
-    image: "assets/images/sp3.jpg",
-  ),
-  CourseModel(
-    id: "4",
-    name: "Nguyên liệu - máy lớp trà sữa hạt và trà trái cây healthy",
-    image: "assets/images/sp4.jpg",
-  ),
-  CourseModel(
-    id: "5",
-    name: "Nguyên liệu - máy lớp bánh pizza men tươi healthy",
-    image: "assets/images/sp5.png",
-  ),
-  CourseModel(id: "6", name: "", image: "assets/images/sp6.png"),
-  CourseModel(
-    id: "7",
-    name: "Nguyên liệu - máy lớp bánh yến mạch sữa chua healthy",
-    image: "assets/images/sp7.png",
-  ),
-  CourseModel(
-    id: "8",
-    name: "Nguyên liệu - máy lớp bánh mì vòng nguyên cám healthy",
-    image: "assets/images/sp8.jpg",
-  ),
-  CourseModel(
-    id: "9",
-    name: "Nguyên liệu - máy lớp bánh bao nguyên cám healthy",
-    image: "assets/images/sp9.png",
-  ),
-  CourseModel(
-    id: "10",
-    name: "Nguyên liệu - máy lớp kẹo dẻo trái cây và thảo mộc Đài Loan",
-    image: "assets/images/sp10.jpg",
-  ),
-  CourseModel(
-    id: "11",
-    name: "Nguyên liệu - máy lớp sữa chua ",
-    image: "assets/images/sp11.jpg",
-  ),
-  CourseModel(
-    id: "12",
-    name: "Nguyên liệu - máy lớp sữa hạt",
-    image: "assets/images/sp12.jpg",
-  ),
-  CourseModel(
-    id: "13",
-    name: "Nguyên liệu - máy lớp thạch trái cây kem sữa hạt healthy",
-    image: "assets/images/sp13.jpg",
-  ),
-];
-final List<CourseModel> coursesDetail = [
-  CourseModel(
-    id: "1",
-    name: "Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300G",
-    image: "assets/images/detail1.png",
-    price: "150.000đ",
-  ),
-  CourseModel(
-    id: "2",
-    name: "Bột ớt paprika Mccomick 40g",
-    image: "assets/images/detail2.png",
-    price: "81.000đ",
-  ),
-  CourseModel(
-    id: "3",
-    name: "Dấm trắng Heinz 473ml",
-    image: "assets/images/detail3.png",
-    price: "71.280đ",
-  ),
-  CourseModel(
-    id: "4",
-    name: "Bột tỏi hữu cơ Vinasamex 50g",
-    image: "assets/images/detail4.png",
-    price: "83.280đ",
-  ),
-  CourseModel(
-    id: "5",
-    name: "Bột tỏi sả hữu cơ Vinasamex 50g",
-    image: "assets/images/detail5.png",
-    price: "75.600đ",
-  ),
-  CourseModel(
-    id: "6",
-    name: "Bột hành hữu cơ Vinasamex 50g",
-    image: "assets/images/detail6.png",
-    price: "75.600đ",
-  ),
-];
-
 class ServiceModel {
   final String title;
   final String icon;
@@ -388,4 +273,142 @@ class OrderDetail {
       'quantity': quantity,
     };
   }
+}
+
+class CategoryModel {
+  final String? categoryName;
+  final String? categorySlug;
+  final String? img;
+  final List<Topic>? topics;
+
+  CategoryModel({this.categoryName, this.categorySlug, this.img, this.topics});
+
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    return CategoryModel(
+      categoryName: json['category_name'] as String?,
+      categorySlug: json['category_slug'] as String?,
+      img: json['img'] as String?,
+      topics: json['topics'] != null
+          ? (json['topics'] as List).map((i) => Topic.fromJson(i)).toList()
+          : [],
+    );
+  }
+}
+
+class Topic {
+  final String? topicName;
+  final String? topicSlug;
+
+  Topic({this.topicName, this.topicSlug});
+
+  factory Topic.fromJson(Map<String, dynamic> json) {
+    return Topic(
+      topicName: json['topic_name'] as String?,
+      topicSlug: json['topic_slug'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'topic_name': topicName, 'topic_slug': topicSlug};
+  }
+}
+
+class CategoryDetail {
+  final String? id;
+  final String? productName;
+  final String? slug;
+  final String? img;
+  final String? price;
+  final String? priceOld;
+  final String? variantName;
+  final String? offersMonth;
+  final String? inventoryQuantity;
+  final String? allowShortSelling;
+
+  CategoryDetail({
+    this.id,
+    this.productName,
+    this.slug,
+    this.img,
+    this.price,
+    this.priceOld,
+    this.variantName,
+    this.offersMonth,
+    this.inventoryQuantity,
+    this.allowShortSelling,
+  });
+
+  factory CategoryDetail.fromJson(Map<String, dynamic> json) {
+    return CategoryDetail(
+      id: json['id'] as String?,
+      productName: json['product_name'] as String?,
+      slug: json['slug'] as String?,
+      img: json['img'] as String?,
+      price: json['price'] as String?,
+      priceOld: json['price_old'] as String?,
+      variantName: json['variant_name'] as String?,
+      offersMonth: json['offers_month'] as String?,
+      inventoryQuantity: json['inventory_quantity'] as String?,
+      allowShortSelling: json['allow_short_selling'] as String?,
+    );
+  }
+  int? get idInt => id != null ? int.tryParse(id!) : null;
+}
+
+class ProductDetailModel {
+  final String? id;
+  final String? name;
+  final String? slug;
+  final String? img;
+  final String? price;
+  final String? priceOld;
+  final String? description;
+  final String? inventoryQuantity;
+
+  ProductDetailModel({
+    this.id,
+    this.name,
+    this.slug,
+    this.img,
+    this.price,
+    this.priceOld,
+    this.description,
+    this.inventoryQuantity,
+  });
+
+  factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
+    return ProductDetailModel(
+      id: json['id'] as String?,
+      name: json['name'] as String?,
+      slug: json['slug'] as String?,
+      img: json['img'] as String?,
+      price: json['price'] as String?,
+      priceOld: json['price_old'] as String?,
+      description: json['description'] as String?,
+      inventoryQuantity: json['inventory_quantity'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'slug': slug,
+      'img': img,
+      'price': price,
+      'price_old': priceOld,
+      'description': description,
+      'inventory_quantity': inventoryQuantity,
+    };
+  }
+
+  int get priceInt => int.tryParse(price ?? '0') ?? 0;
+
+  int get priceOldInt => int.tryParse(priceOld ?? '0') ?? 0;
+
+  int get stock => int.tryParse(inventoryQuantity ?? '0') ?? 0;
+
+  bool get isDiscounted => priceOldInt > priceInt && priceOldInt > 0;
+
+  bool get inStock => stock > 0;
 }

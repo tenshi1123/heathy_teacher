@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/home_model.dart';
+import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
-import 'package:heathy_teacher/screens/payment/hoc_phi_screen.dart';
+import 'package:heathy_teacher/screens/drawer/hoc_phi_screen.dart';
 import 'package:heathy_teacher/screens/profilePage/detail_info_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.userModel});
@@ -27,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      drawer: MyCustomDrawer(userModel: widget.userModel, selectedIndex: 0),
       body: Column(
         children: [
           SizedBox(
@@ -53,9 +56,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(width: 24.w),
+                            Builder(
+                              builder: (context) {
+                                return IconButton(
+                                  icon: const Icon(
+                                    Icons.menu,
+                                    color: Colors.white,
+                                  ), // Icon 3 gạch
+                                  onPressed: () {
+                                    Scaffold.of(
+                                      context,
+                                    ).openDrawer(); // Lệnh gọi Drawer trượt ra
+                                  },
+                                );
+                              },
+                            ),
                             Text(
                               'Tài khoản',
                               style: defaultText16B.copyWith(
@@ -172,18 +189,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 4.h),
-          Text(
-            widget.userModel.phone ?? 'không xác định',
-            style: defaultText14M.copyWith(
-              color: colorText.withValues(alpha: 0.6),
+
+          Text('${widget.userModel.memberRanking}', style: defaultText14B),
+          RichText(
+            text: TextSpan(
+              style: defaultText14M,
+              children: [
+                TextSpan(text: 'Điểm tích lũy: '),
+                TextSpan(
+                  text: formatPrice(widget.userModel.accumulatedPoint),
+                  style: defaultText14B,
+                ),
+                TextSpan(text: ' điểm'),
+              ],
             ),
           ),
-          Text(
-            widget.userModel.email ?? 'không xác định',
-            style: defaultText14M.copyWith(
-              color: colorText.withValues(alpha: 0.6),
+          SelectableText.rich(
+            TextSpan(
+              style: defaultText14M,
+              children: [
+                TextSpan(text: 'Mã giới thiệu: '),
+                TextSpan(
+                  text: widget.userModel.customerCode,
+                  style: defaultText14B,
+                ),
+              ],
             ),
           ),
+
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -435,4 +468,14 @@ Future<void> _dialogBuilder(BuildContext context, {required int type}) {
       );
     },
   );
+}
+
+String formatPrice(String? priceString) {
+  if (priceString == null || priceString.isEmpty) return '0';
+  try {
+    final int price = int.parse(priceString);
+    return NumberFormat.decimalPattern('vi').format(price);
+  } catch (e) {
+    return priceString; // Nếu lỗi parse thì trả về chuỗi gốc
+  }
 }

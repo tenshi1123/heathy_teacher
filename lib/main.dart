@@ -3,12 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:heathy_teacher/app.dart';
-import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/utils/constants/api_path.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
 
-List<CourseModel> cartItems = [];
 String isShow = '';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

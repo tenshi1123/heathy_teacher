@@ -18,10 +18,15 @@ class BottomBarScreen extends StatefulWidget {
   const BottomBarScreen({super.key});
 
   @override
-  State<BottomBarScreen> createState() => _BottomBarScreenState();
+  State<BottomBarScreen> createState() => BottomBarScreenState();
 }
 
-class _BottomBarScreenState extends State<BottomBarScreen> {
+class BottomBarScreenState extends State<BottomBarScreen> {
+  void changeTab(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
   CustomerModel? customerModel;
   UserModel? userModel;
 
@@ -120,9 +125,9 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
                   });
                 },
               ),
-              CourseScreen(),
-              ListChatScreen(),
-              ProductScreen(type: 1),
+              CourseScreen(userModel: userModel!),
+              ListChatScreen(userModel: userModel!),
+              ProductScreen(type: 1, userModel: userModel!),
               ProfileScreen(userModel: userModel!),
             ],
           ),

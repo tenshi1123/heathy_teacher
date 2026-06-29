@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:heathy_teacher/models/home_model.dart';
+import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:intl/intl.dart'; // Thêm thư viện này để format tiền tệ (nếu cần)
 
 import 'package:heathy_teacher/models/product_model.dart';
@@ -12,8 +14,9 @@ import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:heathy_teacher/main.dart';
 
 class ProductScreen extends StatefulWidget {
-  const ProductScreen({super.key, required this.type});
+  const ProductScreen({super.key, required this.type, required this.userModel});
   final int type;
+  final UserModel userModel;
   @override
   State<ProductScreen> createState() => _ProductScreenState();
 }
@@ -71,6 +74,7 @@ class _ProductScreenState extends State<ProductScreen> {
     }
     return Scaffold(
       backgroundColor: mainDarkGreen,
+      drawer: MyCustomDrawer(userModel: widget.userModel, selectedIndex: 0),
       // endDrawer: const FilterMenuDrawer(), // Tạm comment nếu bạn chưa dùng
       appBar: AppBar(
         backgroundColor: mainDarkGreen,
@@ -81,32 +85,46 @@ class _ProductScreenState extends State<ProductScreen> {
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         leading: widget.type == 1
-            ? const SizedBox()
+            ? Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(
+                      Icons.menu,
+                      color: Colors.white,
+                    ), // Icon 3 gạch
+                    onPressed: () {
+                      Scaffold.of(
+                        context,
+                      ).openDrawer(); // Lệnh gọi Drawer trượt ra
+                    },
+                  );
+                },
+              )
             : IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                 onPressed: () => Navigator.pop(context),
               ),
-        actions: [
-          Builder(
-            builder: (BuildContext innerContext) {
-              return GestureDetector(
-                onTap: () {
-                  Scaffold.of(innerContext).openEndDrawer();
-                },
-                child: SvgPicture.asset(
-                  'assets/icons/menu_icon.svg',
-                  width: 20.w,
-                  height: 20.h,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              );
-            },
-          ),
-          SizedBox(width: 16.w),
-        ],
+        // actions: [
+        //   Builder(
+        //     builder: (BuildContext innerContext) {
+        //       return GestureDetector(
+        //         onTap: () {
+        //           Scaffold.of(innerContext).openEndDrawer();
+        //         },
+        //         child: SvgPicture.asset(
+        //           'assets/icons/menu_icon.svg',
+        //           width: 20.w,
+        //           height: 20.h,
+        //           colorFilter: const ColorFilter.mode(
+        //             Colors.white,
+        //             BlendMode.srcIn,
+        //           ),
+        //         ),
+        //       );
+        //     },
+        //   ),
+        //   SizedBox(width: 16.w),
+        // ],
       ),
       body: Container(
         width: double.infinity,

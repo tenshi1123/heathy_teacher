@@ -1,9 +1,36 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/utils/DioClient.dart';
 import 'package:heathy_teacher/utils/constants/api_path.dart';
 
 class ExternalRepo {
+  //repo lấy data từ trang ngoài
+  Future<List<CourseModel>> getListCourse({int page = 1, int show = 10}) async {
+    try {
+      final dio = await DioClient.getInstance();
+      dio.options.headers['Token'] = 'Healthy1234567890HVG';
+      final response = await dio.post(
+        ApiPath.productCatalog,
+        data: jsonEncode({"page": page.toString(), "show": show.toString()}),
+      );
+      if (response.data != null && response.data['data'] != null) {
+        final List listData = response.data['data'] as List;
+
+        return listData
+            .map((e) => CourseModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else {
+        return [];
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
+
   Future<CourseDetailModel> getDetailCourseExternal() async {
     try {
       final dio = await DioClient.getInstance();

@@ -30,3 +30,7 @@ class ApiPath {
   static String detailProduct = '$baseUrl/chi-tiet-san-pham';
   static String playVideo = '$baseUrl/play-video';
 }
+
+//api thanh toán khóa học đâu?
+//api danh sách khóa học chọn setting_course_type là on hay off đều ra cùng 1 danh sách
+//api thanh toán sản phẩm lỗi -"Decryption failed or invalid data format."

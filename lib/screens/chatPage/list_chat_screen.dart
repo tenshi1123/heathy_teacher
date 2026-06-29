@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/chat_models.dart';
+import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/repo/chat_repo.dart';
 import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
+import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ListChatScreen extends StatefulWidget {
-  const ListChatScreen({super.key});
-
+  const ListChatScreen({super.key, required this.userModel});
+  final UserModel userModel;
   @override
   State<ListChatScreen> createState() => _ListChatScreenState();
 }
@@ -63,7 +65,18 @@ class _ListChatScreenState extends State<ListChatScreen> {
           'Chat',
           style: defaultText18B.copyWith(color: Colors.white),
         ),
-        automaticallyImplyLeading: false,
+
+        //automaticallyImplyLeading: false,
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.menu, color: Colors.white), // Icon 3 gạch
+              onPressed: () {
+                Scaffold.of(context).openDrawer(); // Lệnh gọi Drawer trượt ra
+              },
+            );
+          },
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.phone, color: Colors.white),
@@ -74,6 +87,7 @@ class _ListChatScreenState extends State<ListChatScreen> {
           SizedBox(width: 16.w),
         ],
       ),
+      drawer: MyCustomDrawer(userModel: widget.userModel, selectedIndex: 0),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -152,7 +166,11 @@ class ConversationItem extends StatelessWidget {
                     height: 42.r,
                     width: 42.r,
                     color: Colors.grey.shade300,
-                    child: Icon(Icons.person, color: Colors.grey.shade600, size: 24.r),
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.grey.shade600,
+                      size: 24.r,
+                    ),
                   );
                 },
               ),
