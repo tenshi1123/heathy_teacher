@@ -11,7 +11,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:heathy_teacher/main.dart';
 
 class RegisterClassOff extends StatefulWidget {
-  const RegisterClassOff({super.key});
+  const RegisterClassOff({super.key, required this.id});
+  final String id;
   @override
   State<RegisterClassOff> createState() => _RegisterClassOffState();
 }
@@ -28,7 +29,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
 
   Future<void> _fetchData() async {
     isLoading = true;
-    courses = await ExternalRepo().getDetailCourseExternal();
+    courses = await ExternalRepo().getDetailCourseExternal(widget.id);
     setState(() {
       isLoading = false;
     });
@@ -56,7 +57,9 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
+                  MaterialPageRoute(
+                    builder: ((context) => ShoppingCartScreen()),
+                  ),
                 );
               },
               child: Stack(
@@ -167,9 +170,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                         ),
                         Text(
                           '  Giảng viên: Linh Phan',
-                          style: defaultText14M.copyWith(
-                            color: mainDarkGreen,
-                          ),
+                          style: defaultText14M.copyWith(color: mainDarkGreen),
                         ),
                       ],
                     ),
@@ -243,7 +244,8 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                                 ),
                                 actions: <Widget>[
                                   TextButton(
-                                    onPressed: () => Navigator.pop(context, 'OK'),
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'OK'),
                                     child: const Text('OK'),
                                   ),
                                 ],
@@ -257,7 +259,10 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16.r),
                             color: Colors.white,
-                            border: Border.all(color: mainDarkGreen, width: 1.w),
+                            border: Border.all(
+                              color: mainDarkGreen,
+                              width: 1.w,
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

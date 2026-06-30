@@ -4,8 +4,10 @@ import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/screens/drawer/chinh_sach_screen.dart';
+import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/screens/drawer/hoc_phi_screen.dart';
+import 'package:heathy_teacher/screens/profilePage/profile_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
@@ -59,11 +61,14 @@ class MyCustomDrawer extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const CoGiaoHealthyScreen(
-                            type: 'home', place: 'Hà Nội'),
+                          type: 'home',
+                          place: 'Hà Nội',
+                        ),
                       ),
                     );
                   },
@@ -120,6 +125,15 @@ class MyCustomDrawer extends StatelessWidget {
                   icon: Icons.calendar_today_outlined,
                   title: 'Lịch học trực tiếp',
                   isSelected: selectedIndex == 2,
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => CalenderScreen()),
+                      ),
+                    );
+                  },
                 ),
                 _buildMenuItem(
                   icon: Icons.attach_money,
@@ -127,6 +141,7 @@ class MyCustomDrawer extends StatelessWidget {
                   //hasTrailingArrow: true,
                   isSelected: selectedIndex == 3,
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: ((context) => HocPhiScreen())),
@@ -138,6 +153,7 @@ class MyCustomDrawer extends StatelessWidget {
                   title: 'Thông báo',
                   isSelected: selectedIndex == 4,
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -156,6 +172,7 @@ class MyCustomDrawer extends StatelessWidget {
                   title: 'Chính sách',
                   isSelected: selectedIndex == 6,
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -164,7 +181,11 @@ class MyCustomDrawer extends StatelessWidget {
                     );
                   },
                 ),
-                _buildMenuItem(icon: Icons.logout, title: 'Đăng xuất'),
+                _buildMenuItem(
+                  icon: Icons.logout,
+                  title: 'Đăng xuất',
+                  onTap: () => dialogBuilder(context, type: 1),
+                ),
               ],
             ),
           ),

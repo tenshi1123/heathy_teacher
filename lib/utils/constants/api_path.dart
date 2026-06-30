@@ -23,6 +23,7 @@ class ApiPath {
 
   //web ngoai
   static String listCourse = '$baseUrl/danh-sach-khoa-hoc';
+  static String listCourseOff = '$baseUrl/danh-sach-khoa-hoc-truc-tiep';
   static String courseCatalog = '$baseUrl/danh-muc-khoa-hoc';
   static String detailCourse = '$baseUrl/chi-tiet-khoa-hoc';
   static String listProduct = '$baseUrl/danh-sach-san-pham';

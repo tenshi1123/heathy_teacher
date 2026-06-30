@@ -5,8 +5,10 @@ import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:heathy_teacher/main.dart';
+import 'package:intl/intl.dart';
 
 class ListClassOff extends StatefulWidget {
   const ListClassOff({super.key});
@@ -73,14 +75,17 @@ class _ListClassOffState extends State<ListClassOff> {
               shrinkWrap: true,
               padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 20.h),
               physics: const ClampingScrollPhysics(),
-              itemCount: 6,
+              itemCount: globalListCourseOff.length,
               itemBuilder: (BuildContext context, int index) {
+                var model = globalListCourseOff[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: ((context) => const RegisterClassOff()),
+                        builder: ((context) => RegisterClassOff(
+                          id: globalListCourseOff[index].id ?? '',
+                        )),
                       ),
                     );
                   },
@@ -109,8 +114,8 @@ class _ListClassOffState extends State<ListClassOff> {
                     ),
                     child: Row(
                       children: [
-                        Image.asset(
-                          'assets/images/off_class_4.png',
+                        Image.network(
+                          model.img ?? '',
                           height: 90.h,
                           width: 90.w,
                           fit: BoxFit.fill,
@@ -135,16 +140,21 @@ class _ListClassOffState extends State<ListClassOff> {
                                 ],
                               ),
                               Text(
-                                'Lớp nấu ăn Eatclean cơ bản dành cho gia đình',
+                                model.name ?? 'Không xác định',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: defaultText14SB,
                               ),
                               if (isShow == 'true')
                                 Row(
                                   children: [
-                                    Text('3.000.000đ', style: defaultText16B),
+                                    Text(
+                                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
+                                      style: defaultText16B,
+                                    ),
                                     SizedBox(width: 12.w),
                                     Text(
-                                      '4.000.000đ',
+                                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
                                       style: defaultText12Re.copyWith(
                                         decoration: TextDecoration.lineThrough,
                                       ),

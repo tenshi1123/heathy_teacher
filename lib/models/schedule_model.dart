@@ -61,7 +61,6 @@ class ScheduleModel {
 
       // Vẫn giữ cơ chế gộp address như trước
       address: json["address"] ?? json["coso_address"],
-
       courseScheduleName: json["course_schedule_name"],
       cosoName: json["coso_name"],
       phongHocName: json["phonghoc_name"],

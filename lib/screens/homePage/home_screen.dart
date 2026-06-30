@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/main.dart';
+import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
@@ -14,7 +15,9 @@ import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -219,7 +222,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     SvgPicture.asset('assets/icons/class_off.svg'),
                     Text(
-                      ' Gợi ý các khóa học liên quan',
+                      ' Gợi ý các khóa học trực tiếp',
                       style: defaultText16B.copyWith(color: Colors.black),
                     ),
                     Spacer(),
@@ -237,14 +240,14 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(
               width: 375.w,
-              height: (264 + 48).h,
+              height: (256 + 48).h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 physics: const ScrollPhysics(),
-                itemCount: 3,
+                itemCount: globalListCourseOff.length,
                 itemBuilder: (context, index) {
-                  return _OfflineClassCard(index: index);
+                  return _OfflineClassCard(model: globalListCourseOff[index]);
                 },
               ),
             ),
@@ -284,65 +287,68 @@ class HomeScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 physics: const ScrollPhysics(),
-                itemCount: 3,
+                itemCount: globalListCourse.length,
                 itemBuilder: (context, index) {
-                  return _OnlineClassCard(index: index);
+                  return _OnlineClassCard(
+                    index: index,
+                    model: globalListCourse[index],
+                  );
                 },
               ),
             ),
-            SizedBox(
-              width: 343.w,
-              child: Row(
-                children: [
-                  SvgPicture.asset('assets/icons/material_icon.svg'),
-                  Text(
-                    '  Gian hàng nguyên liệu',
-                    style: defaultText16B.copyWith(color: Colors.black),
-                  ),
-                  Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  ProductScreen(type: 2, userModel: userModel),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Xem tất cả  ',
-                      style: defaultText14SB.copyWith(
-                        color: mainDarkGreen,
-                        fontSize: 12.sp,
-                      ),
-                    ),
-                  ),
-                  Icon(Icons.keyboard_arrow_right, color: mainDarkGreen),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 375.w,
-              height: (297 + 48).h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return _MaterialProductCard(index: index);
-                },
-              ),
-            ),
+            // SizedBox(
+            //   width: 343.w,
+            //   child: Row(
+            //     children: [
+            //       SvgPicture.asset('assets/icons/material_icon.svg'),
+            //       Text(
+            //         '  Gian hàng nguyên liệu',
+            //         style: defaultText16B.copyWith(color: Colors.black),
+            //       ),
+            //       Spacer(),
+            //       GestureDetector(
+            //         onTap: () {
+            //           Navigator.push(
+            //             context,
+            //             PageRouteBuilder(
+            //               pageBuilder:
+            //                   (context, animation, secondaryAnimation) =>
+            //                       ProductScreen(type: 2, userModel: userModel),
+            //               transitionsBuilder:
+            //                   (context, animation, secondaryAnimation, child) {
+            //                     return FadeTransition(
+            //                       opacity: animation,
+            //                       child: child,
+            //                     );
+            //                   },
+            //             ),
+            //           );
+            //         },
+            //         child: Text(
+            //           'Xem tất cả  ',
+            //           style: defaultText14SB.copyWith(
+            //             color: mainDarkGreen,
+            //             fontSize: 12.sp,
+            //           ),
+            //         ),
+            //       ),
+            //       Icon(Icons.keyboard_arrow_right, color: mainDarkGreen),
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(
+            //   width: 375.w,
+            //   height: (297 + 48).h,
+            //   child: ListView.builder(
+            //     scrollDirection: Axis.horizontal,
+            //     shrinkWrap: true,
+            //     physics: const ScrollPhysics(),
+            //     itemCount: 3,
+            //     itemBuilder: (context, index) {
+            //       return _MaterialProductCard(index: index);
+            //     },
+            //   ),
+            // ),
             SizedBox(height: 12.h),
           ],
         ),
@@ -352,8 +358,8 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _OfflineClassCard extends StatelessWidget {
-  final int index;
-  const _OfflineClassCard({required this.index});
+  final CourseOffModel model;
+  const _OfflineClassCard({required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -361,15 +367,17 @@ class _OfflineClassCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: ((context) => const RegisterClassOff())),
+          MaterialPageRoute(
+            builder: ((context) => RegisterClassOff(id: model.id ?? '')),
+          ),
         );
       },
       child: Container(
-        height: 264.h,
+        height: 256.h,
         width: 200.w,
         margin: EdgeInsets.only(
           left: 16.w,
-          right: index == 2 ? 16.w : 4.w,
+          right: 8.w,
           top: 20.h,
           bottom: 28.h,
         ),
@@ -389,33 +397,58 @@ class _OfflineClassCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.asset(
-              'assets/images/off_class_${index + 1}.png',
-              height: 103.h,
+            Image.network(
+              model.img ?? '',
+              //height: 103.h,
               width: 184.w,
-              fit: BoxFit.fill,
+              fit: BoxFit.fitWidth,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.broken_image, color: Colors.grey);
+              },
+              loadingBuilder:
+                  (
+                    BuildContext context,
+                    Widget child,
+                    ImageChunkEvent? loadingProgress,
+                  ) {
+                    if (loadingProgress == null) {
+                      return child; // Đã tải xong
+                    }
+                    return Container(
+                      width: 80.w,
+                      height: 80.h,
+                      color: Colors.grey[100],
+                      child: const Center(child: CircularProgressIndicator()),
+                    );
+                  },
             ),
-            Row(
-              children: [
-                RatingStars(rating: 4.5, starSize: 16.r),
-                Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     RatingStars(rating: 4.5, starSize: 16.r),
+            //     Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
+            //   ],
+            // ),
             Text(
-              'Lớp nấu ăn Eatclean cơ bản dành cho gia đình',
+              model.name ?? 'Không xác định',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: defaultText14SB,
             ),
             if (isShow == 'true')
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('3.000.000đ', style: defaultText16B),
                   Text(
-                    '4.000.000đ',
-                    style: defaultText12Re.copyWith(
-                      decoration: TextDecoration.lineThrough,
-                    ),
+                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
+                    style: defaultText16B,
                   ),
+                  if (model.priceOld != '0')
+                    Text(
+                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
+                      style: defaultText12Re.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
                 ],
               ),
             Container(
@@ -445,7 +478,8 @@ class _OfflineClassCard extends StatelessWidget {
 
 class _OnlineClassCard extends StatelessWidget {
   final int index;
-  const _OnlineClassCard({required this.index});
+  final CourseModel model;
+  const _OnlineClassCard({required this.index, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -481,39 +515,45 @@ class _OnlineClassCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              height: 103.h,
-              width: 184.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                image: DecorationImage(
-                  image: AssetImage(
-                    'assets/images/online_class_${index + 1}.png',
-                  ),
-                  fit: BoxFit.cover,
+            SizedBox(
+              width: 184.w, // Cố định chiều rộng
+              // Cố tình KHÔNG set height ở đây để chiều cao tự động co giãn
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  8.r,
+                ), // Vẫn giữ được bo góc như cũ
+                child: Image.network(
+                  model.img ??
+                      'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg', // URL ảnh dự phòng
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),
-            Row(
-              children: [
-                RatingStars(rating: 4.5, starSize: 16.r),
-                Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     RatingStars(rating: 4.5, starSize: 16.r),
+            //     Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
+            //   ],
+            // ),
             Text(
-              'Lớp bánh mì sandwich & pate, ăn kèm heakthy',
+              model.courseName ?? 'Không xác định',
+              maxLines: 2,
               style: defaultText14SB,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('8.000.000đ', style: defaultText16B),
                 Text(
-                  '9.000.000đ',
-                  style: defaultText12Re.copyWith(
-                    decoration: TextDecoration.lineThrough,
-                  ),
+                  '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
+                  style: defaultText16B,
                 ),
+                if (model.priceOld != '0')
+                  Text(
+                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
+                    style: defaultText12Re.copyWith(
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
               ],
             ),
             Container(
@@ -535,7 +575,7 @@ class _OnlineClassCard extends StatelessWidget {
                   ),
                   SizedBox(width: 8.w),
                   Text(
-                    '15 bài học',
+                    '${model.lessonNumber} bài học',
                     style: defaultText14SB.copyWith(color: Colors.white),
                   ),
                 ],
@@ -560,7 +600,7 @@ class _OnlineClassCard extends StatelessWidget {
                   ),
                   SizedBox(width: 8.w),
                   Text(
-                    '12 lượt đã học',
+                    '${model.totalEnrollments} lượt học',
                     style: defaultText14SB.copyWith(color: Colors.white),
                   ),
                 ],

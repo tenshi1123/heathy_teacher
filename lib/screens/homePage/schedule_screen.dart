@@ -481,3 +481,48 @@ class _ItemTableCalenderState extends State<ItemTableCalender> {
     );
   }
 }
+
+List<ScheduleModel> mockSchedules = [
+  // Mẫu 1: Điền đầy đủ tất cả các thông tin
+  ScheduleModel(
+    id: 'SCH001',
+    name: 'Lịch dạy Toán Cao Cấp',
+    title: 'Đại số tuyến tính',
+    className: 'KTPM-K60',
+    nameLesson: 'Bài 1: Ma trận và Định thức',
+    address:
+        'Sảnh A5, Diamond Alnata Plus, 02 Đường N 1, Sơn Kỳ, Tân Phú, Thành phố Hồ Chí Minh',
+    courseScheduleName: 'Học kỳ 1 - 2026',
+    cosoName: 'Cơ sở chính',
+    phongHocName: 'Phòng D3-501',
+    gvStatus: 'Đã xác nhận',
+    startTime: DateTime(2026, 6, 30, 8, 0), // 8:00 AM, 30/06/2026
+    endTime: DateTime(2026, 6, 30, 10, 15), // 10:15 AM, 30/06/2026
+  ),
+
+  // Mẫu 2: Chỉ điền các trường bắt buộc và một vài trường cần thiết
+  ScheduleModel(
+    id: 'SCH002',
+    name: 'Họp bộ môn',
+    title: 'Họp đánh giá giữa kỳ',
+    phongHocName: 'Phòng họp Tầng 3',
+    startTime: DateTime(2026, 7, 1, 14, 0), // 2:00 PM, 01/07/2026
+    endTime: DateTime(2026, 7, 1, 16, 0), // 4:00 PM, 01/07/2026
+    // Các trường khác sẽ tự động là null
+  ),
+
+  // Mẫu 3: Dữ liệu môn học ngoại ngữ, có trạng thái giảng viên khác
+  ScheduleModel(
+    id: 'SCH003',
+    name: 'Lịch dạy Tiếng Anh',
+    title: 'Tiếng Anh giao tiếp cơ bản',
+    className: 'TA1-01',
+    nameLesson: 'Unit 5: Work and Play',
+    courseScheduleName: 'Khóa hè 2026',
+    cosoName: 'Cơ sở 2 - Cầu Giấy',
+    phongHocName: 'Phòng A2-202',
+    gvStatus: 'Chờ điểm danh',
+    startTime: DateTime(2026, 7, 2, 18, 0), // 6:00 PM, 02/07/2026
+    endTime: DateTime(2026, 7, 2, 20, 0), // 8:00 PM, 02/07/2026
+  ),
+];

@@ -432,7 +432,7 @@ class CourseItem extends StatelessWidget {
                     MaterialPageRoute(
                       builder: ((context) => type == 'on'
                           ? const RegisterClassON()
-                          : const RegisterClassOff()),
+                          : const RegisterClassOff(id: '168')),
                     ),
                   );
                   // showCitySelectionDialog(

@@ -206,8 +206,6 @@ class CourseModel {
     this.totalEnrollments,
     this.lecturerName,
   });
-
-  // Parse từ JSON sang Object
   factory CourseModel.fromJson(Map<String, dynamic> json) {
     return CourseModel(
       categoryName: json['category_name'] as String?,
@@ -226,6 +224,32 @@ class CourseModel {
       priceOld: json['price_old'] as String?,
       totalEnrollments: json['total_enrollments'] as String?,
       lecturerName: json['lecturer_name'] as String?,
+    );
+  }
+}
+
+class CourseOffModel {
+  final String? id, name, img, price, priceOld, dateStart, province, lecturer;
+  CourseOffModel({
+    this.id,
+    this.name,
+    this.img,
+    this.price,
+    this.priceOld,
+    this.dateStart,
+    this.province,
+    this.lecturer,
+  });
+  factory CourseOffModel.fromJson(Map<String, dynamic> json) {
+    return CourseOffModel(
+      id: json['course_type_id'],
+      name: json['course_schedule_name'],
+      img: json['img'],
+      price: json['price'],
+      priceOld: json['price_old'],
+      dateStart: json['date_start'],
+      province: json['coso_province'],
+      lecturer: json['lecturer_name'],
     );
   }
 }

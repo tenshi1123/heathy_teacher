@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:heathy_teacher/repo/external_repo.dart';
+import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_links/app_links.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // Tuỳ thuộc vào project của bạn
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> removeToken() async {
   final prefs = await SharedPreferences.getInstance();
@@ -36,6 +38,18 @@ class _SplashScreenState extends State<SplashScreen> {
     // Chờ 3 giây để hiển thị splash image
     // await Future.delayed(const Duration(milliseconds: 10));
     if (_openedFromDeepLink) return;
+
+    // Lấy danh sách lớp on và off lúc chờ vào app
+    try {
+      final futureCourse = ExternalRepo().getListCourse();
+      final futureCourseOff = ExternalRepo().getListCourseOff();
+
+      globalListCourse = await futureCourse;
+      globalListCourseOff = await futureCourseOff;
+    } catch (e) {
+      print('Lỗi gọi danh sách khoá học: $e');
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 

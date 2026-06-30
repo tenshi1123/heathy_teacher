@@ -340,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () => _dialogBuilder(context, type: 0),
+            onTap: () => dialogBuilder(context, type: 0),
             child: Container(
               margin: EdgeInsets.only(top: 16.h),
               width: 343.w,
@@ -372,7 +372,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () => _dialogBuilder(context, type: 1),
+            onTap: () => dialogBuilder(context, type: 1),
             child: Container(
               margin: EdgeInsets.only(top: 16.h),
               width: 343.w,
@@ -418,7 +418,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-Future<void> _dialogBuilder(BuildContext context, {required int type}) {
+Future<void> dialogBuilder(BuildContext context, {required int type}) {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -460,7 +460,6 @@ Future<void> _dialogBuilder(BuildContext context, {required int type}) {
               final prefs = await SharedPreferences.getInstance();
               await prefs.remove('token');
               await prefs.remove('id_user');
-
 
               Navigator.push(
                 context,
