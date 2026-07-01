@@ -7,6 +7,7 @@ import 'package:heathy_teacher/screens/chatPage/list_chat_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/screens/homePage/home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:heathy_teacher/screens/productPage/list_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/screens/profilePage/profile_screen.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
@@ -129,7 +130,7 @@ class BottomBarScreenState extends State<BottomBarScreen> {
               ),
               CourseScreen(userModel: userModel!),
               ListChatScreen(userModel: userModel!),
-              ProductScreen(type: 1, userModel: userModel!),
+              ListProductScreen(userModel: userModel!),
               ProfileScreen(userModel: userModel!),
             ],
           ),
@@ -209,7 +210,7 @@ class CustomBottomNavBar extends StatelessWidget {
           ),
           _buildItem(
             index: 3,
-            label: "Sản phẩm",
+            label: isShow == 'true' ? "Sản phẩm" : "Nguyên liệu",
             activeIcon: 'enable_product_icon.svg',
             disableIcon: 'disable_product_icon.svg',
           ),
@@ -236,7 +237,7 @@ class CustomBottomNavBar extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(index),
       child: SizedBox(
-        width: 72.w,
+        width: 75.w,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

@@ -79,15 +79,11 @@ class _ListSpScreenState extends State<ListSpScreen> {
     super.dispose();
   }
 
-  static const Color secondaryGreen = Color(
-    0xFF7CB342,
-  ); // Màu xanh nút đăng nhập
-  // Màu chữ và giỏ hàng
+  static const Color secondaryGreen = Color(0xFF7CB342);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: Stack(
         children: [
           Column(
@@ -97,11 +93,8 @@ class _ListSpScreenState extends State<ListSpScreen> {
                   controller: _scrollController,
                   child: Column(
                     children: [
-                      const SizedBox(height: 50), // Khoảng cách cho status bar
-
+                      const SizedBox(height: 50),
                       DefaultAppBar(),
-
-                      // 2. SEARCH BAR AREA
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 16.w,
