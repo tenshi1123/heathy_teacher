@@ -18,7 +18,6 @@ class RegisterClassOff extends StatefulWidget {
 }
 
 class _RegisterClassOffState extends State<RegisterClassOff> {
-  late int currentPage = 1;
   bool isLoading = true;
   late CourseDetailModel courses;
   @override
@@ -28,11 +27,27 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
   }
 
   Future<void> _fetchData() async {
-    isLoading = true;
-    courses = await ExternalRepo().getDetailCourseExternal(widget.id);
-    setState(() {
-      isLoading = false;
-    });
+    try {
+      final data = await ExternalRepo().getDetailCourseExternal(widget.id);
+      setState(() {
+        courses = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+    }
+  }
+
+  String _formatHtml(String? html) {
+    if (html == null) return '';
+    return html
+        .replaceAll(RegExp(r'width:\s*\d+px;?'), '')
+        .replaceAll(RegExp(r'height:\s*\d+px;?'), '');
   }
 
   @override
@@ -104,7 +119,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                       width: 343.w,
                       height: 280.h,
                     ),
-
+                    Html(data: _formatHtml(courses.description)),
                     SizedBox(height: 20.h),
                     if (isShow == 'true')
                       SizedBox(
@@ -132,49 +147,8 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                           ],
                         ),
                       ),
-                    Row(
-                      children: [
-                        SizedBox(width: 16.w),
-                        Icon(
-                          Icons.calendar_month_outlined,
-                          color: mainDarkGreen,
-                          size: 16,
-                        ),
-                        Text(
-                          '  07/05/2026 - 09/05/2026',
-                          style: defaultText14M.copyWith(color: mainDarkGreen),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(width: 16.w),
-                        Icon(
-                          Icons.location_on_outlined,
-                          color: mainDarkGreen,
-                          size: 16,
-                        ),
-                        Text(
-                          '  Trực tiếp tại Hà Nội',
-                          style: defaultText14M.copyWith(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(width: 16.w),
-                        Icon(
-                          Icons.person_outline,
-                          color: mainDarkGreen,
-                          size: 16,
-                        ),
-                        Text(
-                          '  Giảng viên: Linh Phan',
-                          style: defaultText14M.copyWith(color: mainDarkGreen),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 12.h),
+
+                    //SizedBox(height: 12.h),
                     if (isShow == 'true') ...[
                       InkWell(
                         onTap: () {
@@ -296,46 +270,22 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                       ),
                     ],
                     SizedBox(height: 28.h),
-                    Html(data: courses.description ?? ''),
-                    _buildVideoSection(),
-
-                    _buildCourseContent(),
+                    Row(
+                      children: [
+                        SizedBox(width: 16.w),
+                        Text(
+                          "Nội dung bài giảng",
+                          style: defaultText18B.copyWith(color: mainDarkGreen),
+                        ),
+                      ],
+                    ),
+                    Html(data: _formatHtml(courses.content)),
+                    //_buildCourseContent(),
                     _buildFeedbackSection(),
                     SizedBox(height: 36.h),
                   ],
                 ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildVideoSection() {
-    if (courses.youtubeUrl == null || courses.youtubeUrl!.isEmpty) {
-      return const SizedBox.shrink(); // Không có link thì ẩn
-    }
-
-    // Tạm thời hiển thị thumbnail giả lập có nút Play.
-    // Trong thực tế, bạn gắn package `youtube_player_flutter` vào đây
-    return Container(
-      width: double.infinity,
-      height: 220.h,
-      margin: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.black87,
-        borderRadius: BorderRadius.circular(12.r),
-        image: courses.image != null
-            ? DecorationImage(
-                image: NetworkImage(courses.image!), // Gắn URL thật vào
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.4),
-                  BlendMode.darken,
-                ),
-              )
-            : null,
-      ),
-      child: Center(
-        child: Icon(Icons.play_circle_fill, color: Colors.white, size: 60.w),
       ),
     );
   }
@@ -349,58 +299,54 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Nội dung bài học",
-            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-          ),
           SizedBox(height: 12.h),
           // Danh sách các chương
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: topicals.length,
-            itemBuilder: (context, index) {
-              final topic = topicals[index];
-              final lessons = topic.lessons ?? [];
+          // ListView.builder(
+          //   shrinkWrap: true,
+          //   physics: const NeverScrollableScrollPhysics(),
+          //   itemCount: topicals.length,
+          //   itemBuilder: (context, index) {
+          //     final topic = topicals[index];
+          //     final lessons = topic.lessons ?? [];
 
-              return Card(
-                elevation: 0,
-                color: const Color(0xffF5FAF5),
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.green.withValues(alpha: 0.2)),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                margin: EdgeInsets.only(bottom: 12.h),
-                // Mở rộng/Thu gọn bài học
-                child: ExpansionTile(
-                  title: Text(
-                    topic.name ?? 'Chưa cập nhật',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                  children: lessons.map((lesson) {
-                    return ListTile(
-                      leading: Icon(
-                        Icons.play_circle_outline,
-                        color: Colors.green,
-                        size: 20.w,
-                      ),
-                      title: Text(
-                        lesson.name ?? '',
-                        style: TextStyle(fontSize: 13.sp),
-                      ),
-                      trailing: Text(
-                        lesson.time ?? '',
-                        style: TextStyle(color: Colors.grey, fontSize: 12.sp),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              );
-            },
-          ),
+          //     return Card(
+          //       elevation: 0,
+          //       color: const Color(0xffF5FAF5),
+          //       shape: RoundedRectangleBorder(
+          //         side: BorderSide(color: Colors.green.withValues(alpha: 0.2)),
+          //         borderRadius: BorderRadius.circular(12.r),
+          //       ),
+          //       margin: EdgeInsets.only(bottom: 12.h),
+          //       // Mở rộng/Thu gọn bài học
+          //       child: ExpansionTile(
+          //         title: Text(
+          //           topic.name ?? 'Chưa cập nhật',
+          //           style: TextStyle(
+          //             fontWeight: FontWeight.w600,
+          //             fontSize: 14.sp,
+          //           ),
+          //         ),
+          //         children: lessons.map((lesson) {
+          //           return ListTile(
+          //             leading: Icon(
+          //               Icons.play_circle_outline,
+          //               color: Colors.green,
+          //               size: 20.w,
+          //             ),
+          //             title: Text(
+          //               lesson.name ?? '',
+          //               style: TextStyle(fontSize: 13.sp),
+          //             ),
+          //             trailing: Text(
+          //               lesson.time ?? '',
+          //               style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+          //             ),
+          //           );
+          //         }).toList(),
+          //       ),
+          //     );
+          //   },
+          // ),
           SizedBox(height: 24.h),
         ],
       ),
@@ -427,7 +373,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
         ),
         SizedBox(height: 16.h),
         SizedBox(
-          height: 170.h, // Nới chiều cao lên một chút để chứa ảnh đẹp hơn
+          height: 400.h, // Đã tăng chiều cao để đủ chỗ cho ảnh dọc và text
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -438,7 +384,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
               final bool hasImage = imgPath != null && imgPath.isNotEmpty;
 
               return Container(
-                width: 320.w, // Rộng ra chút để đủ chỗ cho cả chữ và ảnh
+                width: 320.w, // Độ rộng hợp lý cho thẻ dọc
                 margin: EdgeInsets.only(right: 16.w),
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
@@ -453,71 +399,24 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                     ),
                   ],
                 ),
-                child: Row(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Cột trái: Tên user và Nội dung feedback
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 14.r,
-                                backgroundColor: Colors.green[100],
-                                child: Text(
-                                  fb['user_name']?.substring(0, 1) ?? 'U',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 8.w),
-                              Expanded(
-                                child: Text(
-                                  fb['user_name'] ?? 'Học viên',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.sp,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 12.h),
-                          Expanded(
-                            child: Text(
-                              fb['content'] ?? '',
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: Colors.grey[800],
-                                height: 1.4,
-                              ),
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Cột phải: Hiển thị ảnh trả bài (Nếu có)
+                    // Phần trên: Hiển thị ảnh trả bài (Nếu có)
                     if (hasImage) ...[
-                      SizedBox(width: 12.w),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8.r),
                         child: Image.network(
-                          '$baseUrl$imgPath',
-                          width: 80.w,
-                          height: double.infinity,
-                          fit: BoxFit.cover,
+                          imgPath.startsWith('http')
+                              ? imgPath
+                              : '$baseUrl$imgPath',
+                          width: double.infinity,
+                          //height: 120.h,
+                          fit: BoxFit.fitWidth,
                           errorBuilder: (context, error, stackTrace) =>
                               Container(
-                                width: 80.w,
+                                width: double.infinity,
+                                height: 120.h,
                                 color: Colors.grey[200],
                                 child: const Icon(
                                   Icons.image_not_supported,
@@ -526,7 +425,50 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                               ),
                         ),
                       ),
+                      SizedBox(height: 12.h),
                     ],
+                    // Phần dưới: Tên user và Nội dung feedback
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 14.r,
+                          backgroundColor: Colors.green[100],
+                          child: Text(
+                            fb['user_name']?.substring(0, 1) ?? 'U',
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            fb['user_name'] ?? 'Học viên',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.sp,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8.h),
+                    Expanded(
+                      child: Text(
+                        fb['content'] ?? '',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.grey[800],
+                          height: 1.4,
+                        ),
+                        //maxLines: hasImage ? 3 : 8,
+                        //overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               );

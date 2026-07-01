@@ -31,14 +31,25 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
 
   Future<void> _fetchData() async {
     isLoading = true;
-    courses = await CourseRepo().getCourseDetail(
-      courseId: widget.course.courseId ?? '89',
-      settingCourseTypeId: widget.course.settingCourseTypeId ?? '1',
-      courseScheduleId: widget.course.courseScheduleId ?? '54',
-    );
+    try {
+      courses = await CourseRepo().getCourseDetail(
+        courseId: widget.course.courseId ?? '89',
+        settingCourseTypeId: widget.course.settingCourseTypeId ?? '1',
+        courseScheduleId: widget.course.courseScheduleId ?? '54',
+      );
+    } catch (e) {
+      print(e);
+    }
     setState(() {
       isLoading = false;
     });
+  }
+
+  String _formatHtml(String? html) {
+    if (html == null) return '';
+    return html
+        .replaceAll(RegExp(r'width:\s*\d+px;?'), '')
+        .replaceAll(RegExp(r'height:\s*\d+px;?'), '');
   }
 
   @override
@@ -109,7 +120,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                       ),
                     ),
                     Html(
-                      data: courses.description ?? '',
+                      data: _formatHtml(courses.description),
                       // style: {
                       //   'p': Style(
                       //     fontSize: FontSize(14.sp),

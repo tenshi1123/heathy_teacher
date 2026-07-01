@@ -18,6 +18,7 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:heathy_teacher/repo/external_repo.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -36,9 +37,26 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       drawer: MyCustomDrawer(userModel: userModel, selectedIndex: 0),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+      body: StatefulBuilder(
+        builder: (context, setState) {
+          return RefreshIndicator(
+            color: mainDarkGreen,
+            onRefresh: () async {
+              try {
+                final futureCourse = await ExternalRepo().getListCourse(show: 6);
+                final futureCourseOff = await ExternalRepo().getListCourseOff(show: 6);
+                setState(() {
+                  globalListCourse = futureCourse;
+                  globalListCourseOff = futureCourseOff;
+                });
+              } catch (e) {
+                print('Lỗi làm mới: $e');
+              }
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
             SizedBox(
               width: 375.w,
               height: 296.w,
@@ -352,6 +370,9 @@ class HomeScreen extends StatelessWidget {
             SizedBox(height: 12.h),
           ],
         ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -487,7 +508,10 @@ class _OnlineClassCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: ((context) => const RegisterClassON())),
+          MaterialPageRoute(
+            builder: ((context) =>
+                RegisterClassON(id: model.courseTypeId ?? '')),
+          ),
         );
       },
       child: Container(
@@ -540,22 +564,23 @@ class _OnlineClassCard extends StatelessWidget {
               maxLines: 2,
               style: defaultText14SB,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
-                  style: defaultText16B,
-                ),
-                if (model.priceOld != '0')
+            if (isShow == 'true')
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Text(
-                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
-                    style: defaultText12Re.copyWith(
-                      decoration: TextDecoration.lineThrough,
-                    ),
+                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
+                    style: defaultText16B,
                   ),
-              ],
-            ),
+                  if (model.priceOld != '0')
+                    Text(
+                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
+                      style: defaultText12Re.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                ],
+              ),
             Container(
               height: 32.h,
               width: 184.w,

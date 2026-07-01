@@ -7,6 +7,7 @@ import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/utils/constants/color.dart';
 
 Future<void> removeToken() async {
   final prefs = await SharedPreferences.getInstance();
@@ -41,8 +42,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Lấy danh sách lớp on và off lúc chờ vào app
     try {
-      final futureCourse = ExternalRepo().getListCourse();
-      final futureCourseOff = ExternalRepo().getListCourseOff();
+      final futureCourse = ExternalRepo().getListCourse(show: 6);
+      final futureCourseOff = ExternalRepo().getListCourseOff(show: 6);
 
       globalListCourse = await futureCourse;
       globalListCourseOff = await futureCourseOff;
@@ -103,11 +104,23 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Image.asset(
-        "assets/images/splash.png",
-        height: 844.h,
-        width: 390.w,
-        fit: BoxFit.fill,
+      body: Stack(
+        children: [
+          Image.asset(
+            "assets/images/splash.png",
+            height: 844.h,
+            width: 390.w,
+            fit: BoxFit.fill,
+          ),
+          Positioned(
+            bottom: 50.h,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: CircularProgressIndicator(color: mainDarkGreen),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -108,6 +108,7 @@ class CourseDetailModel {
   final String? id;
   final String? title;
   final String? description;
+  final String? content;
   final String? image;
   final String? price;
   final String? priceOld;
@@ -119,6 +120,7 @@ class CourseDetailModel {
     this.id,
     this.title,
     this.description,
+    this.content,
     this.image,
     this.price,
     this.priceOld,
@@ -153,6 +155,7 @@ class CourseDetailModel {
           rootObj['meta_description'] ??
           rootObj['description'] ??
           json['description'],
+      content: rootObj['content'] ?? json['content'],
       image: rootObj['img'] ?? json['image'],
       price: rootObj['price']?.toString(),
       priceOld: rootObj['price_old']?.toString(),

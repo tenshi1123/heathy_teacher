@@ -431,7 +431,7 @@ class CourseItem extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: ((context) => type == 'on'
-                          ? const RegisterClassON()
+                          ? const RegisterClassON(id: '195')
                           : const RegisterClassOff(id: '168')),
                     ),
                   );
@@ -602,7 +602,7 @@ class CourseItemOnline extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: ((context) => const RegisterClassON()),
+                    builder: ((context) => const RegisterClassON(id: '195')),
                   ),
                 );
               },

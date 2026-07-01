@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/repo/home_repo.dart';
 import 'package:heathy_teacher/screens/chatPage/list_chat_screen.dart';
@@ -27,6 +28,7 @@ class BottomBarScreenState extends State<BottomBarScreen> {
       currentIndex = index;
     });
   }
+
   CustomerModel? customerModel;
   UserModel? userModel;
 
@@ -136,18 +138,21 @@ class BottomBarScreenState extends State<BottomBarScreen> {
             onTap: (i) => setState(() => currentIndex = i),
           ),
         ),
-        Positioned(
-          right: 20.w,
-          bottom: 90.h,
-          child: FloatingCartButton(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
-              );
-            },
+        if (isShow == 'true')
+          Positioned(
+            right: 20.w,
+            bottom: 90.h,
+            child: FloatingCartButton(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: ((context) => ShoppingCartScreen()),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
       ],
     );
   }

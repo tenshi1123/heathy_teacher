@@ -9,6 +9,8 @@ import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:intl/intl.dart';
+import 'package:heathy_teacher/repo/external_repo.dart';
+import 'package:heathy_teacher/models/course_model.dart';
 
 class ListClassOff extends StatefulWidget {
   const ListClassOff({super.key});
@@ -19,9 +21,43 @@ class ListClassOff extends StatefulWidget {
 
 class _ListClassOffState extends State<ListClassOff> {
   late int currentPage = 1;
+  int itemsPerPage = 6;
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> _loadPage(int page) async {
+    int startIndex = (page - 1) * itemsPerPage;
+    if (startIndex >= globalListCourseOff.length) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        final newItems = await ExternalRepo().getListCourseOff(page: page, show: itemsPerPage);
+        setState(() {
+          globalListCourseOff.addAll(newItems);
+        });
+      } catch (e) {
+        print('Lỗi gọi danh sách khoá học offline: $e');
+      } finally {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      }
+    }
+  }
+
+  List<CourseOffModel> get currentItems {
+    int startIndex = (currentPage - 1) * itemsPerPage;
+    int endIndex = startIndex + itemsPerPage;
+    if (startIndex >= globalListCourseOff.length) return [];
+    if (endIndex > globalListCourseOff.length) endIndex = globalListCourseOff.length;
+    return globalListCourseOff.sublist(startIndex, endIndex);
   }
 
   @override
@@ -71,20 +107,22 @@ class _ListClassOffState extends State<ListClassOff> {
         ),
         child: Stack(
           children: [
-            ListView.builder(
+            Stack(
+              children: [
+                ListView.builder(
               shrinkWrap: true,
               padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 20.h),
               physics: const ClampingScrollPhysics(),
-              itemCount: globalListCourseOff.length,
+              itemCount: currentItems.length,
               itemBuilder: (BuildContext context, int index) {
-                var model = globalListCourseOff[index];
+                var model = currentItems[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: ((context) => RegisterClassOff(
-                          id: globalListCourseOff[index].id ?? '',
+                          id: currentItems[index].id ?? '',
                         )),
                       ),
                     );
@@ -170,6 +208,17 @@ class _ListClassOffState extends State<ListClassOff> {
                 );
               },
             ),
+            if (isLoading)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  child: Center(
+                    child: CircularProgressIndicator(color: mainDarkGreen),
+                  ),
+                ),
+              ),
+          ],
+        ),
             Align(
               alignment: Alignment.bottomLeft,
               child: Container(
@@ -184,6 +233,7 @@ class _ListClassOffState extends State<ListClassOff> {
                     setState(() {
                       currentPage = page;
                     });
+                    _loadPage(page);
                   },
                 ),
               ),
