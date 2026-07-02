@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:heathy_teacher/main.dart';
+import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:intl/intl.dart';
 
 class ListDetailSpScreen extends StatefulWidget {
@@ -297,80 +299,98 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                     color: mainDarkGreen,
                                   ),
                                 ),
-                                if (isShow == 'true') ...[
+
+                                Text(
+                                  '${formatPrice(item.price)}đ',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: defaultText16B.copyWith(
+                                    color: mainDarkGreen,
+                                  ),
+                                ),
+                                if (item.priceOld != '0')
                                   Text(
-                                    '${formatPrice(item.price)}đ',
+                                    '${formatPrice(item.priceOld)}đ',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: defaultText16B.copyWith(
-                                      color: mainDarkGreen,
+                                    style: defaultText12M.copyWith(
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough,
                                     ),
                                   ),
-                                  if (item.priceOld != '0')
-                                    Text(
-                                      '${formatPrice(item.priceOld)}đ',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: defaultText12M.copyWith(
-                                        color: Colors.grey,
-                                        decoration: TextDecoration.lineThrough,
-                                      ),
-                                    ),
-                                  const Spacer(),
+                                const Spacer(),
 
-                                  /// BUTTON
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 2.w,
-                                      vertical: 4.h,
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              //title:  Text('Đã thêm vào giỏ hàng'),
-                                              content: const Text(
-                                                'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                        context,
-                                                        'OK',
-                                                      ),
-                                                  child: const Text('OK'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 2.h,
-                                          horizontal: 6,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: mainDarkGreen,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
+                                /// BUTTON
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 2.w,
+                                    vertical: 4.h,
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      int existingIndex = globalListCart
+                                          .indexWhere(
+                                            (element) => element.id == item.id,
+                                          );
+                                      if (existingIndex != -1) {
+                                        globalListCart[existingIndex]
+                                            .quantity++;
+                                      } else {
+                                        globalListCart.add(
+                                          CartItem(
+                                            id: item.id ?? '',
+                                            name: item.productName ?? '',
+                                            image: item.img ?? '',
+                                            price:
+                                                int.tryParse(
+                                                  item.price ?? '0',
+                                                ) ??
+                                                0,
+                                            isCourse: false,
                                           ),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            "Thêm vào giỏ hàng",
-                                            style: defaultText12B.copyWith(
-                                              color: Colors.white,
+                                        );
+                                      }
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            //title:  Text('Đã thêm vào giỏ hàng'),
+                                            content: const Text(
+                                              'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
                                             ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                  context,
+                                                  'OK',
+                                                ),
+                                                child: const Text('OK'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 2.h,
+                                        horizontal: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: mainDarkGreen,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "Thêm vào giỏ hàng",
+                                          style: defaultText12B.copyWith(
+                                            color: Colors.white,
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ],
+                                ),
                               ],
                             ),
                           );
@@ -582,7 +602,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                               ),
                             ),
                             Text(
-                              'Khóa học',
+                              'Khóa học'.sanitizeForApple,
                               style: defaultText14M.copyWith(
                                 color: Colors.white,
                               ),
@@ -622,7 +642,8 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!',
+                                    'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
+                                        .sanitizeForApple,
                                     style: defaultText14M.copyWith(
                                       color: Colors.white,
                                     ),

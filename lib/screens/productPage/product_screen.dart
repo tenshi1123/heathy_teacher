@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/home_model.dart';
@@ -147,7 +148,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         Padding(
                           padding: EdgeInsets.only(left: 16.w),
                           child: Text(
-                            'Danh sách sản phẩm/khóa học',
+                            'Danh sách sản phẩm/khóa học'.sanitizeForApple,
                             style: defaultText16B,
                           ),
                         ),

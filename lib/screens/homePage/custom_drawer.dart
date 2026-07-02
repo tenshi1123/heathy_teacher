@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/home_model.dart';
@@ -101,7 +102,7 @@ class MyCustomDrawer extends StatelessWidget {
                 ),
                 _buildMenuItem(
                   icon: Icons.inventory_2_outlined,
-                  title: 'Khóa học của tôi',
+                  title: 'Khóa học của tôi'.sanitizeForApple,
                   badgeCount: 0,
                   isSelected: selectedIndex == 1,
                   onTap: () {

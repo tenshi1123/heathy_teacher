@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/main.dart';
@@ -139,21 +140,19 @@ class BottomBarScreenState extends State<BottomBarScreen> {
             onTap: (i) => setState(() => currentIndex = i),
           ),
         ),
-        if (isShow == 'true')
-          Positioned(
-            right: 20.w,
-            bottom: 90.h,
-            child: FloatingCartButton(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: ((context) => ShoppingCartScreen()),
-                  ),
-                );
-              },
-            ),
+        //if (isShow == 'true')
+        Positioned(
+          right: 20.w,
+          bottom: 90.h,
+          child: FloatingCartButton(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
+              );
+            },
           ),
+        ),
       ],
     );
   }
@@ -198,7 +197,7 @@ class CustomBottomNavBar extends StatelessWidget {
           ),
           _buildItem(
             index: 1,
-            label: "Khoá học",
+            label: "Khoá học".sanitizeForApple,
             activeIcon: 'enable_course_icon.svg',
             disableIcon: 'disable_course_icon.svg',
           ),

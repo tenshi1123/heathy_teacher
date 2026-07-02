@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -340,7 +341,7 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                           style: defaultText14M.copyWith(color: Colors.white),
                         ),
                         Text(
-                          'Khóa học',
+                          'Khóa học'.sanitizeForApple,
                           style: defaultText14M.copyWith(color: Colors.white),
                         ),
                         Text(
@@ -373,7 +374,7 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                                 ),
                               ),
                               Text(
-                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!',
+                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'.sanitizeForApple,
                                 style: defaultText14M.copyWith(
                                   color: Colors.white,
                                 ),
@@ -592,7 +593,7 @@ class FreeCourseItem extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'KHÓA HỌC MÔ HÌNH KINH DOANH SỮA HẠT DƯỠNG SINH HIỆN ĐẠI - MASTER CLASS 2026',
+            'KHÓA HỌC MÔ HÌNH KINH DOANH SỮA HẠT DƯỠNG SINH HIỆN ĐẠI - MASTER CLASS 2026'.sanitizeForApple,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: defaultText18B.copyWith(color: mainDarkGreen),

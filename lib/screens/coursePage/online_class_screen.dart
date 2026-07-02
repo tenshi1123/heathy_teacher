@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -61,7 +62,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Học online với video',
+          'Học online với video'.sanitizeForApple,
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         leading: IconButton(
@@ -129,7 +130,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                       // },
                     ),
                     // Text(
-                    //   courses.description ?? 'Học online với video',
+                    //   courses.description ?? 'Học online với video'.sanitizeForApple,
                     //   style: defaultText14Re,
                     // ),
                     Row(
@@ -248,7 +249,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                       ),
                     ),
                     SizedBox(height: 28.h),
-                    Text('Nội dung khoá học', style: defaultText16B),
+                    Text('Nội dung khoá học'.sanitizeForApple, style: defaultText16B),
 
                     ListView.builder(
                       shrinkWrap: true,

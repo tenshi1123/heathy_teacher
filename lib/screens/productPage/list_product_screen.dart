@@ -6,9 +6,8 @@ import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/repo/product_repo.dart';
 import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
-import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
+import 'package:heathy_teacher/screens/productPage/list_detail_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
-
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
@@ -110,10 +109,8 @@ class _ListProductScreenState extends State<ListProductScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProductScreen(
-                    type: 2,
-                    userModel: widget.userModel,
-                  ),
+                  builder: (context) =>
+                      ProductScreen(type: 2, userModel: widget.userModel),
                 ),
               );
             },
@@ -264,7 +261,9 @@ class _ListProductScreenState extends State<ListProductScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: ((context) =>
-                                              ListDetailSpScreen(model: item)),
+                                              ListDetailProductScreen(
+                                                model: item,
+                                              )),
                                         ),
                                       );
                                     },

@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
@@ -298,7 +299,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                           style: defaultText14M.copyWith(color: Colors.white),
                         ),
                         Text(
-                          'Khóa học',
+                          'Khóa học'.sanitizeForApple,
                           style: defaultText14M.copyWith(color: Colors.white),
                         ),
                         Text(
@@ -331,7 +332,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                                 ),
                               ),
                               Text(
-                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!',
+                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'.sanitizeForApple,
                                 style: defaultText14M.copyWith(
                                   color: Colors.white,
                                 ),

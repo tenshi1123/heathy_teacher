@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -40,7 +41,7 @@ class _ListClassOnlineState extends State<ListClassOnline> {
           globalListCourse.addAll(newItems);
         });
       } catch (e) {
-        print('Lỗi gọi danh sách khoá học online: $e');
+        print('Lỗi gọi danh sách khoá học online: $e'.sanitizeForApple);
       } finally {
         if (mounted) {
           setState(() {

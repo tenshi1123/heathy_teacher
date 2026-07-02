@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 class VnString {
   static String get homeworkeasly => "Giải pháp toàn diện";
 
@@ -21,8 +22,8 @@ class VnString {
   static String get addquestion => "Thêm câu hỏi";
   static String get complatestock => "Complete Stock";
 
-  static String get mostpopularcourses => "Khóa học phổ biến";
-  static String get coursedetails => "Thông tin khóa học";
+  static String get mostpopularcourses => "Khóa học phổ biến".sanitizeForApple;
+  static String get coursedetails => "Thông tin khóa học".sanitizeForApple;
 
   static String get minos => "Minose";
 
@@ -48,7 +49,7 @@ class VnString {
 
   static String get total => "Total";
 
-  static String get checkoutcourse => "Mua khóa học";
+  static String get checkoutcourse => "Mua khóa học".sanitizeForApple;
 
   static String get paymentmethod => "Phương thức thanh toán";
 
@@ -171,7 +172,7 @@ class VnString {
 
   static String get guy => "Kimi";
 
-  static String get forextrading => "Tất cả khóa học";
+  static String get forextrading => "Tất cả khóa học".sanitizeForApple;
 
   static String get connected => "Connected";
 
@@ -181,7 +182,7 @@ class VnString {
 
   static String get annetteblack => "juli signh";
 
-  static String get mycourse => "Khóa học của tôi";
+  static String get mycourse => "Khóa học của tôi".sanitizeForApple;
 
   static String get janecooper => "Jane Cooper";
 
@@ -246,7 +247,7 @@ class VnString {
   static String get enteryourpin =>
       "Nhập mã PIN của bạn để xác nhận thanh toán";
 
-  static String get viewcourse => "Xem khóa học";
+  static String get viewcourse => "Xem khóa học".sanitizeForApple;
 
   static String get update => "Cập nhật";
 
@@ -374,7 +375,7 @@ class VnString {
 
   static String get account => "Tài khoản";
 
-  static String get course => "Khóa học";
+  static String get course => "Khóa học".sanitizeForApple;
 
   static String get invitefriends => "Mời bạn bè";
 
@@ -402,7 +403,7 @@ class VnString {
 
   static String get seeall => "Tất cả";
 
-  static String get mostpopularcourse => "Khóa học đề xuất";
+  static String get mostpopularcourse => "Khóa học đề xuất".sanitizeForApple;
 
   static String get all => "All";
 
@@ -430,7 +431,7 @@ class VnString {
 
   static String get senioruiuxdesigneratgoogle => "Senior UI Designer";
 
-  static String get aboutcorse => "Chi tiết khóa học";
+  static String get aboutcorse => "Chi tiết khóa học".sanitizeForApple;
 
   static String get tools => "Tools";
 
@@ -498,12 +499,12 @@ class VnString {
   static String get clintonmcclure => "Malina Shahid";
 
   static String get thequalityofthecourses =>
-      "CHất lượng của khóa học và giáo viên rất tốt, bài giảng rất dễ hiểu💯💯💯";
+      "CHất lượng của khóa học và giáo viên rất tốt, bài giảng rất dễ hiểu💯💯💯".sanitizeForApple;
 
   static String get francenevandyne => "Francene Vandyne";
 
   static String get thecourseisvery =>
-      "Khóa học được xây dựng rất rõ ràng rành mạch, giúp tôi bổ sung kiến thức 1 cách nhanh chóng 😎😎";
+      "Khóa học được xây dựng rất rõ ràng rành mạch, giúp tôi bổ sung kiến thức 1 cách nhanh chóng 😎😎".sanitizeForApple;
 
   static String get rochelfoose => "Rachel Foose";
 

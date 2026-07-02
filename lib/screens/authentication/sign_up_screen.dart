@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/repo/login_repo.dart';
@@ -53,7 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: 16.h),
 
                     Text(
-                      'Đăng ký tài khoản để có thể trải nghiệm những khóa học',
+                      'Đăng ký tài khoản để có thể trải nghiệm những khóa học'.sanitizeForApple,
                       style: defaultText16M.copyWith(color: Colors.black87),
                     ),
                     SizedBox(height: 32.h),

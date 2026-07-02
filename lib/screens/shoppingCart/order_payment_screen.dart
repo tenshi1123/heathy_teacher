@@ -6,6 +6,7 @@ import 'package:heathy_teacher/utils/widget/custom_product_widget.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:heathy_teacher/utils/global_data.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   const OrderPaymentScreen({super.key});
@@ -15,8 +16,14 @@ class OrderPaymentScreen extends StatefulWidget {
 }
 
 class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
-  int selectedIndex = 0;
-  int quantity = 2;
+  int get totalPrice {
+    int total = 0;
+    for (var item in globalListCart) {
+      total += item.price * item.quantity;
+    }
+    return total;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -64,81 +71,91 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   CustomTextField(hintText: 'Địa chỉ cụ thể*'),
                   SizedBox(height: 24.h),
                   Text('Thông tin đơn hàng', style: defaultText16B),
-                  Container(
-                    height: 106.h,
-                    width: 343.w,
-                    margin: EdgeInsets.symmetric(vertical: 10.h),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Slidable(
-                      key: const ValueKey(0),
-                      endActionPane: ActionPane(
-                        motion: ScrollMotion(),
-                        children: [
-                          SlidableAction(
-                            onPressed: (BuildContext context) {},
-                            backgroundColor: Color(0xFFFE4A49),
-                            foregroundColor: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(16.r),
-                              bottomRight: Radius.circular(16.r),
+                  ...globalListCart.map((item) {
+                    return Container(
+                      height: 106.h,
+                      width: 343.w,
+                      margin: EdgeInsets.symmetric(vertical: 10.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 8.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Slidable(
+                        key: ValueKey(item.id),
+                        endActionPane: ActionPane(
+                          motion: const ScrollMotion(),
+                          children: [
+                            SlidableAction(
+                              onPressed: (BuildContext context) {
+                                setState(() {
+                                  globalListCart.remove(item);
+                                });
+                              },
+                              backgroundColor: const Color(0xFFFE4A49),
+                              foregroundColor: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(16.r),
+                                bottomRight: Radius.circular(16.r),
+                              ),
+                              icon: Icons.delete,
+                              label: 'Delete',
                             ),
-                            icon: Icons.delete,
-                            label: 'Delete',
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/material1.png',
-                            height: 90.h,
-                            width: 90.w,
-                            fit: BoxFit.fill,
-                          ),
-                          SizedBox(width: 12.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: 217.w,
-                                child: Text(
-                                  'Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300g',
-                                  style: defaultText14SB,
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Image(
+                              image: item.image.startsWith('http')
+                                  ? NetworkImage(item.image)
+                                  : AssetImage(item.image) as ImageProvider,
+                              height: 90.h,
+                              width: 90.w,
+                              fit: BoxFit.fill,
+                            ),
+                            SizedBox(width: 12.w),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 217.w,
+                                  child: Text(
+                                    item.name,
+                                    style: defaultText14SB,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 200.w,
-                                child: QuantityCounter(
-                                  price: 128000,
-                                  quantity: quantity,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      quantity = value; // 👈 Cập nhật realtime
-                                    });
-                                  },
+                                SizedBox(
+                                  width: 200.w,
+                                  child: QuantityCounter(
+                                    price: item.price,
+                                    quantity: item.quantity,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        item.quantity = value;
+                                      });
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                   Padding(
                     padding: EdgeInsetsGeometry.symmetric(vertical: 16.h),
                     child: CustomDotLine(
@@ -206,7 +223,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                       Text(
-                        '${NumberFormat('#,###', 'vi_VN').format(128000 * quantity)} đ',
+                        '${NumberFormat('#,###', 'vi_VN').format(totalPrice)} đ',
                         style: defaultText20B.copyWith(fontSize: 16.sp),
                       ),
                     ],
@@ -232,7 +249,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                       Text(
-                        '${NumberFormat('#,###', 'vi_VN').format(128000 * quantity)} đ',
+                        '${NumberFormat('#,###', 'vi_VN').format(totalPrice)} đ',
                         style: defaultText20B.copyWith(
                           fontSize: 24.sp,
                           color: mainDarkGreen,
@@ -261,7 +278,55 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   ],
                 ),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          backgroundColor: Colors.transparent,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            padding: EdgeInsets.all(16.w),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Quét mã QR để thanh toán',
+                                  style: defaultText18B.copyWith(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 16.h),
+                                Image.asset(
+                                  'assets/images/qr-thanhtoan.png',
+                                  fit: BoxFit.contain,
+                                ),
+                                SizedBox(height: 16.h),
+                                ElevatedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: mainDarkGreen,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Đóng',
+                                    style: defaultText16B.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                   child: Container(
                     width: 343.w,
                     height: 50.h,

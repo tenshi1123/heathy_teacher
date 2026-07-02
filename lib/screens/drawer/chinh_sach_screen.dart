@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -227,7 +228,7 @@ class RewardPolicyScreen extends StatelessWidget {
               children: [
                 TextSpan(text: '2% ', style: defaultText16B),
                 TextSpan(text: 'trên '),
-                TextSpan(text: 'học phí khóa học', style: defaultText16B),
+                TextSpan(text: 'học phí khóa học'.sanitizeForApple, style: defaultText16B),
               ],
             ),
           ),
@@ -316,7 +317,7 @@ class RewardPolicyScreen extends StatelessWidget {
               style: defaultText16M,
               children: [
                 TextSpan(text: 'Giảm 15% ', style: defaultText16B),
-                TextSpan(text: 'học phí khóa học online'),
+                TextSpan(text: 'học phí khóa học online'.sanitizeForApple),
               ],
             ),
           ),
@@ -325,7 +326,7 @@ class RewardPolicyScreen extends StatelessWidget {
               style: defaultText16M,
               children: [
                 TextSpan(text: 'Giảm 5% ', style: defaultText16B),
-                TextSpan(text: 'học phí khóa học trực tiếp'),
+                TextSpan(text: 'học phí khóa học trực tiếp'.sanitizeForApple),
               ],
             ),
           ),
@@ -352,7 +353,7 @@ class RewardPolicyScreen extends StatelessWidget {
               style: defaultText16M,
               children: [
                 TextSpan(text: 'Giảm 20% ', style: defaultText16B),
-                TextSpan(text: 'học phí khóa học online'),
+                TextSpan(text: 'học phí khóa học online'.sanitizeForApple),
               ],
             ),
           ),
@@ -361,7 +362,7 @@ class RewardPolicyScreen extends StatelessWidget {
               style: defaultText16M,
               children: [
                 TextSpan(text: 'Giảm 10% ', style: defaultText16B),
-                TextSpan(text: 'học phí khóa học trực tiếp'),
+                TextSpan(text: 'học phí khóa học trực tiếp'.sanitizeForApple),
               ],
             ),
           ),
@@ -380,7 +381,7 @@ class RewardPolicyScreen extends StatelessWidget {
               children: [
                 TextSpan(
                   text:
-                      'Đối với mỗi khoá học, khi bạn đã hoàn thành trên 50% khoá học, ở khoá học đó sẽ có thêm mục ',
+                      'Đối với mỗi khoá học, khi bạn đã hoàn thành trên 50% khoá học, ở khoá học đó sẽ có thêm mục '.sanitizeForApple,
                 ),
                 TextSpan(text: '"Trả bài tích điểm"', style: defaultText16B),
                 TextSpan(
@@ -402,7 +403,7 @@ class RewardPolicyScreen extends StatelessWidget {
               children: [
                 TextSpan(
                   text:
-                      'Khi học viên mới đăng ký khoá học và nhập mã giới thiệu của học viên cũ thì cả người giới thiệu và người được giới thiệu đều ',
+                      'Khi học viên mới đăng ký khoá học và nhập mã giới thiệu của học viên cũ thì cả người giới thiệu và người được giới thiệu đều '.sanitizeForApple,
                 ),
                 TextSpan(
                   text: 'nhận 30.000 điểm thưởng.',
@@ -445,7 +446,7 @@ class RewardPolicyScreen extends StatelessWidget {
               style: defaultText16M,
               children: [
                 TextSpan(text: 'Thanh toán '),
-                TextSpan(text: 'khóa học', style: defaultText16B),
+                TextSpan(text: 'khóa học'.sanitizeForApple, style: defaultText16B),
               ],
             ),
           ),
@@ -545,26 +546,26 @@ class OnlinePolicyScreen extends StatelessWidget {
         children: [
           // Tiêu đề
           Text(
-            'CHÍNH SÁCH HỌC ONLINE DÀNH CHO HỌC VIÊN CỦA CÔ GIÁO HEALTHY',
+            'CHÍNH SÁCH HỌC ONLINE DÀNH CHO HỌC VIÊN CỦA CÔ GIÁO HEALTHY'.sanitizeForApple,
             style: defaultText20B.copyWith(fontSize: 22),
           ),
           const SizedBox(height: 24),
 
           // Các đoạn nội dung
           _buildParagraph(
-            '- Mỗi học viên khi đăng kí bất kì khóa học nào chỉ được SỬ DỤNG 1 TÀI KHOẢN học viên được kích hoạt khi đăng ký khoá học để tham gia vào nhóm học kín, và đăng nhập trên TỐI ĐA 2 THIẾT BỊ và truy cập xem video trên DUY NHẤT 1 THIẾT BỊ TRONG MỘT THỜI ĐIỂM.',
+            '- Mỗi học viên khi đăng kí bất kì khóa học nào chỉ được SỬ DỤNG 1 TÀI KHOẢN học viên được kích hoạt khi đăng ký khoá học để tham gia vào nhóm học kín, và đăng nhập trên TỐI ĐA 2 THIẾT BỊ và truy cập xem video trên DUY NHẤT 1 THIẾT BỊ TRONG MỘT THỜI ĐIỂM.'.sanitizeForApple,
           ),
 
           _buildParagraph(
-            '- Trường hợp học viên được add Facebook khác vào nhóm khi & chỉ khi bị mất nick, hack nick,... sẽ được XÁC NHẬN & KIỂM TRA từ 1-2 tuần sau đó sẽ add lại 1 tài khoản mới của học viên đó vào nhóm học, với điều kiện đúng là học viên đã đăng ký học. Mọi lý do khác sẽ KHÔNG được chấp nhận vì khóa học là tài sản trí tuệ trực thuộc Công ty TNHH CÔ GIÁO HEALTHY và có tính bảo mật cao.',
+            '- Trường hợp học viên được add Facebook khác vào nhóm khi & chỉ khi bị mất nick, hack nick,... sẽ được XÁC NHẬN & KIỂM TRA từ 1-2 tuần sau đó sẽ add lại 1 tài khoản mới của học viên đó vào nhóm học, với điều kiện đúng là học viên đã đăng ký học. Mọi lý do khác sẽ KHÔNG được chấp nhận vì khóa học là tài sản trí tuệ trực thuộc Công ty TNHH CÔ GIÁO HEALTHY và có tính bảo mật cao.'.sanitizeForApple,
           ),
 
           _buildParagraph(
-            '** LƯU Ý QUAN TRỌNG: Sau khi vào nhóm học, học viên sẽ KHÔNG được đổi ngang sang khóa học khác vì bất kì lý do gì và cũng KHÔNG được hoàn lại học phí.',
+            '** LƯU Ý QUAN TRỌNG: Sau khi vào nhóm học, học viên sẽ KHÔNG được đổi ngang sang khóa học khác vì bất kì lý do gì và cũng KHÔNG được hoàn lại học phí.'.sanitizeForApple,
           ),
 
           _buildParagraph(
-            '- Đối với học viên đã đăng kí học ONLINE muốn update lên học TRỰC TIẾP. Học phí chênh lệch sẽ được tính = học phí trực tiếp hiện tại - % học phí khi đăng kí online (mức cụ thể sẽ báo khi học viên muốn update lên lớp trực tiếp). Và LƯU Ý KHÔNG HOÀN HỌC PHÍ DƯỚI MỌI HÌNH THỨC hay bất kể lý do gì sau khi đã vào nhóm học.',
+            '- Đối với học viên đã đăng kí học ONLINE muốn update lên học TRỰC TIẾP. Học phí chênh lệch sẽ được tính = học phí trực tiếp hiện tại - % học phí khi đăng kí online (mức cụ thể sẽ báo khi học viên muốn update lên lớp trực tiếp). Và LƯU Ý KHÔNG HOÀN HỌC PHÍ DƯỚI MỌI HÌNH THỨC hay bất kể lý do gì sau khi đã vào nhóm học.'.sanitizeForApple,
           ),
 
           _buildParagraph(
@@ -572,7 +573,7 @@ class OnlinePolicyScreen extends StatelessWidget {
           ),
 
           _buildParagraph(
-            '- Học viên sẽ có những ĐẶC QUYỀN RIÊNG khi đăng kí khóa học như: mua nguyên liệu với giá tốt, nguồn gốc đảm bảo, tham gia các nhóm cộng đồng, được hỗ trợ & giao lưu với cô giáo và các bạn học viên khác,...',
+            '- Học viên sẽ có những ĐẶC QUYỀN RIÊNG khi đăng kí khóa học như: mua nguyên liệu với giá tốt, nguồn gốc đảm bảo, tham gia các nhóm cộng đồng, được hỗ trợ & giao lưu với cô giáo và các bạn học viên khác,...'.sanitizeForApple,
           ),
 
           _buildParagraph(
@@ -588,16 +589,16 @@ class OnlinePolicyScreen extends StatelessWidget {
 
           // Các đoạn nội dung
           _buildParagraph(
-            '- Mỗi học viên khi đăng kí bất kì khóa học nào chỉ được Sử DỤNG 1 TÀI KHOẢN học viên được kích hoạt khi đăng ký khoá học để tham gia vào nhóm học kín, và đăng nhập trên TỐI ĐA 2 THIẾT BỊ và truy cập xem video trên DUY NHẤT 1 THIẾT BỊ TRONG MỘT THỜI ĐIỂM.',
+            '- Mỗi học viên khi đăng kí bất kì khóa học nào chỉ được Sử DỤNG 1 TÀI KHOẢN học viên được kích hoạt khi đăng ký khoá học để tham gia vào nhóm học kín, và đăng nhập trên TỐI ĐA 2 THIẾT BỊ và truy cập xem video trên DUY NHẤT 1 THIẾT BỊ TRONG MỘT THỜI ĐIỂM.'.sanitizeForApple,
           ),
           _buildParagraph(
-            '- Trường hợp học viên được add Facebook khác vào nhóm chỉ khi bị mất nick, hack nick,....sẽ được XÁC NHẬN & KIỂM TRA từ 1-2 tuần sau đó sẽ add lại 1 tài khoản mới của học viên đó vào nhóm học với điều kiện đúng là học viên đã đăng ký học. Mọi lý do khác sẽ KHÔNG được chấp nhận vì khóa học là tài sản trí tuệ trực thuộc Công ty TNHH CÔ GIÁO HEALTHY và có tính bảo mật cao.',
+            '- Trường hợp học viên được add Facebook khác vào nhóm chỉ khi bị mất nick, hack nick,....sẽ được XÁC NHẬN & KIỂM TRA từ 1-2 tuần sau đó sẽ add lại 1 tài khoản mới của học viên đó vào nhóm học với điều kiện đúng là học viên đã đăng ký học. Mọi lý do khác sẽ KHÔNG được chấp nhận vì khóa học là tài sản trí tuệ trực thuộc Công ty TNHH CÔ GIÁO HEALTHY và có tính bảo mật cao.'.sanitizeForApple,
           ),
           _buildParagraph(
             '- Đối với học viên đăng kí học TRỰC TIẾP: Team cô giáo Healthy đã chuẩn bị đầy đủ tài liệu và tất cả nguyên vật liệu thực hành, đồ ăn trưa và sản phẩm mang về sau lớp học nên học viên không cần mang thêm gì ạ.',
           ),
           _buildParagraph(
-            '** LƯU Ý QUAN TRỌNG: Sau khi vào nhóm học, học viên sẽ KHÔNG được đổi ngang sang khóa học khác vì bất kì lý do gì và cũng KHÔNG được hoàn lại học phí.',
+            '** LƯU Ý QUAN TRỌNG: Sau khi vào nhóm học, học viên sẽ KHÔNG được đổi ngang sang khóa học khác vì bất kì lý do gì và cũng KHÔNG được hoàn lại học phí.'.sanitizeForApple,
           ),
           _buildParagraph(
             '** CHÍNH SÁCH QUY ĐỊNH LÙI LỊCH / BẢO LƯU LỚP HỌC TRỰC TIẾP:',
@@ -607,7 +608,7 @@ class OnlinePolicyScreen extends StatelessWidget {
           ),
           _buildParagraph('Điều 1. Điều kiện lùi lịch'),
           _buildParagraph(
-            '1. Học viên phải thông báo lùi lịch ít nhất 03 ngày trước ngày khai giảng. \n   2. Mỗi học viên được hỗ trợ tối đa 02 lần lùi lịch trong vòng 6 tháng cho mỗi khóa học đã đăng ký, bao gồm: lịch học ban đầu, lùi lần 1 và lùi lần 2.',
+            '1. Học viên phải thông báo lùi lịch ít nhất 03 ngày trước ngày khai giảng. \n   2. Mỗi học viên được hỗ trợ tối đa 02 lần lùi lịch trong vòng 6 tháng cho mỗi khóa học đã đăng ký, bao gồm: lịch học ban đầu, lùi lần 1 và lùi lần 2.'.sanitizeForApple,
           ),
           _buildParagraph('Điều 2. Trường hợp lùi lịch sát ngày học'),
 
@@ -616,17 +617,17 @@ class OnlinePolicyScreen extends StatelessWidget {
           ),
           _buildParagraph('Điều 3. Quy định sắp xếp lại lớp học'),
           _buildParagraph(
-            '   1. Sau khi được chấp thuận lùi lịch, Trung tâm sẽ chủ động sắp xếp lớp học tiếp theo phù hợp với kế hoạch đào tạo thực tế và thông báo lại cho học viên. Học viên cũng có thể chủ động nhắn tin đăng ký tham gia theo lịch mở lớp của Trung tâm.\n   2. Thời gian lùi lịch / bảo lưu tối đa là 06 tháng kể từ ngày học viên đăng ký hoặc đặt cọc khóa học, đồng thời không vượt quá 02 lần lùi lịch theo quy định.\n   3. Hết thời hạn trên, hoặc trong trường hợp Trung tâm đã sắp xếp lớp học tiếp theo và thông báo tới học viên nhưng học viên vẫn không thể tham gia các lịch tiếp theo vì bất kỳ lý do nào, khóa học sẽ được xem là đã hoàn tất quyền tham gia và Trung tâm không có trách nhiệm tiếp tục sắp xếp bảo lưu.',
+            '   1. Sau khi được chấp thuận lùi lịch, Trung tâm sẽ chủ động sắp xếp lớp học tiếp theo phù hợp với kế hoạch đào tạo thực tế và thông báo lại cho học viên. Học viên cũng có thể chủ động nhắn tin đăng ký tham gia theo lịch mở lớp của Trung tâm.\n   2. Thời gian lùi lịch / bảo lưu tối đa là 06 tháng kể từ ngày học viên đăng ký hoặc đặt cọc khóa học, đồng thời không vượt quá 02 lần lùi lịch theo quy định.\n   3. Hết thời hạn trên, hoặc trong trường hợp Trung tâm đã sắp xếp lớp học tiếp theo và thông báo tới học viên nhưng học viên vẫn không thể tham gia các lịch tiếp theo vì bất kỳ lý do nào, khóa học sẽ được xem là đã hoàn tất quyền tham gia và Trung tâm không có trách nhiệm tiếp tục sắp xếp bảo lưu.'.sanitizeForApple,
           ),
           _buildParagraph('Điều 4. Hiệu lực áp dụng'),
           _buildParagraph(
             '   1. Quy định này áp dụng đối với toàn bộ học viên đăng ký lớp học trực tiếp tại Trung tâm./n   2. Học viên đăng ký lớp đồng nghĩa với việc đã đọc, hiểu và đồng ý tuân thủ các quy định nêu trên.',
           ),
           _buildParagraph(
-            '** Học viên nào đăng ký học thì người đó tới lớp học. Trung tâm không hỗ trợ cho các trường hợp tới học hộ & mua/bán lại các khóa học.',
+            '** Học viên nào đăng ký học thì người đó tới lớp học. Trung tâm không hỗ trợ cho các trường hợp tới học hộ & mua/bán lại các khóa học.'.sanitizeForApple,
           ),
           _buildParagraph(
-            '** Học viên sẽ có những ĐẶC QUYỀN RIÊNG khi đăng kí khóa học như: mua nguyên liệu với giá tốt, nguồn gốc đảm bảo, tham gia các nhóm cộng đồng, được hỗ trợ & giao lưu với cô giáo và các bạn học viên khác,....',
+            '** Học viên sẽ có những ĐẶC QUYỀN RIÊNG khi đăng kí khóa học như: mua nguyên liệu với giá tốt, nguồn gốc đảm bảo, tham gia các nhóm cộng đồng, được hỗ trợ & giao lưu với cô giáo và các bạn học viên khác,....'.sanitizeForApple,
           ),
           _buildParagraph(
             '** Học viên KHÔNG ĐƯỢC chia sẻ tài liệu, video, công thức lên trang cá nhân, các hội nhóm, các trang mạng xã hội dưới bất kể hình thức nào. Nếu vi phạm sẽ bị XÓA TƯ CÁCH THÀNH VIÊN, và không được hỗ trợ mà không cần thông báo trước để đảm bảo quyền lợi chính đáng của nhóm (lớp học) và các học viên khác.',

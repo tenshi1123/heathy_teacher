@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
@@ -48,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
       globalListCourse = await futureCourse;
       globalListCourseOff = await futureCourseOff;
     } catch (e) {
-      print('Lỗi gọi danh sách khoá học: $e');
+      print('Lỗi gọi danh sách khoá học: $e'.sanitizeForApple);
     }
 
     final prefs = await SharedPreferences.getInstance();

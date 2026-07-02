@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -265,7 +266,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                   CourseItem(type: widget.type, place: widget.place),
                   SizedBox(height: 20.h),
                   Text(
-                    'KHOÁ HỌC ONLINE NỔI BẬT - ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG',
+                    'KHOÁ HỌC ONLINE NỔI BẬT - ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG'.sanitizeForApple,
                     textAlign: TextAlign.center,
                     style: defaultText20B.copyWith(color: mainDarkGreen),
                   ),
@@ -492,7 +493,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                           style: defaultText14M.copyWith(color: Colors.white),
                         ),
                         Text(
-                          'Khóa học',
+                          'Khóa học'.sanitizeForApple,
                           style: defaultText14M.copyWith(color: Colors.white),
                         ),
                         Text(
@@ -525,7 +526,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                                 ),
                               ),
                               Text(
-                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!',
+                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'.sanitizeForApple,
                                 style: defaultText14M.copyWith(
                                   color: Colors.white,
                                 ),
@@ -665,7 +666,7 @@ class ServiceGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<ServiceModel> services = [
       ServiceModel(
-        title: "KHÓA HỌC TRỰC TIẾP",
+        title: "KHÓA HỌC TRỰC TIẾP".sanitizeForApple,
         icon: "assets/images/home1.png",
         onTap: () {
           showCitySelectionDialog(
@@ -685,7 +686,7 @@ class ServiceGrid extends StatelessWidget {
         },
       ),
       ServiceModel(
-        title: "KHÓA HỌC ONLINE",
+        title: "KHÓA HỌC ONLINE".sanitizeForApple,
         icon: "assets/images/home2.png",
         onTap: () {
           showOnlineCategoriesDialog(

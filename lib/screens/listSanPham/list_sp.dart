@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -502,7 +503,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
                               ),
                             ),
                             Text(
-                              'Khóa học',
+                              'Khóa học'.sanitizeForApple,
                               style: defaultText14M.copyWith(
                                 color: Colors.white,
                               ),
@@ -542,7 +543,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!',
+                                    'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'.sanitizeForApple,
                                     style: defaultText14M.copyWith(
                                       color: Colors.white,
                                     ),

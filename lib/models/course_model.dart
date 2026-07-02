@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 
 class CourseScheduleModel {
   final String? courseId;
@@ -38,12 +39,12 @@ class CourseScheduleModel {
   factory CourseScheduleModel.fromJson(Map<String, dynamic> json) {
     return CourseScheduleModel(
       courseId: json['course_id'],
-      courseName: json['course_name'],
+      courseName: (json['course_name'] as String?).sanitizeForApple,
       courseScheduleId: json['course_schedule_id'],
-      courseScheduleName: json['course_schedule_name'],
+      courseScheduleName: (json['course_schedule_name'] as String?).sanitizeForApple,
       slug: json['slug'],
       img: json['img'],
-      metaDescription: json['meta_description'],
+      metaDescription: (json['meta_description'] as String?).sanitizeForApple,
       soBuoiHoc: json['so_buoi_hoc'],
       lessonNumber: json['lesson_number'],
       settingCourseTypeName: json['setting_course_type_name'],
@@ -150,11 +151,11 @@ class CourseDetailModel {
 
     return CourseDetailModel(
       id: rootObj['course_id'] ?? rootObj['id'],
-      title: rootObj['course_name'] ?? rootObj['name'] ?? json['title'],
+      title: (rootObj['course_name'] ?? rootObj['name'] ?? json['title'])?.toString().sanitizeForApple,
       description:
-          rootObj['meta_description'] ??
+          (rootObj['meta_description'] ??
           rootObj['description'] ??
-          json['description'],
+          json['description'])?.toString().sanitizeForApple,
       content: rootObj['content'] ?? json['content'],
       image: rootObj['img'] ?? json['image'],
       price: rootObj['price']?.toString(),
@@ -214,9 +215,9 @@ class CourseModel {
       categoryName: json['category_name'] as String?,
       topicName: json['topic_name'] as String?,
       courseId: json['course_id'] as String?,
-      courseName: json['course_name'] as String?,
+      courseName: (json['course_name'] as String?).sanitizeForApple,
       slug: json['slug'] as String?,
-      description: json['description'] as String?,
+      description: (json['description'] as String?).sanitizeForApple,
       img: json['img'] as String?,
       lessonNumber: json['lesson_number'] as String?,
       startCount: json['start_count'] as String?,
@@ -246,7 +247,7 @@ class CourseOffModel {
   factory CourseOffModel.fromJson(Map<String, dynamic> json) {
     return CourseOffModel(
       id: json['course_type_id'],
-      name: json['course_schedule_name'],
+      name: (json['course_schedule_name'] as String?).sanitizeForApple,
       img: json['img'],
       price: json['price'],
       priceOld: json['price_old'],

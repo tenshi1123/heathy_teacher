@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -407,7 +408,7 @@ void showOnlineCategoriesDialog({
             children: [
               // Tiêu đề của Dialog
               Text(
-                "DANH MỤC KHÓA HỌC ONLINE",
+                "DANH MỤC KHÓA HỌC ONLINE".sanitizeForApple,
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,

@@ -1,3 +1,5 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
+
 class ScheduleModel {
   final String id;
   final String name;
@@ -54,14 +56,14 @@ class ScheduleModel {
 
     return ScheduleModel(
       id: json["id"] ?? '',
-      name: json["name"] ?? '',
-      title: json["title"],
-      className: json["className"],
-      nameLesson: json["name_lesson"],
+      name: ((json["name"] as String?)?.sanitizeForApple) ?? '',
+      title: (json["title"] as String?)?.sanitizeForApple,
+      className: (json["className"] as String?)?.sanitizeForApple,
+      nameLesson: (json["name_lesson"] as String?)?.sanitizeForApple,
 
       // Vẫn giữ cơ chế gộp address như trước
       address: json["address"] ?? json["coso_address"],
-      courseScheduleName: json["course_schedule_name"],
+      courseScheduleName: (json["course_schedule_name"] as String?)?.sanitizeForApple,
       cosoName: json["coso_name"],
       phongHocName: json["phonghoc_name"],
       gvStatus: json["gv_status"],

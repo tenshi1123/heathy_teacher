@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -43,7 +44,7 @@ class _CourseScreenState extends State<CourseScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Khoá học',
+          'Khoá học'.sanitizeForApple,
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         //automaticallyImplyLeading: false,
@@ -88,7 +89,7 @@ class _CourseScreenState extends State<CourseScreen> {
         ),
         child: courses.isEmpty
             ? Center(
-                child: Text('Bạn chưa có khóa học nào!', style: defaultText16M),
+                child: Text('Bạn chưa có khóa học nào!'.sanitizeForApple, style: defaultText16M),
               )
             : ListView.builder(
                 shrinkWrap: true,
@@ -156,7 +157,7 @@ class _CourseScreenState extends State<CourseScreen> {
                               children: [
                                 Text(
                                   course.courseName ??
-                                      'Chưa cập nhật tên khoá học',
+                                      'Chưa cập nhật tên khoá học'.sanitizeForApple,
                                   style: defaultText16B,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,

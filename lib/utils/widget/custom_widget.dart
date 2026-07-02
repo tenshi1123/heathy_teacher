@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/product_model.dart';
@@ -154,7 +155,7 @@ class CartItemWidget extends StatelessWidget {
           /// image
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.asset(
+            child: Image.network(
               item.image,
               width: 60,
               height: 60,
@@ -253,8 +254,16 @@ class CartItemWidget extends StatelessWidget {
 class CartSection extends StatelessWidget {
   final String title;
   final List<CartItem> items;
+  final VoidCallback? onChanged;
+  final Function(CartItem)? onDelete;
 
-  const CartSection({super.key, required this.title, required this.items});
+  const CartSection({
+    super.key,
+    required this.title,
+    required this.items,
+    this.onChanged,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -271,12 +280,16 @@ class CartSection extends StatelessWidget {
         ...items.map(
           (item) => CartItemWidget(
             item: item,
-            onDelete: () {},
+            onDelete: () {
+              onDelete?.call(item);
+            },
             onIncrease: () {
               item.quantity++;
+              onChanged?.call();
             },
             onDecrease: () {
               if (item.quantity > 1) item.quantity--;
+              onChanged?.call();
             },
           ),
         ),
@@ -331,7 +344,8 @@ class CourseItem extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'KHÓA HỌC MÔ HÌNH KINH DOANH SỮA HẠT DƯỠNG SINH HIỆN ĐẠI - MASTER CLASS 2026',
+            'KHÓA HỌC MÔ HÌNH KINH DOANH SỮA HẠT DƯỠNG SINH HIỆN ĐẠI - MASTER CLASS 2026'
+                .sanitizeForApple,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: defaultText18B.copyWith(color: mainDarkGreen),
@@ -355,7 +369,7 @@ class CourseItem extends StatelessWidget {
               Icon(Icons.location_on_outlined, color: mainDarkGreen, size: 16),
               if (type == 'on')
                 Text(
-                  '  Học online qua app',
+                  '  Học online qua app'.sanitizeForApple,
                   style: defaultText14M.copyWith(color: mainDarkGreen),
                 )
               else
@@ -519,7 +533,8 @@ class CourseItemOnline extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            '[ONLINE] KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG (ENERGY BOWL) VÀ CHẾ BIẾN THỰC PHẨM ĐÓNG GÓI SẴN ',
+            '[ONLINE] KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG (ENERGY BOWL) VÀ CHẾ BIẾN THỰC PHẨM ĐÓNG GÓI SẴN '
+                .sanitizeForApple,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: defaultText18B.copyWith(color: mainDarkGreen),
@@ -782,54 +797,51 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
                 ),
 
                 // Giỏ hàng (Bên phải - kích thước nhỏ)
-                if (isShow == 'true')
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => ShoppingCartScreen()),
-                        ),
-                      );
-                    },
-                    child: Stack(
-                      children: [
-                        Icon(
-                          Icons.shopping_cart_outlined,
-                          color: mainDarkGreen,
-                          size: 28, // Giảm size Icon giỏ hàng một chút
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => ShoppingCartScreen()),
+                      ),
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      Icon(
+                        Icons.shopping_cart_outlined,
+                        color: mainDarkGreen,
+                        size: 28, // Giảm size Icon giỏ hàng một chút
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(3), // Padding nhỏ hơn
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
                           child: Container(
-                            padding: const EdgeInsets.all(3), // Padding nhỏ hơn
+                            padding: const EdgeInsets.all(1),
                             decoration: const BoxDecoration(
-                              color: Colors.white,
+                              color: Color(0xFFFFF176),
                               shape: BoxShape.circle,
                             ),
-                            child: Container(
-                              padding: const EdgeInsets.all(1),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFFFF176),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Text(
-                                ' 0 ',
-                                style: TextStyle(
-                                  color: accentBrown,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 8, // Font chữ số nhỏ hơn
-                                ),
+                            child: const Text(
+                              ' 0 ',
+                              style: TextStyle(
+                                color: accentBrown,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 8, // Font chữ số nhỏ hơn
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  )
-                else
-                  const SizedBox.shrink(),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ],
@@ -917,8 +929,8 @@ class CourseCard extends StatelessWidget {
                 topRight: Radius.circular(24),
               ),
             ),
-            child: const Text(
-              'Khoá học nấu ăn Eatclean -\nHealthy - Vegan',
+            child: Text(
+              'Khoá học nấu ăn Eatclean -\nHealthy - Vegan'.sanitizeForApple,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -1063,11 +1075,12 @@ class CourseCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
                 // 3. Tiêu đề khóa học
-                const Text(
-                  '[ONLINE] KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG...',
+                Text(
+                  '[ONLINE] KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG...'
+                      .sanitizeForApple,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -1409,9 +1422,10 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
-                            'KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG',
+                            'KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG'
+                                .sanitizeForApple,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,

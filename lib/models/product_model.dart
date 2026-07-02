@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 
 class Item {
   String headerText;
@@ -58,7 +59,7 @@ class CourseSection {
   factory CourseSection.fromJson(Map<String, dynamic> json) {
     return CourseSection(
       id: json['id'],
-      name: json['name'],
+      name: (json['name'] as String?).sanitizeForApple,
       // Kiểm tra nếu mảng lesson null thì trả về mảng rỗng
       lesson: json['lesson'] != null
           ? List<Lesson>.from(json['lesson'].map((x) => Lesson.fromJson(x)))
@@ -107,14 +108,14 @@ class Lesson {
   factory Lesson.fromJson(Map<String, dynamic> json) {
     return Lesson(
       lessonsId: json['lessons_id'],
-      name: json['name'],
+      name: (json['name'] as String?).sanitizeForApple,
       slug: json['slug'],
       time: json['time'],
       isTrial: json['is_trial'],
       documentFilesActive: json['document_files_active'],
       examActive: json['exam_active'],
       locked: json['locked'],
-      lessonContent: json['lesson_content'],
+      lessonContent: (json['lesson_content'] as String?).sanitizeForApple,
       lessonType: json['lesson_type'],
       streamingUrl: json['streaming_url'],
       muxAssetId: json['mux_asset_id'] ?? '',
@@ -341,7 +342,7 @@ class CategoryDetail {
   factory CategoryDetail.fromJson(Map<String, dynamic> json) {
     return CategoryDetail(
       id: json['id'] as String?,
-      productName: json['product_name'] as String?,
+      productName: (json['product_name'] as String?).sanitizeForApple,
       slug: json['slug'] as String?,
       img: json['img'] as String?,
       price: json['price'] as String?,
@@ -379,12 +380,12 @@ class ProductDetailModel {
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
     return ProductDetailModel(
       id: json['id'] as String?,
-      name: json['name'] as String?,
+      name: (json['name'] as String?).sanitizeForApple,
       slug: json['slug'] as String?,
       img: json['img'] as String?,
       price: json['price'] as String?,
       priceOld: json['price_old'] as String?,
-      description: json['description'] as String?,
+      description: (json['description'] as String?).sanitizeForApple,
       inventoryQuantity: json['inventory_quantity'] as String?,
     );
   }
