@@ -37,9 +37,9 @@ class _RegisterClassONState extends State<RegisterClassON> {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lỗi: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
     }
   }
 
@@ -435,7 +435,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8.r),
                         child: Image.network(
-                          imgPath!.startsWith('http')
+                          imgPath.startsWith('http')
                               ? imgPath
                               : '$baseUrl$imgPath',
                           width: double.infinity,
@@ -506,13 +506,4 @@ class _RegisterClassONState extends State<RegisterClassON> {
       ],
     );
   }
-}
-
-// Class chứa dữ liệu ảo phục vụ việc hiển thị UI bài học
-class _LessonData {
-  final String name;
-  final String time;
-  final bool isLocked;
-
-  _LessonData({required this.name, required this.time, required this.isLocked});
 }

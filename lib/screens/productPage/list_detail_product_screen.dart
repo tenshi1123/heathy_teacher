@@ -9,7 +9,6 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:intl/intl.dart';
-import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 
@@ -271,24 +270,31 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                                   ),
                                 ),
 
-                                Text(
-                                  '${formatPrice(item.price)}đ',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: defaultText16B.copyWith(
-                                    color: mainDarkGreen,
-                                  ),
-                                ),
-                                if (item.priceOld != '0')
-                                  Text(
-                                    '${formatPrice(item.priceOld)}đ',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: defaultText12M.copyWith(
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.lineThrough,
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${formatPrice(item.price)}đ',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: defaultText16B.copyWith(
+                                        color: mainDarkGreen,
+                                      ),
                                     ),
-                                  ),
+                                    Spacer(),
+                                    if (item.priceOld != '0')
+                                      Text(
+                                        '${formatPrice(item.priceOld)}đ',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: defaultText12M.copyWith(
+                                          color: Colors.grey,
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+
                                 const Spacer(),
 
                                 /// BUTTON

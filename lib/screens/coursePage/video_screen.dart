@@ -33,8 +33,6 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
 
   late final WebViewController _controller;
   Timer? _trackingTimer;
-  int _totalSecondsWatched = 0;
-  int? _videoId;
   @override
   void initState() {
     super.initState();
@@ -47,7 +45,6 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
 
   void _startTrackingTime() {
     _trackingTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      _totalSecondsWatched += 10;
       //_sendTimeTrackingApi(_totalSecondsWatched);
     });
   }
@@ -88,7 +85,6 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   /// 🌐 WebView setup + detect fullscreen
   void _initWebView() {
     String watermarkText = "Bản quyền thuộc về CGH";
-    final url = widget.streamingUrl;
 
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {

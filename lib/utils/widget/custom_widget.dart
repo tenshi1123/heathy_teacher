@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
+import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
 
 class CustomDotLine extends StatelessWidget {
   final double dotSize;
@@ -194,14 +195,10 @@ class CartItemWidget extends StatelessWidget {
                 const SizedBox(height: 6),
 
                 /// price
-                if (isShow == 'true')
-                  Text(
-                    "${item.price} đ",
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                Text(
+                  '${formatPrice(item.price.toString())}đ',
+                  style: defaultText14B,
+                ),
 
                 const SizedBox(height: 8),
 

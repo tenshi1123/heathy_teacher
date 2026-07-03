@@ -3,17 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
-import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
+import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
-
-Future<void> removeToken() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.remove('token');
-}
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -120,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> {
             child: Center(
               child: CircularProgressIndicator(color: mainDarkGreen),
             ),
-          )
+          ),
         ],
       ),
     );

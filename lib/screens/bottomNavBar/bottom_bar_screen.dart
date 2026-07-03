@@ -9,7 +9,6 @@ import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/screens/homePage/home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heathy_teacher/screens/productPage/list_product_screen.dart';
-import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/screens/profilePage/profile_screen.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';

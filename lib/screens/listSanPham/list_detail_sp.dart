@@ -11,7 +11,6 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
-import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:intl/intl.dart';
 

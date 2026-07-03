@@ -460,7 +460,7 @@ Future<void> dialogBuilder(BuildContext context, {required int type}) {
               final prefs = await SharedPreferences.getInstance();
               await prefs.remove('token');
               await prefs.remove('id_user');
-
+              await prefs.remove('remember_token');
               Navigator.push(
                 context,
                 MaterialPageRoute(

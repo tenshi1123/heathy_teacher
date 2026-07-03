@@ -2,7 +2,7 @@ import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/home_model.dart';
-import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
+import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/screens/drawer/chinh_sach_screen.dart';
 import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';

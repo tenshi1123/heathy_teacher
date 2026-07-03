@@ -22,16 +22,21 @@ class ApiPath {
   static String sendChatLecturers = '$baseUrl/customer/send_chat_lecturers';
 
   //web ngoai
+
+  //khóa học
   static String listCourse = '$baseUrl/danh-sach-khoa-hoc';
   static String listCourseOff = '$baseUrl/danh-sach-khoa-hoc-truc-tiep';
   static String courseCatalog = '$baseUrl/danh-muc-khoa-hoc';
   static String detailCourse = '$baseUrl/chi-tiet-khoa-hoc';
+  static String coursePayment = '$baseUrl/thanh-toan-khoa-hoc';
+  static String playVideo = '$baseUrl/play-video';
+
+  //sản phẩm
   static String listProduct = '$baseUrl/danh-sach-san-pham';
   static String productCatalog = '$baseUrl/danh-muc-san-pham';
   static String detailProduct = '$baseUrl/chi-tiet-san-pham';
-  static String playVideo = '$baseUrl/play-video';
+  static String productPayment = '$baseUrl/thanh-toan-san-pham';
 }
 
-//api thanh toán khóa học đâu?
 //api danh sách khóa học chọn setting_course_type là on hay off đều ra cùng 1 danh sách
 //api thanh toán sản phẩm lỗi -"Decryption failed or invalid data format."

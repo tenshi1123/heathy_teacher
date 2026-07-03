@@ -29,8 +29,6 @@ class LoginRepo {
       print(e);
       return 'Đăng nhập thất bại';
     }
-
-    // Lấy data ra biến riêng cho code gọn gàng
     final data = response.data;
 
     if (data['type'] == 'error') {
@@ -45,7 +43,10 @@ class LoginRepo {
       // (Phòng trường hợp customer_id trả về là int thay vì String)
       await prefs.setString('token', data["refresh_token"]?.toString() ?? '');
       await prefs.setString('id_user', data["customer_id"]?.toString() ?? '');
-
+      await prefs.setString(
+        'remember_token',
+        data["remember_me_customer"]?.toString() ?? '',
+      );
       return data['message']?.toString() ?? 'Đăng nhập thành công';
     }
 
@@ -56,6 +57,7 @@ class LoginRepo {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
     await prefs.remove('id_user');
+    await prefs.remove('remember_token');
     return 'Đăng xuất thành công';
   }
 

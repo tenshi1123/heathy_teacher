@@ -12,12 +12,9 @@ import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
-import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
-import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
-import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
 
@@ -658,79 +655,6 @@ class _OnlineClassCard extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MaterialProductCard extends StatelessWidget {
-  final int index;
-  const _MaterialProductCard({required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: ((context) => DetailProductScreen())),
-        );
-      },
-      child: Container(
-        height: 297.h,
-        width: 200.w,
-        margin: EdgeInsets.only(
-          left: 16.w,
-          right: index == 2 ? 16.w : 4.w,
-          top: 20.h,
-          bottom: 28.h,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20.r)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xff062905).withValues(alpha: 0.16),
-              spreadRadius: 0,
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Image.asset(
-              'assets/images/material${index + 1}.png',
-              width: 184.w,
-              height: 184.h,
-              fit: BoxFit.fitWidth,
-            ),
-            Row(
-              children: [
-                RatingStars(rating: 4.5, starSize: 16.r),
-                Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
-              ],
-            ),
-            Text(
-              'Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300g',
-              style: defaultText14SB,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('128.000đ', style: defaultText16B),
-                Text(
-                  '250.000đ',
-                  style: defaultText12Re.copyWith(
-                    decoration: TextDecoration.lineThrough,
-                  ),
-                ),
-              ],
             ),
           ],
         ),

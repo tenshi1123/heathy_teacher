@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:heathy_teacher/repo/login_repo.dart';
 import 'package:heathy_teacher/screens/authentication/sign_up_screen.dart';
-import 'package:heathy_teacher/screens/bottomNavBar/bottomBarScreen.dart';
+import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
 import 'package:heathy_teacher/services/fingerprint_service.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
