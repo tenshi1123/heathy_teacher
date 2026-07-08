@@ -266,7 +266,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                   CourseItem(type: widget.type, place: widget.place),
                   SizedBox(height: 20.h),
                   Text(
-                    'KHOÁ HỌC ONLINE NỔI BẬT - ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG'.sanitizeForApple,
+                    'KHOÁ HỌC ONLINE NỔI BẬT - ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG'
+                        .sanitizeForApple,
                     textAlign: TextAlign.center,
                     style: defaultText20B.copyWith(color: mainDarkGreen),
                   ),
@@ -352,6 +353,56 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                   ),
                   RecipeGridWidget(recipes: dummyLongList, type: 1),
                   SizedBox(height: 10.h),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          offset: const Offset(0, 2),
+                          blurRadius: 4.0,
+                        ),
+                      ],
+
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [backGroundGreen, mainDarkGreen],
+                      ),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        // Làm trong suốt nền và bóng của nút để hiển thị gradient của Container
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        // Điều chỉnh kích thước của nút
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 48.0,
+                          vertical: 16.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MoreRecipesScreen(
+                              title: 'KIẾN THỨC & CÔNG THỨC TẶNG EATCLEAN - HEALTHY',
+                              recipes: dummyLongList,
+                              type: 1,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Xem thêm',
+                        style: defaultText18M.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
                   Text(
                     'NHẬT KÝ LỚP HỌC',
                     textAlign: TextAlign.center,
@@ -363,6 +414,56 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                     style: defaultText14M.copyWith(color: mainDarkGreen),
                   ),
                   RecipeGridWidget(recipes: dummyLongList2, type: 2),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          offset: const Offset(0, 2),
+                          blurRadius: 4.0,
+                        ),
+                      ],
+
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [backGroundGreen, mainDarkGreen],
+                      ),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        // Làm trong suốt nền và bóng của nút để hiển thị gradient của Container
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        // Điều chỉnh kích thước của nút
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 48.0,
+                          vertical: 16.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MoreRecipesScreen(
+                              title: 'NHẬT KÝ LỚP HỌC',
+                              recipes: dummyLongList2,
+                              type: 2,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Xem thêm',
+                        style: defaultText18M.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
                   Container(
                     width: 375.w,
 
@@ -526,7 +627,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                                 ),
                               ),
                               Text(
-                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'.sanitizeForApple,
+                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
+                                    .sanitizeForApple,
                                 style: defaultText14M.copyWith(
                                   color: Colors.white,
                                 ),
@@ -574,6 +676,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                       ],
                     ),
                   ),
+
                   // Khoảng cách cuối trang
                 ],
               ),
@@ -646,10 +749,14 @@ class _ServiceItemState extends State<ServiceItem> {
             /// title
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                widget.item.title,
-                textAlign: TextAlign.center,
-                style: defaultText16B.copyWith(color: mainDarkGreen),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  widget.item.title,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: defaultText14B.copyWith(color: mainDarkGreen),
+                ),
               ),
             ),
           ],
@@ -1001,6 +1108,50 @@ class _RippleCircle extends StatelessWidget {
       decoration: BoxDecoration(
         color: appRippleColor.withOpacity(opacity),
         shape: BoxShape.circle,
+      ),
+    );
+  }
+}
+
+class MoreRecipesScreen extends StatelessWidget {
+  final String title;
+  final List<RecipeModel> recipes;
+  final int type;
+
+  const MoreRecipesScreen({
+    Key? key,
+    required this.title,
+    required this.recipes,
+    required this.type,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 50),
+                  DefaultAppBar(),
+                  SizedBox(height: 16.h),
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: defaultText20B.copyWith(color: mainDarkGreen),
+                  ),
+                  SizedBox(height: 16.h),
+                  RecipeGridWidget(recipes: recipes, type: type),
+                  SizedBox(height: 30.h),
+                ],
+              ),
+            ),
+          ),
+          BottomCustom(),
+        ],
       ),
     );
   }

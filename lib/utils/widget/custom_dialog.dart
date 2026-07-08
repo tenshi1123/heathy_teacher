@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/screens/authentication/login_screen.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -210,7 +211,10 @@ class LoginDialog extends StatelessWidget {
             /// BUTTON FACEBOOK
             GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: ((context) => (LoginScreen()))),
+                );
               },
               child: Container(
                 width: double.infinity,

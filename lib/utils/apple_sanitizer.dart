@@ -9,15 +9,15 @@ extension AppleSanitize on String {
     // Handle "khoá học online", "khóa học online", "học online" (case insensitive)
     result = result.replaceAll(
       RegExp(r'khoá học online', caseSensitive: false),
-      'Video ôn tập',
+      'ôn tập',
     );
     result = result.replaceAll(
       RegExp(r'khóa học online', caseSensitive: false),
-      'Video ôn tập',
+      'ôn tập',
     );
     result = result.replaceAll(
       RegExp(r'học online', caseSensitive: false),
-      'Video ôn tập',
+      'ôn tập',
     );
     return result;
   }

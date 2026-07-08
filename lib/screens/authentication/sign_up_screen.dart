@@ -54,7 +54,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: 16.h),
 
                     Text(
-                      'Đăng ký tài khoản để có thể trải nghiệm những khóa học'.sanitizeForApple,
+                      'Đăng ký tài khoản để có thể trải nghiệm những khóa học'
+                          .sanitizeForApple,
                       style: defaultText16M.copyWith(color: Colors.black87),
                     ),
                     SizedBox(height: 32.h),
@@ -145,9 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: ElevatedButton(
                         onPressed: () async {
                           final fingerprint =
-                              await FingerprintService.generateFingerprint(
-                                context,
-                              );
+                              await FingerprintService.generateFingerprint();
                           String message = await LoginRepo().signUp(
                             _phoneController.text,
                             _passwordController.text,

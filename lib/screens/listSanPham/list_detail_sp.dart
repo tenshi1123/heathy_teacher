@@ -214,7 +214,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12,
-                              childAspectRatio: 0.55,
+                              childAspectRatio: 0.68,
                             ),
                         itemBuilder: (context, index) {
                           final item = coursesDetail[index];
@@ -241,13 +241,13 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                     top: Radius.circular(16),
                                     bottom: Radius.circular(16),
                                   ),
-                                  child: Image.network(
-                                    item.img!.contains('https://')
-                                        ? item.img ?? ''
-                                        : 'https://lms.cogiaohealthy.vn/images/${item.img}',
-                                    //width: 50.dg,
-                                    height: 160.dg,
-                                    fit: BoxFit.cover,
+                                    child: Image.network(
+                                      item.img!.contains('https://')
+                                          ? item.img ?? ''
+                                          : 'https://lms.cogiaohealthy.vn/images/${item.img}',
+                                      width: double.infinity,
+                                      height: 120.dg,
+                                      fit: BoxFit.cover,
                                     errorBuilder:
                                         (
                                           BuildContext context,
@@ -298,6 +298,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                     color: mainDarkGreen,
                                   ),
                                 ),
+                                SizedBox(height: 8.h),
 
                                 Text(
                                   '${formatPrice(item.price)}đ',
@@ -372,8 +373,8 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                     },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
-                                        vertical: 2.h,
-                                        horizontal: 6,
+                                        vertical: 10.h,
+                                        horizontal: 8.w,
                                       ),
                                       decoration: BoxDecoration(
                                         color: mainDarkGreen,

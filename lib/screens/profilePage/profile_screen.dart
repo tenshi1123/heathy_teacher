@@ -210,10 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: defaultText14M,
               children: [
                 TextSpan(text: 'Mã giới thiệu: '),
-                TextSpan(
-                  text: widget.userModel.customerCode,
-                  style: defaultText14B,
-                ),
+                TextSpan(text: widget.userModel.phone, style: defaultText14B),
               ],
             ),
           ),

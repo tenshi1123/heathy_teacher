@@ -8,7 +8,6 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
@@ -70,26 +69,23 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          if (isShow == 'true')
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: ((context) => ShoppingCartScreen()),
-                  ),
-                );
-              },
-              child: Stack(
-                children: [
-                  Icon(
-                    Icons.shopping_cart_outlined,
-                    color: Colors.white,
-                    size: 28, // Giảm size Icon giỏ hàng một chút
-                  ),
-                ],
-              ),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
+              );
+            },
+            child: Stack(
+              children: [
+                Icon(
+                  Icons.shopping_cart_outlined,
+                  color: Colors.white,
+                  size: 28, // Giảm size Icon giỏ hàng một chút
+                ),
+              ],
             ),
+          ),
           SizedBox(width: 16.w),
         ],
       ),
@@ -124,21 +120,22 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                     ),
                     Html(data: _formatHtml(courses.description)),
                     SizedBox(height: 20.h),
-                    if (isShow == 'true')
-                      SizedBox(
-                        width: 343.w,
-                        child: Row(
-                          children: [
-                            Text(
-                              NumberFormat.decimalPattern(
-                                'vi_VN',
-                              ).format(int.parse(courses.price ?? '')),
-                              style: defaultText16B.copyWith(
-                                color: mainDarkGreen,
-                                fontSize: 24.sp,
-                              ),
+                    //if (isShow == 'true')
+                    SizedBox(
+                      width: 343.w,
+                      child: Row(
+                        children: [
+                          Text(
+                            NumberFormat.decimalPattern(
+                              'vi_VN',
+                            ).format(int.parse(courses.price ?? '')),
+                            style: defaultText16B.copyWith(
+                              color: mainDarkGreen,
+                              fontSize: 24.sp,
                             ),
-                            SizedBox(width: 12.w),
+                          ),
+                          SizedBox(width: 12.w),
+                          if (courses.priceOld != '0')
                             Text(
                               NumberFormat.decimalPattern(
                                 'vi_VN',
@@ -147,15 +144,61 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                                 decoration: TextDecoration.lineThrough,
                               ),
                             ),
+                        ],
+                      ),
+                    ),
+
+                    //SizedBox(height: 12.h),
+                    InkWell(
+                      onTap: () {
+                        globalListCart.clear();
+                        globalListCart.add(
+                          CartItem(
+                            id: courses.id ?? '',
+                            name: courses.title ?? '',
+                            image: courses.image ?? '',
+                            price: int.tryParse(courses.price ?? '0') ?? 0,
+                            isCourse: true,
+                          ),
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OrderPaymentScreen(),
+                          ),
+                        ).then((_) => setState(() {}));
+                      },
+                      child: Container(
+                        height: 48.h,
+                        width: 343.w,
+                        margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          color: mainDarkGreen,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/images/lingting.png'),
+                            Text(
+                              '  Đăng ký ngay',
+                              textAlign: TextAlign.center,
+                              style: defaultText16B.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
                           ],
                         ),
                       ),
-
-                    //SizedBox(height: 12.h),
-                    if (isShow == 'true') ...[
-                      InkWell(
-                        onTap: () {
-                          globalListCart.clear();
+                    ),
+                    InkWell(
+                      onTap: () {
+                        int existingIndex = globalListCart.indexWhere(
+                          (element) => element.id == courses.id,
+                        );
+                        if (existingIndex != -1) {
+                          globalListCart[existingIndex].quantity++;
+                        } else {
                           globalListCart.add(
                             CartItem(
                               id: courses.id ?? '',
@@ -165,121 +208,56 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                               isCourse: true,
                             ),
                           );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const OrderPaymentScreen(),
-                            ),
-                          ).then((_) => setState(() {}));
-                        },
-                        child: Container(
-                          height: 48.h,
-                          width: 343.w,
-                          margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16.r),
-                            color: mainDarkGreen,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset('assets/images/lingting.png'),
-                              Text(
-                                '  Đăng ký ngay',
-                                textAlign: TextAlign.center,
-                                style: defaultText16B.copyWith(
-                                  color: Colors.white,
+                        }
+                        setState(() {});
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: const Text(
+                                'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          int existingIndex = globalListCart.indexWhere(
-                            (element) => element.id == courses.id,
-                          );
-                          if (existingIndex != -1) {
-                            globalListCart[existingIndex].quantity++;
-                          } else {
-                            globalListCart.add(
-                              CartItem(
-                                id: courses.id ?? '',
-                                name: courses.title ?? '',
-                                image: courses.image ?? '',
-                                price: int.tryParse(courses.price ?? '0') ?? 0,
-                                isCourse: true,
-                              ),
+                              ],
                             );
-                          }
-                          setState(() {});
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: const Text(
-                                  'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'OK'),
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        child: Container(
-                          height: 48.h,
-                          width: 340.w,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16.r),
-                            color: Colors.white,
-                            border: Border.all(
-                              color: mainDarkGreen,
-                              width: 1.w,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset('assets/images/gio_hang.png'),
-                              Text(
-                                '  Thêm vào giỏ hàng',
-                                textAlign: TextAlign.center,
-                                style: defaultText16B.copyWith(
-                                  color: mainDarkGreen,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ] else ...[
-                      Container(
+                          },
+                        );
+                      },
+                      child: Container(
                         height: 48.h,
-                        width: 343.w,
-                        margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
+                        width: 340.w,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16.r),
-                          color: Colors.grey,
+                          color: Colors.white,
+                          border: Border.all(color: mainDarkGreen, width: 1.w),
                         ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Đã khóa',
-                          style: defaultText16B.copyWith(color: Colors.white),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/images/gio_hang.png'),
+                            Text(
+                              '  Thêm vào giỏ hàng',
+                              textAlign: TextAlign.center,
+                              style: defaultText16B.copyWith(
+                                color: mainDarkGreen,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
+
+                    _buildVideoSection(),
                     SizedBox(height: 28.h),
                     Row(
                       children: [
                         SizedBox(width: 16.w),
                         Text(
-                          "Nội dung bài giảng",
+                          "Nội dung Khóa học",
                           style: defaultText18B.copyWith(color: mainDarkGreen),
                         ),
                       ],
@@ -290,6 +268,62 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                     SizedBox(height: 36.h),
                   ],
                 ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVideoSection() {
+    if (courses.youtubeUrl == null || courses.youtubeUrl!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return GestureDetector(
+      onTap: () async {
+        String urlString = courses.youtubeUrl!;
+        // Chuyển link embed thành link watch thông thường để app YouTube dễ mở hơn
+        if (urlString.contains('youtube.com/embed/')) {
+          final uri = Uri.parse(urlString);
+          final pathSegments = uri.pathSegments;
+          if (pathSegments.isNotEmpty && pathSegments.first == 'embed') {
+            final videoId = pathSegments.length > 1 ? pathSegments[1] : '';
+            if (videoId.isNotEmpty) {
+              urlString = 'https://www.youtube.com/watch?v=$videoId';
+            }
+          }
+        }
+
+        final url = Uri.parse(urlString);
+        try {
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+        } catch (_) {
+          try {
+            await launchUrl(url, mode: LaunchMode.platformDefault);
+          } catch (e) {
+            debugPrint("Không thể mở link: $url");
+          }
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        height: 220.h,
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        decoration: BoxDecoration(
+          color: Colors.black87,
+          borderRadius: BorderRadius.circular(12.r),
+          image: courses.image != null
+              ? DecorationImage(
+                  image: NetworkImage(courses.image!),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.4),
+                    BlendMode.darken,
+                  ),
+                )
+              : null,
+        ),
+        child: Center(
+          child: Icon(Icons.play_circle_fill, color: Colors.white, size: 60.w),
         ),
       ),
     );

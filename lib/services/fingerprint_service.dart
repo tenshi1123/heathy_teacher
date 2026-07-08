@@ -1,34 +1,22 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 
 class FingerprintService {
-  static Future<String> generateFingerprint(BuildContext context) async {
-    final mediaQuery = MediaQuery.of(context);
+  static Future<String> generateFingerprint() async {
+    // Đồng bộ với JS:
+    // - width/height    : BỎ — không ổn định (rotation, split screen)
+    // - hardwareConcurrency: BỎ — không dùng trong JS nữa
+    // - colorDepth/pixelDepth: cố định 24
+    // - timezone        : normalize alias
+    // - maxTouchPoints  : mobile luôn là touch → cố định 5 (giống navigator.maxTouchPoints trên mobile browser)
+    // Platform (iOS/Android) được kết hợp ở server qua buildFingerprint() — không cần gửi lên
 
-    // Giống screen.width / screen.height của JS
-    final width = mediaQuery.size.width.round();
-    final height = mediaQuery.size.height.round();
+    const colorDepth = 24;
+    const pixelDepth = 24;
+    const maxTouchPoints = 5; // mobile luôn là touch device
 
-    // JS đang force max = 24
-    final colorDepth = 24;
-    final pixelDepth = 24;
-
-    // Timezone normalize
     final timezone = normalizeTimezone(_getTimezone());
 
-    // hardwareConcurrency
-    final normalizedCores = normalizeHardwareConcurrency(
-      Platform.numberOfProcessors,
-    );
-
-    final data = [
-      width,
-      height,
-      colorDepth,
-      pixelDepth,
-      timezone,
-      normalizedCores,
-    ].join('|');
+    final data = [colorDepth, pixelDepth, timezone, maxTouchPoints].join('|');
 
     debugPrint('Fingerprint data: $data');
 
@@ -36,18 +24,21 @@ class FingerprintService {
   }
 
   static String _getTimezone() {
-    // Android thường trả +07
-    // map cứng cho giống JS browser
     final now = DateTime.now();
     final offset = now.timeZoneOffset.inHours;
 
+    // Map offset về tên chuẩn giống browser JS
     switch (offset) {
       case 7:
         return 'Asia/Ho_Chi_Minh';
-
       case 5:
         return 'Asia/Kolkata';
-
+      case 6:
+        return 'Asia/Yangon';
+      case 8:
+        return 'Asia/Shanghai';
+      case 9:
+        return 'Asia/Tokyo';
       default:
         return now.timeZoneName;
     }
@@ -66,23 +57,11 @@ class FingerprintService {
     return aliases[tz] ?? tz;
   }
 
-  static String normalizeHardwareConcurrency(int? cores) {
-    if (cores == null) return 'unknown';
-
-    if (cores <= 2) return '2';
-    if (cores <= 4) return '4';
-    if (cores <= 8) return '8';
-    if (cores <= 16) return '16';
-
-    return '16+';
-  }
-
   static String simpleHash(String str) {
     int hash = 0;
 
     for (int i = 0; i < str.length; i++) {
       final char = str.codeUnitAt(i);
-
       hash = ((hash << 5) - hash + char) & 0xFFFFFFFF;
     }
 

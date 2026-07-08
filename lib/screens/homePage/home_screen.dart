@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -78,55 +79,109 @@ class HomeScreen extends StatelessWidget {
                             width: 343.w,
                             //height: 52.w,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Builder(
-                                  builder: (BuildContext context) {
-                                    return IconButton(
+                                Column(
+                                  children: [
+                                    IconButton(
                                       icon: const Icon(
-                                        Icons.menu,
+                                        Icons.arrow_back_ios_new,
                                         size: 32,
                                         color: Colors.white,
                                       ), // Nút 3 gạch tự tạo
                                       onPressed: () {
-                                        // Gọi lệnh mở Drawer
-                                        Scaffold.of(context).openDrawer();
-                                      },
-                                    );
-                                  },
-                                ),
-                                avatar(userModel.img),
-
-                                SizedBox(width: 16.w),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Hi, ${userModel.fullName}',
-                                      style: defaultText18B.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    //dateTimeDisplayWidget(),
-                                    SelectableText.rich(
-                                      TextSpan(
-                                        style: defaultText14M.copyWith(
-                                          color: Colors.white,
-                                        ),
-                                        children: [
-                                          TextSpan(text: 'Mã giới thiệu: '),
-                                          TextSpan(
-                                            text: userModel.customerCode,
-                                            style: defaultText14B.copyWith(
-                                              color: Colors.white,
-                                            ),
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CoGiaoHealthyScreen(
+                                                  type: 'home',
+                                                  place: 'Hà Nội',
+                                                ),
                                           ),
-                                        ],
-                                      ),
+                                        );
+                                      },
+                                    ),
+                                    Builder(
+                                      builder: (BuildContext context) {
+                                        return IconButton(
+                                          icon: const Icon(
+                                            Icons.menu,
+                                            size: 32,
+                                            color: Colors.white,
+                                          ), // Nút 3 gạch tự tạo
+                                          onPressed: () {
+                                            // Gọi lệnh mở Drawer
+                                            Scaffold.of(context).openDrawer();
+                                          },
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
-                                Spacer(),
+                                Column(
+                                  children: [
+                                    // InkWell(
+                                    //   onTap: () {
+                                    //     Navigator.pushReplacement(
+                                    //       context,
+                                    //       MaterialPageRoute(
+                                    //         builder: (context) =>
+                                    //             const CoGiaoHealthyScreen(
+                                    //               type: 'home',
+                                    //               place: 'Hà Nội',
+                                    //             ),
+                                    //       ),
+                                    //     );
+                                    //   },
+                                    //   child: Image.asset(
+                                    //     "assets/images/logo.png",
+                                    //     height: 73.h,
+                                    //     fit: BoxFit.fitHeight,
+                                    //   ),
+                                    // ),
+                                    Row(
+                                      children: [
+                                        avatar(userModel.img),
+                                        SizedBox(width: 16.w),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Hi, ${userModel.fullName}',
+                                              style: defaultText18B.copyWith(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            //dateTimeDisplayWidget(),
+                                            SelectableText.rich(
+                                              TextSpan(
+                                                style: defaultText14M.copyWith(
+                                                  color: Colors.white,
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                    text: 'Mã giới thiệu: ',
+                                                  ),
+                                                  TextSpan(
+                                                    text: userModel.phone,
+                                                    style: defaultText14B
+                                                        .copyWith(
+                                                          color: Colors.white,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+
+                                // Spacer(),
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.push(
@@ -419,13 +474,13 @@ class _OfflineClassCard extends StatelessWidget {
         );
       },
       child: Container(
-        height: 256.h,
+        height: 260.h,
         width: 200.w,
         margin: EdgeInsets.only(
           left: 16.w,
           right: 8.w,
-          top: 20.h,
-          bottom: 28.h,
+          top: 16.h,
+          bottom: 14.h,
         ),
         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
         decoration: BoxDecoration(

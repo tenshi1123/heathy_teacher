@@ -123,9 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton(
                         onPressed: () async {
                           final String fingerprint =
-                              await FingerprintService.generateFingerprint(
-                                context,
-                              );
+                              await FingerprintService.generateFingerprint();
 
                           print('test5 $fingerprint');
                           // Xử lý logic đăng nhập tại đây

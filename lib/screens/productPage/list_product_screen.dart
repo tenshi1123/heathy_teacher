@@ -239,7 +239,11 @@ class _ListProductScreenState extends State<ListProductScreen> {
                                 ),
 
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.only(
+                                    left: 8.w,
+                                    right: 8.w,
+                                    top: 8.h,
+                                  ),
                                   child: Text(
                                     item.categoryName ?? '',
                                     maxLines: 2,

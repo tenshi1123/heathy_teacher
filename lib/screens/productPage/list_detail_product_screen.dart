@@ -185,7 +185,7 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12,
-                              childAspectRatio: 0.55,
+                              childAspectRatio: 0.68,
                             ),
                         itemBuilder: (context, index) {
                           final item = coursesDetail[index];
@@ -216,8 +216,8 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                                     item.img!.contains('https://')
                                         ? item.img ?? ''
                                         : 'https://lms.cogiaohealthy.vn/images/${item.img}',
-                                    //width: 50.dg,
-                                    height: 160.dg,
+                                    width: double.infinity,
+                                    height: 120.dg,
                                     fit: BoxFit.cover,
                                     errorBuilder:
                                         (
@@ -269,6 +269,7 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                                     color: mainDarkGreen,
                                   ),
                                 ),
+                                SizedBox(height: 8.h),
 
                                 Row(
                                   children: [
@@ -351,8 +352,8 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                                     },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
-                                        vertical: 2.h,
-                                        horizontal: 6,
+                                        vertical: 10.h,
+                                        horizontal: 8.w,
                                       ),
                                       decoration: BoxDecoration(
                                         color: mainDarkGreen,

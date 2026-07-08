@@ -29,7 +29,7 @@ class MyCustomDrawer extends StatelessWidget {
           // --- PHẦN HEADER ---
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.only(top: 60, bottom: 30),
+            padding: const EdgeInsets.only(top: 60),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -50,6 +50,7 @@ class MyCustomDrawer extends StatelessWidget {
                     color: Color(0xFF858C94), // Màu xám nhạt
                   ),
                 ),
+                Text('${userModel.memberRanking}', style: defaultText14B),
               ],
             ),
           ),

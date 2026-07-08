@@ -78,15 +78,16 @@ class _FeedbackSliderState extends State<FeedbackSlider> {
 
     return Container(
       width: double.infinity,
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 12.h),
+      color: Colors.transparent,
+      padding: EdgeInsets.symmetric(vertical: 16.h),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           // 1. Tiêu đề chính
           const Text(
             'FEEDBACK CỦA HỌC VIÊN',
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xFF3B7E45), // Màu xanh lá chủ đạo
               fontSize: 22,
@@ -94,183 +95,207 @@ class _FeedbackSliderState extends State<FeedbackSlider> {
               letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 24.h),
 
-          // 2. Vùng hiển thị nội dung slide (PageView)
+          // 2. Vùng hiển thị nội dung slide (PageView) + Nút điều hướng
           SizedBox(
-            height: 580.h, // Chiều cao cố định bao phủ text và ảnh dưới
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: feedbackList.length,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              itemBuilder: (context, index) {
-                final item = feedbackList[index];
-                final fullImageUrl = "$baseImageUrl${item['img_main']}";
+            height: 540.h, // Đủ không gian cho ảnh và card text đè lên
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                PageView.builder(
+                  controller: _pageController,
+                  itemCount: feedbackList.length,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    final item = feedbackList[index];
+                    final fullImageUrl = "$baseImageUrl${item['img_main']}";
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Nội dung feedback (Có dấu nháy kép mở đầu)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    return Stack(
+                      alignment: Alignment.topCenter,
                       children: [
-                        const Text(
-                          '“ ',
-                          style: TextStyle(
-                            color: Color(0xFF4A5568),
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            height: 1.1,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            item['content'],
-                            style: const TextStyle(
-                              color: Color(0xFF4A5568),
-                              fontSize: 16,
-                              height: 1.5,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Thông tin User (Avatar + Tên + Khóa học)
-                    Row(
-                      children: [
-                        // Avatar hình tròn (Lấy tạm chính ảnh feedback bo tròn)
+                        // Main White Card with Image
                         Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(fullImageUrl),
-                              fit: BoxFit.cover,
-                            ),
+                          margin: EdgeInsets.only(
+                            left: 45.w,
+                            right: 45.w,
+                            top: 10.h,
+                            bottom: 140.h, // Nhường chỗ cho text card
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        // Tên & tên khóa học
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item['user_name'],
-                                style: const TextStyle(
-                                  color: Color(0xFF3B7E45),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                item['course_name'],
-                                style: const TextStyle(
-                                  color: Color(0xFF718096),
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.3,
-                                ),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                spreadRadius: 2,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              fullImageUrl,
+                              width: double.infinity,
+                              height: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[200],
+                                  child: const Icon(
+                                    Icons.image_not_supported,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+
+                        // Text Card (Overlapping)
+                        Positioned(
+                          bottom: 10.h,
+                          left: 65.w,
+                          right: 65.w,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 24.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(24),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 15,
+                                  spreadRadius: 2,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  item['course_name']
+                                          ?.toString()
+                                          .toUpperCase() ??
+                                      '',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Color(0xFF3B7E45),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.4,
+                                  ),
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  item['content'] ?? '',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Color(0xFF4A5568),
+                                    fontSize: 14,
+                                    height: 1.5,
+                                  ),
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  item['user_name']?.toString().toUpperCase() ??
+                                      '',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Color(0xFFE67E22), // Màu cam
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildNavButton(
-                          icon: Icons.arrow_back,
-                          isActive: _currentIndex > 0,
-                          onTap: () {
-                            if (_currentIndex > 0) {
-                              _pageController.previousPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                              );
-                            }
-                          },
-                        ),
-                        const SizedBox(width: 16),
-                        _buildNavButton(
-                          icon: Icons.arrow_forward,
-                          isActive: _currentIndex < feedbackList.length - 1,
-                          onTap: () {
-                            if (_currentIndex < feedbackList.length - 1) {
-                              _pageController.nextPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    // 3. Hình ảnh feedback lớn bên dưới (Lấy từ data JSON)
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.network(
-                          fullImageUrl,
-                          width: double.infinity,
-                          fit: BoxFit.fitWidth,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey[200],
-                              child: const Icon(
-                                Icons.image_not_supported,
-                                color: Colors.grey,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
+                    );
+                  },
+                ),
+
+                // Nút Left
+                Positioned(
+                  left: 8.w,
+                  child: _buildNavButton(
+                    icon: Icons.arrow_back,
+                    isActive: _currentIndex > 0,
+                    onTap: () {
+                      if (_currentIndex > 0) {
+                        _pageController.previousPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                  ),
+                ),
+
+                // Nút Right
+                Positioned(
+                  right: 8.w,
+                  child: _buildNavButton(
+                    icon: Icons.arrow_forward,
+                    isActive: _currentIndex < feedbackList.length - 1,
+                    onTap: () {
+                      if (_currentIndex < feedbackList.length - 1) {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  // Hàm tạo nút điều hướng tròn xanh/trắng tròn
+  // Hàm tạo nút điều hướng
   Widget _buildNavButton({
     required IconData icon,
     required bool isActive,
     required VoidCallback onTap,
   }) {
     return InkWell(
-      onTap: onTap,
+      onTap: isActive ? onTap : null,
       borderRadius: BorderRadius.circular(25),
       child: Container(
-        width: 44,
-        height: 44,
+        width: 44.w,
+        height: 44.w,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isActive ? const Color(0xFF76BA43) : Colors.white,
-          border: Border.all(color: const Color(0xFF76BA43), width: 1.5),
+          color: Colors.white,
+          border: Border.all(
+            color: isActive ? const Color(0xFF3B7E45) : Colors.grey.shade300,
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        child: Icon(
-          icon,
-          color: isActive ? Colors.white : const Color(0xFF76BA43),
-          size: 20,
-        ),
+        child: Icon(icon, color: const Color(0xFF76BA43), size: 20),
       ),
     );
   }

@@ -16,6 +16,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
+import 'package:heathy_teacher/screens/recipe_detail_screen.dart';
+import 'package:heathy_teacher/screens/diary_detail_screen.dart';
 
 class CustomDotLine extends StatelessWidget {
   final double dotSize;
@@ -556,8 +558,22 @@ class CourseItemOnline extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
 
+          Row(
+            children: [
+              Icon(Icons.location_on_outlined, color: mainDarkGreen, size: 16),
+              if (type == 'on')
+                Text(
+                  '  Học online qua app'.sanitizeForApple,
+                  style: defaultText14M.copyWith(color: Colors.red),
+                )
+              else
+                Text(
+                  '  Trực tiếp tại $place',
+                  style: defaultText14M.copyWith(color: Colors.red),
+                ),
+            ],
+          ),
           // Giá tiền
           if (isShow == 'true')
             Column(
@@ -1213,15 +1229,26 @@ class RecipeGridWidget extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         final item = recipes[index];
-        return _buildRecipeCard(item);
+        return _buildRecipeCard(context, item);
       },
     );
   }
 
   // Widget con đại diện cho từng ô sản phẩm/bài viết
-  Widget _buildRecipeCard(RecipeModel item) {
-    return Container(
-      decoration: BoxDecoration(
+  Widget _buildRecipeCard(BuildContext context, RecipeModel item) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => type == 1
+                ? RecipeDetailScreen(item: item)
+                : DiaryDetailScreen(item: item),
+          ),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
         color: backGroundGreen, // Màu nền xanh lá phía dưới card
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
@@ -1264,24 +1291,18 @@ class RecipeGridWidget extends StatelessWidget {
 
           // 2. Phần nội dung chữ phía dưới (Nền xanh)
           Expanded(
-            flex: 9, // Phần không gian dành cho chữ và ngày tháng
+            flex: 11, // Tăng phần không gian dành cho chữ
             child: Padding(
-              padding: EdgeInsets.only(left: 8.w, right: 8.w),
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     item.title.toUpperCase(),
-                    maxLines: 2,
+                    maxLines: 4,
                     overflow: TextOverflow.ellipsis,
-                    style: defaultText16B.copyWith(color: Colors.white),
-                  ),
-                  Text(
-                    item.detail ?? '',
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: defaultText14M.copyWith(color: Colors.white),
+                    style: defaultText12B.copyWith(color: Colors.white),
                   ),
                 ],
               ),
@@ -1289,7 +1310,7 @@ class RecipeGridWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 

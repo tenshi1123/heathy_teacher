@@ -4,9 +4,9 @@ import re
 dir_path = r"e:\project\heathy_teacher\lib"
 
 replacements = [
-    (re.compile(r'khoá học online', re.IGNORECASE), 'Video ôn tập'),
-    (re.compile(r'khóa học online', re.IGNORECASE), 'Video ôn tập'),
-    (re.compile(r'học online', re.IGNORECASE), 'Video ôn tập'),
+    (re.compile(r'khoá học online', re.IGNORECASE), 'ôn tập'),
+    (re.compile(r'khóa học online', re.IGNORECASE), 'ôn tập'),
+    (re.compile(r'học online', re.IGNORECASE), 'ôn tập'),
     (re.compile(r'khóa học', re.IGNORECASE), 'Tài liệu lớp học'),
     (re.compile(r'khoá học', re.IGNORECASE), 'Tài liệu lớp học'),
 ]
