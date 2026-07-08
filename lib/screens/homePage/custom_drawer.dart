@@ -61,25 +61,25 @@ class MyCustomDrawer extends StatelessWidget {
               padding: EdgeInsets.zero,
               physics: const BouncingScrollPhysics(),
               children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CoGiaoHealthyScreen(
-                          type: 'home',
-                          place: 'Hà Nội',
-                        ),
-                      ),
-                    );
-                  },
-                  child: Image.asset(
-                    "assets/images/logo.png",
-                    height: 73.h,
-                    fit: BoxFit.fitHeight,
-                  ),
-                ),
+                // InkWell(
+                //   onTap: () {
+                //     Navigator.pop(context);
+                //     Navigator.pushReplacement(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => const CoGiaoHealthyScreen(
+                //           type: 'home',
+                //           place: 'Hà Nội',
+                //         ),
+                //       ),
+                //     );
+                //   },
+                //   child: Image.asset(
+                //     "assets/images/logo.png",
+                //     height: 73.h,
+                //     fit: BoxFit.fitHeight,
+                //   ),
+                // ),
                 _buildMenuItem(
                   icon: Icons.home_outlined,
                   title: 'Tổng quan',
