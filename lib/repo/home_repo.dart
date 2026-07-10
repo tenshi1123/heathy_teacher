@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -88,5 +89,52 @@ class HomeRepo {
     });
     response = await dio.post(ApiPath.changeAvatar, data: formData);
     return response.data['message'];
+  }
+
+  Future<List<PostModel>> getPosts({
+    required String slug,
+    required int limit,
+  }) async {
+    try {
+      final dio = await DioClient.getInstance();
+      dio.options.headers['Token'] = 'Healthy1234567890HVG';
+      final response = await dio.post(
+        ApiPath.listBaiviet,
+        data: jsonEncode({"category_slug": slug, "limit": limit}),
+      );
+      if (response.data != null && response.data['data'] != null) {
+        final List listData = response.data['data'] as List;
+
+        return listData
+            .map((e) => PostModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else {
+        return [];
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
+
+  Future<PostModel> getDetailPost(String slug) async {
+    try {
+      final dio = await DioClient.getInstance();
+      final response = await dio.post(
+        ApiPath.detailBaiviet,
+        data: jsonEncode({"slug": slug}),
+      );
+
+      if (response.data != null && response.data['data'] != null) {
+        return PostModel.fromJson(response.data['data']);
+      } else {
+        throw Exception('Không tìm thấy dữ liệu bài viết từ server.');
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
   }
 }

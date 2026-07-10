@@ -8,7 +8,9 @@ import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:heathy_teacher/utils/global_data.dart';
+import 'package:heathy_teacher/models/product_model.dart';
+import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 
 class RegisterClassON extends StatefulWidget {
   const RegisterClassON({super.key, required this.id});
@@ -152,35 +154,22 @@ class _RegisterClassONState extends State<RegisterClassON> {
                     if (isShow == 'true') ...[
                       InkWell(
                         onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                //title:  Text('Đã thêm vào giỏ hàng'),
-                                content: const Text('Tiếp tục tư vấn'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'Cancle'),
-                                    child: const Text('Cancle'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      if (!await launchUrl(
-                                        Uri.parse(
-                                          'https://www.messenger.com/t/104656608601884/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0',
-                                        ),
-                                      )) {
-                                        throw Exception('Could not launch ');
-                                      }
-                                    },
-
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
+                          globalListCart.clear();
+                          globalListCart.add(
+                            CartItem(
+                              id: courses.id ?? '',
+                              name: courses.title ?? '',
+                              image: courses.image ?? '',
+                              price: int.tryParse(courses.price ?? '0') ?? 0,
+                              isCourse: true,
+                            ),
                           );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const OrderPaymentScreen(),
+                            ),
+                          ).then((_) => setState(() {}));
                         },
                         child: Container(
                           height: 48.h,
@@ -207,12 +196,27 @@ class _RegisterClassONState extends State<RegisterClassON> {
                       ),
                       InkWell(
                         onTap: () {
+                          int existingIndex = globalListCart.indexWhere(
+                            (element) => element.id == courses.id,
+                          );
+                          if (existingIndex != -1) {
+                            globalListCart[existingIndex].quantity++;
+                          } else {
+                            globalListCart.add(
+                              CartItem(
+                                id: courses.id ?? '',
+                                name: courses.title ?? '',
+                                image: courses.image ?? '',
+                                price: int.tryParse(courses.price ?? '0') ?? 0,
+                                isCourse: true,
+                              ),
+                            );
+                          }
+                          setState(() {});
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              //cartItems.add(courses[0]);
                               return AlertDialog(
-                                //title:  Text('Đã thêm vào giỏ hàng'),
                                 content: const Text(
                                   'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
                                 ),

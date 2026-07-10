@@ -1,9 +1,9 @@
+import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/product_model.dart';
-import 'package:heathy_teacher/models/schedule_model.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/screens/authentication/login_screen.dart';
@@ -17,7 +17,6 @@ import 'package:heathy_teacher/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
 import 'package:heathy_teacher/screens/recipe_detail_screen.dart';
-import 'package:heathy_teacher/screens/diary_detail_screen.dart';
 
 class CustomDotLine extends StatelessWidget {
   final double dotSize;
@@ -1205,7 +1204,7 @@ class CourseCard extends StatelessWidget {
 }
 
 class RecipeGridWidget extends StatelessWidget {
-  final List<RecipeModel> recipes;
+  final List<PostModel> recipes;
   final int type; // 1: công thức, 2: bài viết
   const RecipeGridWidget({
     super.key,
@@ -1229,88 +1228,100 @@ class RecipeGridWidget extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         final item = recipes[index];
-        return _buildRecipeCard(context, item);
+        return _buildRecipeCard(context, item, recipes);
       },
     );
   }
 
   // Widget con đại diện cho từng ô sản phẩm/bài viết
-  Widget _buildRecipeCard(BuildContext context, RecipeModel item) {
+  Widget _buildRecipeCard(
+    BuildContext context,
+    PostModel item,
+    List<PostModel>? relatedRecipes,
+  ) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => type == 1
-                ? RecipeDetailScreen(item: item)
-                : DiaryDetailScreen(item: item),
+                ? RecipeDetailScreen(
+                    slug: item.slug ?? '',
+                    relatedRecipes: relatedRecipes ?? [],
+                  )
+                : RecipeDetailScreen(
+                    slug: item.slug ?? '',
+                    relatedRecipes: relatedRecipes ?? [],
+                  ),
+            //DiaryDetailScreen(item: item),
           ),
         );
       },
       child: Container(
         decoration: BoxDecoration(
-        color: backGroundGreen, // Màu nền xanh lá phía dưới card
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1. Phần hình ảnh phía trên (Bo góc trên trái, trên phải)
-          Expanded(
-            flex: type == 2
-                ? 12
-                : 22, // Chiếm phần lớn diện tích cho ảnh hiển thị đẹp
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              child: Image.asset(
-                item.imageUrl,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-                // Xử lý khi ảnh lỗi hoặc đang tải
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[300],
-                  child: const Icon(
-                    Icons.image_not_supported,
-                    color: Colors.grey,
+          color: backGroundGreen, // Màu nền xanh lá phía dưới card
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 1. Phần hình ảnh phía trên (Bo góc trên trái, trên phải)
+            Expanded(
+              flex: type == 2
+                  ? 12
+                  : 22, // Chiếm phần lớn diện tích cho ảnh hiển thị đẹp
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+                child: Image.network(
+                  item.thumbnail,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                  // Xử lý khi ảnh lỗi hoặc đang tải
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: Colors.grey[300],
+                    child: const Icon(
+                      Icons.image_not_supported,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          // 2. Phần nội dung chữ phía dưới (Nền xanh)
-          Expanded(
-            flex: 11, // Tăng phần không gian dành cho chữ
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    item.title.toUpperCase(),
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                    style: defaultText12B.copyWith(color: Colors.white),
-                  ),
-                ],
+            // 2. Phần nội dung chữ phía dưới (Nền xanh)
+            Expanded(
+              flex: 11, // Tăng phần không gian dành cho chữ
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      item.title,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: defaultText12B.copyWith(color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
 

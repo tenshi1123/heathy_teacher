@@ -75,3 +75,48 @@ class UserModel {
     );
   }
 }
+
+class PostModel {
+  final String title;
+  final String permalink;
+  final String date;
+  final String thumbnail;
+  final String description;
+  final String? slug;
+  final String? content;
+
+  PostModel({
+    required this.title,
+    required this.permalink,
+    required this.date,
+    required this.thumbnail,
+    required this.description,
+    this.slug,
+    this.content,
+  });
+
+  // Hàm chuyển đổi từ JSON map sang Model
+  factory PostModel.fromJson(Map<String, dynamic> json) {
+    return PostModel(
+      title: json['title'] ?? '',
+      permalink: json['permalink'] ?? '',
+      date: json['date'] ?? '',
+      thumbnail: json['thumbnail'] ?? '',
+      description: json['description'] ?? '',
+      slug: json['slug'], // Nếu không có, sẽ tự động nhận giá trị null
+      content: json['content'], // Nếu không có, sẽ tự động nhận giá trị null
+    );
+  }
+  // Hàm chuyển đổi ngược từ Model về JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'permalink': permalink,
+      'date': date,
+      'thumbnail': thumbnail,
+      'description': description,
+      if (slug != null) 'slug': slug,
+      if (content != null) 'content': content,
+    };
+  }
+}

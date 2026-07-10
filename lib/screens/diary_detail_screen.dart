@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:heathy_teacher/models/schedule_model.dart';
+import 'package:heathy_teacher/models/home_model.dart';
+import 'package:heathy_teacher/repo/home_repo.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -8,9 +9,14 @@ import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class DiaryDetailScreen extends StatefulWidget {
-  final RecipeModel item;
+  final String slug;
+  final List<PostModel> relatedDiaries;
 
-  const DiaryDetailScreen({super.key, required this.item});
+  const DiaryDetailScreen({
+    super.key,
+    required this.slug,
+    required this.relatedDiaries,
+  });
 
   @override
   State<DiaryDetailScreen> createState() => _DiaryDetailScreenState();
@@ -18,40 +24,34 @@ class DiaryDetailScreen extends StatefulWidget {
 
 class _DiaryDetailScreenState extends State<DiaryDetailScreen> {
   late final WebViewController _controller;
-
+  bool isLoading = true;
+  late PostModel item;
   @override
   void initState() {
     super.initState();
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..loadRequest(Uri.parse('https://www.youtube.com/shorts/ywL-cgn0raI'));
+    _fetchData();
+    // _controller = WebViewController()
+    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    //   ..setBackgroundColor(const Color(0x00000000))
+    //   ..loadRequest(Uri.parse('https://www.youtube.com/shorts/ywL-cgn0raI'));
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      item = await HomeRepo().getDetailPost(widget.slug);
+    } catch (e) {
+      debugPrint("Lỗi tải dữ liệu người dùng: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Dummy related diaries
-    final List<RecipeModel> relatedDiaries = [
-      RecipeModel(
-        title:
-            "Ngày 3 – Mô hình kinh doanh toàn diện, smoothie – nước ép kết hợp cùng suất ăn...",
-        imageUrl: "assets/images/dairy3.jpg",
-        date: "06/09/2025",
-      ),
-      RecipeModel(
-        title:
-            "Ngày 2 – Tiếp tục khám phá lớp học kinh doanh suất ăn healthy cao cấp có gì nha?",
-        imageUrl: "assets/images/dairy2.jpg",
-        date: "06/09/2025",
-      ),
-      RecipeModel(
-        title:
-            "Nhật ký lớp học trà sữa hạt chuyên sâu trực tiếp: Trà sữa hạt thuần chay tại Cô Giáo...",
-        imageUrl: "assets/images/dairy4.jpg",
-        date: "22/08/2025",
-      ),
-    ];
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -79,7 +79,7 @@ class _DiaryDetailScreenState extends State<DiaryDetailScreen> {
                             children: [
                               TextSpan(text: 'Trang chủ > Blog > '),
                               TextSpan(
-                                text: widget.item.title,
+                                text: item.title,
                                 style: defaultText12M.copyWith(
                                   color: Colors.grey,
                                 ),
@@ -91,7 +91,7 @@ class _DiaryDetailScreenState extends State<DiaryDetailScreen> {
 
                         // Title
                         Text(
-                          widget.item.title,
+                          item.title,
                           style: defaultText20B.copyWith(
                             color: mainDarkGreen,
                             fontSize: 24,
@@ -101,7 +101,7 @@ class _DiaryDetailScreenState extends State<DiaryDetailScreen> {
 
                         // Date
                         Text(
-                          widget.item.date ?? "06/09/2025",
+                          item.date,
                           style: defaultText12M.copyWith(color: Colors.grey),
                         ),
                         SizedBox(height: 24.h),
@@ -147,8 +147,7 @@ class _DiaryDetailScreenState extends State<DiaryDetailScreen> {
                         SizedBox(height: 20.h),
 
                         // Related Posts Grid (Using type 2)
-                        RecipeGridWidget(recipes: relatedDiaries, type: 2),
-
+                        //RecipeGridWidget(recipes: relatedDiaries, type: 2),
                         SizedBox(height: 40.h),
                       ],
                     ),

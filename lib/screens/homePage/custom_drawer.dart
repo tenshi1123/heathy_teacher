@@ -9,7 +9,6 @@ import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/screens/drawer/hoc_phi_screen.dart';
 import 'package:heathy_teacher/screens/profilePage/profile_screen.dart';
-import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
 class MyCustomDrawer extends StatelessWidget {

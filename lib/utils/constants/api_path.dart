@@ -36,6 +36,11 @@ class ApiPath {
   static String productCatalog = '$baseUrl/danh-muc-san-pham';
   static String detailProduct = '$baseUrl/chi-tiet-san-pham';
   static String productPayment = '$baseUrl/thanh-toan-san-pham';
+
+  //feedback và bài viết
+  static String listFeedback = '$baseUrl/danh-sach-feedback';
+  static String listBaiviet = '$baseUrl/danh-sach-bai-viet-wp';
+  static String detailBaiviet = '$baseUrl/chi-tiet-bai-viet-wp';
 }
 
 //api danh sách khóa học chọn setting_course_type là on hay off đều ra cùng 1 danh sách

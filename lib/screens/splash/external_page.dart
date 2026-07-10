@@ -1,11 +1,11 @@
+import 'package:heathy_teacher/models/home_model.dart';
+import 'package:heathy_teacher/repo/home_repo.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/product_model.dart';
-import 'package:heathy_teacher/models/schedule_model.dart';
 import 'package:heathy_teacher/screens/introduce_screen.dart';
 import 'package:heathy_teacher/screens/listCourse/list_free_course.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
@@ -35,84 +35,41 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
     {'image': 'assets/images/home3.jpg', 'screen': const ListFreeCourse()},
     {'image': 'assets/images/home4.jpg', 'screen': const ListSpScreen()},
   ];
-  final List<RecipeModel> dummyLongList = List.generate(4, (index) {
-    // Luân phiên thay đổi nội dung để giao diện nhìn thực tế
-    if (index % 4 == 0) {
-      return RecipeModel(
-        title: "Bánh bao kẹp Đài Loan nguyên cám",
-        imageUrl: "assets/images/gift_formula.jpg",
-        date: "14/01/2026",
-      );
-    } else if (index % 4 == 1) {
-      return RecipeModel(
-        title: "Công thức Ginger Shot cho 7 ngày",
-        imageUrl: "assets/images/gift_formula2.jpg",
-        date: "14/01/2026",
-      );
-    } else if (index % 4 == 2) {
-      return RecipeModel(
-        title: "Ức gà bọc trứng",
-        imageUrl: "assets/images/gift_formula3.jpg",
-        date: "14/01/2026",
-      );
-    } else {
-      return RecipeModel(
-        title: "Tặng công thức cá hấp xì dầu cho bữa cơm nhà trở nên hấp dẫn",
-        imageUrl: "assets/images/gift_formula4.png",
-        date: "13/11/2025",
-      );
-    }
-  });
-
-  final List<RecipeModel> dummyLongList2 = List.generate(4, (index) {
-    // Luân phiên thay đổi nội dung để giao diện nhìn thực tế
-    if (index % 4 == 0) {
-      return RecipeModel(
-        title:
-            "Ngày 1 – Lớp học TRỰC TIẾP kinh doanh suất ăn healthy cao cấp có gì?",
-        imageUrl: "assets/images/dairy1.jpg",
-        date: "14/01/2026",
-        detail:
-            "Cùng khám phá lịch trình ngày 1 tại lớp trực tiếp của Cô Giáo Healthy nha",
-      );
-    } else if (index % 4 == 1) {
-      return RecipeModel(
-        title:
-            "Ngày 2 – Tiếp tục khám phá lớp học kinh doanh suất ăn healthy cao cấp có gì nha?",
-        imageUrl: "assets/images/dairy2.jpg",
-        date: "14/01/2026",
-        detail:
-            "Tiếp tục khám phá ngày 2 của lớp học kinh doanh suất ăn healthy cao cấp của Cô Giáo Healthy ",
-      );
-    } else if (index % 4 == 2) {
-      return RecipeModel(
-        title:
-            "Ngày 3 – Mô hình kinh doanh toàn diện, smoothie – nước ép kết hợp cùng suất ăn healthy cao cấp",
-        imageUrl: "assets/images/dairy3.jpg",
-        date: "14/01/2026",
-        detail:
-            "Từ một người yêu bếp trở thành người vận hành mô hình suất ăn lành mạnh – bắt đầu từ việc học bài bản và thực hành đúng cách. ",
-      );
-    } else {
-      return RecipeModel(
-        title:
-            "Nhật ký lớp học trà sữa hạt chuyên sâu trực tiếp: Trà sữa hạt thuần chay tại Cô Giáo Healthy có gì khác biệt so với trà sữa thông thường?",
-        imageUrl: "assets/images/dairy4.jpg",
-        date: "13/11/2025",
-        detail:
-            "Nhật ký lớp học trà sữa hạt chuyên sâu trực tiếp: Trà sữa hạt thuần chay tại Cô Giáo Healthy có gì khác biệt so với trà sữa thông thường?",
-      );
-    }
-  });
+  List<PostModel> dummyLongList = [];
+  List<PostModel> dummyLongList2 = [];
+  bool isLoading = true;
 
   int _currentSlide = 0;
   final PageController _pageController = PageController(initialPage: 0);
 
   Timer? _timer;
+
   @override
   void initState() {
     super.initState();
+    _fetchData();
     _startAutoPlay();
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      dummyLongList = await HomeRepo().getPosts(
+        slug: 'cong-thuc-nau-an',
+        limit: 4,
+      );
+      dummyLongList2 = await HomeRepo().getPosts(
+        slug: 'nhat-ky-lop-hoc',
+        limit: 4,
+      );
+    } catch (e) {
+      debugPrint("Lỗi tải dữ liệu người dùng: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -389,7 +346,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => MoreRecipesScreen(
-                              title: 'KIẾN THỨC & CÔNG THỨC TẶNG EATCLEAN - HEALTHY',
+                              title:
+                                  'KIẾN THỨC & CÔNG THỨC TẶNG EATCLEAN - HEALTHY',
                               recipes: dummyLongList,
                               type: 1,
                             ),
@@ -1113,17 +1071,97 @@ class _RippleCircle extends StatelessWidget {
   }
 }
 
-class MoreRecipesScreen extends StatelessWidget {
+class MoreRecipesScreen extends StatefulWidget {
   final String title;
-  final List<RecipeModel> recipes;
+  final List<PostModel> recipes;
   final int type;
 
   const MoreRecipesScreen({
-    Key? key,
+    super.key,
     required this.title,
     required this.recipes,
     required this.type,
-  }) : super(key: key);
+  });
+
+  @override
+  State<MoreRecipesScreen> createState() => _MoreRecipesScreenState();
+}
+
+class _MoreRecipesScreenState extends State<MoreRecipesScreen> {
+  late List<PostModel> _recipes;
+  late ScrollController _scrollController;
+  bool _isLoading = false;
+  bool _hasMore = true;
+  int _currentLimit = 4;
+
+  @override
+  void initState() {
+    super.initState();
+    _recipes = List.from(widget.recipes);
+    _currentLimit = widget.recipes.length > 0 ? widget.recipes.length : 4;
+    _scrollController = ScrollController()..addListener(_onScroll);
+
+    // Tự động tải thêm ngay khi vừa vào màn hình "Xem thêm"
+    // vì 4 item ban đầu không đủ để lấp đầy màn hình và tạo thanh cuộn
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _loadMore();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
+        !_isLoading &&
+        _hasMore) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_isLoading) return; // Tránh gọi nhiều lần cùng lúc
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    _currentLimit += 10; // Tăng limit lên 10 item mỗi lần load
+
+    // Xác định slug dựa vào type
+    String slug = widget.type == 1 ? 'cong-thuc-nau-an' : 'nhat-ky-lop-hoc';
+
+    try {
+      final newRecipes = await HomeRepo().getPosts(
+        slug: slug,
+        limit: _currentLimit,
+      );
+
+      if (mounted) {
+        setState(() {
+          // Nếu danh sách trả về không dài hơn danh sách cũ, nghĩa là đã hết dữ liệu
+          if (newRecipes.length <= _recipes.length) {
+            _hasMore = false;
+          } else {
+            _recipes = newRecipes;
+          }
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1133,18 +1171,25 @@ class MoreRecipesScreen extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
                   const SizedBox(height: 50),
                   DefaultAppBar(),
                   SizedBox(height: 16.h),
                   Text(
-                    title,
+                    widget.title,
                     textAlign: TextAlign.center,
                     style: defaultText20B.copyWith(color: mainDarkGreen),
                   ),
                   SizedBox(height: 16.h),
-                  RecipeGridWidget(recipes: recipes, type: type),
+                  RecipeGridWidget(recipes: _recipes, type: widget.type),
+                  if (_isLoading)
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20.h),
+                      child: CircularProgressIndicator(color: mainDarkGreen),
+                    ),
                   SizedBox(height: 30.h),
                 ],
               ),
