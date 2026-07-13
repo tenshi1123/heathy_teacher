@@ -401,7 +401,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                         SizedBox(
                           height: 140.h, // 👈 bạn control size ảnh ở đây
                           child: CachedNetworkImage(
-                            imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                            imageUrl:
+                                'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -551,7 +552,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CachedNetworkImage(
-                          imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+                          imageUrl:
+                              'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
                           height: 60.h,
                           fit: BoxFit.contain,
                         ),
@@ -860,25 +862,26 @@ class ServiceGrid extends StatelessWidget {
           );
         },
       ),
-      ServiceModel(
-        title: "KHÓA HỌC ONLINE".sanitizeForApple,
-        icon: "assets/images/home2.png",
-        onTap: () {
-          showOnlineCategoriesDialog(
-            context: context,
-            onCategorySelected: (selectedCategory) {
-              // 🔥 Cả 2 loại khóa học đều
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      const CoGiaoHealthyScreen(type: 'on', place: ''),
-                ),
-              );
-            },
-          );
-        },
-      ),
+      if (isShow == 'true')
+        ServiceModel(
+          title: "KHÓA HỌC ONLINE".sanitizeForApple,
+          icon: "assets/images/home2.png",
+          onTap: () {
+            showOnlineCategoriesDialog(
+              context: context,
+              onCategorySelected: (selectedCategory) {
+                // 🔥 Cả 2 loại khóa học đều
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        const CoGiaoHealthyScreen(type: 'on', place: ''),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ServiceModel(
         title: "HỌC THỬ MIỄN PHÍ",
         icon: "assets/images/home3.png",
@@ -1497,7 +1500,8 @@ class _OnlineClassCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.r),
                 child: CachedNetworkImage(
-                  imageUrl: model.img ??
+                  imageUrl:
+                      model.img ??
                       'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg',
                   fit: BoxFit.fitWidth,
                 ),
