@@ -5,6 +5,7 @@ import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class IntroduceScreen extends StatefulWidget {
   const IntroduceScreen({super.key});
@@ -187,8 +188,8 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.network(
-                          'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+                        CachedNetworkImage(
+  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
                           height: 60.h,
                           fit: BoxFit.contain,
                         ),

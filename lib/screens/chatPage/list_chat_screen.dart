@@ -8,6 +8,7 @@ import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ListChatScreen extends StatefulWidget {
   const ListChatScreen({super.key, required this.userModel});
@@ -156,12 +157,12 @@ class ConversationItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ClipOval(
-              child: Image.network(
-                model.avatar ?? '',
+              child: CachedNetworkImage(
+  imageUrl: model.avatar ?? '',
                 height: 42.r,
                 width: 42.r,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
+                errorWidget: (context, url, error) {
                   return Container(
                     height: 42.r,
                     width: 42.r,

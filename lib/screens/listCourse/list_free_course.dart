@@ -8,6 +8,7 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ListFreeCourse extends StatefulWidget {
   const ListFreeCourse({super.key});
@@ -203,8 +204,8 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                         /// IMAGE (giữ kích thước mong muốn)
                         SizedBox(
                           height: 140.h, // 👈 bạn control size ảnh ở đây
-                          child: Image.network(
-                            'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                          child: CachedNetworkImage(
+  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -229,8 +230,8 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.network(
-                          'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+                        CachedNetworkImage(
+  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
                           height: 60.h,
                           fit: BoxFit.contain,
                         ),
@@ -571,8 +572,8 @@ class FreeCourseItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
+          CachedNetworkImage(
+  imageUrl: 'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,

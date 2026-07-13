@@ -157,8 +157,8 @@ class CartItemWidget extends StatelessWidget {
           /// image
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              item.image,
+            child: CachedNetworkImage(
+  imageUrl: item.image,
               width: 60,
               height: 60,
               fit: BoxFit.cover,
@@ -320,8 +320,8 @@ class CourseItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
+          CachedNetworkImage(
+  imageUrl: 'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -971,8 +971,8 @@ class CourseCard extends StatelessWidget {
                           Expanded(
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                'https://picsum.photos/300/400', // Thay bằng link ảnh thật
+                              child: CachedNetworkImage(
+  imageUrl: 'https://picsum.photos/300/400', // Thay bằng link ảnh thật
                                 fit: BoxFit.cover,
                                 height: double.infinity,
                               ),
@@ -986,8 +986,8 @@ class CourseCard extends StatelessWidget {
                                 Expanded(
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
-                                    child: Image.network(
-                                      'https://picsum.photos/300/200', // Thay bằng link ảnh thật
+                                    child: CachedNetworkImage(
+  imageUrl: 'https://picsum.photos/300/200', // Thay bằng link ảnh thật
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                     ),
@@ -999,8 +999,8 @@ class CourseCard extends StatelessWidget {
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
-                                        child: Image.network(
-                                          'https://picsum.photos/300/200', // Thay bằng link ảnh thật
+                                        child: CachedNetworkImage(
+  imageUrl: 'https://picsum.photos/300/200', // Thay bằng link ảnh thật
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                         ),
@@ -1282,13 +1282,13 @@ class RecipeGridWidget extends StatelessWidget {
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),
-                child: Image.network(
-                  item.thumbnail,
+                child: CachedNetworkImage(
+  imageUrl: item.thumbnail,
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
                   // Xử lý khi ảnh lỗi hoặc đang tải
-                  errorBuilder: (context, error, stackTrace) => Container(
+                  errorWidget: (context, url, error) => Container(
                     color: Colors.grey[300],
                     child: const Icon(
                       Icons.image_not_supported,
@@ -1376,14 +1376,14 @@ class VideoLessonPreviewWidget extends StatelessWidget {
             children: [
               // LỚP NỀN: ĐÃ ĐỔI THÀNH LINK THUMBNAIL CHUẨN CỦA VIDEO YOUTUBE BẠN CUNG CẤP
               Positioned.fill(
-                child: Image.network(
-                  'https://i.ytimg.com/vi/vW5ZnHW95WM/maxresdefault.jpg',
+                child: CachedNetworkImage(
+  imageUrl: 'https://i.ytimg.com/vi/vW5ZnHW95WM/maxresdefault.jpg',
                   fit: BoxFit.cover,
                   // Trường hợp ảnh lỗi hoặc đang tải thì hiện màu nền xám nhẹ
-                  errorBuilder: (context, error, stackTrace) =>
+                  errorWidget: (context, url, error) =>
                       Container(color: Colors.grey[300]),
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
+                  placeholder: (context, url) {
+                    
                     return Container(color: Colors.grey[200]);
                   },
                 ),

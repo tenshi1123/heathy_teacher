@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class RegisterClassOff extends StatefulWidget {
   const RegisterClassOff({super.key, required this.id});
@@ -46,7 +47,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
   }
 
   String _formatHtml(String? html) {
-    if (html == null) return '';
+    if (html == null || html.isEmpty) return '';
     return html
         .replaceAll(RegExp(r'width:\s*\d+px;?'), '')
         .replaceAll(RegExp(r'height:\s*\d+px;?'), '');
@@ -113,8 +114,8 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                       ),
                     ),
                     SizedBox(height: 6.h),
-                    Image.network(
-                      courses.image ?? '',
+                    CachedNetworkImage(
+                      imageUrl: courses.image ?? '',
                       width: 343.w,
                       height: 280.h,
                     ),
@@ -333,121 +334,225 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
     final feedbacks = courses.feedbacks ?? [];
     if (feedbacks.isEmpty) return const SizedBox.shrink();
 
-    // Thay domain thật của bạn vào đây để nối với đường dẫn ảnh tương đối
+    return _FeedbackCarousel(
+      feedbacks: feedbacks,
+      courseTitle: courses.title ?? '',
+    );
+  }
+}
+
+class _FeedbackCarousel extends StatefulWidget {
+  final List<dynamic> feedbacks;
+  final String courseTitle;
+
+  const _FeedbackCarousel({required this.feedbacks, required this.courseTitle});
+
+  @override
+  State<_FeedbackCarousel> createState() => _FeedbackCarouselState();
+}
+
+class _FeedbackCarouselState extends State<_FeedbackCarousel> {
+  final PageController _pageController = PageController();
+  int _currentIndex = 0;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _nextPage() {
+    if (_currentIndex < widget.feedbacks.length - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _prevPage() {
+    if (_currentIndex > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     const String baseUrl = 'https://lms.cogiaohealthy.vn';
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Text(
-            "Đánh giá từ học viên",
-            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+            "FEEDBACK CỦA HỌC VIÊN",
+            style: defaultText20B.copyWith(
+              color: mainDarkGreen,
+              fontSize: 18.sp,
+            ),
+            textAlign: TextAlign.center,
           ),
         ),
         SizedBox(height: 16.h),
         SizedBox(
-          height: 400.h, // Đã tăng chiều cao để đủ chỗ cho ảnh dọc và text
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            itemCount: feedbacks.length,
-            itemBuilder: (context, index) {
-              final fb = feedbacks[index];
-              final String? imgPath = fb['img'];
-              final bool hasImage = imgPath != null && imgPath.isNotEmpty;
+          height: 540.h, // Đủ chiều cao cho thẻ đè
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                itemCount: widget.feedbacks.length,
+                itemBuilder: (context, index) {
+                  final fb = widget.feedbacks[index];
+                  final String? imgPath = fb['img'];
+                  final bool hasImage = imgPath != null && imgPath.isNotEmpty;
+                  final String imageUrl = hasImage
+                      ? (imgPath.startsWith('http')
+                            ? imgPath
+                            : '$baseUrl$imgPath')
+                      : '';
 
-              return Container(
-                width: 320.w, // Độ rộng hợp lý cho thẻ dọc
-                margin: EdgeInsets.only(right: 16.w),
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.03),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Phần trên: Hiển thị ảnh trả bài (Nếu có)
-                    if (hasImage) ...[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8.r),
-                        child: Image.network(
-                          imgPath.startsWith('http')
-                              ? imgPath
-                              : '$baseUrl$imgPath',
-                          width: double.infinity,
-                          //height: 120.h,
-                          fit: BoxFit.fitWidth,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(
-                                width: double.infinity,
-                                height: 120.h,
-                                color: Colors.grey[200],
-                                child: const Icon(
-                                  Icons.image_not_supported,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                    ],
-                    // Phần dưới: Tên user và Nội dung feedback
-                    Row(
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 48.w),
+                    child: Stack(
+                      alignment: Alignment.bottomCenter,
                       children: [
-                        CircleAvatar(
-                          radius: 14.r,
-                          backgroundColor: Colors.green[100],
-                          child: Text(
-                            fb['user_name']?.substring(0, 1) ?? 'U',
-                            style: TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.sp,
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            height: 360.h, // Chiều cao của khung ảnh
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: const Color(0xffF5FAF5),
+                              borderRadius: BorderRadius.circular(16.r),
                             ),
+                            child: hasImage
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(16.r),
+                                    child: CachedNetworkImage(
+                                      imageUrl: imageUrl,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(
+                                            Icons.image_not_supported,
+                                            color: Colors.grey,
+                                          ),
+                                    ),
+                                  )
+                                : null,
                           ),
                         ),
-                        SizedBox(width: 8.w),
-                        Expanded(
-                          child: Text(
-                            fb['user_name'] ?? 'Học viên',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.sp,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                        Container(
+                          margin: EdgeInsets.only(
+                            bottom: 20.h,
+                            left: 12.w,
+                            right: 12.w,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 24.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 15,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                widget.courseTitle.toUpperCase(),
+                                textAlign: TextAlign.center,
+                                style: defaultText16B.copyWith(
+                                  color: mainDarkGreen,
+                                  height: 1.4,
+                                ),
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(height: 16.h),
+                              Text(
+                                fb['content'] ?? '',
+                                textAlign: TextAlign.center,
+                                style: defaultText14M.copyWith(
+                                  color: Colors.grey[800],
+                                  height: 1.5,
+                                ),
+                                maxLines: 5,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(height: 16.h),
+                              Text(
+                                (fb['user_name'] ?? 'Học viên').toUpperCase(),
+                                textAlign: TextAlign.center,
+                                style: defaultText14B.copyWith(
+                                  color: Colors.orange[800],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8.h),
-                    Expanded(
-                      child: Text(
-                        fb['content'] ?? '',
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          color: Colors.grey[800],
-                          height: 1.4,
-                        ),
-                        //maxLines: hasImage ? 3 : 8,
-                        //overflow: TextOverflow.ellipsis,
+                  );
+                },
+              ),
+              if (_currentIndex > 0)
+                Positioned(
+                  left: 12.w,
+                  child: InkWell(
+                    onTap: _prevPage,
+                    child: Container(
+                      padding: EdgeInsets.all(8.w),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        border: Border.all(color: mainGreen, width: 1.5),
+                      ),
+                      child: Icon(
+                        Icons.arrow_back,
+                        color: mainGreen,
+                        size: 24.w,
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              );
-            },
+              if (_currentIndex < widget.feedbacks.length - 1)
+                Positioned(
+                  right: 12.w,
+                  child: InkWell(
+                    onTap: _nextPage,
+                    child: Container(
+                      padding: EdgeInsets.all(8.w),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        border: Border.all(color: mainGreen, width: 1.5),
+                      ),
+                      child: Icon(
+                        Icons.arrow_forward,
+                        color: mainGreen,
+                        size: 24.w,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ],

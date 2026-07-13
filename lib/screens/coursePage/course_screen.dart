@@ -10,6 +10,7 @@ import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CourseScreen extends StatefulWidget {
   const CourseScreen({super.key, required this.userModel});
@@ -135,12 +136,12 @@ class _CourseScreenState extends State<CourseScreen> {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8.r),
-                            child: Image.network(
-                              'https://lms.cogiaohealthy.vn/images/${course.img}',
+                            child: CachedNetworkImage(
+  imageUrl: 'https://lms.cogiaohealthy.vn/images/${course.img}',
                               width: 40.w,
                               height: 40.h,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
+                              errorWidget: (context, url, error) =>
                                   Image.asset(
                                     'assets/images/course_icon_0.png',
                                     width: 40.w,

@@ -11,6 +11,7 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:heathy_teacher/main.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key, required this.type, required this.userModel});
@@ -80,7 +81,7 @@ class _ProductScreenState extends State<ProductScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Sản phẩm',
+          'Nguyên liệu máy đã mua',
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         leading: widget.type == 1
@@ -220,28 +221,26 @@ class _ProductScreenState extends State<ProductScreen> {
                                             borderRadius: BorderRadius.circular(
                                               8.r,
                                             ),
-                                            child: Image.network(
-                                              product.detail?[0].img ??
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  product.detail?[0].img ??
                                                   'https://lms.cogiaohealthy.vn/${product.img}',
                                               height: 90.h,
                                               width: 90
                                                   .w, // Nên set cứng width để UI không bị vỡ nếu ảnh lỗi
                                               fit: BoxFit.cover,
-                                              errorBuilder:
-                                                  (context, error, stackTrace) {
-                                                    // Hiển thị icon mặc định nếu link ảnh lỗi hoặc null
-                                                    return Container(
-                                                      height: 90.h,
-                                                      width: 90.w,
-                                                      color:
-                                                          Colors.grey.shade200,
-                                                      child: const Icon(
-                                                        Icons
-                                                            .image_not_supported,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    );
-                                                  },
+                                              errorWidget: (context, url, error) {
+                                                // Hiển thị icon mặc định nếu link ảnh lỗi hoặc null
+                                                return Container(
+                                                  height: 90.h,
+                                                  width: 90.w,
+                                                  color: Colors.grey.shade200,
+                                                  child: const Icon(
+                                                    Icons.image_not_supported,
+                                                    color: Colors.grey,
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
                                           SizedBox(width: 12.w),

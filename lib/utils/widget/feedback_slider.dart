@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedbackSlider extends StatefulWidget {
   const FeedbackSlider({super.key});
@@ -141,12 +142,12 @@ class _FeedbackSliderState extends State<FeedbackSlider> {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              fullImageUrl,
+                            child: CachedNetworkImage(
+  imageUrl: fullImageUrl,
                               width: double.infinity,
                               height: double.infinity,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
+                              errorWidget: (context, url, error) {
                                 return Container(
                                   color: Colors.grey[200],
                                   child: const Icon(

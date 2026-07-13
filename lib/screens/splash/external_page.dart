@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/repo/home_repo.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
@@ -9,12 +10,21 @@ import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/introduce_screen.dart';
 import 'package:heathy_teacher/screens/listCourse/list_free_course.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
+import 'package:heathy_teacher/screens/authentication/login_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:heathy_teacher/utils/widget/feedback_slider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:heathy_teacher/repo/external_repo.dart';
+import 'package:heathy_teacher/models/course_model.dart';
+import 'package:intl/intl.dart';
+import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
+import 'package:heathy_teacher/screens/homePage/register_class.dart';
+import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
+import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CoGiaoHealthyScreen extends StatefulWidget {
   const CoGiaoHealthyScreen({
@@ -37,6 +47,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
   ];
   List<PostModel> dummyLongList = [];
   List<PostModel> dummyLongList2 = [];
+  List<CourseModel> listCourseOnline = [];
+  List<CourseOffModel> listCourseOffline = [];
   bool isLoading = true;
 
   int _currentSlide = 0;
@@ -61,6 +73,10 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
         slug: 'nhat-ky-lop-hoc',
         limit: 4,
       );
+      final futureCourse = await ExternalRepo().getListCourse(show: 6);
+      final futureCourseOff = await ExternalRepo().getListCourseOff(show: 6);
+      listCourseOnline = futureCourse;
+      listCourseOffline = futureCourseOff;
     } catch (e) {
       debugPrint("Lỗi tải dữ liệu người dùng: $e");
     } finally {
@@ -218,17 +234,111 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                     ),
                   ),
                   ServiceGrid(),
-                  //list
-                  CourseItem(type: widget.type, place: widget.place),
-                  CourseItem(type: widget.type, place: widget.place),
                   SizedBox(height: 20.h),
-                  Text(
-                    'KHOÁ HỌC ONLINE NỔI BẬT - ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG'
-                        .sanitizeForApple,
-                    textAlign: TextAlign.center,
-                    style: defaultText20B.copyWith(color: mainDarkGreen),
+                  SizedBox(
+                    width: 343.w,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => ListClassOff()),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          SvgPicture.asset('assets/icons/class_off.svg'),
+                          Text(
+                            ' Gợi ý các khóa học trực tiếp'.sanitizeForApple,
+                            style: defaultText16B.copyWith(color: Colors.black),
+                          ),
+                          Spacer(),
+                          Text(
+                            'Xem tất cả  ',
+                            style: defaultText14SB.copyWith(
+                              color: mainDarkGreen,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                          Icon(
+                            Icons.keyboard_arrow_right,
+                            color: mainDarkGreen,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  CourseItemOnline(type: 'on', place: widget.place),
+                  SizedBox(
+                    width: 375.w,
+                    height: (256 + 48).h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      physics: const ScrollPhysics(),
+                      itemCount: listCourseOffline.length,
+                      itemBuilder: (context, index) {
+                        return _OfflineClassCard(
+                          model: listCourseOffline[index],
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  if (isShow == 'true')
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => ListClassOnline()),
+                          ),
+                        );
+                      },
+                      child: SizedBox(
+                        width: 343.w,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset('assets/icons/class_online.svg'),
+                            Text(
+                              ' Gợi ý các khóa học online'.sanitizeForApple,
+                              style: defaultText16B.copyWith(
+                                color: Colors.black,
+                              ),
+                            ),
+                            Spacer(),
+                            Text(
+                              'Xem tất cả  ',
+                              style: defaultText14SB.copyWith(
+                                color: mainDarkGreen,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_right,
+                              color: mainDarkGreen,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (isShow == 'true')
+                    SizedBox(
+                      width: 375.w,
+                      height: (294 + 48).h,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        itemCount: listCourseOnline.length,
+                        itemBuilder: (context, index) {
+                          return _OnlineClassCard(
+                            index: index,
+                            model: listCourseOnline[index],
+                          );
+                        },
+                      ),
+                    ),
                   SizedBox(height: 10.h),
                   FeedbackSlider(),
                   Container(
@@ -290,8 +400,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                         /// IMAGE (giữ kích thước mong muốn)
                         SizedBox(
                           height: 140.h, // 👈 bạn control size ảnh ở đây
-                          child: Image.network(
-                            'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                          child: CachedNetworkImage(
+                            imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -440,8 +550,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.network(
-                          'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+                        CachedNetworkImage(
+                          imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
                           height: 60.h,
                           fit: BoxFit.contain,
                         ),
@@ -934,15 +1044,12 @@ class BottomCustom extends StatelessWidget {
               } else if (item['type'] == 'phone') {
                 await _launchUrl(context, item['url'], isPhone: true);
               } else if (item['type'] == 'login') {
-                // Tương tác trực tiếp, không dùng async/await vì nó là Navigator.push
-                // Đảm bảo LoginScreen được import
-                /*
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: ((context) => const LoginScreen())),
+                  MaterialPageRoute(
+                    builder: ((context) => const LoginScreen()),
+                  ),
                 );
-                */
-                print("Navigating to Login Screen");
               }
             },
             child: _BottomNavItem(
@@ -994,45 +1101,102 @@ class _BottomNavItem extends StatelessWidget {
 }
 
 // Widget con chuyên biệt cho hiệu ứng concentric ripple
-class _ConcentricRippleIcon extends StatelessWidget {
+class _ConcentricRippleIcon extends StatefulWidget {
   final String iconPath;
   final double centralSize;
   final double totalSize;
 
   const _ConcentricRippleIcon({
+    super.key,
     required this.iconPath,
     required this.centralSize,
     required this.totalSize,
   });
 
   @override
+  State<_ConcentricRippleIcon> createState() => _ConcentricRippleIconState();
+}
+
+class _ConcentricRippleIconState extends State<_ConcentricRippleIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // Tạo AnimationController với thời gian chạy dài hơn để sóng chậm và mềm mại
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2500),
+    )..repeat(); // Lặp lại liên tục
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Để mô phỏng hiệu ứng vòng tròn concentric lan tỏa, chúng ta dùng Stack
-    // Xếp chồng các vòng mờ với độ mờ khác nhau
     return SizedBox(
-      width: totalSize,
-      height: totalSize,
+      width: widget.totalSize,
+      height: widget.totalSize,
       child: Stack(
+        clipBehavior: Clip.none, // Cho phép sóng tràn ra ngoài
         alignment: Alignment.center,
         children: [
-          // Vòng ripple ngoài cùng (nhất)
-          _RippleCircle(size: totalSize, opacity: 0.1),
-          // Vòng ripple thứ hai
-          _RippleCircle(size: totalSize * 0.82, opacity: 0.25),
-          // Vòng ripple thứ ba
-          _RippleCircle(size: totalSize * 0.65, opacity: 0.4),
-          // Vòng ripple thứ tư (nhất, mờ nhất)
-          _RippleCircle(size: totalSize * 0.5, opacity: 0.5),
+          // AnimatedBuilder để vẽ các vòng sóng
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: List.generate(3, (index) {
+                  // Tạo 3 vòng sóng lệch pha nhau
+                  double phase = (_controller.value - index * 0.333) % 1.0;
+                  if (phase < 0) phase += 1.0;
+
+                  // Dùng curve để sóng mở rộng tự nhiên hơn
+                  double curvedPhase = Curves.easeOutQuad.transform(phase);
+
+                  // Kích thước sóng mở rộng từ centralSize đến lớn hơn totalSize để tràn hẳn ra ngoài bottombar
+                  double maxSize = widget.totalSize * 2.8;
+                  double currentSize =
+                      widget.centralSize +
+                      (maxSize - widget.centralSize) * curvedPhase;
+
+                  // Độ mờ giảm dần (fade out)
+                  double opacity = 0.5 * (1.0 - phase);
+
+                  return Container(
+                    width: currentSize,
+                    height: currentSize,
+                    decoration: BoxDecoration(
+                      color: appRippleColor.withOpacity(opacity),
+                      shape: BoxShape.circle,
+                    ),
+                  );
+                }),
+              );
+            },
+          ),
 
           // Icon chính ở trung tâm
           Container(
-            width: centralSize,
-            height: centralSize,
-            decoration: BoxDecoration(
+            width: widget.centralSize,
+            height: widget.centralSize,
+            decoration: const BoxDecoration(
               color: appPrimaryColor,
               shape: BoxShape.circle,
             ),
-            child: Center(child: _buildIconWidget(iconPath, centralSize * 0.6)),
+            child: Center(
+              child: _buildIconWidget(
+                widget.iconPath,
+                widget.centralSize * 0.6,
+              ),
+            ),
           ),
         ],
       ),
@@ -1048,26 +1212,6 @@ class _ConcentricRippleIcon extends StatelessWidget {
       // Dùng Image.asset cho png
       return Image.asset(path, width: size, height: size);
     }
-  }
-}
-
-// Widget đơn giản cho một vòng ripple concentric
-class _RippleCircle extends StatelessWidget {
-  final double size;
-  final double opacity;
-
-  const _RippleCircle({required this.size, required this.opacity});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: appRippleColor.withOpacity(opacity),
-        shape: BoxShape.circle,
-      ),
-    );
   }
 }
 
@@ -1098,7 +1242,7 @@ class _MoreRecipesScreenState extends State<MoreRecipesScreen> {
   void initState() {
     super.initState();
     _recipes = List.from(widget.recipes);
-    _currentLimit = widget.recipes.length > 0 ? widget.recipes.length : 4;
+    _currentLimit = widget.recipes.isNotEmpty ? widget.recipes.length : 4;
     _scrollController = ScrollController()..addListener(_onScroll);
 
     // Tự động tải thêm ngay khi vừa vào màn hình "Xem thêm"
@@ -1197,6 +1341,242 @@ class _MoreRecipesScreenState extends State<MoreRecipesScreen> {
           ),
           BottomCustom(),
         ],
+      ),
+    );
+  }
+}
+
+class _OfflineClassCard extends StatelessWidget {
+  final CourseOffModel model;
+  const _OfflineClassCard({required this.model});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: ((context) => RegisterClassOff(id: model.id ?? '')),
+          ),
+        );
+      },
+      child: Container(
+        height: 260.h,
+        width: 200.w,
+        margin: EdgeInsets.only(
+          left: 16.w,
+          right: 8.w,
+          top: 16.h,
+          bottom: 14.h,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20.r)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xff062905).withValues(alpha: 0.16),
+              spreadRadius: 0,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CachedNetworkImage(
+              imageUrl: model.img ?? '',
+              width: 184.w,
+              fit: BoxFit.fitWidth,
+              errorWidget: (context, url, error) {
+                return Icon(Icons.broken_image, color: Colors.grey);
+              },
+              placeholder: (context, url) {
+                return Container(
+                  width: 80.w,
+                  height: 80.h,
+                  color: Colors.grey[100],
+                  child: const Center(child: CircularProgressIndicator()),
+                );
+              },
+            ),
+            Text(
+              model.name ?? 'Không xác định',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: defaultText14SB,
+            ),
+            if (isShow == 'true')
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '') ?? 0)}đ',
+                    style: defaultText16B,
+                  ),
+                  if (model.priceOld != '0')
+                    Text(
+                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '') ?? 0)}đ',
+                      style: defaultText12Re.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                ],
+              ),
+            Container(
+              height: 32.h,
+              width: 184.w,
+              decoration: BoxDecoration(
+                color: mainDarkGreen,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Tham gia ngay ',
+                    style: defaultText14SB.copyWith(color: Colors.white),
+                  ),
+                  const Icon(Icons.arrow_right_alt, color: Colors.white),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OnlineClassCard extends StatelessWidget {
+  final int index;
+  final CourseModel model;
+  const _OnlineClassCard({required this.index, required this.model});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: ((context) =>
+                RegisterClassON(id: model.courseTypeId ?? '')),
+          ),
+        );
+      },
+      child: Container(
+        height: 294.h,
+        width: 200.w,
+        margin: EdgeInsets.only(
+          left: 16.w,
+          right: index == 2 ? 16.w : 4.w,
+          top: 20.h,
+          bottom: 28.h,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20.r)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xff062905).withValues(alpha: 0.16),
+              spreadRadius: 0,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 184.w,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.r),
+                child: CachedNetworkImage(
+                  imageUrl: model.img ??
+                      'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg',
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+            ),
+            Text(
+              model.courseName ?? 'Không xác định',
+              maxLines: 2,
+              style: defaultText14SB,
+            ),
+            if (isShow == 'true')
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '') ?? 0)}đ',
+                    style: defaultText16B,
+                  ),
+                  if (model.priceOld != '0')
+                    Text(
+                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '') ?? 0)}đ',
+                      style: defaultText12Re.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                ],
+              ),
+            Container(
+              height: 32.h,
+              width: 184.w,
+              decoration: BoxDecoration(
+                color: const Color(0xff73BB43),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 8.w),
+                  Image.asset(
+                    'assets/images/play_icon.png',
+                    height: 16.h,
+                    width: 16.w,
+                    fit: BoxFit.fill,
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    '${model.lessonNumber ?? 0} bài học',
+                    style: defaultText14SB.copyWith(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 32.h,
+              width: 184.w,
+              decoration: BoxDecoration(
+                color: const Color(0xff73BB43),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 8.w),
+                  Image.asset(
+                    'assets/images/play_icon.png',
+                    height: 16.h,
+                    width: 16.w,
+                    fit: BoxFit.fill,
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    '${model.totalEnrollments ?? 0} lượt học',
+                    style: defaultText14SB.copyWith(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

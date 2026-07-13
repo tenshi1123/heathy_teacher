@@ -208,7 +208,7 @@ class CustomBottomNavBar extends StatelessWidget {
           ),
           _buildItem(
             index: 3,
-            label: isShow == 'true' ? "Sản phẩm" : "Nguyên liệu",
+            label: isShow == 'true' ? "Gian Hàng" : "Nguyên liệu",
             activeIcon: 'enable_product_icon.svg',
             disableIcon: 'disable_product_icon.svg',
           ),

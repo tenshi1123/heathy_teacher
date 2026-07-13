@@ -10,6 +10,7 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.model});
@@ -85,12 +86,12 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Row(
           children: [
             ClipOval(
-              child: Image.network(
-                widget.model.avatar ?? '',
+              child: CachedNetworkImage(
+  imageUrl: widget.model.avatar ?? '',
                 height: 42.r,
                 width: 42.r,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
+                errorWidget: (context, url, error) {
                   return Container(
                     height: 42.r,
                     width: 42.r,
@@ -234,11 +235,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10.r),
                                     child: url.startsWith('http')
-                                        ? Image.network(
-                                            url,
+                                        ? CachedNetworkImage(
+  imageUrl: url,
                                             fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
+                                            errorWidget: (context, url, error) {
                                                   return Icon(
                                                     Icons.broken_image,
                                                     color: Colors.grey,

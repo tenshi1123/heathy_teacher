@@ -8,6 +8,7 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final String slug;
@@ -196,8 +197,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+          CachedNetworkImage(
+  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
             height: 60.h,
             fit: BoxFit.contain,
           ),

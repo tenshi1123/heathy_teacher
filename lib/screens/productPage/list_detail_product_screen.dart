@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -212,52 +213,38 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                                     top: Radius.circular(16),
                                     bottom: Radius.circular(16),
                                   ),
-                                  child: Image.network(
-                                    item.img!.contains('https://')
+                                  child: CachedNetworkImage(
+                                    imageUrl: item.img!.contains('https://')
                                         ? item.img ?? ''
                                         : 'https://lms.cogiaohealthy.vn/images/${item.img}',
                                     width: double.infinity,
                                     height: 120.dg,
                                     fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (
-                                          BuildContext context,
-                                          Object exception,
-                                          StackTrace? stackTrace,
-                                        ) {
-                                          return Container(
-                                            width: 50.dg,
-                                            height: 50.dg,
-                                            color: Colors
-                                                .grey[200], // Màu nền của icon mặc định
-                                            child: Icon(
-                                              Icons
-                                                  .error_outline, // Hoặc Icons.error_outline tuỳ ý bạn
-                                              size: 30.dg,
-                                              color: Colors.grey,
-                                            ),
-                                          );
-                                        },
+                                    errorWidget: (context, url, error) {
+                                      return Container(
+                                        width: 50.dg,
+                                        height: 50.dg,
+                                        color: Colors
+                                            .grey[200], // Màu nền của icon mặc định
+                                        child: Icon(
+                                          Icons
+                                              .error_outline, // Hoặc Icons.error_outline tuỳ ý bạn
+                                          size: 30.dg,
+                                          color: Colors.grey,
+                                        ),
+                                      );
+                                    },
                                     // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
-                                    loadingBuilder:
-                                        (
-                                          BuildContext context,
-                                          Widget child,
-                                          ImageChunkEvent? loadingProgress,
-                                        ) {
-                                          if (loadingProgress == null) {
-                                            return child; // Đã tải xong
-                                          }
-                                          return Container(
-                                            width: 80.w,
-                                            height: 80.h,
-                                            color: Colors.grey[100],
-                                            child: const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          );
-                                        },
+                                    placeholder: (context, url) {
+                                      return Container(
+                                        width: 80.w,
+                                        height: 80.h,
+                                        color: Colors.grey[100],
+                                        child: const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
 

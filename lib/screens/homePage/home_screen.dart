@@ -18,6 +18,7 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:intl/intl.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -498,30 +499,14 @@ class _OfflineClassCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.network(
-              model.img ?? '',
+            CachedNetworkImage(
+              imageUrl: model.img ?? '',
               //height: 103.h,
               width: 184.w,
               fit: BoxFit.fitWidth,
-              errorBuilder: (context, error, stackTrace) {
+              errorWidget: (context, url, error) {
                 return Icon(Icons.broken_image, color: Colors.grey);
               },
-              loadingBuilder:
-                  (
-                    BuildContext context,
-                    Widget child,
-                    ImageChunkEvent? loadingProgress,
-                  ) {
-                    if (loadingProgress == null) {
-                      return child; // Đã tải xong
-                    }
-                    return Container(
-                      width: 80.w,
-                      height: 80.h,
-                      color: Colors.grey[100],
-                      child: const Center(child: CircularProgressIndicator()),
-                    );
-                  },
             ),
             // Row(
             //   children: [
@@ -626,8 +611,9 @@ class _OnlineClassCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(
                   8.r,
                 ), // Vẫn giữ được bo góc như cũ
-                child: Image.network(
-                  model.img ??
+                child: CachedNetworkImage(
+                  imageUrl:
+                      model.img ??
                       'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg', // URL ảnh dự phòng
                   fit: BoxFit.fitWidth,
                 ),

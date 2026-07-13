@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -110,52 +111,39 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
                         shape: BoxShape.circle,
                       ),
                       child: ClipOval(
-                        child: Image.network(
-                          widget.model!.img!.contains('https://')
+                        child: CachedNetworkImage(
+                          imageUrl: widget.model!.img!.contains('https://')
                               ? '${widget.model!.img}'
                               : 'https://lms.cogiaohealthy.vn/${widget.model!.img}',
                           width: 80.w,
                           height: 80.h,
                           fit: BoxFit.cover,
                           // Hiển thị Icon mặc định khi lỗi tải ảnh
-                          errorBuilder:
-                              (
-                                BuildContext context,
-                                Object exception,
-                                StackTrace? stackTrace,
-                              ) {
-                                return Container(
-                                  width: 80.w,
-                                  height: 80.h,
-                                  color: Colors
-                                      .grey[200], // Màu nền của icon mặc định
-                                  child: Icon(
-                                    Icons
-                                        .person, // Hoặc Icons.error_outline tuỳ ý bạn
-                                    size: 40.w,
-                                    color: Colors.grey,
-                                  ),
-                                );
-                              },
+                          errorWidget: (context, url, error) {
+                            return Container(
+                              width: 80.w,
+                              height: 80.h,
+                              color:
+                                  Colors.grey[200], // Màu nền của icon mặc định
+                              child: Icon(
+                                Icons
+                                    .person, // Hoặc Icons.error_outline tuỳ ý bạn
+                                size: 40.w,
+                                color: Colors.grey,
+                              ),
+                            );
+                          },
                           // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
-                          loadingBuilder:
-                              (
-                                BuildContext context,
-                                Widget child,
-                                ImageChunkEvent? loadingProgress,
-                              ) {
-                                if (loadingProgress == null) {
-                                  return child; // Đã tải xong
-                                }
-                                return Container(
-                                  width: 80.w,
-                                  height: 80.h,
-                                  color: Colors.grey[100],
-                                  child: const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              },
+                          placeholder: (context, url) {
+                            return Container(
+                              width: 80.w,
+                              height: 80.h,
+                              color: Colors.grey[100],
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),

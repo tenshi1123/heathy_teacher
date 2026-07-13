@@ -10,6 +10,7 @@ import 'package:heathy_teacher/screens/productPage/list_detail_product_screen.da
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ListProductScreen extends StatefulWidget {
   const ListProductScreen({super.key, required this.userModel});
@@ -90,7 +91,7 @@ class _ListProductScreenState extends State<ListProductScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Gian hàng sản phẩm',
+          'Gian hàng',
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         leading: Builder(
@@ -193,48 +194,34 @@ class _ListProductScreenState extends State<ListProductScreen> {
                                     top: Radius.circular(16),
                                     bottom: Radius.circular(16),
                                   ),
-                                  child: Image.network(
-                                    item.img ?? '',
+                                  child: CachedNetworkImage(
+                                    imageUrl: item.img ?? '',
                                     height: 160.h,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (
-                                          BuildContext context,
-                                          Object exception,
-                                          StackTrace? stackTrace,
-                                        ) {
-                                          return Container(
-                                            width: 50.dg,
-                                            height: 50.dg,
-                                            color: Colors.grey[200],
-                                            child: Icon(
-                                              Icons.error_outline,
-                                              size: 30.dg,
-                                              color: Colors.grey,
-                                            ),
-                                          );
-                                        },
+                                    errorWidget: (context, url, error) {
+                                      return Container(
+                                        width: 50.dg,
+                                        height: 50.dg,
+                                        color: Colors.grey[200],
+                                        child: Icon(
+                                          Icons.error_outline,
+                                          size: 30.dg,
+                                          color: Colors.grey,
+                                        ),
+                                      );
+                                    },
                                     // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
-                                    loadingBuilder:
-                                        (
-                                          BuildContext context,
-                                          Widget child,
-                                          ImageChunkEvent? loadingProgress,
-                                        ) {
-                                          if (loadingProgress == null) {
-                                            return child;
-                                          }
-                                          return Container(
-                                            width: 80.w,
-                                            height: 80.h,
-                                            color: Colors.grey[100],
-                                            child: const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          );
-                                        },
+                                    placeholder: (context, url) {
+                                      return Container(
+                                        width: 80.w,
+                                        height: 80.h,
+                                        color: Colors.grey[100],
+                                        child: const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
 

@@ -7,6 +7,7 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class DiaryDetailScreen extends StatefulWidget {
   final String slug;
@@ -180,8 +181,8 @@ class _DiaryDetailScreenState extends State<DiaryDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+          CachedNetworkImage(
+  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
             height: 60.h,
             fit: BoxFit.contain,
           ),

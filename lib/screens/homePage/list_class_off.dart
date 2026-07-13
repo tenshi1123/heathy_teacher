@@ -12,6 +12,7 @@ import 'package:heathy_teacher/main.dart';
 import 'package:intl/intl.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:heathy_teacher/models/course_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ListClassOff extends StatefulWidget {
   const ListClassOff({super.key});
@@ -153,8 +154,8 @@ class _ListClassOffState extends State<ListClassOff> {
                     ),
                     child: Row(
                       children: [
-                        Image.network(
-                          model.img ?? '',
+                        CachedNetworkImage(
+  imageUrl: model.img ?? '',
                           height: 90.h,
                           width: 90.w,
                           fit: BoxFit.fill,

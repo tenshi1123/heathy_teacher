@@ -10,6 +10,7 @@ import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ListSpScreen extends StatefulWidget {
   const ListSpScreen({super.key});
@@ -200,17 +201,12 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                     top: Radius.circular(16),
                                     bottom: Radius.circular(16),
                                   ),
-                                  child: Image.network(
-                                    item.img ?? '',
+                                  child: CachedNetworkImage(
+  imageUrl: item.img ?? '',
                                     height: 160.h,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (
-                                          BuildContext context,
-                                          Object exception,
-                                          StackTrace? stackTrace,
-                                        ) {
+                                    errorWidget: (context, url, error) {
                                           return Container(
                                             width: 50.dg,
                                             height: 50.dg,
@@ -223,15 +219,8 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                           );
                                         },
                                     // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
-                                    loadingBuilder:
-                                        (
-                                          BuildContext context,
-                                          Widget child,
-                                          ImageChunkEvent? loadingProgress,
-                                        ) {
-                                          if (loadingProgress == null) {
-                                            return child;
-                                          }
+                                    placeholder: (context, url) {
+                                          
                                           return Container(
                                             width: 80.w,
                                             height: 80.h,
@@ -357,8 +346,8 @@ class _ListSpScreenState extends State<ListSpScreen> {
                             /// IMAGE (giữ kích thước mong muốn)
                             SizedBox(
                               height: 140.h, // 👈 bạn control size ảnh ở đây
-                              child: Image.network(
-                                'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                              child: CachedNetworkImage(
+  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -383,8 +372,8 @@ class _ListSpScreenState extends State<ListSpScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.network(
-                              'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+                            CachedNetworkImage(
+  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
                               height: 60.h,
                               fit: BoxFit.contain,
                             ),
