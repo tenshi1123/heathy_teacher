@@ -328,7 +328,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 375.w,
-                    height: (256 + 48).h,
+                    height: 250.h,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
@@ -537,24 +537,24 @@ class _OfflineClassCard extends StatelessWidget {
                     ),
                 ],
               ),
-            Container(
-              height: 32.h,
-              width: 184.w,
-              decoration: BoxDecoration(
-                color: mainDarkGreen,
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Tham gia ngay ',
-                    style: defaultText14SB.copyWith(color: Colors.white),
-                  ),
-                  const Icon(Icons.arrow_right_alt, color: Colors.white),
-                ],
-              ),
-            ),
+            // Container(
+            //   height: 32.h,
+            //   width: 184.w,
+            //   decoration: BoxDecoration(
+            //     color: mainDarkGreen,
+            //     borderRadius: BorderRadius.circular(16.r),
+            //   ),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Text(
+            //         'Tham gia ngay ',
+            //         style: defaultText14SB.copyWith(color: Colors.white),
+            //       ),
+            //       const Icon(Icons.arrow_right_alt, color: Colors.white),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -100,6 +100,8 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
         ),
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
+            : courses.title == null
+            ? const Center(child: Text('Không có dữ liệu'))
             : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +251,10 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                       ),
                     ),
                     SizedBox(height: 28.h),
-                    Text('Nội dung khoá học'.sanitizeForApple, style: defaultText16B),
+                    Text(
+                      'Nội dung khoá học'.sanitizeForApple,
+                      style: defaultText16B,
+                    ),
 
                     ListView.builder(
                       shrinkWrap: true,

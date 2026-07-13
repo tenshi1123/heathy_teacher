@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -88,9 +89,14 @@ class _CourseScreenState extends State<CourseScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: courses.isEmpty
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : courses.isEmpty
             ? Center(
-                child: Text('Bạn chưa có khóa học nào!'.sanitizeForApple, style: defaultText16M),
+                child: Text(
+                  'Bạn chưa có khóa học nào!'.sanitizeForApple,
+                  style: defaultText16M,
+                ),
               )
             : ListView.builder(
                 shrinkWrap: true,
@@ -137,17 +143,17 @@ class _CourseScreenState extends State<CourseScreen> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8.r),
                             child: CachedNetworkImage(
-  imageUrl: 'https://lms.cogiaohealthy.vn/images/${course.img}',
+                              imageUrl:
+                                  'https://lms.cogiaohealthy.vn/images/${course.img}',
                               width: 40.w,
                               height: 40.h,
                               fit: BoxFit.cover,
-                              errorWidget: (context, url, error) =>
-                                  Image.asset(
-                                    'assets/images/course_icon_0.png',
-                                    width: 40.w,
-                                    height: 40.h,
-                                    fit: BoxFit.cover,
-                                  ),
+                              errorWidget: (context, url, error) => Image.asset(
+                                'assets/images/course_icon_0.png',
+                                width: 40.w,
+                                height: 40.h,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           const Spacer(),
@@ -158,18 +164,19 @@ class _CourseScreenState extends State<CourseScreen> {
                               children: [
                                 Text(
                                   course.courseName ??
-                                      'Chưa cập nhật tên khoá học'.sanitizeForApple,
+                                      'Chưa cập nhật tên khoá học'
+                                          .sanitizeForApple,
                                   style: defaultText16B,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 SizedBox(height: 4.h),
-
-                                Text(
-                                  course.settingCourseTypeName ??
-                                      'Đang cập nhật hình thức',
-                                  style: defaultText14Re,
-                                ),
+                                if (isShow == 'true')
+                                  Text(
+                                    course.settingCourseTypeName ??
+                                        'Đang cập nhật hình thức',
+                                    style: defaultText14Re,
+                                  ),
                                 SizedBox(height: 12.h),
                                 Row(
                                   children: [

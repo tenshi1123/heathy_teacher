@@ -41,12 +41,14 @@ class CourseScheduleModel {
       courseId: json['course_id'],
       courseName: (json['course_name'] as String?).sanitizeForApple,
       courseScheduleId: json['course_schedule_id'],
-      courseScheduleName: (json['course_schedule_name'] as String?).sanitizeForApple,
+      courseScheduleName:
+          (json['course_schedule_name'] as String?).sanitizeForApple,
       slug: json['slug'],
       img: json['img'],
       metaDescription: (json['meta_description'] as String?).sanitizeForApple,
       soBuoiHoc: json['so_buoi_hoc'],
       lessonNumber: json['lesson_number'],
+      settingCourseTypeId: json['setting_course_type_id'],
       settingCourseTypeName: json['setting_course_type_name'],
       settingCourseTypeType: json['setting_course_type_type'],
       price: json['price'],
@@ -151,11 +153,15 @@ class CourseDetailModel {
 
     return CourseDetailModel(
       id: rootObj['course_id'] ?? rootObj['id'],
-      title: (rootObj['course_name'] ?? rootObj['name'] ?? json['title'])?.toString().sanitizeForApple,
+      title: (rootObj['course_name'] ?? rootObj['name'] ?? json['title'])
+          ?.toString()
+          .sanitizeForApple,
       description:
           (rootObj['meta_description'] ??
-          rootObj['description'] ??
-          json['description'])?.toString().sanitizeForApple,
+                  rootObj['description'] ??
+                  json['description'])
+              ?.toString()
+              .sanitizeForApple,
       content: rootObj['content'] ?? json['content'],
       image: rootObj['img'] ?? json['image'],
       price: rootObj['price']?.toString(),
