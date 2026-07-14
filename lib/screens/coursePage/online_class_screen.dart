@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,8 +10,12 @@ import 'package:heathy_teacher/screens/coursePage/video_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'dart:io';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:heathy_teacher/repo/chat_repo.dart';
+import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
+import 'package:image_picker/image_picker.dart';
 
 class OnlineClassScreen extends StatefulWidget {
   const OnlineClassScreen({super.key, required this.course});
@@ -23,7 +28,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
   late int currentPage = 1;
   int? expandedIndex;
   bool isLoading = true;
-  late CourseDetailModel courses;
+  CourseDetailModel? courses;
   @override
   void initState() {
     super.initState();
@@ -46,6 +51,77 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
     });
   }
 
+  Future<void> _pickImagesAndSubmit() async {
+    final ImagePicker picker = ImagePicker();
+    final List<XFile> images = await picker.pickMultiImage();
+    if (images.isNotEmpty) {
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            title: Text('Xác nhận trả bài', style: defaultText18B),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Bạn có chắc chắn muốn trả bài với các ảnh đã chọn không?',
+                  style: defaultText14M,
+                ),
+                SizedBox(height: 16.h),
+                SizedBox(
+                  height: 80.h,
+                  width: double.maxFinite,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: images.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(right: 8.w),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.r),
+                          child: Image.file(
+                            File(images[index].path),
+                            height: 80.h,
+                            width: 80.h,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Hủy', style: defaultText14B),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // TODO: Add submit API logic here
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Trả bài thành công!')),
+                  );
+                },
+                child: Text(
+                  'Trả bài',
+                  style: defaultText14SB.copyWith(color: mainDarkGreen),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   String _formatHtml(String? html) {
     if (html == null) return '';
     return html
@@ -62,7 +138,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Học online với video'.sanitizeForApple,
+          widget.course.settingCourseTypeName ?? '',
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         leading: IconButton(
@@ -100,7 +176,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
         ),
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
-            : courses.title == null
+            : courses == null
             ? const Center(child: Text('Không có dữ liệu'))
             : SingleChildScrollView(
                 child: Column(
@@ -117,13 +193,13 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                     SizedBox(
                       width: 343.w,
                       child: Text(
-                        courses.title ??
+                        courses?.title ??
                             'Lớp Combo chuyên đề Eatclean nâng cao',
                         style: defaultText18B,
                       ),
                     ),
                     Html(
-                      data: _formatHtml(courses.description),
+                      data: _formatHtml(courses?.description),
                       // style: {
                       //   'p': Style(
                       //     fontSize: FontSize(14.sp),
@@ -135,138 +211,174 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                     //   courses.description ?? 'Học online với video'.sanitizeForApple,
                     //   style: defaultText14Re,
                     // ),
-                    Row(
-                      children: [
-                        Container(
-                          height: 8.h,
-                          width: 270.w,
-                          alignment: Alignment.centerLeft,
-                          decoration: BoxDecoration(
-                            color: const Color(0xffEDEDED),
-                            borderRadius: BorderRadius.circular(20.r),
-                          ),
-                          child: Container(
-                            height: 8.h,
-                            width:
-                                270.w * (widget.course.percentLearning! / 100),
-                            decoration: BoxDecoration(
-                              color: mainDarkGreen,
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                          ),
-                        ),
+                    // Row(
+                    //   children: [
+                    //     Container(
+                    //       height: 8.h,
+                    //       width: 270.w,
+                    //       alignment: Alignment.centerLeft,
+                    //       decoration: BoxDecoration(
+                    //         color: const Color(0xffEDEDED),
+                    //         borderRadius: BorderRadius.circular(20.r),
+                    //       ),
+                    //       child: Container(
+                    //         height: 8.h,
+                    //         width:
+                    //             270.w * (widget.course.percentLearning! / 100),
+                    //         decoration: BoxDecoration(
+                    //           color: mainDarkGreen,
+                    //           borderRadius: BorderRadius.circular(20.r),
+                    //         ),
+                    //       ),
+                    //     ),
 
-                        Text(
-                          '  ${widget.course.percentLearning!}%',
-                          style: defaultText16B.copyWith(color: mainDarkGreen),
-                        ),
-                      ],
-                    ),
+                    //     Text(
+                    //       '  ${widget.course.percentLearning!}%',
+                    //       style: defaultText16B.copyWith(color: mainDarkGreen),
+                    //     ),
+                    //   ],
+                    // ),
                     SizedBox(height: 16.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          height: 44.h,
-                          width: 162.w,
-                          decoration: BoxDecoration(
-                            color: Color(0xffEEF5EC),
-                            border: Border.all(
-                              color: mainDarkGreen.withValues(alpha: 0.28),
-                            ),
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/chat.svg',
-                                width: 20.w,
-                                height: 20.h,
-                                colorFilter: ColorFilter.mode(
-                                  mainDarkGreen,
-                                  BlendMode.srcIn,
+                        GestureDetector(
+                          onTap: () async {
+                            try {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => const Center(
+                                  child: CircularProgressIndicator(),
                                 ),
+                              );
+                              final chatCourse = await ChatRepo().getChatCourse(
+                                courseId: widget.course.courseScheduleId ?? '',
+                                courseType: widget.course.courseTypeId ?? '',
+                              );
+                              Navigator.pop(context);
+                              if (chatCourse.courseSchedule != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatScreen(
+                                      model: chatCourse.courseSchedule!,
+                                      initialMessages: chatCourse.listMessage,
+                                    ),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              Navigator.pop(context);
+                              debugPrint('Lỗi chat hỗ trợ: $e');
+                            }
+                          },
+                          child: Container(
+                            height: 44.h,
+                            width: 162.w,
+                            decoration: BoxDecoration(
+                              color: Color(0xffEEF5EC),
+                              border: Border.all(
+                                color: mainDarkGreen.withValues(alpha: 0.28),
                               ),
-                              SizedBox(width: 8.w),
-                              Text('Chat hỗ trợ', style: defaultText14SB),
-                            ],
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/chat.svg',
+                                  width: 20.w,
+                                  height: 20.h,
+                                  colorFilter: ColorFilter.mode(
+                                    mainDarkGreen,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                SizedBox(width: 8.w),
+                                Text('Chat hỗ trợ', style: defaultText14SB),
+                              ],
+                            ),
                           ),
                         ),
-                        Container(
-                          height: 44.h,
-                          width: 162.w,
-                          decoration: BoxDecoration(
-                            color: Color(0xffEEF5EC),
-                            border: Border.all(
-                              color: mainDarkGreen.withValues(alpha: 0.28),
-                            ),
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/tra_bai.svg',
-                                width: 20.w,
-                                height: 20.h,
-                                colorFilter: ColorFilter.mode(
-                                  mainDarkGreen,
-                                  BlendMode.srcIn,
-                                ),
+                        GestureDetector(
+                          onTap: _pickImagesAndSubmit,
+                          child: Container(
+                            height: 44.h,
+                            width: 162.w,
+                            decoration: BoxDecoration(
+                              color: Color(0xffEEF5EC),
+                              border: Border.all(
+                                color: mainDarkGreen.withValues(alpha: 0.28),
                               ),
-                              SizedBox(width: 8.w),
-                              Text('Trả bài', style: defaultText14SB),
-                            ],
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/tra_bai.svg',
+                                  width: 20.w,
+                                  height: 20.h,
+                                  colorFilter: ColorFilter.mode(
+                                    mainDarkGreen,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                SizedBox(width: 8.w),
+                                Text('Trả bài', style: defaultText14SB),
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                     SizedBox(height: 20.h),
-                    Container(
-                      width: 343.w,
-                      height: 44.h,
-                      decoration: BoxDecoration(
-                        color: mainGreen,
-                        border: Border.all(
-                          color: mainDarkGreen.withValues(alpha: 0.08),
-                        ),
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/icons/bling.svg',
-                            width: 20.w,
-                            height: 20.h,
-                          ),
-                          Text(
-                            ' Sản phẩm tiêu biểu',
-                            style: defaultText14SB.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   width: 343.w,
+                    //   height: 44.h,
+                    //   decoration: BoxDecoration(
+                    //     color: mainGreen,
+                    //     border: Border.all(
+                    //       color: mainDarkGreen.withValues(alpha: 0.08),
+                    //     ),
+                    //     borderRadius: BorderRadius.circular(16.r),
+                    //   ),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       SvgPicture.asset(
+                    //         'assets/icons/bling.svg',
+                    //         width: 20.w,
+                    //         height: 20.h,
+                    //       ),
+                    //       Text(
+                    //         ' Sản phẩm tiêu biểu',
+                    //         style: defaultText14SB.copyWith(
+                    //           color: Colors.white,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     SizedBox(height: 28.h),
-                    Text(
-                      'Nội dung khoá học'.sanitizeForApple,
-                      style: defaultText16B,
-                    ),
-
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: courses.topicals?.length ?? 0,
-                      itemBuilder: (BuildContext context, int index) {
-                        return LessonItem(
-                          index: index,
-                          topicModel: courses.topicals![index],
-                        );
-                      },
-                    ),
+                    if (isShow == 'true')
+                      Text(
+                        'Nội dung khoá học'.sanitizeForApple,
+                        style: defaultText16B,
+                      ),
+                    if (isShow == 'true')
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        itemCount: courses?.topicals?.length ?? 0,
+                        itemBuilder: (BuildContext context, int index) {
+                          return LessonItem(
+                            index: index,
+                            topicModel: courses?.topicals![index],
+                          );
+                        },
+                      ),
                     SizedBox(height: 36.h),
                   ],
                 ),
@@ -279,7 +391,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
 class LessonItem extends StatefulWidget {
   const LessonItem({super.key, required this.index, required this.topicModel});
   final int index;
-  final TopicalModel topicModel;
+  final TopicalModel? topicModel;
   @override
   State<LessonItem> createState() => _LessonItemState();
 }
@@ -339,12 +451,12 @@ class _LessonItemState extends State<LessonItem> {
                     SizedBox(
                       width: 226.w,
                       child: Text(
-                        widget.topicModel.name ?? ' Không có tên chủ đề',
+                        widget.topicModel?.name ?? ' Không có tên chủ đề',
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                     ),
                     Text(
-                      '${widget.topicModel.lessons?.length ?? 0} bài giảng / ${widget.topicModel.documents?.length ?? 0} tài liệu',
+                      '${widget.topicModel?.lessons?.length ?? 0} bài giảng / ${widget.topicModel?.documents?.length ?? 0} tài liệu',
                       style: defaultText12M,
                     ),
                   ],
@@ -359,7 +471,7 @@ class _LessonItemState extends State<LessonItem> {
 
         if (isExpanded)
           Column(
-            children: widget.topicModel.lessons!
+            children: widget.topicModel!.lessons!
                 .map(
                   (e) => GestureDetector(
                     onTap: () async {
@@ -386,7 +498,7 @@ class _LessonItemState extends State<LessonItem> {
           ),
         if (isExpanded)
           Column(
-            children: widget.topicModel.documents!
+            children: widget.topicModel!.documents!
                 .map(
                   (e) => GestureDetector(
                     onTap: () async {

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:heathy_teacher/screens/homePage/home_screen.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -94,8 +95,7 @@ class MyCustomDrawer extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              CourseScreen(userModel: userModel),
+                          builder: (context) => BottomBarScreen(),
                         ),
                       );
                     }

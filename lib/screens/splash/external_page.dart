@@ -902,15 +902,15 @@ class ServiceGrid extends StatelessWidget {
           );
         },
       ),
-      ServiceModel(
-        title: "HỖ TRỢ KỸ THUẬT SAU HỌC",
-        icon: "assets/images/home5.png",
-        onTap: () async {
-          if (!await launchUrl(Uri.parse('https://m.me/cogiaohealthy'))) {
-            throw Exception('Could not launch ');
-          }
-        },
-      ),
+      // ServiceModel(
+      //   title: "HỖ TRỢ KỸ THUẬT SAU HỌC",
+      //   icon: "assets/images/home5.png",
+      //   onTap: () async {
+      //     if (!await launchUrl(Uri.parse('https://m.me/cogiaohealthy'))) {
+      //       throw Exception('Could not launch ');
+      //     }
+      //   },
+      // ),
       ServiceModel(
         title: "ƯU ĐÃI VÀ KHUYẾN MÃI",
         icon: "assets/images/home6.png",

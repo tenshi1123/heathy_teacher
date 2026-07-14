@@ -152,10 +152,29 @@ class LecturerModel {
 
   factory LecturerModel.fromJson(Map<String, dynamic> json) {
     return LecturerModel(
-      avatar: json['avatar'] as String?,
+      avatar: json['avatar'] ?? json['img'],
       userId: json['id'] as String?,
-      fullName: json['full_name'] as String?,
+      fullName: json['full_name'] ?? json['course_type_name'],
       email: json['email'] as String?,
+    );
+  }
+}
+
+class ChatCourseModel {
+  final LecturerModel? courseSchedule;
+  final List<MessageModel>? listMessage;
+  ChatCourseModel({this.courseSchedule, this.listMessage});
+
+  factory ChatCourseModel.fromJson(Map<String, dynamic> json) {
+    return ChatCourseModel(
+      courseSchedule: json['course_schedule'] != null
+          ? LecturerModel.fromJson(json['course_schedule'])
+          : null,
+      listMessage: json['value'] != null
+          ? (json['value'] as List)
+                .map((i) => MessageModel.fromJson(i))
+                .toList()
+          : null,
     );
   }
 }

@@ -57,4 +57,20 @@ class ChatRepo {
         .toList();
     return listMessages;
   }
+
+  Future<ChatCourseModel> getChatCourse({
+    required String courseId,
+    required String courseType,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    Response response;
+    response = await dio.post('${ApiPath.chatCourse}/$courseId/$courseType');
+
+    ChatCourseModel chatCourse = ChatCourseModel.fromJson(
+      response.data['data'],
+    );
+    return chatCourse;
+  }
 }

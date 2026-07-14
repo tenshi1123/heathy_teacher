@@ -6,15 +6,15 @@ import 'package:heathy_teacher/utils/DioClient.dart';
 import 'package:heathy_teacher/utils/constants/api_path.dart';
 
 class CourseRepo {
-  Future<List<CourseScheduleModel>> getCourse({int page = 1, int show = 10}) async {
+  Future<List<CourseScheduleModel>> getCourse({
+    int page = 1,
+    int show = 10,
+  }) async {
     try {
       final dio = await DioClient.getInstance();
       final response = await dio.post(
         ApiPath.course,
-        data: {
-          "page": page.toString(),
-          "show": show.toString(),
-        },
+        data: {"page": page.toString(), "show": show.toString()},
       );
       if (response.data != null &&
           response.data['data'] != null &&
@@ -64,15 +64,15 @@ class CourseRepo {
     }
   }
 
-  Future<List<ProductModel>> getListProduct({int page = 1, int show = 10}) async {
+  Future<List<ProductModel>> getListProduct({
+    int page = 1,
+    int show = 10,
+  }) async {
     try {
       final dio = await DioClient.getInstance();
       final response = await dio.post(
         ApiPath.products,
-        data: {
-          "page": page.toString(),
-          "show": show.toString(),
-        },
+        data: {"page": page.toString(), "show": show.toString()},
       );
       if (response.data != null &&
           response.data['data'] != null &&
@@ -92,16 +92,16 @@ class CourseRepo {
     }
   }
 
-  Future<List<ScheduleModel>> getListEventSchedule({int page = 1, int show = 10}) async {
+  Future<List<ScheduleModel>> getListEventSchedule({
+    int page = 1,
+    int show = 10,
+  }) async {
     try {
       final dio = await DioClient.getInstance();
       // Giả sử Path là ApiPath.schedules, bạn hãy đổi lại đúng tên path của mình
       final response = await dio.post(
         ApiPath.calendarOff,
-        data: {
-          "page": page.toString(),
-          "show": show.toString(),
-        },
+        data: {"page": page.toString(), "show": show.toString()},
       );
 
       if (response.data != null && response.data['data'] != null) {

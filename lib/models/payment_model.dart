@@ -29,3 +29,43 @@ class PaymentModel {
     );
   }
 }
+
+class PayCodeModel {
+  final String message;
+  final int orderId;
+  final int price;
+  final String customerCode;
+  final String payCode;
+  final String bankAccount;
+  final String bankCode;
+  final String bankName;
+  final String bankOwner;
+  final bool hasFreeGift;
+
+  PayCodeModel({
+    required this.message,
+    required this.orderId,
+    required this.price,
+    required this.customerCode,
+    required this.payCode,
+    required this.bankAccount,
+    required this.bankCode,
+    required this.bankName,
+    required this.bankOwner,
+    required this.hasFreeGift,
+  });
+  factory PayCodeModel.fromJson(Map<String, dynamic> json) {
+    return PayCodeModel(
+      message: json["message"] ?? "",
+      orderId: json["order_id"] ?? 0,
+      price: json["price"] ?? 0,
+      customerCode: json["customer_code"] ?? "",
+      payCode: json["pay_code"] ?? "",
+      bankAccount: json["bank_account"] ?? "",
+      bankCode: json["bank_code"] ?? "",
+      bankName: json["bank_name"] ?? "",
+      bankOwner: json["bank_owner"] ?? "",
+      hasFreeGift: json["has_free_gift"] ?? false,
+    );
+  }
+}

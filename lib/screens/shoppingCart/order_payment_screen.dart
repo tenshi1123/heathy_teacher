@@ -7,6 +7,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
+import 'package:heathy_teacher/repo/external_repo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   const OrderPaymentScreen({super.key});
@@ -16,6 +18,40 @@ class OrderPaymentScreen extends StatefulWidget {
 }
 
 class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _provinceController = TextEditingController();
+  final TextEditingController _districtController = TextEditingController();
+  final TextEditingController _wardController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+
+  Widget _buildInputField({
+    required String hintText,
+    required TextEditingController controller,
+    TextInputType? keyboardType,
+  }) {
+    return Container(
+      width: 343.w,
+      height: 48.h,
+      margin: EdgeInsets.only(right: 12.w, bottom: 12.h),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F9FB),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextField(
+        controller: controller,
+        keyboardType: keyboardType,
+        style: defaultText14B,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: hintText,
+          hintStyle: TextStyle(color: colorText.withValues(alpha: 0.4)),
+        ),
+      ),
+    );
+  }
+
   int get totalPrice {
     int total = 0;
     for (var item in globalListCart) {
@@ -65,10 +101,31 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 children: [
                   SizedBox(height: 24.h),
                   Text('Điền thông tin của bạn', style: defaultText16B),
-                  CustomTextField(hintText: 'Tỉnh/Thành phố'),
-                  CustomTextField(hintText: 'Quận/Huyện'),
-                  CustomTextField(hintText: 'Xã/Phường'),
-                  CustomTextField(hintText: 'Địa chỉ cụ thể*'),
+                  _buildInputField(
+                    hintText: 'Họ và tên*',
+                    controller: _nameController,
+                  ),
+                  _buildInputField(
+                    hintText: 'Số điện thoại*',
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                  ),
+                  CustomTextField(
+                    hintText: 'Tỉnh/Thành phố',
+                    controller: _provinceController,
+                  ),
+                  CustomTextField(
+                    hintText: 'Quận/Huyện',
+                    controller: _districtController,
+                  ),
+                  CustomTextField(
+                    hintText: 'Xã/Phường',
+                    controller: _wardController,
+                  ),
+                  CustomTextField(
+                    hintText: 'Địa chỉ cụ thể*',
+                    controller: _addressController,
+                  ),
                   SizedBox(height: 24.h),
                   Text('Thông tin đơn hàng', style: defaultText16B),
                   ...globalListCart.map((item) {
@@ -278,54 +335,122 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   ],
                 ),
                 child: GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          backgroundColor: Colors.transparent,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-                            padding: EdgeInsets.all(16.w),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  'Quét mã QR để thanh toán',
-                                  style: defaultText18B.copyWith(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                SizedBox(height: 16.h),
-                                Image.asset(
-                                  'assets/images/qr-thanhtoan.png',
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(height: 16.h),
-                                ElevatedButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: mainDarkGreen,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Đóng',
-                                    style: defaultText16B.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                  onTap: () async {
+                    if (_nameController.text.trim().isEmpty ||
+                        _phoneController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Vui lòng điền họ và tên và số điện thoại',
                           ),
-                        );
-                      },
-                    );
+                        ),
+                      );
+                      return;
+                    }
+
+                    try {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) =>
+                            const Center(child: CircularProgressIndicator()),
+                      );
+
+                      final payload = {
+                        "full_name": _nameController.text.trim(),
+                        "phone": _phoneController.text.trim(),
+                        "promo_code": "",
+                        "payment_method_id": 1,
+                        "price_promo_code_online": 0,
+                        "free_ship": 0,
+                        "accumulate_point": 0,
+                        "province": _provinceController.text.trim(),
+                        "district": _districtController.text.trim(),
+                        "ward": _wardController.text.trim(),
+                        "address": _addressController.text.trim(),
+                        "cart": globalListCart
+                            .map(
+                              (item) => {
+                                "product_id": int.parse(item.id),
+                                "quantity": item.quantity,
+                              },
+                            )
+                            .toList(),
+                      };
+                      //get remember_me_token
+                      final SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      final String? token = prefs.getString('remember_token');
+                      final payCode = await ExternalRepo().paymentProduct(
+                        payload,
+                        token,
+                      );
+                      Navigator.pop(context); // close loading dialog
+
+                      // If we want to show dynamic QR code, we could use payCode here,
+                      // but for now keeping the existing UI logic
+                      if (!context.mounted) return;
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            backgroundColor: Colors.transparent,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16.r),
+                              ),
+                              padding: EdgeInsets.all(16.w),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Quét mã QR để thanh toán',
+                                    style: defaultText18B.copyWith(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(height: 16.h),
+                                  Image.network(
+                                    'https://img.vietqr.io/image/${payCode.bankCode}-${payCode.bankAccount}-compact2.png?amount=${payCode.price}&addInfo=${Uri.encodeComponent('${payCode.payCode} ${_nameController.text.trim()}')}&accountName=${Uri.encodeComponent(payCode.bankOwner)}',
+                                    fit: BoxFit.contain,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Image.asset(
+                                              'assets/images/qr-thanhtoan.png',
+                                              fit: BoxFit.contain,
+                                            ),
+                                  ),
+                                  SizedBox(height: 16.h),
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: mainDarkGreen,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          8.r,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Đóng',
+                                      style: defaultText16B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    } catch (e) {
+                      Navigator.pop(context); // close loading dialog
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+                    }
                   },
                   child: Container(
                     width: 343.w,

@@ -7,6 +7,7 @@ class CourseScheduleModel {
   final String? courseId;
   final String? courseName;
   final String? courseScheduleId;
+  final String? courseTypeId;
   final String? courseScheduleName;
   final String? slug;
   final String? img;
@@ -23,6 +24,7 @@ class CourseScheduleModel {
     this.courseId,
     this.courseName,
     this.courseScheduleId,
+    this.courseTypeId,
     this.courseScheduleName,
     this.slug,
     this.img,
@@ -41,6 +43,7 @@ class CourseScheduleModel {
       courseId: json['course_id'],
       courseName: (json['course_name'] as String?).sanitizeForApple,
       courseScheduleId: json['course_schedule_id'],
+      courseTypeId: json['course_type_id'],
       courseScheduleName:
           (json['course_schedule_name'] as String?).sanitizeForApple,
       slug: json['slug'],

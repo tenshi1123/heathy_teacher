@@ -186,7 +186,7 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12,
-                              childAspectRatio: 0.68,
+                              childAspectRatio: 0.6,
                             ),
                         itemBuilder: (context, index) {
                           final item = coursesDetail[index];

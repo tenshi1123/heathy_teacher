@@ -13,8 +13,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key, required this.model});
+  const ChatScreen({super.key, required this.model, this.initialMessages});
   final LecturerModel model;
+  final List<MessageModel>? initialMessages;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
@@ -53,6 +54,14 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isLoading = true;
   List<MessageModel> listMessage = [];
   Future<void> fetchData() async {
+    if (widget.initialMessages != null) {
+      setState(() {
+        listMessage = List.from(widget.initialMessages!);
+        isLoading = false;
+      });
+      return;
+    }
+    
     try {
       final response = await ChatRepo().getListMessage(
         lectureId: widget.model.userId ?? '',

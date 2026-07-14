@@ -99,8 +99,14 @@ class _HinhThucHocDropdownState extends State<HinhThucHocDropdown> {
 }
 
 class CustomTextField extends StatefulWidget {
-  const CustomTextField({super.key, required this.hintText});
+  const CustomTextField({
+    super.key,
+    required this.hintText,
+    required this.controller,
+  });
   final String hintText;
+  final TextEditingController controller;
+
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
 }
@@ -118,7 +124,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
-        //ontroller: widget.controller,
+        controller: widget.controller,
         style: defaultText14B, // màu text nhập
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -158,7 +164,7 @@ class CartItemWidget extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: CachedNetworkImage(
-  imageUrl: item.image,
+              imageUrl: item.image,
               width: 60,
               height: 60,
               fit: BoxFit.cover,
@@ -321,7 +327,8 @@ class CourseItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CachedNetworkImage(
-  imageUrl: 'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
+            imageUrl:
+                'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -972,7 +979,8 @@ class CourseCard extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: CachedNetworkImage(
-  imageUrl: 'https://picsum.photos/300/400', // Thay bằng link ảnh thật
+                                imageUrl:
+                                    'https://picsum.photos/300/400', // Thay bằng link ảnh thật
                                 fit: BoxFit.cover,
                                 height: double.infinity,
                               ),
@@ -987,7 +995,8 @@ class CourseCard extends StatelessWidget {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: CachedNetworkImage(
-  imageUrl: 'https://picsum.photos/300/200', // Thay bằng link ảnh thật
+                                      imageUrl:
+                                          'https://picsum.photos/300/200', // Thay bằng link ảnh thật
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                     ),
@@ -1000,7 +1009,8 @@ class CourseCard extends StatelessWidget {
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
                                         child: CachedNetworkImage(
-  imageUrl: 'https://picsum.photos/300/200', // Thay bằng link ảnh thật
+                                          imageUrl:
+                                              'https://picsum.photos/300/200', // Thay bằng link ảnh thật
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                         ),
@@ -1283,7 +1293,7 @@ class RecipeGridWidget extends StatelessWidget {
                   topRight: Radius.circular(20),
                 ),
                 child: CachedNetworkImage(
-  imageUrl: item.thumbnail,
+                  imageUrl: item.thumbnail,
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
@@ -1377,13 +1387,13 @@ class VideoLessonPreviewWidget extends StatelessWidget {
               // LỚP NỀN: ĐÃ ĐỔI THÀNH LINK THUMBNAIL CHUẨN CỦA VIDEO YOUTUBE BẠN CUNG CẤP
               Positioned.fill(
                 child: CachedNetworkImage(
-  imageUrl: 'https://i.ytimg.com/vi/vW5ZnHW95WM/maxresdefault.jpg',
+                  imageUrl:
+                      'https://i.ytimg.com/vi/vW5ZnHW95WM/maxresdefault.jpg',
                   fit: BoxFit.cover,
                   // Trường hợp ảnh lỗi hoặc đang tải thì hiện màu nền xám nhẹ
                   errorWidget: (context, url, error) =>
                       Container(color: Colors.grey[300]),
                   placeholder: (context, url) {
-                    
                     return Container(color: Colors.grey[200]);
                   },
                 ),

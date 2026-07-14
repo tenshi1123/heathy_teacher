@@ -70,7 +70,6 @@ class LoginRepo {
     final dio = await DioClient.getInstance();
     dio.options.headers['Token'] = 'Healthy1234567890APP';
     Response response;
-
     try {
       response = await dio.post(
         ApiPath.signup,
@@ -84,17 +83,13 @@ class LoginRepo {
     } on DioException {
       return 'Đăng ký thất bại';
     }
-
     final data = response.data;
-
     if (data['type'] == 'error') {
       return data['message']?.toString() ?? 'Đăng ký thất bại';
     }
-
     if (data['type'] == 'success') {
       return data['message']?.toString() ?? 'Đăng ký thành công';
     }
-
     return data['message']?.toString() ?? 'Đăng ký thành công';
   }
 }

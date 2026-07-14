@@ -31,7 +31,11 @@ class _CourseScreenState extends State<CourseScreen> {
 
   Future<void> _fetchData() async {
     isLoading = true;
-    courses = await CourseRepo().getCourse();
+    final List<CourseScheduleModel> fetchedCourses = await CourseRepo()
+        .getCourse();
+    courses = fetchedCourses
+        .where((course) => course.settingCourseTypeType != 'online')
+        .toList();
     setState(() {
       isLoading = false;
     });
@@ -178,38 +182,38 @@ class _CourseScreenState extends State<CourseScreen> {
                                     style: defaultText14Re,
                                   ),
                                 SizedBox(height: 12.h),
-                                Row(
-                                  children: [
-                                    Container(
-                                      height: 8.h,
-                                      width: 217.w,
-                                      alignment: Alignment.centerLeft,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xffEDEDED),
-                                        borderRadius: BorderRadius.circular(
-                                          20.r,
-                                        ),
-                                      ),
-                                      child: Container(
-                                        height: 8.h,
-                                        width: 217.w * (percent / 100),
-                                        decoration: BoxDecoration(
-                                          color: mainDarkGreen,
-                                          borderRadius: BorderRadius.circular(
-                                            20.r,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                // Row(
+                                //   children: [
+                                //     Container(
+                                //       height: 8.h,
+                                //       width: 217.w,
+                                //       alignment: Alignment.centerLeft,
+                                //       decoration: BoxDecoration(
+                                //         color: const Color(0xffEDEDED),
+                                //         borderRadius: BorderRadius.circular(
+                                //           20.r,
+                                //         ),
+                                //       ),
+                                //       child: Container(
+                                //         height: 8.h,
+                                //         width: 217.w * (percent / 100),
+                                //         decoration: BoxDecoration(
+                                //           color: mainDarkGreen,
+                                //           borderRadius: BorderRadius.circular(
+                                //             20.r,
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     ),
 
-                                    Text(
-                                      ' $percent%',
-                                      style: defaultText16B.copyWith(
-                                        color: mainDarkGreen,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                //     Text(
+                                //       ' $percent%',
+                                //       style: defaultText16B.copyWith(
+                                //         color: mainDarkGreen,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                               ],
                             ),
                           ),
