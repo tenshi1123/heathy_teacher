@@ -147,15 +147,23 @@ class LecturerModel {
   final String? userId;
   final String? fullName;
   final String? email;
+  final String? courseTypeId;
 
-  LecturerModel({this.avatar, this.userId, this.fullName, this.email});
+  LecturerModel({
+    this.avatar,
+    this.userId,
+    this.fullName,
+    this.email,
+    this.courseTypeId,
+  });
 
   factory LecturerModel.fromJson(Map<String, dynamic> json) {
     return LecturerModel(
       avatar: json['avatar'] ?? json['img'],
-      userId: json['id'] as String?,
-      fullName: json['full_name'] ?? json['course_type_name'],
+      userId: json['id'] ?? json['course_schedule_id'],
+      fullName: json['full_name'] ?? json['course_type_name'] ?? json['name'],
       email: json['email'] as String?,
+      courseTypeId: json['course_type_id'] as String?,
     );
   }
 }

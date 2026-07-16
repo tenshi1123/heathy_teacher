@@ -60,7 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _fetchMyCourses() async {
     try {
       final courses = await CourseRepo().getCourse();
-      final fetchedCategories = await ProductRepo().getCategory(page: 1, show: 6);
+      final fetchedCategories = await ProductRepo().getCategory(
+        page: 1,
+        show: 6,
+      );
       setState(() {
         myCourses = courses;
         categoryList = fetchedCategories;
@@ -74,6 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // Lọc danh sách online (loại bỏ các khoá học có courseTypeId nằm trong settingCourseTypeId của myCourses)
     final filteredOnlineCourses = globalListCourse.where((course) {
+      return !myCourses.any(
+        (myCourse) => myCourse.settingCourseTypeId == course.courseTypeId,
+      );
+    }).toList();
+
+    // Lọc danh sách miễn phí
+    final filteredFreeCourses = globalListFreeCourse.where((course) {
       return !myCourses.any(
         (myCourse) => myCourse.settingCourseTypeId == course.courseTypeId,
       );
@@ -93,11 +103,15 @@ class _HomeScreenState extends State<HomeScreen> {
           try {
             await _fetchMyCourses();
             final futureCourse = await ExternalRepo().getListCourse(show: 6);
+            final futureFreeCourse = await ExternalRepo().getListFreeCourse(
+              show: 6,
+            );
             final futureCourseOff = await ExternalRepo().getListCourseOff(
               show: 6,
             );
             setState(() {
               globalListCourse = futureCourse;
+              globalListFreeCourse = futureFreeCourse;
               globalListCourseOff = futureCourseOff;
             });
           } catch (e) {
@@ -374,6 +388,53 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) => ListClassOnline()),
+                    ),
+                  );
+                },
+                child: SizedBox(
+                  width: 343.w,
+                  child: Row(
+                    children: [
+                      SvgPicture.asset('assets/icons/class_online.svg'),
+                      Text(
+                        ' Gợi ý các khóa học miễn phí'.sanitizeForApple,
+                        style: defaultText16B.copyWith(color: Colors.black),
+                      ),
+                      Spacer(),
+                      Text(
+                        'Xem tất cả  ',
+                        style: defaultText14SB.copyWith(
+                          color: mainDarkGreen,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                      Icon(Icons.keyboard_arrow_right, color: mainDarkGreen),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 375.w,
+                height: (294 + 48).h,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  itemCount: filteredFreeCourses.length,
+                  itemBuilder: (context, index) {
+                    return _OnlineClassCard(
+                      index: index,
+                      model: filteredFreeCourses[index],
+                    );
+                  },
+                ),
+              ),
               if (isShow == 'true')
                 GestureDetector(
                   onTap: () {
@@ -442,7 +503,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 (context, animation, secondaryAnimation) =>
                                     ListProductScreen(userModel: userModel),
                             transitionsBuilder:
-                                (context, animation, secondaryAnimation, child) {
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
                                   return FadeTransition(
                                     opacity: animation,
                                     child: child,
@@ -698,31 +764,32 @@ class _OnlineClassCard extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              height: 32.h,
-              width: 184.w,
-              decoration: BoxDecoration(
-                color: const Color(0xff73BB43),
-                borderRadius: BorderRadius.circular(16.r),
+            if (isShow == 'true')
+              Container(
+                height: 32.h,
+                width: 184.w,
+                decoration: BoxDecoration(
+                  color: const Color(0xff73BB43),
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(width: 8.w),
+                    Image.asset(
+                      'assets/images/play_icon.png',
+                      height: 16.h,
+                      width: 16.w,
+                      fit: BoxFit.fill,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      '${model.totalEnrollments} lượt học',
+                      style: defaultText14SB.copyWith(color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(width: 8.w),
-                  Image.asset(
-                    'assets/images/play_icon.png',
-                    height: 16.h,
-                    width: 16.w,
-                    fit: BoxFit.fill,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    '${model.totalEnrollments} lượt học',
-                    style: defaultText14SB.copyWith(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),

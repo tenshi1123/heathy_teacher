@@ -32,6 +32,38 @@ class ExternalRepo {
     }
   }
 
+  //danh sách khóa học free
+  Future<List<CourseModel>> getListFreeCourse({
+    int page = 1,
+    int show = 10,
+  }) async {
+    try {
+      final dio = await DioClient.getInstance();
+      dio.options.headers['Token'] = 'Healthy1234567890HVG';
+      final response = await dio.post(
+        ApiPath.listCourse,
+        data: jsonEncode({
+          "page": page.toString(),
+          "show": show.toString(),
+          "is_trial": 1,
+        }),
+      );
+      if (response.data != null && response.data['data'] != null) {
+        final List listData = response.data['data'] as List;
+
+        return listData
+            .map((e) => CourseModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else {
+        return [];
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
+
   Future<List<CourseOffModel>> getListCourseOff({
     int page = 1,
     int show = 10,

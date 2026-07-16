@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
+import 'package:heathy_teacher/screens/coursePage/video_screen.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -360,19 +361,35 @@ class _RegisterClassONState extends State<RegisterClassON> {
                     ),
                   ),
                   children: lessons.map((lesson) {
-                    return ListTile(
-                      leading: Icon(
-                        Icons.play_circle_outline,
-                        color: Colors.green,
-                        size: 20.w,
-                      ),
-                      title: Text(
-                        lesson.name ?? '',
-                        style: TextStyle(fontSize: 13.sp),
-                      ),
-                      trailing: Text(
-                        lesson.time ?? '',
-                        style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                    return GestureDetector(
+                      onTap: () async {
+                        String url = await ExternalRepo().getStreamingUrl(
+                          lessonId: lesson.lessonsId ?? '',
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => (DetailVideo(
+                              streamingUrl: url,
+                              name: lesson.name ?? 'Không có tên bài giảng',
+                            ))),
+                          ),
+                        );
+                      },
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.play_circle_outline,
+                          color: Colors.green,
+                          size: 20.w,
+                        ),
+                        title: Text(
+                          lesson.name ?? '',
+                          style: TextStyle(fontSize: 13.sp),
+                        ),
+                        trailing: Text(
+                          lesson.time ?? '',
+                          style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                        ),
                       ),
                     );
                   }).toList(),

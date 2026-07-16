@@ -39,7 +39,7 @@ class _ListChatScreenState extends State<ListChatScreen> {
 
   Future<void> fetchData() async {
     try {
-      final response = await ChatRepo().getListLecture();
+      final response = await ChatRepo().loadChatCourse();
       setState(() {
         listLecturers = response;
         isLoading = false;
@@ -158,7 +158,7 @@ class ConversationItem extends StatelessWidget {
           children: [
             ClipOval(
               child: CachedNetworkImage(
-  imageUrl: model.avatar ?? '',
+                imageUrl: model.avatar ?? '',
                 height: 42.r,
                 width: 42.r,
                 fit: BoxFit.cover,

@@ -36,7 +36,10 @@ class _ListClassOnlineState extends State<ListClassOnline> {
         isLoading = true;
       });
       try {
-        final newItems = await ExternalRepo().getListCourse(page: page, show: itemsPerPage);
+        final newItems = await ExternalRepo().getListCourse(
+          page: page,
+          show: itemsPerPage,
+        );
         setState(() {
           globalListCourse.addAll(newItems);
         });
@@ -102,198 +105,204 @@ class _ListClassOnlineState extends State<ListClassOnline> {
             Stack(
               children: [
                 ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 20.h),
-              physics: const ClampingScrollPhysics(),
-              itemCount: currentItems.length,
-              itemBuilder: (BuildContext context, int index) {
-                var model = currentItems[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => RegisterClassON(
-                          id: currentItems[index].courseTypeId ?? '',
-                        )),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 343.w,
-                    //height: 106.h,
-                    margin: EdgeInsets.only(bottom: index == 5 ? 80 : 16.h),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xff062905).withValues(alpha: 0.16),
-                          spreadRadius: 0,
-                          blurRadius: 8,
-                          offset: const Offset(
-                            0,
-                            4,
-                          ), // changes position of shadow
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(
+                    left: 16.w,
+                    right: 16.w,
+                    bottom: 20.h,
+                  ),
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: currentItems.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var model = currentItems[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => RegisterClassON(
+                              id: currentItems[index].courseTypeId ?? '',
+                            )),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 343.w,
+                        //height: 106.h,
+                        margin: EdgeInsets.only(bottom: index == 5 ? 80 : 16.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 8.h,
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              height: 90.h,
-                              width: 90.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.r),
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    model.img ??
-                                        'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg',
-                                  ),
-                                  fit: BoxFit.fitHeight,
-                                ),
-                              ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xff062905).withValues(alpha: 0.16),
+                              spreadRadius: 0,
+                              blurRadius: 8,
+                              offset: const Offset(
+                                0,
+                                4,
+                              ), // changes position of shadow
                             ),
-                            SizedBox(width: 12.w),
-                            SizedBox(
-                              width: 217.w,
-                              child: Column(
-                                children: [
-                                  Row(
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 90.h,
+                                  width: 90.w,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        model.img ??
+                                            'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg',
+                                      ),
+                                      fit: BoxFit.fitHeight,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 12.w),
+                                SizedBox(
+                                  width: 217.w,
+                                  child: Column(
                                     children: [
-                                      RatingStars(
-                                        rating: 4.6, // Hiển thị 4.5 sao
-                                        starSize: 16.r,
+                                      Row(
+                                        children: [
+                                          RatingStars(
+                                            rating: 4.6, // Hiển thị 4.5 sao
+                                            starSize: 16.r,
+                                          ),
+                                          Text(
+                                            '(4,6)',
+                                            style: defaultText14SB.copyWith(
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       Text(
-                                        '(4,6)',
+                                        model.courseName ?? 'Không xác định',
+                                        style: defaultText14SB,
+                                      ),
+                                      if (isShow == 'true')
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
+                                              style: defaultText16B,
+                                            ),
+                                            SizedBox(width: 12.w),
+                                            Text(
+                                              '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
+                                              style: defaultText12Re.copyWith(
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 12.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 32.h,
+                                  width: 156.w,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE8F8EA),
+                                    border: Border.all(
+                                      color: Color(
+                                        0xff407B37,
+                                      ).withValues(alpha: 0.04),
+                                    ),
+
+                                    borderRadius: BorderRadius.circular(16.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(width: 8.w),
+                                      Image.asset(
+                                        'assets/images/play_icon.png',
+                                        height: 16.h,
+                                        width: 16.w,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      SizedBox(width: 8.w),
+                                      Text(
+                                        '${model.lessonNumber} bài học',
                                         style: defaultText14SB.copyWith(
-                                          fontSize: 12.sp,
+                                          color: mainDarkGreen,
                                         ),
                                       ),
                                     ],
                                   ),
-                                  Text(
-                                    model.courseName ?? 'Không xác định',
-                                    style: defaultText14SB,
-                                  ),
-                                  if (isShow == 'true')
-                                    Row(
+                                ),
+                                if (isShow == 'true')
+                                  Container(
+                                    height: 32.h,
+                                    width: 156.w,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE8F8EA),
+                                      border: Border.all(
+                                        color: Color(
+                                          0xff407B37,
+                                        ).withValues(alpha: 0.04),
+                                      ),
+
+                                      borderRadius: BorderRadius.circular(16.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
-                                          style: defaultText16B,
+                                        SizedBox(width: 8.w),
+                                        Image.asset(
+                                          'assets/images/play_icon.png',
+                                          height: 16.h,
+                                          width: 16.w,
+                                          fit: BoxFit.fill,
                                         ),
-                                        SizedBox(width: 12.w),
+                                        SizedBox(width: 8.w),
                                         Text(
-                                          '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
-                                          style: defaultText12Re.copyWith(
-                                            decoration:
-                                                TextDecoration.lineThrough,
+                                          '${model.totalEnrollments} lượt đã học',
+                                          style: defaultText14SB.copyWith(
+                                            color: mainDarkGreen,
                                           ),
                                         ),
                                       ],
                                     ),
-                                ],
-                              ),
+                                  ),
+                              ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 12.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              height: 32.h,
-                              width: 156.w,
-                              decoration: BoxDecoration(
-                                color: Color(0xffE8F8EA),
-                                border: Border.all(
-                                  color: Color(
-                                    0xff407B37,
-                                  ).withValues(alpha: 0.04),
-                                ),
-
-                                borderRadius: BorderRadius.circular(16.r),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(width: 8.w),
-                                  Image.asset(
-                                    'assets/images/play_icon.png',
-                                    height: 16.h,
-                                    width: 16.w,
-                                    fit: BoxFit.fill,
-                                  ),
-                                  SizedBox(width: 8.w),
-                                  Text(
-                                    '${model.lessonNumber} bài học',
-                                    style: defaultText14SB.copyWith(
-                                      color: mainDarkGreen,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 32.h,
-                              width: 156.w,
-                              decoration: BoxDecoration(
-                                color: Color(0xffE8F8EA),
-                                border: Border.all(
-                                  color: Color(
-                                    0xff407B37,
-                                  ).withValues(alpha: 0.04),
-                                ),
-
-                                borderRadius: BorderRadius.circular(16.r),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(width: 8.w),
-                                  Image.asset(
-                                    'assets/images/play_icon.png',
-                                    height: 16.h,
-                                    width: 16.w,
-                                    fit: BoxFit.fill,
-                                  ),
-                                  SizedBox(width: 8.w),
-                                  Text(
-                                    '${model.totalEnrollments} lượt đã học',
-                                    style: defaultText14SB.copyWith(
-                                      color: mainDarkGreen,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
+                    );
+                  },
+                ),
+                if (isLoading)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.white.withValues(alpha: 0.5),
+                      child: Center(
+                        child: CircularProgressIndicator(color: mainDarkGreen),
+                      ),
                     ),
                   ),
-                );
-              },
+              ],
             ),
-            if (isLoading)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.white.withValues(alpha: 0.5),
-                  child: Center(
-                    child: CircularProgressIndicator(color: mainDarkGreen),
-                  ),
-                ),
-              ),
-          ],
-        ),
             Align(
               alignment: Alignment.bottomLeft,
               child: Container(

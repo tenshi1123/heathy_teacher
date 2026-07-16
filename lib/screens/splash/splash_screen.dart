@@ -39,9 +39,11 @@ class _SplashScreenState extends State<SplashScreen> {
     // Lấy danh sách lớp on và off lúc chờ vào app
     try {
       final futureCourse = ExternalRepo().getListCourse(show: 6);
+      final futureFreeCourse = ExternalRepo().getListFreeCourse(show: 6);
       final futureCourseOff = ExternalRepo().getListCourseOff(show: 6);
 
       globalListCourse = await futureCourse;
+      globalListFreeCourse = await futureFreeCourse;
       globalListCourseOff = await futureCourseOff;
     } catch (e) {
       print('Lỗi gọi danh sách khoá học: $e'.sanitizeForApple);

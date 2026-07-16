@@ -46,9 +46,6 @@ List<CourseSection> courseSectionFromJson(String str) =>
       json.decode(str).map((x) => CourseSection.fromJson(x)),
     );
 
-String courseSectionToJson(List<CourseSection> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
 class CourseSection {
   final String? id;
   final String? name;
@@ -65,14 +62,6 @@ class CourseSection {
           ? List<Lesson>.from(json['lesson'].map((x) => Lesson.fromJson(x)))
           : [],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'lesson': List<dynamic>.from(lesson.map((x) => x.toJson())),
-    };
   }
 }
 
@@ -120,23 +109,6 @@ class Lesson {
       streamingUrl: json['streaming_url'],
       muxAssetId: json['mux_asset_id'] ?? '',
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'lessons_id': lessonsId,
-      'name': name,
-      'slug': slug,
-      'time': time,
-      'is_trial': isTrial,
-      'document_files_active': documentFilesActive,
-      'exam_active': examActive,
-      'locked': locked,
-      'lesson_content': lessonContent,
-      'lesson_type': lessonType,
-      'streaming_url': streamingUrl,
-      'mux_asset_id': muxAssetId,
-    };
   }
 }
 

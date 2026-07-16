@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatRepo {
   Dio dio = Dio();
-
   Future<List<LecturerModel>> getListLecture() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
@@ -27,6 +26,38 @@ class ChatRepo {
       Map<String, dynamic> requestData = {
         'lecturers_id': int.parse(chatId),
         'content': message,
+      };
+      if (photo != null) {
+        requestData['files[0]'] = await MultipartFile.fromFile(
+          photo.path,
+          filename: photo.path.split('/').last,
+        );
+      }
+      FormData formData = FormData.fromMap(requestData);
+      Response response = await dio.post(
+        ApiPath.sendChatLecturers,
+        data: formData,
+      );
+      return response.data['status'] == 200;
+    } on DioException {
+      return false;
+    }
+  }
+
+  Future<bool> sendChatLecturers(
+    String chatId,
+    String message,
+    String courseTypeId, {
+    File? photo,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    try {
+      Map<String, dynamic> requestData = {
+        'lecturers_id': int.parse(chatId),
+        'content': message,
+        'course_type_id': courseTypeId,
       };
       if (photo != null) {
         requestData['files[0]'] = await MultipartFile.fromFile(
@@ -72,5 +103,17 @@ class ChatRepo {
       response.data['data'],
     );
     return chatCourse;
+  }
+
+  Future<List<LecturerModel>> loadChatCourse() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    Response response;
+    response = await dio.post(ApiPath.loadChatCourse);
+    var users = (response.data['data'] as List)
+        .map((i) => LecturerModel.fromJson(i))
+        .toList();
+    return users;
   }
 }

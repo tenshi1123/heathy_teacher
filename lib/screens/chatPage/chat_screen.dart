@@ -61,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
       });
       return;
     }
-    
+
     try {
       final response = await ChatRepo().getListMessage(
         lectureId: widget.model.userId ?? '',
@@ -96,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             ClipOval(
               child: CachedNetworkImage(
-  imageUrl: widget.model.avatar ?? '',
+                imageUrl: widget.model.avatar ?? '',
                 height: 42.r,
                 width: 42.r,
                 fit: BoxFit.cover,
@@ -245,14 +245,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                     borderRadius: BorderRadius.circular(10.r),
                                     child: url.startsWith('http')
                                         ? CachedNetworkImage(
-  imageUrl: url,
+                                            imageUrl: url,
                                             fit: BoxFit.cover,
                                             errorWidget: (context, url, error) {
-                                                  return Icon(
-                                                    Icons.broken_image,
-                                                    color: Colors.grey,
-                                                  );
-                                                },
+                                              return Icon(
+                                                Icons.broken_image,
+                                                color: Colors.grey,
+                                              );
+                                            },
                                           )
                                         : Image.file(
                                             File(url),
@@ -325,9 +325,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     SizedBox(width: 16.w),
                     GestureDetector(
                       onTap: () async {
-                        ChatRepo().sendMessage(
+                        ChatRepo().sendChatLecturers(
                           widget.model.userId ?? '',
                           messageController.text,
+                          widget.model.courseTypeId ?? '',
                           photo: photos.isNotEmpty ? photos.first : null,
                         );
                         setState(() {

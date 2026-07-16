@@ -19,7 +19,6 @@ Future<void> main() async {
 }
 
 Future<void> initApiConfig() async {
-  // ✅ FIX: Thêm timeout 8 giây để không block app vô hạn khi mạng chậm / server down
   try {
     debugPrint('[initApiConfig] 🚀 Đang tải cấu hình API...');
     final res = await http
@@ -34,8 +33,6 @@ Future<void> initApiConfig() async {
     isShow = data[4]['domain'];
     debugPrint('[initApiConfig] ✅ Cấu hình API thành công: ${ApiPath.baseUrl}');
   } catch (e) {
-    // Fallback: giữ nguyên giá trị mặc định đã được khai báo trong ApiPath/ApiPathTeacher
-    // App vẫn có thể chạy, sẽ lỗi khi gọi API cụ thể nếu URL sai
     debugPrint(
       '[initApiConfig] ⚠️ Không tải được cấu hình API: $e – dùng fallback URL',
     );
