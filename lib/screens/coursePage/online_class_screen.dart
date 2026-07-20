@@ -56,59 +56,118 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
     final List<XFile> images = await picker.pickMultiImage();
     if (images.isNotEmpty) {
       if (!mounted) return;
+      final TextEditingController textController = TextEditingController();
       showDialog(
         context: context,
-        builder: (context) {
+        builder: (dialogContext) {
           return AlertDialog(
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.r),
             ),
             title: Text('Xác nhận trả bài', style: defaultText18B),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Bạn có chắc chắn muốn trả bài với các ảnh đã chọn không?',
-                  style: defaultText14M,
-                ),
-                SizedBox(height: 16.h),
-                SizedBox(
-                  height: 80.h,
-                  width: double.maxFinite,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: images.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: EdgeInsets.only(right: 8.w),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.r),
-                          child: Image.file(
-                            File(images[index].path),
-                            height: 80.h,
-                            width: 80.h,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    },
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Bạn có chắc chắn muốn trả bài với các ảnh đã chọn không?',
+                    style: defaultText14M,
                   ),
-                ),
-              ],
+                  SizedBox(height: 16.h),
+                  SizedBox(
+                    height: 80.h,
+                    width: double.maxFinite,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: images.length,
+                      itemBuilder: (ctx, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(right: 8.w),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.r),
+                            child: Image.file(
+                              File(images[index].path),
+                              height: 80.h,
+                              width: 80.h,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  TextField(
+                    controller: textController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintText: 'Nhập nội dung bài trả...',
+                      hintStyle: defaultText14M.copyWith(color: Colors.grey),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(color: mainDarkGreen),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 12.h,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(dialogContext),
                 child: Text('Hủy', style: defaultText14B),
               ),
               TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // TODO: Add submit API logic here
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Trả bài thành công!')),
-                  );
+                onPressed: () async {
+                  final textContent = textController.text;
+                  Navigator.pop(dialogContext);
+
+                  try {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (loadingContext) =>
+                          const Center(child: CircularProgressIndicator()),
+                    );
+
+                    await CourseRepo().customerSubmit(
+                      courseId:
+                          widget.course.courseId ??
+                          widget.course.courseScheduleId ??
+                          '',
+                      content: textContent,
+                      courseTypeId: widget.course.settingCourseTypeId ?? '1',
+                      isPointAcc: 0,
+                      files: images.map((e) => e.path).toList(),
+                    );
+
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Trả bài thành công!')),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+                    }
+                  }
                 },
                 child: Text(
                   'Trả bài',
@@ -211,33 +270,37 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                     //   courses.description ?? 'Học online với video'.sanitizeForApple,
                     //   style: defaultText14Re,
                     // ),
-                    // Row(
-                    //   children: [
-                    //     Container(
-                    //       height: 8.h,
-                    //       width: 270.w,
-                    //       alignment: Alignment.centerLeft,
-                    //       decoration: BoxDecoration(
-                    //         color: const Color(0xffEDEDED),
-                    //         borderRadius: BorderRadius.circular(20.r),
-                    //       ),
-                    //       child: Container(
-                    //         height: 8.h,
-                    //         width:
-                    //             270.w * (widget.course.percentLearning! / 100),
-                    //         decoration: BoxDecoration(
-                    //           color: mainDarkGreen,
-                    //           borderRadius: BorderRadius.circular(20.r),
-                    //         ),
-                    //       ),
-                    //     ),
+                    if (isShow == 'true')
+                      Row(
+                        children: [
+                          Container(
+                            height: 8.h,
+                            width: 270.w,
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                              color: const Color(0xffEDEDED),
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Container(
+                              height: 8.h,
+                              width:
+                                  270.w *
+                                  (widget.course.percentLearning! / 100),
+                              decoration: BoxDecoration(
+                                color: mainDarkGreen,
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                            ),
+                          ),
 
-                    //     Text(
-                    //       '  ${widget.course.percentLearning!}%',
-                    //       style: defaultText16B.copyWith(color: mainDarkGreen),
-                    //     ),
-                    //   ],
-                    // ),
+                          Text(
+                            '  ${widget.course.percentLearning!}%',
+                            style: defaultText16B.copyWith(
+                              color: mainDarkGreen,
+                            ),
+                          ),
+                        ],
+                      ),
                     SizedBox(height: 16.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -301,36 +364,37 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                             ),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: _pickImagesAndSubmit,
-                          child: Container(
-                            height: 44.h,
-                            width: 162.w,
-                            decoration: BoxDecoration(
-                              color: Color(0xffEEF5EC),
-                              border: Border.all(
-                                color: mainDarkGreen.withValues(alpha: 0.28),
-                              ),
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/tra_bai.svg',
-                                  width: 20.w,
-                                  height: 20.h,
-                                  colorFilter: ColorFilter.mode(
-                                    mainDarkGreen,
-                                    BlendMode.srcIn,
-                                  ),
+                        if (widget.course.percentLearning == 100)
+                          GestureDetector(
+                            onTap: _pickImagesAndSubmit,
+                            child: Container(
+                              height: 44.h,
+                              width: 162.w,
+                              decoration: BoxDecoration(
+                                color: Color(0xffEEF5EC),
+                                border: Border.all(
+                                  color: mainDarkGreen.withValues(alpha: 0.28),
                                 ),
-                                SizedBox(width: 8.w),
-                                Text('Trả bài', style: defaultText14SB),
-                              ],
+                                borderRadius: BorderRadius.circular(16.r),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/icons/tra_bai.svg',
+                                    width: 20.w,
+                                    height: 20.h,
+                                    colorFilter: ColorFilter.mode(
+                                      mainDarkGreen,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text('Trả bài', style: defaultText14SB),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                     SizedBox(height: 20.h),

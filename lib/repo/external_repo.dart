@@ -155,4 +155,24 @@ class ExternalRepo {
       throw Exception('Lỗi xử lý dữ liệu: $e');
     }
   }
+
+  Future<PayCodeModel> paymentCourse(
+    Map<String, dynamic> requestData,
+    String? token,
+  ) async {
+    try {
+      final dio = await DioClient.getInstance();
+      dio.options.headers['Token'] = token;
+      final response = await dio.post(ApiPath.coursePayment, data: requestData);
+      if (response.data != null) {
+        return PayCodeModel.fromJson(response.data);
+      } else {
+        throw Exception('Không nhận được dữ liệu phản hồi từ server.');
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
 }

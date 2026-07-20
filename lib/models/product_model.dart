@@ -21,7 +21,7 @@ class CartItem {
   final int price;
   int quantity;
   final bool isCourse;
-
+  String? courseTypeId;
   CartItem({
     required this.id,
     required this.name,
@@ -29,6 +29,7 @@ class CartItem {
     required this.price,
     this.quantity = 1,
     this.isCourse = false,
+    this.courseTypeId,
   });
 }
 

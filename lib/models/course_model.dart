@@ -119,6 +119,7 @@ class CourseDetailModel {
   final String? price;
   final String? priceOld;
   final String? youtubeUrl;
+  final String? courseTypeId;
   final List<TopicalModel>? topicals;
   final List<dynamic>? feedbacks; // Thêm list feedback
 
@@ -131,6 +132,7 @@ class CourseDetailModel {
     this.price,
     this.priceOld,
     this.youtubeUrl,
+    this.courseTypeId,
     this.topicals,
     this.feedbacks,
   });
@@ -173,6 +175,7 @@ class CourseDetailModel {
       youtubeUrl: rootObj['url_youtube_2']?.toString().isNotEmpty == true
           ? rootObj['url_youtube_2']
           : rootObj['url_youtube'],
+      courseTypeId: rootObj['course_type_id']?.toString(),
       topicals:
           (json['topical'] as List?)
               ?.map((e) => TopicalModel.fromJson(e))

@@ -348,6 +348,24 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       return;
                     }
 
+                    bool hasCourse = globalListCart.any(
+                      (item) => item.isCourse,
+                    );
+                    bool hasProduct = globalListCart.any(
+                      (item) => !item.isCourse,
+                    );
+
+                    if (hasCourse && hasProduct) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Vui lòng thanh toán khóa học và nguyên liệu máy riêng biệt',
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+
                     try {
                       showDialog(
                         context: context,
@@ -370,10 +388,17 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         "address": _addressController.text.trim(),
                         "cart": globalListCart
                             .map(
-                              (item) => {
-                                "product_id": int.parse(item.id),
-                                "quantity": item.quantity,
-                              },
+                              (item) => hasCourse
+                                  ? {
+                                      "course_type_id": int.parse(
+                                        item.courseTypeId ?? '',
+                                      ),
+                                      "quantity": item.quantity,
+                                    }
+                                  : {
+                                      "product_id": int.parse(item.id),
+                                      "quantity": item.quantity,
+                                    },
                             )
                             .toList(),
                       };
@@ -381,10 +406,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       final SharedPreferences prefs =
                           await SharedPreferences.getInstance();
                       final String? token = prefs.getString('remember_token');
-                      final payCode = await ExternalRepo().paymentProduct(
-                        payload,
-                        token,
-                      );
+                      final payCode = hasCourse
+                          ? await ExternalRepo().paymentCourse(payload, token)
+                          : await ExternalRepo().paymentProduct(payload, token);
                       Navigator.pop(context); // close loading dialog
 
                       // If we want to show dynamic QR code, we could use payCode here,

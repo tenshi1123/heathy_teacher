@@ -164,6 +164,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
                               image: courses.image ?? '',
                               price: int.tryParse(courses.price ?? '0') ?? 0,
                               isCourse: true,
+                              courseTypeId: courses.courseTypeId,
                             ),
                           );
                           Navigator.push(
@@ -211,6 +212,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
                                 image: courses.image ?? '',
                                 price: int.tryParse(courses.price ?? '0') ?? 0,
                                 isCourse: true,
+                                courseTypeId: courses.courseTypeId,
                               ),
                             );
                           }

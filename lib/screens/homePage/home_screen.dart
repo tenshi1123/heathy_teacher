@@ -375,7 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(
                 width: 375.w,
-                height: 250.h,
+                height: 260.h,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
@@ -608,7 +608,7 @@ class _OfflineClassCard extends StatelessWidget {
             // ),
             Text(
               model.name ?? 'Không xác định',
-              maxLines: 2,
+              maxLines: isShow == 'true' ? 2 : 3,
               overflow: TextOverflow.ellipsis,
               style: defaultText14SB,
             ),

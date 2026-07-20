@@ -41,6 +41,16 @@ class ApiPath {
   static String listFeedback = '$baseUrl/danh-sach-feedback';
   static String listBaiviet = '$baseUrl/danh-sach-bai-viet-wp';
   static String detailBaiviet = '$baseUrl/chi-tiet-bai-viet-wp';
+
+  //trả bài
+  static String customerSubmit = '$baseUrl/customer/course/customer_submit';
+  static String contentSubmit = '$baseUrl/customer/course/content_submit';
+  static String loadContentSubmit =
+      '$baseUrl/customer/course/load_content_submit';
+  static String addComment =
+      '$baseUrl/customer/course/add_course_customer_submit_comment';
+  static String certificateCourse =
+      '$baseUrl/customer/course/add_certificate_course';
 }
 
 //api danh sách khóa học chọn setting_course_type là on hay off đều ra cùng 1 danh sách

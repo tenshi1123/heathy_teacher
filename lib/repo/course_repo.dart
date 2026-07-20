@@ -4,6 +4,7 @@ import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/models/schedule_model.dart';
 import 'package:heathy_teacher/utils/DioClient.dart';
 import 'package:heathy_teacher/utils/constants/api_path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CourseRepo {
   Future<List<CourseScheduleModel>> getCourse({
@@ -131,6 +132,45 @@ class CourseRepo {
         return combinedList;
       } else {
         return [];
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
+
+  Future<void> customerSubmit({
+    required String courseId,
+    required String content,
+    required String courseTypeId,
+    required int isPointAcc,
+    required List<String> files,
+  }) async {
+    try {
+      final dio = await DioClient.getInstance();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? token = prefs.getString('token');
+      dio.options.headers['Authorization'] = 'Bearer $token';
+      Map<String, dynamic> requestData = {
+        'content': content,
+        'course_id': courseId,
+        'course_type_id': courseTypeId,
+        'is_point_acc': isPointAcc,
+      };
+
+      for (int i = 0; i < files.length; i++) {
+        requestData['images[$i]'] = await MultipartFile.fromFile(
+          files[i],
+          filename: files[i].split('/').last,
+        );
+      }
+
+      FormData formData = FormData.fromMap(requestData);
+
+      final response = await dio.post(ApiPath.customerSubmit, data: formData);
+      if (response.data == null || response.data['status'] != 200) {
+        throw Exception('Lỗi khi gửi bài: ${response.data}');
       }
     } on DioException catch (e) {
       throw Exception('Lỗi kết nối mạng: ${e.message}');
