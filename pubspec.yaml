@@ -1,7 +1,7 @@
 name: heathy_teacher
 description: "application for heathy teacher"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 0.0.4+1
+version: 0.0.4+2
 
 environment:
   sdk: ^3.8.1
@@ -58,4 +58,5 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/fonts/
+    - shorebird.yaml
     
