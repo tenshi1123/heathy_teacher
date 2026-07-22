@@ -181,6 +181,173 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
     }
   }
 
+  Future<void> _requestCertificate() async {
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController phoneController = TextEditingController();
+    final TextEditingController addressController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          title: Text('Cấp chứng nhận', style: defaultText18B),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    hintText: 'Họ và tên',
+                    hintStyle: defaultText14M.copyWith(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: mainDarkGreen),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 12.h,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                TextField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    hintText: 'Số điện thoại',
+                    hintStyle: defaultText14M.copyWith(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: mainDarkGreen),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 12.h,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                TextField(
+                  controller: addressController,
+                  decoration: InputDecoration(
+                    hintText: 'Địa chỉ nhận',
+                    hintStyle: defaultText14M.copyWith(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: mainDarkGreen),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 12.h,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text('Hủy', style: defaultText14B),
+            ),
+            TextButton(
+              onPressed: () async {
+                final name = nameController.text.trim();
+                final phone = phoneController.text.trim();
+                final address = addressController.text.trim();
+
+                if (name.isEmpty || phone.isEmpty || address.isEmpty) {
+                  ScaffoldMessenger.of(dialogContext).showSnackBar(
+                    const SnackBar(content: Text('Vui lòng điền đủ thông tin')),
+                  );
+                  return;
+                }
+
+                Navigator.pop(dialogContext);
+
+                try {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (loadingContext) =>
+                        const Center(child: CircularProgressIndicator()),
+                  );
+
+                  await CourseRepo().addCertificateCourse(
+                    courseId:
+                        int.tryParse(
+                          widget.course.courseId ??
+                              widget.course.courseScheduleId ??
+                              '0',
+                        ) ??
+                        0,
+                    courseTypeId:
+                        int.tryParse(
+                          widget.course.settingCourseTypeId ?? '1',
+                        ) ??
+                        1,
+                    name: name,
+                    phone: phone,
+                    address: address,
+                  );
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Yêu cầu cấp chứng nhận thành công!'),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+                  }
+                }
+              },
+              child: Text(
+                'Gửi',
+                style: defaultText14SB.copyWith(color: mainDarkGreen),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   String _formatHtml(String? html) {
     if (html == null) return '';
     return html
@@ -397,6 +564,38 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                           ),
                       ],
                     ),
+                    if (widget.course.percentLearning == 100) ...[
+                      SizedBox(height: 16.h),
+                      GestureDetector(
+                        onTap: _requestCertificate,
+                        child: Container(
+                          height: 44.h,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: mainDarkGreen,
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.card_membership,
+                                color: Colors.white,
+                                size: 20.w,
+                              ),
+                              SizedBox(width: 8.w),
+                              Text(
+                                ' Yêu cầu cấp chứng nhận',
+                                style: defaultText14SB.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+
                     SizedBox(height: 20.h),
                     // Container(
                     //   width: 343.w,
@@ -417,7 +616,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                     //         height: 20.h,
                     //       ),
                     //       Text(
-                    //         ' Sản phẩm tiêu biểu',
+                    //         ' Sản phẩm của học viên',
                     //         style: defaultText14SB.copyWith(
                     //           color: Colors.white,
                     //         ),
@@ -425,7 +624,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                     //     ],
                     //   ),
                     // ),
-                    SizedBox(height: 28.h),
+                    // SizedBox(height: 28.h),
                     if (isShow == 'true')
                       Text(
                         'Nội dung khoá học'.sanitizeForApple,

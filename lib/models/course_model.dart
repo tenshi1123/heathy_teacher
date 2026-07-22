@@ -269,3 +269,32 @@ class CourseOffModel {
     );
   }
 }
+
+class ContentSubmitModel {
+  final String? fullName;
+  final String? id;
+  final String? content;
+  final List<String>? images;
+  final String? createdAt;
+  final List<String>? comments;
+
+  ContentSubmitModel({
+    this.fullName,
+    this.id,
+    this.content,
+    this.images,
+    this.createdAt,
+    this.comments,
+  });
+
+  factory ContentSubmitModel.fromJson(Map<String, dynamic> json) {
+    return ContentSubmitModel(
+      fullName: json['full_name'],
+      id: json['id'],
+      content: (json['content'] as String?).sanitizeForApple,
+      images: List<String>.from(json['images'] ?? []),
+      createdAt: json['created_at'],
+      comments: List<String>.from(json['comments'] ?? []),
+    );
+  }
+}

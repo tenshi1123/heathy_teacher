@@ -178,4 +178,65 @@ class CourseRepo {
       throw Exception('Lỗi xử lý dữ liệu: $e');
     }
   }
+
+  Future<void> addCertificateCourse({
+    required int courseId,
+    required int courseTypeId,
+    required String name,
+    required String phone,
+    required String address,
+  }) async {
+    try {
+      final dio = await DioClient.getInstance();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? token = prefs.getString('token');
+      dio.options.headers['Authorization'] = 'Bearer $token';
+      Map<String, dynamic> requestData = {
+        'course_id': courseId,
+        'course_type_id': courseTypeId,
+        'name': name,
+        'phone': phone,
+        'address': address,
+      };
+
+      final response = await dio.post(
+        ApiPath.certificateCourse,
+        data: requestData,
+      );
+      if (response.data == null || response.data['status'] != 200) {
+        throw Exception('Lỗi khi gửi bài: ${response.data}');
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
+
+  Future<List<ContentSubmitModel>> getContentSubmit({
+    required String courseId,
+  }) async {
+    try {
+      final dio = await DioClient.getInstance();
+      final response = await dio.post(
+        ApiPath.products,
+        data: {"course_id": courseId},
+      );
+      if (response.data != null &&
+          response.data['data'] != null &&
+          response.data['data']['value'] != null) {
+        final List listData = response.data['data']['value'] as List;
+
+        return listData
+            .map((e) => ContentSubmitModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else {
+        return [];
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
 }
