@@ -579,13 +579,13 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons.card_membership,
+                                Icons.star,
                                 color: Colors.white,
                                 size: 20.w,
                               ),
                               SizedBox(width: 8.w),
                               Text(
-                                ' Yêu cầu cấp chứng nhận',
+                                ' Cấp chứng nhận',
                                 style: defaultText14SB.copyWith(
                                   color: Colors.white,
                                 ),
