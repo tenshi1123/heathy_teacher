@@ -6,8 +6,10 @@ import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
   const ShoppingCartScreen({super.key});
@@ -18,8 +20,10 @@ class ShoppingCartScreen extends StatefulWidget {
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   int selectedIndex = 0;
 
-  List<CartItem> get courses => globalListCart.where((item) => item.isCourse).toList();
-  List<CartItem> get products => globalListCart.where((item) => !item.isCourse).toList();
+  List<CartItem> get courses =>
+      globalListCart.where((item) => item.isCourse).toList();
+  List<CartItem> get products =>
+      globalListCart.where((item) => !item.isCourse).toList();
 
   int get totalPrice {
     int total = 0;
@@ -139,13 +143,20 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   ],
                 ),
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => OrderPaymentScreen()),
-                      ),
-                    );
+                  onTap: () async {
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    final String? token = prefs.getString('remember_token');
+                    if (token == null) {
+                      showLoginDialog(context);
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) => OrderPaymentScreen()),
+                        ),
+                      );
+                    }
                   },
                   child: Container(
                     width: 343.w,

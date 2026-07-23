@@ -25,6 +25,9 @@ import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:heathy_teacher/screens/splash/sale_screen.dart';
+import 'package:heathy_teacher/screens/splash/list_class_off_external.dart';
+import 'package:heathy_teacher/screens/splash/list_class_online_external.dart';
 
 class CoGiaoHealthyScreen extends StatefulWidget {
   const CoGiaoHealthyScreen({
@@ -234,7 +237,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                     ),
                   ),
                   ServiceGrid(),
-                  SizedBox(height: 20.h),
+
                   SizedBox(
                     width: 343.w,
                     child: GestureDetector(
@@ -246,26 +249,16 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                           ),
                         );
                       },
-                      child: Row(
-                        children: [
-                          SvgPicture.asset('assets/icons/class_off.svg'),
-                          Text(
-                            ' Gợi ý các khóa học trực tiếp'.sanitizeForApple,
-                            style: defaultText16B.copyWith(color: Colors.black),
-                          ),
-                          Spacer(),
-                          Text(
-                            'Xem tất cả  ',
-                            style: defaultText14SB.copyWith(
-                              color: mainDarkGreen,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                          Icon(
-                            Icons.keyboard_arrow_right,
+                      child: Center(
+                        child: Text(
+                          ' KHOÁ HỌC ONLINE NỔI BẬT -\n ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG',
+                          textAlign: TextAlign.center,
+
+                          style: defaultText18B.copyWith(
                             color: mainDarkGreen,
+                            fontWeight: FontWeight.w900,
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -276,69 +269,70 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       physics: const ScrollPhysics(),
-                      itemCount: listCourseOffline.length,
+                      itemCount: listCourseOnline.length,
                       itemBuilder: (context, index) {
-                        return _OfflineClassCard(
-                          model: listCourseOffline[index],
+                        return _OnlineClassCard(
+                          index: index,
+                          model: listCourseOnline[index],
                         );
                       },
                     ),
                   ),
-                  SizedBox(height: 20.h),
-                  if (isShow == 'true')
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: ((context) => ListClassOnline()),
-                          ),
-                        );
-                      },
-                      child: SizedBox(
-                        width: 343.w,
-                        child: Row(
-                          children: [
-                            SvgPicture.asset('assets/icons/class_online.svg'),
-                            Text(
-                              ' Gợi ý các khóa học online'.sanitizeForApple,
-                              style: defaultText16B.copyWith(
-                                color: Colors.black,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              'Xem tất cả  ',
-                              style: defaultText14SB.copyWith(
-                                color: mainDarkGreen,
-                                fontSize: 12.sp,
-                              ),
-                            ),
-                            Icon(
-                              Icons.keyboard_arrow_right,
-                              color: mainDarkGreen,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  if (isShow == 'true')
-                    SizedBox(
-                      width: 375.w,
-                      height: (294 + 48).h,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        physics: const ScrollPhysics(),
-                        itemCount: listCourseOnline.length,
-                        itemBuilder: (context, index) {
-                          return _OnlineClassCard(
-                            index: index,
-                            model: listCourseOnline[index],
-                          );
-                        },
-                      ),
-                    ),
+                  //SizedBox(height: 20.h),
+                  // if (isShow == 'true')
+                  //   GestureDetector(
+                  //     onTap: () {
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //           builder: ((context) => ListClassOnline()),
+                  //         ),
+                  //       );
+                  //     },
+                  //     child: SizedBox(
+                  //       width: 343.w,
+                  //       child: Row(
+                  //         children: [
+                  //           SvgPicture.asset('assets/icons/class_online.svg'),
+                  //           Text(
+                  //             ' Gợi ý các khóa học online'.sanitizeForApple,
+                  //             style: defaultText16B.copyWith(
+                  //               color: Colors.black,
+                  //             ),
+                  //           ),
+                  //           Spacer(),
+                  //           Text(
+                  //             'Xem tất cả  ',
+                  //             style: defaultText14SB.copyWith(
+                  //               color: mainDarkGreen,
+                  //               fontSize: 12.sp,
+                  //             ),
+                  //           ),
+                  //           Icon(
+                  //             Icons.keyboard_arrow_right,
+                  //             color: mainDarkGreen,
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // if (isShow == 'true')
+                  //   SizedBox(
+                  //     width: 375.w,
+                  //     height: (294 + 48).h,
+                  //     child: ListView.builder(
+                  //       scrollDirection: Axis.horizontal,
+                  //       shrinkWrap: true,
+                  //       physics: const ScrollPhysics(),
+                  //       itemCount: listCourseOnline.length,
+                  //       itemBuilder: (context, index) {
+                  //         return _OnlineClassCard(
+                  //           index: index,
+                  //           model: listCourseOnline[index],
+                  //         );
+                  //       },
+                  //     ),
+                  //   ),
                   SizedBox(height: 10.h),
                   FeedbackSlider(),
                   Container(
@@ -849,13 +843,10 @@ class ServiceGrid extends StatelessWidget {
           showCitySelectionDialog(
             context: context,
             onCitySelected: (selectedCity) {
-              // 🔥 Cả 2 thành phố đều vào chung 1 màn hình (Ví dụ: CoursesScreen)
-              // Truyền tên thành phố vừa chọn vào màn hình đó
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      CoGiaoHealthyScreen(type: 'off', place: selectedCity),
+                  builder: (_) => ListClassOffExternal(place: selectedCity),
                 ),
               );
             },
@@ -867,18 +858,11 @@ class ServiceGrid extends StatelessWidget {
           title: "KHÓA HỌC ONLINE".sanitizeForApple,
           icon: "assets/images/home2.png",
           onTap: () {
-            showOnlineCategoriesDialog(
-              context: context,
-              onCategorySelected: (selectedCategory) {
-                // 🔥 Cả 2 loại khóa học đều
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        const CoGiaoHealthyScreen(type: 'on', place: ''),
-                  ),
-                );
-              },
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const ListClassOnlineExternal(),
+              ),
             );
           },
         ),
@@ -917,10 +901,7 @@ class ServiceGrid extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) =>
-                  const CoGiaoHealthyScreen(type: 'sale', place: ''),
-            ),
+            MaterialPageRoute(builder: (_) => const SaleScreen()),
           );
         },
       ),
@@ -937,7 +918,7 @@ class ServiceGrid extends StatelessWidget {
           "Các dịch vụ nổi bật tại Cô giáo healthy",
           style: defaultText14M.copyWith(color: mainDarkGreen),
         ),
-
+        const StatisticsBannerWidget(),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -1554,33 +1535,109 @@ class _OnlineClassCard extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              height: 32.h,
-              width: 184.w,
-              decoration: BoxDecoration(
-                color: const Color(0xff73BB43),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(width: 8.w),
-                  Image.asset(
-                    'assets/images/play_icon.png',
-                    height: 16.h,
-                    width: 16.w,
-                    fit: BoxFit.fill,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    '${model.totalEnrollments ?? 0} lượt học',
-                    style: defaultText14SB.copyWith(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   height: 32.h,
+            //   width: 184.w,
+            //   decoration: BoxDecoration(
+            //     color: const Color(0xff73BB43),
+            //     borderRadius: BorderRadius.circular(16.r),
+            //   ),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.start,
+            //     children: [
+            //       SizedBox(width: 8.w),
+            //       Image.asset(
+            //         'assets/images/play_icon.png',
+            //         height: 16.h,
+            //         width: 16.w,
+            //         fit: BoxFit.fill,
+            //       ),
+            //       SizedBox(width: 8.w),
+            //       Text(
+            //         '${model.totalEnrollments ?? 0} lượt học',
+            //         style: defaultText14SB.copyWith(color: Colors.white),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class StatisticsBannerWidget extends StatelessWidget {
+  const StatisticsBannerWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(vertical: 24.h),
+      padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 16.w),
+      color: const Color(0xFF67B044), // Green background color from image
+      child: Wrap(
+        alignment: WrapAlignment.spaceEvenly,
+        runSpacing: 24.h,
+        spacing: 8.w,
+        children: [
+          _buildStatItem(
+            Icons.groups_outlined,
+            '10+',
+            'Năm kinh nghiệm\nđào tạo và setup F&B\nViệt Nam',
+            context,
+          ),
+          _buildStatItem(
+            Icons.computer_outlined,
+            '60+',
+            'Khoá học nấu ăn dinh\ndưỡng,\nlàm bánh và đồ uống\nhealthy',
+            context,
+          ),
+          _buildStatItem(
+            Icons.thumb_up_alt_outlined,
+            'No.1',
+            'Trung tâm đầu tiên\ngiảng dạy\ndinh dưỡng & thực\nphẩm healthy',
+            context,
+          ),
+          _buildStatItem(
+            Icons.school_outlined,
+            '10.000+',
+            'Học viên ứng dụng &\nkinh doanh thành\ncông trên toàn quốc',
+            context,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(
+    IconData icon,
+    String title,
+    String description,
+    BuildContext context,
+  ) {
+    return SizedBox(
+      width: (MediaQuery.of(context).size.width - 48.w) / 2, // 2 items per row
+      child: Column(
+        children: [
+          Icon(icon, color: Colors.white, size: 40.w),
+          SizedBox(height: 12.h),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 24.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            description,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12.sp, color: Colors.white, height: 1.4),
+          ),
+        ],
       ),
     );
   }

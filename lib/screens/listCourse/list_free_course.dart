@@ -9,6 +9,10 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:heathy_teacher/repo/external_repo.dart';
+import 'package:heathy_teacher/models/course_model.dart';
+import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
+import 'package:intl/intl.dart';
 
 class ListFreeCourse extends StatefulWidget {
   const ListFreeCourse({super.key});
@@ -31,6 +35,58 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
   int _currentSlide = 0;
   final PageController _pageController =
       PageController(); // Điều khiển PageView
+
+  late int currentPage = 1;
+  int itemsPerPage = 6;
+  bool isLoading = false;
+  List<CourseModel> localListCourse = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPage(1);
+  }
+
+  Future<void> _loadPage(int page) async {
+    int startIndex = (page - 1) * itemsPerPage;
+    if (startIndex >= localListCourse.length) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        final newItems = await ExternalRepo().getListFreeCourse(
+          page: page,
+          show: itemsPerPage,
+        );
+        setState(() {
+          localListCourse.addAll(newItems);
+        });
+      } catch (e) {
+        // print('Lỗi: $e');
+      } finally {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      }
+    }
+  }
+
+  List<CourseModel> get currentItems {
+    int startIndex = (currentPage - 1) * itemsPerPage;
+    int endIndex = startIndex + itemsPerPage;
+    if (startIndex >= localListCourse.length) return [];
+    if (endIndex > localListCourse.length) endIndex = localListCourse.length;
+    return localListCourse.sublist(startIndex, endIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,9 +198,45 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                   ),
 
                   //list
-                  FreeCourseItem(),
-                  FreeCourseItem(),
+                  if (currentItems.isEmpty && !isLoading)
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Text('Không có khóa học nào.', style: defaultText16B),
+                    )
+                  else
+                    ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: currentItems.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return FreeCourseItem(model: currentItems[index]);
+                      },
+                    ),
 
+                  if (currentItems.isNotEmpty)
+                    Container(
+                      height: 76.h,
+                      width: 375.w,
+                      padding: EdgeInsets.only(bottom: 20.h, top: 16.h),
+                      decoration: const BoxDecoration(color: Colors.white),
+                      child: PaginationWidget(
+                        currentPage: currentPage,
+                        totalPages: 6,
+                        onPageChanged: (page) {
+                          setState(() {
+                            currentPage = page;
+                          });
+                          _loadPage(page);
+                        },
+                      ),
+                    ),
+
+                  if (isLoading)
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: CircularProgressIndicator(color: mainDarkGreen),
+                    ),
                   Container(
                     height: 160.h,
                     width: 375.w,
@@ -550,7 +642,8 @@ class _PulseIconState extends State<PulseIcon>
 }
 
 class FreeCourseItem extends StatelessWidget {
-  const FreeCourseItem({super.key});
+  final CourseModel model;
+  const FreeCourseItem({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -572,8 +665,14 @@ class FreeCourseItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CachedNetworkImage(
-  imageUrl: 'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: CachedNetworkImage(
+              imageUrl: model.img ?? 'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
+              width: double.infinity,
+              height: 180.h,
+              fit: BoxFit.cover,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -586,7 +685,7 @@ class FreeCourseItem extends StatelessWidget {
                   color: Colors.white,
                 ),
                 child: Text(
-                  'Đồ uống healthy',
+                  'Học thử miễn phí',
                   style: defaultText14M.copyWith(color: mainDarkGreen),
                 ),
               ),
@@ -594,7 +693,7 @@ class FreeCourseItem extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'KHÓA HỌC MÔ HÌNH KINH DOANH SỮA HẠT DƯỠNG SINH HIỆN ĐẠI - MASTER CLASS 2026'.sanitizeForApple,
+            (model.courseName ?? 'Không xác định').sanitizeForApple,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: defaultText18B.copyWith(color: mainDarkGreen),
@@ -639,7 +738,7 @@ class FreeCourseItem extends StatelessWidget {
                       size: 16,
                     ),
                     Text(
-                      '  56 bài học',
+                      '  ${model.lessonNumber} bài học',
                       style: defaultText12M.copyWith(color: mainDarkGreen),
                     ),
                   ],
@@ -663,7 +762,7 @@ class FreeCourseItem extends StatelessWidget {
                   children: [
                     Icon(Icons.person_outline, color: Colors.yellow, size: 16),
                     Text(
-                      '  1036 lượt học',
+                      '  ${model.totalEnrollments} lượt học',
                       style: defaultText12M.copyWith(color: mainDarkGreen),
                     ),
                   ],

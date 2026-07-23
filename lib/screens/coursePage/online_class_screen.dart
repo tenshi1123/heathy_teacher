@@ -16,6 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:heathy_teacher/repo/chat_repo.dart';
 import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:heathy_teacher/screens/coursePage/student_product_screen.dart';
 
 class OnlineClassScreen extends StatefulWidget {
   const OnlineClassScreen({super.key, required this.course});
@@ -578,11 +579,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.star,
-                                color: Colors.white,
-                                size: 20.w,
-                              ),
+                              Icon(Icons.star, color: Colors.white, size: 20.w),
                               SizedBox(width: 8.w),
                               Text(
                                 ' Cấp chứng nhận',
@@ -597,34 +594,44 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                     ],
 
                     SizedBox(height: 20.h),
-                    // Container(
-                    //   width: 343.w,
-                    //   height: 44.h,
-                    //   decoration: BoxDecoration(
-                    //     color: mainGreen,
-                    //     border: Border.all(
-                    //       color: mainDarkGreen.withValues(alpha: 0.08),
-                    //     ),
-                    //     borderRadius: BorderRadius.circular(16.r),
-                    //   ),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     children: [
-                    //       SvgPicture.asset(
-                    //         'assets/icons/bling.svg',
-                    //         width: 20.w,
-                    //         height: 20.h,
-                    //       ),
-                    //       Text(
-                    //         ' Sản phẩm của học viên',
-                    //         style: defaultText14SB.copyWith(
-                    //           color: Colors.white,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    // SizedBox(height: 28.h),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const StudentProductScreen(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 343.w,
+                        height: 44.h,
+                        decoration: BoxDecoration(
+                          color: mainGreen,
+                          border: Border.all(
+                            color: mainDarkGreen.withValues(alpha: 0.08),
+                          ),
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/icons/bling.svg',
+                              width: 20.w,
+                              height: 20.h,
+                            ),
+                            Text(
+                              ' Sản phẩm của học viên',
+                              style: defaultText14SB.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 28.h),
                     if (isShow == 'true')
                       Text(
                         'Nội dung khoá học'.sanitizeForApple,

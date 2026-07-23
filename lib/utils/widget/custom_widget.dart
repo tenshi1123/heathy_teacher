@@ -210,18 +210,15 @@ class CartItemWidget extends StatelessWidget {
                 const SizedBox(height: 8),
 
                 /// quantity
-                if (!item.isCourse) ...[
-                  const Text("Số lượng:"),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      _buildBtn("-", onDecrease),
-                      _buildQty(item.quantity),
-                      _buildBtn("+", onIncrease),
-                    ],
-                  ),
-                ] else
-                  Text("Số lượng: ${item.quantity}"),
+                const Text("Số lượng:"),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    _buildBtn("-", onDecrease),
+                    _buildQty(item.quantity),
+                    _buildBtn("+", onIncrease),
+                  ],
+                ),
               ],
             ),
           ),
@@ -750,7 +747,7 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: SizedBox(
-        height: 100,
+        height: 100.h,
         child: Stack(
           alignment: Alignment.center,
           children: [

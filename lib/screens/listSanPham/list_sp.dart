@@ -202,35 +202,33 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                     bottom: Radius.circular(16),
                                   ),
                                   child: CachedNetworkImage(
-  imageUrl: item.img ?? '',
+                                    imageUrl: item.img ?? '',
                                     height: 160.h,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
                                     errorWidget: (context, url, error) {
-                                          return Container(
-                                            width: 50.dg,
-                                            height: 50.dg,
-                                            color: Colors.grey[200],
-                                            child: Icon(
-                                              Icons.error_outline,
-                                              size: 30.dg,
-                                              color: Colors.grey,
-                                            ),
-                                          );
-                                        },
+                                      return Container(
+                                        width: 50.dg,
+                                        height: 50.dg,
+                                        color: Colors.grey[200],
+                                        child: Icon(
+                                          Icons.error_outline,
+                                          size: 30.dg,
+                                          color: Colors.grey,
+                                        ),
+                                      );
+                                    },
                                     // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
                                     placeholder: (context, url) {
-                                          
-                                          return Container(
-                                            width: 80.w,
-                                            height: 80.h,
-                                            color: Colors.grey[100],
-                                            child: const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          );
-                                        },
+                                      return Container(
+                                        width: 80.w,
+                                        height: 80.h,
+                                        color: Colors.grey[100],
+                                        child: const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
 
@@ -347,7 +345,8 @@ class _ListSpScreenState extends State<ListSpScreen> {
                             SizedBox(
                               height: 140.h, // 👈 bạn control size ảnh ở đây
                               child: CachedNetworkImage(
-  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                                imageUrl:
+                                    'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -373,7 +372,8 @@ class _ListSpScreenState extends State<ListSpScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CachedNetworkImage(
-  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+                              imageUrl:
+                                  'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
                               height: 60.h,
                               fit: BoxFit.contain,
                             ),
@@ -532,7 +532,8 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'.sanitizeForApple,
+                                    'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
+                                        .sanitizeForApple,
                                     style: defaultText14M.copyWith(
                                       color: Colors.white,
                                     ),

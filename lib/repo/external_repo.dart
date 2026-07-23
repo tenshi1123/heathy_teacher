@@ -67,13 +67,22 @@ class ExternalRepo {
   Future<List<CourseOffModel>> getListCourseOff({
     int page = 1,
     int show = 10,
+    String? place,
   }) async {
     try {
       final dio = await DioClient.getInstance();
       dio.options.headers['Token'] = 'Healthy1234567890HVG';
+      final Map<String, dynamic> requestData = {
+        "page": page.toString(), 
+        "show": show.toString()
+      };
+      if (place != null && place.isNotEmpty) {
+        requestData["province"] = place;
+        requestData["place"] = place; // fallback
+      }
       final response = await dio.post(
         ApiPath.listCourseOff,
-        data: jsonEncode({"page": page.toString(), "show": show.toString()}),
+        data: jsonEncode(requestData),
       );
       if (response.data != null && response.data['data'] != null) {
         final List listData = response.data['data'] as List;

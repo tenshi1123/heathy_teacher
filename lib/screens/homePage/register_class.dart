@@ -6,7 +6,9 @@ import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/models/product_model.dart';
@@ -151,24 +153,31 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
 
                     //SizedBox(height: 12.h),
                     InkWell(
-                      onTap: () {
-                        globalListCart.clear();
-                        globalListCart.add(
-                          CartItem(
-                            id: courses.id ?? '',
-                            name: courses.title ?? '',
-                            image: courses.image ?? '',
-                            price: int.tryParse(courses.price ?? '0') ?? 0,
-                            isCourse: true,
-                            courseTypeId: courses.courseTypeId,
-                          ),
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const OrderPaymentScreen(),
-                          ),
-                        ).then((_) => setState(() {}));
+                      onTap: () async {
+                        final SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        final String? token = prefs.getString('remember_token');
+                        if (token == null) {
+                          showLoginDialog(context);
+                        } else {
+                          globalListCart.clear();
+                          globalListCart.add(
+                            CartItem(
+                              id: courses.id ?? '',
+                              name: courses.title ?? '',
+                              image: courses.image ?? '',
+                              price: int.tryParse(courses.price ?? '0') ?? 0,
+                              isCourse: true,
+                              courseTypeId: courses.courseTypeId,
+                            ),
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const OrderPaymentScreen(),
+                            ),
+                          ).then((_) => setState(() {}));
+                        }
                       },
                       child: Container(
                         height: 48.h,

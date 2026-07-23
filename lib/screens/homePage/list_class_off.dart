@@ -15,7 +15,8 @@ import 'package:heathy_teacher/models/course_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ListClassOff extends StatefulWidget {
-  const ListClassOff({super.key});
+  final String? place;
+  const ListClassOff({super.key, this.place});
 
   @override
   State<ListClassOff> createState() => _ListClassOffState();
@@ -25,22 +26,28 @@ class _ListClassOffState extends State<ListClassOff> {
   late int currentPage = 1;
   int itemsPerPage = 6;
   bool isLoading = false;
+  List<CourseOffModel> localListCourseOff = [];
 
   @override
   void initState() {
     super.initState();
+    _loadPage(1);
   }
 
   Future<void> _loadPage(int page) async {
     int startIndex = (page - 1) * itemsPerPage;
-    if (startIndex >= globalListCourseOff.length) {
+    if (startIndex >= localListCourseOff.length) {
       setState(() {
         isLoading = true;
       });
       try {
-        final newItems = await ExternalRepo().getListCourseOff(page: page, show: itemsPerPage);
+        final newItems = await ExternalRepo().getListCourseOff(
+          page: page, 
+          show: itemsPerPage,
+          place: widget.place,
+        );
         setState(() {
-          globalListCourseOff.addAll(newItems);
+          localListCourseOff.addAll(newItems);
         });
       } catch (e) {
         print('Lỗi gọi danh sách khoá học offline: $e'.sanitizeForApple);
@@ -57,9 +64,9 @@ class _ListClassOffState extends State<ListClassOff> {
   List<CourseOffModel> get currentItems {
     int startIndex = (currentPage - 1) * itemsPerPage;
     int endIndex = startIndex + itemsPerPage;
-    if (startIndex >= globalListCourseOff.length) return [];
-    if (endIndex > globalListCourseOff.length) endIndex = globalListCourseOff.length;
-    return globalListCourseOff.sublist(startIndex, endIndex);
+    if (startIndex >= localListCourseOff.length) return [];
+    if (endIndex > localListCourseOff.length) endIndex = localListCourseOff.length;
+    return localListCourseOff.sublist(startIndex, endIndex);
   }
 
   @override
