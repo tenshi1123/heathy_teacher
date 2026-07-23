@@ -237,47 +237,48 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                     ),
                   ),
                   ServiceGrid(),
+                  if (isShow == 'true')
+                    SizedBox(
+                      width: 343.w,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: ((context) => ListClassOff()),
+                            ),
+                          );
+                        },
+                        child: Center(
+                          child: Text(
+                            ' KHOÁ HỌC ONLINE NỔI BẬT -\n ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG',
+                            textAlign: TextAlign.center,
 
-                  SizedBox(
-                    width: 343.w,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: ((context) => ListClassOff()),
-                          ),
-                        );
-                      },
-                      child: Center(
-                        child: Text(
-                          ' KHOÁ HỌC ONLINE NỔI BẬT -\n ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG',
-                          textAlign: TextAlign.center,
-
-                          style: defaultText18B.copyWith(
-                            color: mainDarkGreen,
-                            fontWeight: FontWeight.w900,
+                            style: defaultText18B.copyWith(
+                              color: mainDarkGreen,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 375.w,
-                    height: (256 + 48).h,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      physics: const ScrollPhysics(),
-                      itemCount: listCourseOnline.length,
-                      itemBuilder: (context, index) {
-                        return _OnlineClassCard(
-                          index: index,
-                          model: listCourseOnline[index],
-                        );
-                      },
+                  if (isShow == 'true')
+                    SizedBox(
+                      width: 375.w,
+                      height: (256 + 48).h,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        itemCount: listCourseOnline.length,
+                        itemBuilder: (context, index) {
+                          return _OnlineClassCard(
+                            index: index,
+                            model: listCourseOnline[index],
+                          );
+                        },
+                      ),
                     ),
-                  ),
                   //SizedBox(height: 20.h),
                   // if (isShow == 'true')
                   //   GestureDetector(
@@ -886,6 +887,7 @@ class ServiceGrid extends StatelessWidget {
           );
         },
       ),
+
       // ServiceModel(
       //   title: "HỖ TRỢ KỸ THUẬT SAU HỌC",
       //   icon: "assets/images/home5.png",

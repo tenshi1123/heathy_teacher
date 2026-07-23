@@ -43,8 +43,22 @@ class _SaleScreenState extends State<SaleScreen> {
         ProductRepo().getListProduct('uu-dai-khuyen-mai', page: 1, show: 10),
       ]);
       setState(() {
-        saleCourses = futures[0] as List<CourseModel>;
-        saleProducts = futures[1] as List<CategoryDetail>;
+        final List<CourseModel> courses = futures[0] as List<CourseModel>;
+        final List<CategoryDetail> products =
+            futures[1] as List<CategoryDetail>;
+
+        saleCourses = courses.where((element) {
+          final priceOld = element.priceOld ?? '0';
+          final price = element.price ?? '0';
+          return priceOld != '0' && priceOld != price;
+        }).toList();
+
+        saleProducts = products.where((element) {
+          final priceOld = element.priceOld ?? '0';
+          final price = element.price ?? '0';
+          return priceOld != '0' && priceOld != price;
+        }).toList();
+
         isLoading = false;
       });
     } catch (e) {
@@ -75,7 +89,7 @@ class _SaleScreenState extends State<SaleScreen> {
                     )
                   else ...[
                     // Khóa học online
-                    if (saleCourses.isNotEmpty) ...[
+                    if (saleCourses.isNotEmpty && isShow == 'true') ...[
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 16.w,
@@ -115,13 +129,12 @@ class _SaleScreenState extends State<SaleScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         itemCount: saleProducts.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 0.68,
-                            ),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.65,
+                        ),
                         itemBuilder: (context, index) {
                           return _buildProductItem(saleProducts[index]);
                         },
@@ -139,8 +152,221 @@ class _SaleScreenState extends State<SaleScreen> {
                         ),
                       ),
                   ],
-
                   SizedBox(height: 20.h),
+                  Container(
+                    width: 375.w,
+
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 12.h,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16.r),
+                        topRight: Radius.circular(16.r),
+                      ),
+                      color: mainDarkGreen,
+                      border: Border.all(color: mainDarkGreen, width: 1.w),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CachedNetworkImage(
+                          imageUrl:
+                              'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+                          height: 60.h,
+                          fit: BoxFit.contain,
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on_outlined,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  style: defaultText14M.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Hà Nội:',
+                                      style: defaultText14B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          ' 214 Lạc Long Quân, quận Tây Hồ, Hà Nội',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.h),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on_outlined,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  style: defaultText14M.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'HCM:',
+                                      style: defaultText14B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          ' SkyVilla P2406, Celadon City, số 02 Tân Thanh, phường Tân Sơn Nhì, thành phố Hồ Chí Minh',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.h),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.phone_outlined,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  style: defaultText14M.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Hotline:',
+                                      style: defaultText14B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    TextSpan(text: '\n(+84)96 691 2016'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          'CÔNG TY TNHH CÔ GIÁO HEALTHY',
+                          style: defaultText16B.copyWith(color: Colors.white),
+                        ),
+                        Text(
+                          'MST: 0109187074 \nĐăng ký lần đầu ngày 19 háng 05 năm 2020 \nĐăng ký thay đổi lần thứ 4, ngày 20 tháng 06 năm 2024 \nNơi cấp: Sở kế hoạch và đầu tư thành phố Hà Nội - Phòng đăng ký kinh doanh \nĐịa chỉ trụ sở chính: Tầng 7, Tòa nhà Luxury Ofice, số 214 Lạc Long Quân, Phường Tây Hồ, Thành phố Hà Nội, Việt Nam',
+                          style: defaultText14M.copyWith(color: Colors.white),
+                        ),
+                        Text(
+                          'Thông tin',
+                          style: defaultText16B.copyWith(color: Colors.white),
+                        ),
+                        Text(
+                          'Giới thiệu chung',
+                          style: defaultText14M.copyWith(color: Colors.white),
+                        ),
+                        Text(
+                          'Khóa học'.sanitizeForApple,
+                          style: defaultText14M.copyWith(color: Colors.white),
+                        ),
+                        Text(
+                          'Sản phẩm',
+                          style: defaultText14M.copyWith(color: Colors.white),
+                        ),
+                        Text(
+                          'Chính sách bảo mật - học tập',
+                          style: defaultText14M.copyWith(color: Colors.white),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 8.h,
+                          ),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: mainGreen,
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              SizedBox(height: 8.h),
+                              Text(
+                                'Theo dõi Cô Giáo Healthy',
+                                style: defaultText16B.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
+                                    .sanitizeForApple,
+                                style: defaultText14M.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  buildImage(
+                                    'assets/images/facebook.png',
+                                    size: 25,
+                                  ),
+                                  buildImage(
+                                    'assets/images/youtube.png',
+                                    size: 25,
+                                  ),
+                                  buildImage(
+                                    'assets/images/tiktok.png',
+                                    size: 25,
+                                  ),
+                                  buildImage(
+                                    'assets/images/zalo.png',
+                                    size: 25,
+                                  ),
+                                  buildImage('assets/images/ins.png', size: 20),
+                                  buildImage(
+                                    'assets/images/threads.png',
+                                    size: 25,
+                                  ),
+
+                                  buildImage(
+                                    'assets/images/lemon8.png',
+                                    size: 25,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          '© 2025 Cô Giáo Healthy | All Rights Reserved.',
+                          style: defaultText14M.copyWith(color: Colors.white),
+                        ),
+                        SizedBox(height: 30.h),
+                      ],
+                    ),
+                  ),
+
                   BottomCustom(),
                 ],
               ),
@@ -237,7 +463,7 @@ class _SaleScreenState extends State<SaleScreen> {
                 ),
               ],
             ),
-            if (isShow == 'true') ...[
+            ...[
               SizedBox(height: 12.h),
               Row(
                 children: [
@@ -246,12 +472,13 @@ class _SaleScreenState extends State<SaleScreen> {
                     style: defaultText18B.copyWith(color: Colors.red),
                   ),
                   SizedBox(width: 12.w),
-                  Text(
-                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
-                    style: defaultText14M.copyWith(
-                      decoration: TextDecoration.lineThrough,
+                  if (model.priceOld != '0')
+                    Text(
+                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
+                      style: defaultText14M.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ],
@@ -287,38 +514,35 @@ class _SaleScreenState extends State<SaleScreen> {
                     ],
                   ),
                 ),
-                if (isShow == 'true')
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 4.h,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: mainDarkGreen.withValues(alpha: 0.1),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                      color: Colors.white,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.person_outline,
-                          color: Colors.yellow,
-                          size: 16,
-                        ),
-                        Text(
-                          '  ${model.totalEnrollments} lượt học',
-                          style: defaultText12M.copyWith(color: mainDarkGreen),
-                        ),
-                      ],
-                    ),
+
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: mainDarkGreen.withValues(alpha: 0.1),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                    color: Colors.white,
                   ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.person_outline,
+                        color: Colors.yellow,
+                        size: 16,
+                      ),
+                      Text(
+                        '  ${model.totalEnrollments} lượt học',
+                        style: defaultText12M.copyWith(color: mainDarkGreen),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 20.h),
@@ -402,13 +626,13 @@ class _SaleScreenState extends State<SaleScreen> {
                     style: defaultText14B,
                   ),
                   SizedBox(height: 4.h),
-                  if (isShow == 'true')
-                    Text(
-                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.price ?? '0') ?? 0)}đ',
-                      style: defaultText14B.copyWith(color: mainDarkGreen),
-                    ),
-                  SizedBox(height: 4.h),
-                  if (isShow == 'true')
+
+                  Text(
+                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.price ?? '0') ?? 0)}đ',
+                    style: defaultText14B.copyWith(color: mainDarkGreen),
+                  ),
+                  SizedBox(height: 2.h),
+                  if (item.priceOld != '0')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.priceOld ?? '0') ?? 0)}đ',
                       style: defaultText12Re.copyWith(
