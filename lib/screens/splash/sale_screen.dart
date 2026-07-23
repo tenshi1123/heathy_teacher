@@ -271,7 +271,7 @@ class _SaleScreenState extends State<SaleScreen> {
                 child: Row(
                   children: [
                     const Icon(
-                      Icons.play_circle_outline,
+                      Icons.play_circle,
                       color: Colors.yellow,
                       size: 16,
                     ),

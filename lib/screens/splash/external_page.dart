@@ -264,7 +264,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                   ),
                   SizedBox(
                     width: 375.w,
-                    height: (256 + 48).h,
+                    height: (266 + 48).h,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
