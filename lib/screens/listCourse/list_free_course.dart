@@ -733,7 +733,7 @@ class FreeCourseItem extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.play_circle,
+                      Icons.play_circle_outline,
                       color: Colors.yellow,
                       size: 16,
                     ),
