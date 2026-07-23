@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
@@ -173,7 +174,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
               width: double.infinity,
               color: Colors.grey[300],
               child: const Icon(
-                Icons.image,
+                Icons.image_outlined,
                 size: 50,
                 color: Colors.grey,
               ), // Replace with real image in production
@@ -223,11 +224,6 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                     padding: EdgeInsets.symmetric(vertical: 4.h),
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.comment_outlined,
-                          size: 16.w,
-                          color: Colors.grey,
-                        ),
                         SizedBox(width: 4.w),
                         Text(
                           '${comments.length} bình luận',
@@ -278,10 +274,8 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                           color: mainGreen,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
-                          Icons.send,
-                          color: Colors.white,
-                          size: 16.w,
+                        child: SvgPicture.asset(
+                          'assets/icons/plane_outline.svg',
                         ),
                       ),
                     ],

@@ -14,6 +14,8 @@ import 'package:heathy_teacher/models/product_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
+import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
+import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 
 class SaleScreen extends StatefulWidget {
   const SaleScreen({super.key});
@@ -64,39 +66,21 @@ class _SaleScreenState extends State<SaleScreen> {
                   const SizedBox(height: 50),
                   DefaultAppBar(),
 
-                  // Banner
-                  Container(
-                    margin: EdgeInsets.all(16.w),
-                    padding: EdgeInsets.all(24.w),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [mainDarkGreen, mainGreen],
-                      ),
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.local_offer, color: Colors.white, size: 48),
-                        SizedBox(height: 12.h),
-                        Text(
-                          'ƯU ĐÃI & KHUYẾN MÃI',
-                          style: defaultText18B.copyWith(fontSize: 24.sp, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-
                   if (isLoading)
-                    Center(child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: CircularProgressIndicator(color: mainDarkGreen),
-                    ))
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: CircularProgressIndicator(color: mainDarkGreen),
+                      ),
+                    )
                   else ...[
                     // Khóa học online
                     if (saleCourses.isNotEmpty) ...[
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
+                        ),
                         child: Text(
                           'Khóa học ưu đãi',
                           style: defaultText18B.copyWith(color: mainDarkGreen),
@@ -117,7 +101,10 @@ class _SaleScreenState extends State<SaleScreen> {
                     if (saleProducts.isNotEmpty) ...[
                       SizedBox(height: 16.h),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
+                        ),
                         child: Text(
                           'Sản phẩm ưu đãi',
                           style: defaultText18B.copyWith(color: mainDarkGreen),
@@ -128,12 +115,13 @@ class _SaleScreenState extends State<SaleScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         itemCount: saleProducts.length,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 0.68,
-                        ),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              childAspectRatio: 0.68,
+                            ),
                         itemBuilder: (context, index) {
                           return _buildProductItem(saleProducts[index]);
                         },
@@ -144,11 +132,14 @@ class _SaleScreenState extends State<SaleScreen> {
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.all(32),
-                          child: Text('Chưa có ưu đãi nào', style: defaultText16M),
+                          child: Text(
+                            'Chưa có ưu đãi nào',
+                            style: defaultText16M,
+                          ),
                         ),
                       ),
                   ],
-                  
+
                   SizedBox(height: 20.h),
                   BottomCustom(),
                 ],
@@ -161,28 +152,39 @@ class _SaleScreenState extends State<SaleScreen> {
   }
 
   Widget _buildCourseItem(CourseModel model) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16.h, left: 16.w, right: 16.w),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RegisterClassON(id: model.courseTypeId ?? ''),
           ),
-        ],
-      ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 16.h, left: 16.w, right: 16.w),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8.r),
             child: CachedNetworkImage(
-              imageUrl: model.img ?? '',
+              imageUrl: (model.img != null && model.img!.contains('https://'))
+                  ? model.img!
+                  : (model.img != null ? 'https://lms.cogiaohealthy.vn/${model.img}' : ''),
               width: double.infinity,
               height: 180.h,
               fit: BoxFit.cover,
@@ -216,10 +218,15 @@ class _SaleScreenState extends State<SaleScreen> {
           SizedBox(height: 8.h),
           Row(
             children: [
-              Icon(Icons.calendar_month_outlined,
-                  color: mainDarkGreen, size: 16),
-              Text('  Cô giáo Healthy',
-                  style: defaultText14M.copyWith(color: mainDarkGreen)),
+              Icon(
+                Icons.calendar_month_outlined,
+                color: mainDarkGreen,
+                size: 16,
+              ),
+              Text(
+                '  Cô giáo Healthy',
+                style: defaultText14M.copyWith(color: mainDarkGreen),
+              ),
               const Spacer(),
               RatingStars(rating: 4.6, starSize: 16.r),
               Text(' (4,6)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
@@ -236,7 +243,9 @@ class _SaleScreenState extends State<SaleScreen> {
                 SizedBox(width: 12.w),
                 Text(
                   '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
-                  style: defaultText14M.copyWith(decoration: TextDecoration.lineThrough),
+                  style: defaultText14M.copyWith(
+                    decoration: TextDecoration.lineThrough,
+                  ),
                 ),
               ],
             ),
@@ -261,10 +270,15 @@ class _SaleScreenState extends State<SaleScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.play_circle_outline,
-                        color: Colors.yellow, size: 16),
-                    Text('  ${model.lessonNumber} bài học',
-                        style: defaultText12M.copyWith(color: mainDarkGreen)),
+                    const Icon(
+                      Icons.play_circle_outline,
+                      color: Colors.yellow,
+                      size: 16,
+                    ),
+                    Text(
+                      '  ${model.lessonNumber} bài học',
+                      style: defaultText12M.copyWith(color: mainDarkGreen),
+                    ),
                   ],
                 ),
               ),
@@ -285,10 +299,15 @@ class _SaleScreenState extends State<SaleScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.person_outline,
-                          color: Colors.yellow, size: 16),
-                      Text('  ${model.totalEnrollments} lượt học',
-                          style: defaultText12M.copyWith(color: mainDarkGreen)),
+                      const Icon(
+                        Icons.person_outline,
+                        color: Colors.yellow,
+                        size: 16,
+                      ),
+                      Text(
+                        '  ${model.totalEnrollments} lượt học',
+                        style: defaultText12M.copyWith(color: mainDarkGreen),
+                      ),
                     ],
                   ),
                 ),
@@ -319,23 +338,33 @@ class _SaleScreenState extends State<SaleScreen> {
           SizedBox(height: 8.h),
         ],
       ),
+      ),
     );
   }
 
   Widget _buildProductItem(CategoryDetail item) {
-    return Container(
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.3),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailProductScreen(),
           ),
-        ],
-      ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.3),
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -382,6 +411,7 @@ class _SaleScreenState extends State<SaleScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

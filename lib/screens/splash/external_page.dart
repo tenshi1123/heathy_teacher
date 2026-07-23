@@ -918,7 +918,7 @@ class ServiceGrid extends StatelessWidget {
           "Các dịch vụ nổi bật tại Cô giáo healthy",
           style: defaultText14M.copyWith(color: mainDarkGreen),
         ),
-        const StatisticsBannerWidget(),
+        //const StatisticsBannerWidget(),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -1562,82 +1562,6 @@ class _OnlineClassCard extends StatelessWidget {
             // ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class StatisticsBannerWidget extends StatelessWidget {
-  const StatisticsBannerWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.symmetric(vertical: 24.h),
-      padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 16.w),
-      color: const Color(0xFF67B044), // Green background color from image
-      child: Wrap(
-        alignment: WrapAlignment.spaceEvenly,
-        runSpacing: 24.h,
-        spacing: 8.w,
-        children: [
-          _buildStatItem(
-            Icons.groups_outlined,
-            '10+',
-            'Năm kinh nghiệm\nđào tạo và setup F&B\nViệt Nam',
-            context,
-          ),
-          _buildStatItem(
-            Icons.computer_outlined,
-            '60+',
-            'Khoá học nấu ăn dinh\ndưỡng,\nlàm bánh và đồ uống\nhealthy',
-            context,
-          ),
-          _buildStatItem(
-            Icons.thumb_up_alt_outlined,
-            'No.1',
-            'Trung tâm đầu tiên\ngiảng dạy\ndinh dưỡng & thực\nphẩm healthy',
-            context,
-          ),
-          _buildStatItem(
-            Icons.school_outlined,
-            '10.000+',
-            'Học viên ứng dụng &\nkinh doanh thành\ncông trên toàn quốc',
-            context,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatItem(
-    IconData icon,
-    String title,
-    String description,
-    BuildContext context,
-  ) {
-    return SizedBox(
-      width: (MediaQuery.of(context).size.width - 48.w) / 2, // 2 items per row
-      child: Column(
-        children: [
-          Icon(icon, color: Colors.white, size: 40.w),
-          SizedBox(height: 12.h),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            description,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12.sp, color: Colors.white, height: 1.4),
-          ),
-        ],
       ),
     );
   }
