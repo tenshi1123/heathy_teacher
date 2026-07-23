@@ -39,7 +39,7 @@ class _SaleScreenState extends State<SaleScreen> {
     setState(() => isLoading = true);
     try {
       final futures = await Future.wait([
-        ExternalRepo().getListCourse(page: 1, show: 10),
+        ExternalRepo().getListCourse(page: 1, show: 6),
         ProductRepo().getListProduct('uu-dai-khuyen-mai', page: 1, show: 10),
       ]);
       setState(() {
@@ -176,113 +176,89 @@ class _SaleScreenState extends State<SaleScreen> {
             ),
           ],
         ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.r),
-            child: CachedNetworkImage(
-              imageUrl: (model.img != null && model.img!.contains('https://'))
-                  ? model.img!
-                  : (model.img != null ? 'https://lms.cogiaohealthy.vn/${model.img}' : ''),
-              width: double.infinity,
-              height: 180.h,
-              fit: BoxFit.cover,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: CachedNetworkImage(
+                imageUrl: (model.img != null && model.img!.startsWith('http'))
+                    ? model.img!
+                    : (model.img != null && model.img!.isNotEmpty
+                          ? 'https://lms.cogiaohealthy.vn/${model.img!.startsWith('/') ? model.img!.substring(1) : model.img}'
+                          : ''),
+                width: double.infinity,
+                height: 180.h,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          SizedBox(height: 12.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.r),
-                  border: Border.all(color: mainDarkGreen, width: 1.5),
-                  color: Colors.white,
-                ),
-                child: Text(
-                  'Khóa học online',
-                  style: defaultText14M.copyWith(color: mainDarkGreen),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            model.courseName ?? 'Không xác định',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: defaultText18B.copyWith(color: mainDarkGreen),
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Icon(
-                Icons.calendar_month_outlined,
-                color: mainDarkGreen,
-                size: 16,
-              ),
-              Text(
-                '  Cô giáo Healthy',
-                style: defaultText14M.copyWith(color: mainDarkGreen),
-              ),
-              const Spacer(),
-              RatingStars(rating: 4.6, starSize: 16.r),
-              Text(' (4,6)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
-            ],
-          ),
-          if (isShow == 'true') ...[
             SizedBox(height: 12.h),
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '0') ?? 0)}đ',
-                  style: defaultText18B.copyWith(color: Colors.red),
-                ),
-                SizedBox(width: 12.w),
-                Text(
-                  '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
-                  style: defaultText14M.copyWith(
-                    decoration: TextDecoration.lineThrough,
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.r),
+                    border: Border.all(color: mainDarkGreen, width: 1.5),
+                    color: Colors.white,
+                  ),
+                  child: Text(
+                    'Khóa học online',
+                    style: defaultText14M.copyWith(color: mainDarkGreen),
                   ),
                 ),
               ],
             ),
-          ],
-          SizedBox(height: 16.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: mainDarkGreen.withValues(alpha: 0.1),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                  color: Colors.white,
+            SizedBox(height: 8.h),
+            Text(
+              model.courseName ?? 'Không xác định',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: defaultText18B.copyWith(color: mainDarkGreen),
+            ),
+            SizedBox(height: 8.h),
+            Row(
+              children: [
+                Icon(
+                  Icons.calendar_month_outlined,
+                  color: mainDarkGreen,
+                  size: 16,
                 ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.play_circle_outline,
-                      color: Colors.yellow,
-                      size: 16,
-                    ),
-                    Text(
-                      '  ${model.lessonNumber} bài học',
-                      style: defaultText12M.copyWith(color: mainDarkGreen),
-                    ),
-                  ],
+                Text(
+                  '  Cô giáo Healthy',
+                  style: defaultText14M.copyWith(color: mainDarkGreen),
                 ),
+                const Spacer(),
+                RatingStars(rating: 4.6, starSize: 16.r),
+                Text(
+                  ' (4,6)',
+                  style: defaultText14SB.copyWith(fontSize: 12.sp),
+                ),
+              ],
+            ),
+            if (isShow == 'true') ...[
+              SizedBox(height: 12.h),
+              Row(
+                children: [
+                  Text(
+                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '0') ?? 0)}đ',
+                    style: defaultText18B.copyWith(color: Colors.red),
+                  ),
+                  SizedBox(width: 12.w),
+                  Text(
+                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
+                    style: defaultText14M.copyWith(
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+                ],
               ),
-              if (isShow == 'true')
+            ],
+            SizedBox(height: 16.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                   decoration: BoxDecoration(
@@ -300,44 +276,76 @@ class _SaleScreenState extends State<SaleScreen> {
                   child: Row(
                     children: [
                       const Icon(
-                        Icons.person_outline,
+                        Icons.play_circle_outline,
                         color: Colors.yellow,
                         size: 16,
                       ),
                       Text(
-                        '  ${model.totalEnrollments} lượt học',
+                        '  ${model.lessonNumber} bài học',
                         style: defaultText12M.copyWith(color: mainDarkGreen),
                       ),
                     ],
                   ),
                 ),
-            ],
-          ),
-          SizedBox(height: 20.h),
-          Center(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 60.w, vertical: 10.h),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: mainDarkGreen.withValues(alpha: 0.1),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 3),
+                if (isShow == 'true')
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 4.h,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: mainDarkGreen.withValues(alpha: 0.1),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                      color: Colors.white,
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.person_outline,
+                          color: Colors.yellow,
+                          size: 16,
+                        ),
+                        Text(
+                          '  ${model.totalEnrollments} lượt học',
+                          style: defaultText12M.copyWith(color: mainDarkGreen),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-                color: mainDarkGreen,
-              ),
-              child: Text(
-                'Xem chi tiết',
-                style: defaultText16B.copyWith(color: Colors.white),
+              ],
+            ),
+            SizedBox(height: 20.h),
+            Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 60.w, vertical: 10.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: mainDarkGreen.withValues(alpha: 0.1),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                  color: mainDarkGreen,
+                ),
+                child: Text(
+                  'Xem chi tiết',
+                  style: defaultText16B.copyWith(color: Colors.white),
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 8.h),
-        ],
-      ),
+            SizedBox(height: 8.h),
+          ],
+        ),
       ),
     );
   }
@@ -347,9 +355,7 @@ class _SaleScreenState extends State<SaleScreen> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => DetailProductScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => DetailProductScreen()),
         );
       },
       child: Container(
@@ -365,53 +371,55 @@ class _SaleScreenState extends State<SaleScreen> {
             ),
           ],
         ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(16),
-              bottom: Radius.circular(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+                bottom: Radius.circular(16),
+              ),
+              child: CachedNetworkImage(
+                imageUrl: (item.img != null && item.img!.startsWith('http'))
+                    ? item.img!
+                    : (item.img != null && item.img!.isNotEmpty
+                          ? 'https://lms.cogiaohealthy.vn/${item.img!.startsWith('/') || item.img!.startsWith('images') ? (item.img!.startsWith('/') ? item.img!.substring(1) : item.img) : 'images/${item.img}'}'
+                          : ''),
+                width: double.infinity,
+                height: 120.dg,
+                fit: BoxFit.cover,
+              ),
             ),
-            child: CachedNetworkImage(
-              imageUrl: (item.img != null && item.img!.contains('https://'))
-                  ? item.img!
-                  : 'https://lms.cogiaohealthy.vn/images/${item.img}',
-              width: double.infinity,
-              height: 120.dg,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 8.h, left: 8.w, right: 8.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.productName ?? '',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: defaultText14B,
-                ),
-                SizedBox(height: 4.h),
-                if (isShow == 'true')
+            Padding(
+              padding: EdgeInsets.only(top: 8.h, left: 8.w, right: 8.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.price ?? '0') ?? 0)}đ',
-                    style: defaultText14B.copyWith(color: mainDarkGreen),
+                    item.productName ?? '',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: defaultText14B,
                   ),
-                SizedBox(height: 4.h),
-                if (isShow == 'true')
-                  Text(
-                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.priceOld ?? '0') ?? 0)}đ',
-                    style: defaultText12Re.copyWith(
-                      decoration: TextDecoration.lineThrough,
+                  SizedBox(height: 4.h),
+                  if (isShow == 'true')
+                    Text(
+                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.price ?? '0') ?? 0)}đ',
+                      style: defaultText14B.copyWith(color: mainDarkGreen),
                     ),
-                  ),
-              ],
+                  SizedBox(height: 4.h),
+                  if (isShow == 'true')
+                    Text(
+                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.priceOld ?? '0') ?? 0)}đ',
+                      style: defaultText12Re.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
