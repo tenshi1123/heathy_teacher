@@ -381,11 +381,12 @@ void showOnlineCategoriesDialog({
   required Function(String category) onCategorySelected,
 }) {
   final List<String> categories = const [
-    "Lớp học nấu ăn Eat Clean - Healthy",
-    "Các lớp học Dưỡng sinh - Thảo mộc - Đông y hiện đại",
-    "Lớp pha chế đồ uống - đồ tráng miệng lên men healthy",
-    "Các lớp học làm bánh - kẹo - ngũ cốc healthy",
-    "Combo mô hình kinh doanh Healthy Hot trend",
+    "Khoá học nấu ăn Eatclean - Healthy - Vegan",
+    "Khoá học Bánh Kẹo Healthy",
+    "Khoá học Đồ uống Healthy",
+    "Khoá học Đồ ăn vặt - Tráng miệng Healthy",
+    "Khóa học Dưỡng sinh - Thảo mộc",
+    "Lớp đồ uống lên men Junbucha và Kombucha",
     "Cộng đồng học viên VIP Cô Giáo Healthy",
   ];
 

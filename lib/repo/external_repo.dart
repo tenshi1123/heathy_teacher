@@ -8,13 +8,21 @@ import 'package:heathy_teacher/utils/constants/api_path.dart';
 
 class ExternalRepo {
   //repo lấy data từ trang web ngoài
-  Future<List<CourseModel>> getListCourse({int page = 1, int show = 10}) async {
+  Future<List<CourseModel>> getListCourse({
+    int page = 1,
+    int show = 10,
+    String? query,
+  }) async {
     try {
       final dio = await DioClient.getInstance();
       dio.options.headers['Token'] = 'Healthy1234567890HVG';
       final response = await dio.post(
         ApiPath.listCourse,
-        data: jsonEncode({"page": page.toString(), "show": show.toString()}),
+        data: jsonEncode({
+          "page": page.toString(),
+          "show": show.toString(),
+          "query": query,
+        }),
       );
       if (response.data != null && response.data['data'] != null) {
         final List listData = response.data['data'] as List;
@@ -73,8 +81,8 @@ class ExternalRepo {
       final dio = await DioClient.getInstance();
       dio.options.headers['Token'] = 'Healthy1234567890HVG';
       final Map<String, dynamic> requestData = {
-        "page": page.toString(), 
-        "show": show.toString()
+        "page": page.toString(),
+        "show": show.toString(),
       };
       if (place != null && place.isNotEmpty) {
         requestData["province"] = place;

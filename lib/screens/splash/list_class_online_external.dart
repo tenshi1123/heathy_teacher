@@ -16,7 +16,8 @@ import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 
 class ListClassOnlineExternal extends StatefulWidget {
-  const ListClassOnlineExternal({super.key});
+  final String? category;
+  const ListClassOnlineExternal({super.key, this.category});
 
   @override
   State<ListClassOnlineExternal> createState() =>
@@ -53,6 +54,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
         final newItems = await ExternalRepo().getListCourse(
           page: page,
           show: itemsPerPage,
+          query: widget.category,
         );
         setState(() {
           localListCourse.addAll(newItems);

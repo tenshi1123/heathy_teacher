@@ -859,11 +859,16 @@ class ServiceGrid extends StatelessWidget {
           title: "KHÓA HỌC ONLINE".sanitizeForApple,
           icon: "assets/images/home2.png",
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const ListClassOnlineExternal(),
-              ),
+            showOnlineCategoriesDialog(
+              context: context,
+              onCategorySelected: (category) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ListClassOnlineExternal(category: category),
+                  ),
+                );
+              },
             );
           },
         ),
