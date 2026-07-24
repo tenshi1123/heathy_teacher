@@ -480,7 +480,7 @@ void showOnlineCategoriesDialog({
                                   ),
                                 ),
                                 Icon(
-                                  Icons.arrow_forward_ios_rounded,
+                                  Icons.arrow_forward_ios,
                                   color: Colors.white.withOpacity(0.7),
                                   size: 14.sp,
                                 ),
