@@ -784,7 +784,7 @@ class _OnlineClassCard extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     Text(
-                      '${model.totalEnrollments} lượt học',
+                      '${int.parse(model.totalEnrollments ?? '0') + int.parse(model.startCount ?? '0')} lượt học',
                       style: defaultText14SB.copyWith(color: Colors.white),
                     ),
                   ],

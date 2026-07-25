@@ -338,6 +338,7 @@ class ProductDetailModel {
   final String? priceOld;
   final String? description;
   final String? inventoryQuantity;
+  final String? allowShortSelling;
 
   ProductDetailModel({
     this.id,
@@ -348,6 +349,7 @@ class ProductDetailModel {
     this.priceOld,
     this.description,
     this.inventoryQuantity,
+    this.allowShortSelling,
   });
 
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
@@ -360,6 +362,7 @@ class ProductDetailModel {
       priceOld: json['price_old'] as String?,
       description: (json['description'] as String?).sanitizeForApple,
       inventoryQuantity: json['inventory_quantity'] as String?,
+      allowShortSelling: json['allow_short_selling'],
     );
   }
 

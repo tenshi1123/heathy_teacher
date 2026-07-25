@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:intl/intl.dart';
+import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
+import 'package:heathy_teacher/screens/introduce_screen.dart';
+import 'package:heathy_teacher/screens/listCourse/list_free_course.dart';
 
 Widget dateTimeDisplayWidget() {
   final now = DateTime.now();
@@ -124,13 +128,13 @@ class RatingStars extends StatelessWidget {
 
 class PaginationWidget extends StatelessWidget {
   final int currentPage;
-  final int totalPages;
+  final int? totalPages;
   final Function(int) onPageChanged;
 
   const PaginationWidget({
     super.key,
     required this.currentPage,
-    required this.totalPages,
+    this.totalPages,
     required this.onPageChanged,
   });
 
@@ -146,18 +150,37 @@ class PaginationWidget extends StatelessWidget {
     List<Widget> items = [];
     items.add(_navButton("«", currentPage > 1 ? 1 : null));
     items.add(_navButton("‹", currentPage > 1 ? currentPage - 1 : null));
+    
     items.addAll(_buildPageNumbers());
+    
+    bool hasNext = totalPages == null ? true : currentPage < totalPages!;
     items.add(
-      _navButton("›", currentPage < totalPages ? currentPage + 1 : null),
+      _navButton("›", hasNext ? currentPage + 1 : null),
     );
-    items.add(_navButton("»", currentPage < totalPages ? totalPages : null));
+    if (totalPages != null) {
+      items.add(_navButton("»", hasNext ? totalPages : null));
+    }
     return items;
   }
 
   List<Widget> _buildPageNumbers() {
     List<Widget> widgets = [];
-    if (totalPages <= 5) {
-      for (int i = 1; i <= totalPages; i++) {
+    if (totalPages == null) {
+      if (currentPage == 1) {
+        widgets.add(_pageButton(1));
+        widgets.add(_pageButton(2));
+        widgets.add(_dots());
+      } else {
+        widgets.add(_dots());
+        widgets.add(_pageButton(currentPage));
+        widgets.add(_pageButton(currentPage + 1));
+        widgets.add(_dots());
+      }
+      return widgets;
+    }
+
+    if (totalPages! <= 5) {
+      for (int i = 1; i <= totalPages!; i++) {
         widgets.add(_pageButton(i));
       }
       return widgets;
@@ -168,15 +191,15 @@ class PaginationWidget extends StatelessWidget {
     } else {
       widgets.add(_pageButton(2));
     }
-    if (currentPage > 2 && currentPage < totalPages - 1) {
+    if (currentPage > 2 && currentPage < totalPages! - 1) {
       widgets.add(_pageButton(currentPage));
     }
-    if (currentPage < totalPages - 2) {
+    if (currentPage < totalPages! - 2) {
       widgets.add(_dots());
     } else {
-      widgets.add(_pageButton(totalPages - 1));
+      widgets.add(_pageButton(totalPages! - 1));
     }
-    widgets.add(_pageButton(totalPages));
+    widgets.add(_pageButton(totalPages!));
     return widgets;
   }
 
@@ -233,6 +256,136 @@ class PaginationWidget extends StatelessWidget {
           style: TextStyle(color: Colors.black87, fontSize: 18),
         ),
       ),
+    );
+  }
+}
+
+class CustomImageCarousel extends StatefulWidget {
+  final double? height;
+  const CustomImageCarousel({super.key, this.height});
+
+  @override
+  State<CustomImageCarousel> createState() => _CustomImageCarouselState();
+}
+
+class _CustomImageCarouselState extends State<CustomImageCarousel> {
+  final List<Map<String, dynamic>> _productImages = [
+    {'image': 'assets/images/home1.jpg', 'screen': const ListSpScreen()},
+    {'image': 'assets/images/home2.jpg', 'screen': const IntroduceScreen()},
+    {'image': 'assets/images/home3.jpg', 'screen': const ListFreeCourse()},
+    {'image': 'assets/images/home4.jpg', 'screen': const ListSpScreen()},
+  ];
+
+  int _currentSlide = 0;
+  final PageController _pageController = PageController(initialPage: 0);
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startAutoPlay();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _startAutoPlay() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (_pageController.hasClients) {
+        if (_currentSlide < _productImages.length - 1) {
+          _currentSlide++;
+          _pageController.animateToPage(
+            _currentSlide,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          _currentSlide = 0;
+          _pageController.animateToPage(
+            _currentSlide,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOut,
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          height: widget.height ?? 470.w,
+          margin: EdgeInsets.symmetric(vertical: 16.h),
+          padding: EdgeInsets.symmetric(
+            vertical: 4.h,
+            horizontal: 4.w,
+          ),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              PageView.builder(
+                controller: _pageController,
+                itemCount: _productImages.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentSlide = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6.w),
+                    child: InkWell(
+                      onTap: () {
+                        final screen = _productImages[index]['screen'];
+                        if (screen != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: ((context) => screen as Widget),
+                            ),
+                          );
+                        }
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.r),
+                        child: Image.asset(
+                          _productImages[index]['image'] as String,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            _productImages.length,
+            (index) => Container(
+              width: 8.w,
+              height: 8.w,
+              margin: EdgeInsets.symmetric(horizontal: 3.w),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _currentSlide == index
+                    ? mainDarkGreen
+                    : Colors.grey[400],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

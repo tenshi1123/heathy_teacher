@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/main.dart';
@@ -24,6 +26,48 @@ class RegisterClassON extends StatefulWidget {
 class _RegisterClassONState extends State<RegisterClassON> {
   bool isLoading = true;
   late CourseDetailModel courses;
+  bool _isVideoPlaying = false;
+  WebViewController? _webViewController;
+
+  void _initWebView() {
+    late final PlatformWebViewControllerCreationParams params;
+    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+      params = WebKitWebViewControllerCreationParams(
+        allowsInlineMediaPlayback: true,
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+      );
+    } else {
+      params = const PlatformWebViewControllerCreationParams();
+    }
+    
+    final String htmlContent = '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      <style>
+        body { margin: 0; padding: 0; background-color: black; overflow: hidden; }
+        iframe { width: 100vw; height: 100vh; border: none; }
+      </style>
+    </head>
+    <body>
+      <iframe 
+        src="${courses.youtubeUrl}" 
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" 
+        allowfullscreen="true">
+      </iframe>
+    </body>
+    </html>
+    ''';
+    
+    _webViewController = WebViewController.fromPlatformCreationParams(params)
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.black)
+      ..loadHtmlString(
+        htmlContent,
+        baseUrl: 'https://lms.cogiaohealthy.vn/',
+      );
+  }
   @override
   void initState() {
     super.initState();
@@ -59,13 +103,11 @@ class _RegisterClassONState extends State<RegisterClassON> {
     return Scaffold(
       backgroundColor: mainDarkGreen,
       appBar: AppBar(
+        toolbarHeight: 40.h,
         backgroundColor: mainDarkGreen,
         elevation: 0,
         centerTitle: true,
-        title: Text(
-          'Chi tiết khoá online',
-          style: defaultText18B.copyWith(color: Colors.white),
-        ),
+
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -296,28 +338,50 @@ class _RegisterClassONState extends State<RegisterClassON> {
       return const SizedBox.shrink(); // Không có link thì ẩn
     }
 
-    // Tạm thời hiển thị thumbnail giả lập có nút Play.
-    // Trong thực tế, bạn gắn package `youtube_player_flutter` vào đây
-    return Container(
-      width: double.infinity,
-      height: 220.h,
-      margin: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.black87,
-        borderRadius: BorderRadius.circular(12.r),
-        image: courses.image != null
-            ? DecorationImage(
-                image: NetworkImage(courses.image!), // Gắn URL thật vào
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.4),
-                  BlendMode.darken,
-                ),
-              )
-            : null,
-      ),
-      child: Center(
-        child: Icon(Icons.play_circle_fill, color: Colors.white, size: 60.w),
+    if (_isVideoPlaying && _webViewController != null) {
+      return Container(
+        width: double.infinity,
+        height: 220.h,
+        margin: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12.r),
+          child: WebViewWidget(controller: _webViewController!),
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () {
+        _initWebView();
+        setState(() {
+          _isVideoPlaying = true;
+        });
+      },
+      child: Container(
+        width: double.infinity,
+        height: 220.h,
+        margin: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          color: Colors.black87,
+          borderRadius: BorderRadius.circular(12.r),
+          image: courses.image != null
+              ? DecorationImage(
+                  image: NetworkImage(courses.image!), // Gắn URL thật vào
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.4),
+                    BlendMode.darken,
+                  ),
+                )
+              : null,
+        ),
+        child: Center(
+          child: Icon(Icons.play_circle_fill, color: Colors.white, size: 60.w),
+        ),
       ),
     );
   }
@@ -344,6 +408,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
             itemBuilder: (context, index) {
               final topic = topicals[index];
               final lessons = topic.lessons ?? [];
+              final bool hasTrialLesson = lessons.any((lesson) => lesson.isTrial != '0');
 
               return Card(
                 elevation: 0,
@@ -355,12 +420,25 @@ class _RegisterClassONState extends State<RegisterClassON> {
                 margin: EdgeInsets.only(bottom: 12.h),
                 // Mở rộng/Thu gọn bài học
                 child: ExpansionTile(
-                  title: Text(
-                    topic.name ?? 'Chưa cập nhật',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14.sp,
-                    ),
+                  title: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          topic.name ?? 'Chưa cập nhật',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                      ),
+                      if (hasTrialLesson) ...[
+                        SizedBox(width: 8.w),
+                        Text(
+                          'Học thử',
+                          style: defaultText14B.copyWith(color: Colors.red),
+                        ),
+                      ],
+                    ],
                   ),
                   children: lessons.map((lesson) {
                     return GestureDetector(
@@ -388,9 +466,27 @@ class _RegisterClassONState extends State<RegisterClassON> {
                           lesson.name ?? '',
                           style: TextStyle(fontSize: 13.sp),
                         ),
-                        trailing: Text(
-                          lesson.time ?? '',
-                          style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              lesson.time ?? '',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                            SizedBox(width: 8.w),
+                            if (lesson.isTrial == '0')
+                              Icon(Icons.lock, color: Colors.grey, size: 16.sp)
+                            else
+                              Text(
+                                'Học\nthử',
+                                style: defaultText14B.copyWith(
+                                  color: Colors.red,
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     );

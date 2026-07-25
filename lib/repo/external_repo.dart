@@ -12,6 +12,8 @@ class ExternalRepo {
     int page = 1,
     int show = 10,
     String? query,
+    int? offerMonth,
+    String? type,
   }) async {
     try {
       final dio = await DioClient.getInstance();
@@ -22,6 +24,8 @@ class ExternalRepo {
           "page": page.toString(),
           "show": show.toString(),
           "query": query,
+          "offers_month": offerMonth,
+          "setting_course_type": type,
         }),
       );
       if (response.data != null && response.data['data'] != null) {
@@ -84,10 +88,9 @@ class ExternalRepo {
         "page": page.toString(),
         "show": show.toString(),
       };
-      if (place != null && place.isNotEmpty) {
-        requestData["province"] = place;
-        requestData["place"] = place; // fallback
-      }
+      // if (place != null && place.isNotEmpty) {
+      //   requestData["query"] = place;
+      // }
       final response = await dio.post(
         ApiPath.listCourseOff,
         data: jsonEncode(requestData),

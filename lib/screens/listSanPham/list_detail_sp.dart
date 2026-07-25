@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:math';
 
@@ -215,7 +216,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12,
-                              childAspectRatio: 0.68,
+                              childAspectRatio: 0.6,
                             ),
                         itemBuilder: (context, index) {
                           final item = coursesDetail[index];
@@ -237,34 +238,47 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 /// IMAGE
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(16),
-                                    bottom: Radius.circular(16),
-                                  ),
-                                  child: CachedNetworkImage(
-                                    imageUrl: item.img!.contains('https://')
-                                        ? item.img ?? ''
-                                        : 'https://lms.cogiaohealthy.vn/images/${item.img}',
-                                    width: double.infinity,
-                                    height: 120.dg,
-                                    fit: BoxFit.cover,
-                                    errorWidget: (context, url, error) {
-                                      return Container(
-                                        width: 50.dg,
-                                        height: 50.dg,
-                                        color: Colors
-                                            .grey[200], // Màu nền của icon mặc định
-                                        child: Icon(
-                                          Icons
-                                              .error_outline, // Hoặc Icons.error_outline tuỳ ý bạn
-                                          size: 30.dg,
-                                          color: Colors.grey,
-                                        ),
-                                      );
-                                    },
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            DetailProductScreen(
+                                              productId: item.id ?? '',
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(16),
+                                      bottom: Radius.circular(16),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      imageUrl: item.img!.contains('https://')
+                                          ? item.img ?? ''
+                                          : 'https://lms.cogiaohealthy.vn/images/${item.img}',
+                                      width: double.infinity,
+                                      height: 120.dg,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (context, url, error) {
+                                        return Container(
+                                          width: 50.dg,
+                                          height: 50.dg,
+                                          color: Colors
+                                              .grey[200], // Màu nền của icon mặc định
+                                          child: Icon(
+                                            Icons
+                                                .error_outline, // Hoặc Icons.error_outline tuỳ ý bạn
+                                            size: 30.dg,
+                                            color: Colors.grey,
+                                          ),
+                                        );
+                                      },
 
-                                    // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
+                                      // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
+                                    ),
                                   ),
                                 ),
 

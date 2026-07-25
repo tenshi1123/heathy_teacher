@@ -232,15 +232,12 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                   ),
                                 ),
 
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    item.categoryName ?? '',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: defaultText16B.copyWith(
-                                      color: mainDarkGreen,
-                                    ),
+                                Text(
+                                  item.categoryName ?? '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: defaultText16B.copyWith(
+                                    color: mainDarkGreen,
                                   ),
                                 ),
 

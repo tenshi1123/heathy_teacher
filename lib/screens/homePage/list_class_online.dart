@@ -172,20 +172,7 @@ class _ListClassOnlineState extends State<ListClassOnline> {
                                   width: 217.w,
                                   child: Column(
                                     children: [
-                                      Row(
-                                        children: [
-                                          RatingStars(
-                                            rating: 4.6, // Hiển thị 4.5 sao
-                                            starSize: 16.r,
-                                          ),
-                                          Text(
-                                            '(4,6)',
-                                            style: defaultText14SB.copyWith(
-                                              fontSize: 12.sp,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                      SizedBox(),
                                       Text(
                                         model.courseName ?? 'Không xác định',
                                         style: defaultText14SB,
@@ -198,13 +185,14 @@ class _ListClassOnlineState extends State<ListClassOnline> {
                                               style: defaultText16B,
                                             ),
                                             SizedBox(width: 12.w),
-                                            Text(
-                                              '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
-                                              style: defaultText12Re.copyWith(
-                                                decoration:
-                                                    TextDecoration.lineThrough,
+                                            if (model.priceOld != '0')
+                                              Text(
+                                                '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
+                                                style: defaultText12Re.copyWith(
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                ),
                                               ),
-                                            ),
                                           ],
                                         ),
                                     ],
@@ -276,7 +264,7 @@ class _ListClassOnlineState extends State<ListClassOnline> {
                                         ),
                                         SizedBox(width: 8.w),
                                         Text(
-                                          '${model.totalEnrollments} lượt đã học',
+                                          '${int.parse(model.totalEnrollments ?? '0') + int.parse(model.startCount ?? '0')} lượt đã học',
                                           style: defaultText14SB.copyWith(
                                             color: mainDarkGreen,
                                           ),

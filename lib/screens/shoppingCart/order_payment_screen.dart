@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -409,6 +410,15 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       final payCode = hasCourse
                           ? await ExternalRepo().paymentCourse(payload, token)
                           : await ExternalRepo().paymentProduct(payload, token);
+                          
+                      final String customerId = '${DateTime.now().millisecondsSinceEpoch}${math.Random().nextInt(9999).toString().padLeft(4, '0')}';
+                      await prefs.setString('customer_id', customerId);
+                      
+                      String addInfo = '${payCode.payCode} W$customerId ${payCode.isLogin ?? ''}';
+                      if (payCode.courseScheduleId != null && payCode.courseScheduleId.toString().isNotEmpty) {
+                        addInfo += ' C${payCode.courseScheduleId}';
+                      }
+                      
                       Navigator.pop(context); // close loading dialog
 
                       // If we want to show dynamic QR code, we could use payCode here,
@@ -436,7 +446,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                                   ),
                                   SizedBox(height: 16.h),
                                   Image.network(
-                                    'https://img.vietqr.io/image/${payCode.bankCode}-${payCode.bankAccount}-compact2.png?amount=${payCode.price}&addInfo=${Uri.encodeComponent('${payCode.payCode} ${_nameController.text.trim()}')}&accountName=${Uri.encodeComponent(payCode.bankOwner)}',
+                                    'https://img.vietqr.io/image/${payCode.bankCode}-${payCode.bankAccount}-compact2.png?amount=${payCode.price}&addInfo=${Uri.encodeComponent(addInfo.trim())}',
                                     fit: BoxFit.contain,
                                     errorBuilder:
                                         (context, error, stackTrace) =>

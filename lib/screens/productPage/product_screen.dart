@@ -185,9 +185,15 @@ class _ProductScreenState extends State<ProductScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          // Bạn có thể truyền product vào DetailProductScreen để hiển thị chi tiết
                                           builder: ((context) =>
-                                              DetailProductScreen()),
+                                              DetailProductScreen(
+                                                productId:
+                                                    product
+                                                        .detail
+                                                        ?.first
+                                                        .productId ??
+                                                    '',
+                                              )),
                                         ),
                                       );
                                     },

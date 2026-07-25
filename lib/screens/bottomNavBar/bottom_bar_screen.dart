@@ -1,3 +1,4 @@
+import 'package:upgrader/upgrader.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -107,52 +108,54 @@ class BottomBarScreenState extends State<BottomBarScreen> {
       );
     }
 
-    return Stack(
-      children: [
-        Scaffold(
-          backgroundColor: Colors.white,
-          body: IndexedStack(
-            index: currentIndex,
-            children: [
-              HomeScreen(
-                userModel: userModel!,
-                customerModel: customerModel!,
-                onCourseTabRequested: () {
-                  setState(() {
-                    currentIndex = 1;
-                  });
-                },
-                onProductTabRequested: () {
-                  setState(() {
-                    currentIndex = 3;
-                  });
-                },
-              ),
-              CourseScreen(userModel: userModel!),
-              ListChatScreen(userModel: userModel!),
-              ListProductScreen(userModel: userModel!),
-              ProfileScreen(userModel: userModel!),
-            ],
+    return UpgradeAlert(
+      child: Stack(
+        children: [
+          Scaffold(
+            backgroundColor: Colors.white,
+            body: IndexedStack(
+              index: currentIndex,
+              children: [
+                HomeScreen(
+                  userModel: userModel!,
+                  customerModel: customerModel!,
+                  onCourseTabRequested: () {
+                    setState(() {
+                      currentIndex = 1;
+                    });
+                  },
+                  onProductTabRequested: () {
+                    setState(() {
+                      currentIndex = 3;
+                    });
+                  },
+                ),
+                CourseScreen(userModel: userModel!),
+                ListChatScreen(userModel: userModel!),
+                ListProductScreen(userModel: userModel!),
+                ProfileScreen(userModel: userModel!),
+              ],
+            ),
+            bottomNavigationBar: CustomBottomNavBar(
+              currentIndex: currentIndex,
+              onTap: (i) => setState(() => currentIndex = i),
+            ),
           ),
-          bottomNavigationBar: CustomBottomNavBar(
-            currentIndex: currentIndex,
-            onTap: (i) => setState(() => currentIndex = i),
+          //if (isShow == 'true')
+          Positioned(
+            right: 20.w,
+            bottom: 90.h,
+            child: FloatingCartButton(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
+                );
+              },
+            ),
           ),
-        ),
-        //if (isShow == 'true')
-        Positioned(
-          right: 20.w,
-          bottom: 90.h,
-          child: FloatingCartButton(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
-              );
-            },
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

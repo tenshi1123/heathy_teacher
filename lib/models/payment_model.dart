@@ -41,6 +41,8 @@ class PayCodeModel {
   final String bankName;
   final String bankOwner;
   final bool hasFreeGift;
+  final dynamic isLogin;
+  final dynamic courseScheduleId;
 
   PayCodeModel({
     required this.message,
@@ -53,6 +55,8 @@ class PayCodeModel {
     required this.bankName,
     required this.bankOwner,
     required this.hasFreeGift,
+    this.isLogin,
+    this.courseScheduleId,
   });
   factory PayCodeModel.fromJson(Map<String, dynamic> json) {
     return PayCodeModel(
@@ -66,6 +70,8 @@ class PayCodeModel {
       bankName: json["bank_name"] ?? "",
       bankOwner: json["bank_owner"] ?? "",
       hasFreeGift: json["has_free_gift"] ?? false,
+      isLogin: json["is_login"],
+      courseScheduleId: json["course_schedule_id"],
     );
   }
 }

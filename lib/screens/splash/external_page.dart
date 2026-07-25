@@ -1,3 +1,5 @@
+import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/repo/home_repo.dart';
@@ -7,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/product_model.dart';
-import 'package:heathy_teacher/screens/introduce_screen.dart';
 import 'package:heathy_teacher/screens/listCourse/list_free_course.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
 import 'package:heathy_teacher/screens/authentication/login_screen.dart';
@@ -23,7 +24,6 @@ import 'package:intl/intl.dart';
 import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
-import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/screens/splash/sale_screen.dart';
 import 'package:heathy_teacher/screens/splash/list_class_off_external.dart';
@@ -42,28 +42,16 @@ class CoGiaoHealthyScreen extends StatefulWidget {
 }
 
 class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
-  final List<Map<String, dynamic>> _productImages = [
-    {'image': 'assets/images/home1.jpg', 'screen': const ListSpScreen()},
-    {'image': 'assets/images/home2.jpg', 'screen': const IntroduceScreen()},
-    {'image': 'assets/images/home3.jpg', 'screen': const ListFreeCourse()},
-    {'image': 'assets/images/home4.jpg', 'screen': const ListSpScreen()},
-  ];
   List<PostModel> dummyLongList = [];
   List<PostModel> dummyLongList2 = [];
   List<CourseModel> listCourseOnline = [];
   List<CourseOffModel> listCourseOffline = [];
   bool isLoading = true;
 
-  int _currentSlide = 0;
-  final PageController _pageController = PageController(initialPage: 0);
-
-  Timer? _timer;
-
   @override
   void initState() {
     super.initState();
     _fetchData();
-    _startAutoPlay();
   }
 
   Future<void> _fetchData() async {
@@ -76,7 +64,11 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
         slug: 'nhat-ky-lop-hoc',
         limit: 4,
       );
-      final futureCourse = await ExternalRepo().getListCourse(show: 6);
+      final futureCourse = await ExternalRepo().getListCourse(
+        show: 20,
+        offerMonth: 1,
+        type: 'online',
+      );
       final futureCourseOff = await ExternalRepo().getListCourseOff(show: 6);
       listCourseOnline = futureCourse;
       listCourseOffline = futureCourseOff;
@@ -93,662 +85,574 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // 🔥 Hủy timer khi không dùng nữa để tránh leak memory
-    _pageController.dispose();
     super.dispose();
-  }
-
-  void _startAutoPlay() {
-    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
-      if (_pageController.hasClients) {
-        if (_currentSlide < _productImages.length - 1) {
-          _currentSlide++;
-
-          // Lướt sang trang kế tiếp
-          _pageController.animateToPage(
-            _currentSlide,
-            duration: const Duration(
-              milliseconds: 500,
-            ), // Tăng nhẹ thời gian lướt cho mượt
-            curve: Curves.easeInOut,
-          );
-        } else {
-          _currentSlide = 0; // Đặt về 0
-
-          // 🔥 Lướt mượt ngược từ cuối về đầu
-          _pageController.animateToPage(
-            _currentSlide,
-            duration: const Duration(
-              milliseconds: 800,
-            ), // Thời gian cuộn ngược dài hơn chút nhìn sẽ đẹp hơn
-            curve: Curves.easeInOut,
-          );
-        }
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return UpgradeAlert(
+      child: Scaffold(
+        backgroundColor: Colors.white,
 
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 50), // Khoảng cách cho status bar
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 50), // Khoảng cách cho status bar
 
-                  DefaultAppBar(),
+                    DefaultAppBar(),
 
-                  // 2. SEARCH BAR AREA
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 6.h,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: const Color(0xFFC0CA33),
-                          width: 1.5,
-                        ),
+                    // 2. SEARCH BAR AREA
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 6.h,
                       ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Nhập để tìm kiếm...',
-                          hintStyle: TextStyle(color: Colors.grey),
-                          prefixIcon: Icon(Icons.search, color: mainDarkGreen),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 15,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: const Color(0xFFC0CA33),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Nhập để tìm kiếm...',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: mainDarkGreen,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 15,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  Container(
-                    width: double.infinity,
-                    height: 470.w,
-                    margin: EdgeInsets.symmetric(vertical: 16.h),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        PageView.builder(
-                          controller: _pageController,
-                          itemCount: _productImages.length,
-
-                          onPageChanged: (index) {
-                            setState(() {
-                              _currentSlide = index;
-                            });
-                          },
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 6.w),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: ((context) =>
-                                          _productImages[index]['screen']
-                                              as Widget),
-                                    ),
-                                  );
-                                  // Xử lý khi người dùng nhấn vào ảnh (nếu cần)
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  child: Image.asset(
-                                    _productImages[index]['image'] as String,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover, // 🔥 QUAN TRỌNG
-                                  ),
-                                ),
+                    const CustomImageCarousel(),
+                    ServiceGrid(),
+                    const _AchievementBanner(),
+                    if (isShow == 'true')
+                      SizedBox(
+                        width: 343.w,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: ((context) => ListClassOff()),
                               ),
                             );
                           },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      _productImages.length,
-                      (index) => Container(
-                        width: 8.w,
-                        height: 8.w,
-                        margin: EdgeInsets.symmetric(horizontal: 3.w),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _currentSlide == index
-                              ? mainDarkGreen
-                              : Colors.grey[400],
+                          child: Center(
+                            child: Text(
+                              ' KHOÁ HỌC ONLINE NỔI BẬT -\n ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG',
+                              textAlign: TextAlign.center,
+
+                              style: defaultText18B.copyWith(
+                                color: mainDarkGreen,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
+                    if (isShow == 'true')
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: listCourseOnline.length,
+                        itemBuilder: (context, index) {
+                          return Center(
+                            child: _OnlineClassCard(
+                              index: index,
+                              model: listCourseOnline[index],
+                            ),
+                          );
+                        },
+                      ),
+                    //SizedBox(height: 20.h),
+                    // if (isShow == 'true')
+                    //   GestureDetector(
+                    //     onTap: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //           builder: ((context) => ListClassOnline()),
+                    //         ),
+                    //       );
+                    //     },
+                    //     child: SizedBox(
+                    //       width: 343.w,
+                    //       child: Row(
+                    //         children: [
+                    //           SvgPicture.asset('assets/icons/class_online.svg'),
+                    //           Text(
+                    //             ' Gợi ý các khóa học online'.sanitizeForApple,
+                    //             style: defaultText16B.copyWith(
+                    //               color: Colors.black,
+                    //             ),
+                    //           ),
+                    //           Spacer(),
+                    //           Text(
+                    //             'Xem tất cả  ',
+                    //             style: defaultText14SB.copyWith(
+                    //               color: mainDarkGreen,
+                    //               fontSize: 12.sp,
+                    //             ),
+                    //           ),
+                    //           Icon(
+                    //             Icons.keyboard_arrow_right,
+                    //             color: mainDarkGreen,
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // if (isShow == 'true')
+                    //   SizedBox(
+                    //     width: 375.w,
+                    //     height: (294 + 48).h,
+                    //     child: ListView.builder(
+                    //       scrollDirection: Axis.horizontal,
+                    //       shrinkWrap: true,
+                    //       physics: const ScrollPhysics(),
+                    //       itemCount: listCourseOnline.length,
+                    //       itemBuilder: (context, index) {
+                    //         return _OnlineClassCard(
+                    //           index: index,
+                    //           model: listCourseOnline[index],
+                    //         );
+                    //       },
+                    //     ),
+                    //   ),
+                    SizedBox(height: 10.h),
+                    FeedbackSlider(),
+                    Container(
+                      height: 160.h,
+                      width: 375.w,
+                      margin: EdgeInsets.only(bottom: 20.h),
+                      padding: EdgeInsets.only(left: 16.w),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.r),
+                        gradient: LinearGradient(
+                          colors: [mainDarkGreen, mainGreen],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        border: Border.all(color: mainDarkGreen, width: 1.w),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          /// TEXT (tự co lại)
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
+                                  style: defaultText14B.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  'NGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
+                                  style: defaultText14B.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 8.h,
+                                  ),
+
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16.r),
+                                    color: Colors.white,
+                                  ),
+                                  child: Text(
+                                    'Nhận ưu đãi ngay',
+                                    style: defaultText16B.copyWith(
+                                      color: mainDarkGreen,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          /// IMAGE (giữ kích thước mong muốn)
+                          SizedBox(
+                            height: 140.h, // 👈 bạn control size ảnh ở đây
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  ServiceGrid(),
-                  if (isShow == 'true')
-                    SizedBox(
-                      width: 343.w,
-                      child: GestureDetector(
-                        onTap: () {
+                    Text(
+                      'KIẾN THỨC & CÔNG THỨC TẶNG EATCLEAN - HEALTHY',
+                      textAlign: TextAlign.center,
+                      style: defaultText20B.copyWith(color: mainDarkGreen),
+                    ),
+                    Text(
+                      'Cập nhật liên tục công thức nấu ăn eatclean - healthy mới nhất',
+                      textAlign: TextAlign.center,
+                      style: defaultText14M.copyWith(color: mainDarkGreen),
+                    ),
+                    RecipeGridWidget(recipes: dummyLongList, type: 1),
+                    SizedBox(height: 10.h),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            offset: const Offset(0, 2),
+                            blurRadius: 4.0,
+                          ),
+                        ],
+
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [backGroundGreen, mainDarkGreen],
+                        ),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          // Làm trong suốt nền và bóng của nút để hiển thị gradient của Container
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          // Điều chỉnh kích thước của nút
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 48.0,
+                            vertical: 16.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                        ),
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: ((context) => ListClassOff()),
+                              builder: (context) => MoreRecipesScreen(
+                                title:
+                                    'KIẾN THỨC & CÔNG THỨC TẶNG EATCLEAN - HEALTHY',
+                                recipes: dummyLongList,
+                                type: 1,
+                              ),
                             ),
                           );
                         },
-                        child: Center(
-                          child: Text(
-                            ' KHOÁ HỌC ONLINE NỔI BẬT -\n ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG',
-                            textAlign: TextAlign.center,
-
-                            style: defaultText18B.copyWith(
-                              color: mainDarkGreen,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
+                        child: Text(
+                          'Xem thêm',
+                          style: defaultText18M.copyWith(color: Colors.white),
                         ),
                       ),
                     ),
-                  if (isShow == 'true')
-                    SizedBox(
+                    SizedBox(height: 20.h),
+                    Text(
+                      'NHẬT KÝ LỚP HỌC',
+                      textAlign: TextAlign.center,
+                      style: defaultText20B.copyWith(color: mainDarkGreen),
+                    ),
+                    Text(
+                      'Các lớp học nấu ăn healthy với những công thức bổ dưỡng, dễ làm và đầy màu sắc.',
+                      textAlign: TextAlign.center,
+                      style: defaultText14M.copyWith(color: mainDarkGreen),
+                    ),
+                    RecipeGridWidget(recipes: dummyLongList2, type: 2),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            offset: const Offset(0, 2),
+                            blurRadius: 4.0,
+                          ),
+                        ],
+
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [backGroundGreen, mainDarkGreen],
+                        ),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          // Làm trong suốt nền và bóng của nút để hiển thị gradient của Container
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          // Điều chỉnh kích thước của nút
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 48.0,
+                            vertical: 16.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MoreRecipesScreen(
+                                title: 'NHẬT KÝ LỚP HỌC',
+                                recipes: dummyLongList2,
+                                type: 2,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Xem thêm',
+                          style: defaultText18M.copyWith(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20.h),
+                    Container(
                       width: 375.w,
-                      height: 320.h,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        physics: const ScrollPhysics(),
-                        itemCount: listCourseOnline.length,
-                        itemBuilder: (context, index) {
-                          return _OnlineClassCard(
-                            index: index,
-                            model: listCourseOnline[index],
-                          );
-                        },
-                      ),
-                    ),
-                  //SizedBox(height: 20.h),
-                  // if (isShow == 'true')
-                  //   GestureDetector(
-                  //     onTap: () {
-                  //       Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //           builder: ((context) => ListClassOnline()),
-                  //         ),
-                  //       );
-                  //     },
-                  //     child: SizedBox(
-                  //       width: 343.w,
-                  //       child: Row(
-                  //         children: [
-                  //           SvgPicture.asset('assets/icons/class_online.svg'),
-                  //           Text(
-                  //             ' Gợi ý các khóa học online'.sanitizeForApple,
-                  //             style: defaultText16B.copyWith(
-                  //               color: Colors.black,
-                  //             ),
-                  //           ),
-                  //           Spacer(),
-                  //           Text(
-                  //             'Xem tất cả  ',
-                  //             style: defaultText14SB.copyWith(
-                  //               color: mainDarkGreen,
-                  //               fontSize: 12.sp,
-                  //             ),
-                  //           ),
-                  //           Icon(
-                  //             Icons.keyboard_arrow_right,
-                  //             color: mainDarkGreen,
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // if (isShow == 'true')
-                  //   SizedBox(
-                  //     width: 375.w,
-                  //     height: (294 + 48).h,
-                  //     child: ListView.builder(
-                  //       scrollDirection: Axis.horizontal,
-                  //       shrinkWrap: true,
-                  //       physics: const ScrollPhysics(),
-                  //       itemCount: listCourseOnline.length,
-                  //       itemBuilder: (context, index) {
-                  //         return _OnlineClassCard(
-                  //           index: index,
-                  //           model: listCourseOnline[index],
-                  //         );
-                  //       },
-                  //     ),
-                  //   ),
-                  SizedBox(height: 10.h),
-                  FeedbackSlider(),
-                  Container(
-                    height: 160.h,
-                    width: 375.w,
-                    margin: EdgeInsets.only(bottom: 20.h),
-                    padding: EdgeInsets.only(left: 16.w),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      gradient: LinearGradient(
-                        colors: [mainDarkGreen, mainGreen],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      border: Border.all(color: mainDarkGreen, width: 1.w),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        /// TEXT (tự co lại)
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
-                                style: defaultText14B.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                'NGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
-                                style: defaultText14B.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w,
-                                  vertical: 8.h,
-                                ),
 
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16.r),
-                                  color: Colors.white,
-                                ),
-                                child: Text(
-                                  'Nhận ưu đãi ngay',
-                                  style: defaultText16B.copyWith(
-                                    color: mainDarkGreen,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 12.h,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16.r),
+                          topRight: Radius.circular(16.r),
                         ),
-
-                        /// IMAGE (giữ kích thước mong muốn)
-                        SizedBox(
-                          height: 140.h, // 👈 bạn control size ảnh ở đây
-                          child: CachedNetworkImage(
+                        color: mainDarkGreen,
+                        border: Border.all(color: mainDarkGreen, width: 1.w),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CachedNetworkImage(
                             imageUrl:
-                                'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                                'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+                            height: 60.h,
                             fit: BoxFit.contain,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    'KIẾN THỨC & CÔNG THỨC TẶNG EATCLEAN - HEALTHY',
-                    textAlign: TextAlign.center,
-                    style: defaultText20B.copyWith(color: mainDarkGreen),
-                  ),
-                  Text(
-                    'Cập nhật liên tục công thức nấu ăn eatclean - healthy mới nhất',
-                    textAlign: TextAlign.center,
-                    style: defaultText14M.copyWith(color: mainDarkGreen),
-                  ),
-                  RecipeGridWidget(recipes: dummyLongList, type: 1),
-                  SizedBox(height: 10.h),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          offset: const Offset(0, 2),
-                          blurRadius: 4.0,
-                        ),
-                      ],
-
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [backGroundGreen, mainDarkGreen],
-                      ),
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        // Làm trong suốt nền và bóng của nút để hiển thị gradient của Container
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        // Điều chỉnh kích thước của nút
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 48.0,
-                          vertical: 16.0,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MoreRecipesScreen(
-                              title:
-                                  'KIẾN THỨC & CÔNG THỨC TẶNG EATCLEAN - HEALTHY',
-                              recipes: dummyLongList,
-                              type: 1,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Xem thêm',
-                        style: defaultText18M.copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                  Text(
-                    'NHẬT KÝ LỚP HỌC',
-                    textAlign: TextAlign.center,
-                    style: defaultText20B.copyWith(color: mainDarkGreen),
-                  ),
-                  Text(
-                    'Các lớp học nấu ăn healthy với những công thức bổ dưỡng, dễ làm và đầy màu sắc.',
-                    textAlign: TextAlign.center,
-                    style: defaultText14M.copyWith(color: mainDarkGreen),
-                  ),
-                  RecipeGridWidget(recipes: dummyLongList2, type: 2),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          offset: const Offset(0, 2),
-                          blurRadius: 4.0,
-                        ),
-                      ],
-
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [backGroundGreen, mainDarkGreen],
-                      ),
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        // Làm trong suốt nền và bóng của nút để hiển thị gradient của Container
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        // Điều chỉnh kích thước của nút
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 48.0,
-                          vertical: 16.0,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MoreRecipesScreen(
-                              title: 'NHẬT KÝ LỚP HỌC',
-                              recipes: dummyLongList2,
-                              type: 2,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Xem thêm',
-                        style: defaultText18M.copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                  Container(
-                    width: 375.w,
-
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 12.h,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.r),
-                        topRight: Radius.circular(16.r),
-                      ),
-                      color: mainDarkGreen,
-                      border: Border.all(color: mainDarkGreen, width: 1.w),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl:
-                              'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
-                          height: 60.h,
-                          fit: BoxFit.contain,
-                        ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  style: defaultText14M.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'Hà Nội:',
-                                      style: defaultText14B.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          ' 214 Lạc Long Quân, quận Tây Hồ, Hà Nội',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  style: defaultText14M.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'HCM:',
-                                      style: defaultText14B.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          ' SkyVilla P2406, Celadon City, số 02 Tân Thanh, phường Tân Sơn Nhì, thành phố Hồ Chí Minh',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.phone_outlined,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  style: defaultText14M.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'Hotline:',
-                                      style: defaultText14B.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    TextSpan(text: '\n(+84)96 691 2016'),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          'CÔNG TY TNHH CÔ GIÁO HEALTHY',
-                          style: defaultText16B.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'MST: 0109187074 \nĐăng ký lần đầu ngày 19 háng 05 năm 2020 \nĐăng ký thay đổi lần thứ 4, ngày 20 tháng 06 năm 2024 \nNơi cấp: Sở kế hoạch và đầu tư thành phố Hà Nội - Phòng đăng ký kinh doanh \nĐịa chỉ trụ sở chính: Tầng 7, Tòa nhà Luxury Ofice, số 214 Lạc Long Quân, Phường Tây Hồ, Thành phố Hà Nội, Việt Nam',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Thông tin',
-                          style: defaultText16B.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Giới thiệu chung',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Khóa học'.sanitizeForApple,
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Sản phẩm',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Chính sách bảo mật - học tập',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 8.h,
-                          ),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: mainGreen,
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          Row(
                             children: [
-                              SizedBox(height: 8.h),
-                              Text(
-                                'Theo dõi Cô Giáo Healthy',
-                                style: defaultText16B.copyWith(
-                                  color: Colors.white,
-                                ),
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.white,
+                                size: 32,
                               ),
-                              Text(
-                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
-                                    .sanitizeForApple,
-                                style: defaultText14M.copyWith(
-                                  color: Colors.white,
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: defaultText14M.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'Hà Nội:',
+                                        style: defaultText14B.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            ' 214 Lạc Long Quân, quận Tây Hồ, Hà Nội',
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  buildImage(
-                                    'assets/images/facebook.png',
-                                    size: 25,
-                                  ),
-                                  buildImage(
-                                    'assets/images/youtube.png',
-                                    size: 25,
-                                  ),
-                                  buildImage(
-                                    'assets/images/tiktok.png',
-                                    size: 25,
-                                  ),
-                                  buildImage(
-                                    'assets/images/zalo.png',
-                                    size: 25,
-                                  ),
-                                  buildImage('assets/images/ins.png', size: 20),
-                                  buildImage(
-                                    'assets/images/threads.png',
-                                    size: 25,
-                                  ),
-
-                                  buildImage(
-                                    'assets/images/lemon8.png',
-                                    size: 25,
-                                  ),
-                                ],
                               ),
                             ],
                           ),
-                        ),
-                        Text(
-                          '© 2025 Cô Giáo Healthy | All Rights Reserved.',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        SizedBox(height: 30.h),
-                      ],
-                    ),
-                  ),
+                          SizedBox(height: 8.h),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.white,
+                                size: 32,
+                              ),
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: defaultText14M.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'HCM:',
+                                        style: defaultText14B.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            ' SkyVilla P2406, Celadon City, số 02 Tân Thanh, phường Tân Sơn Nhì, thành phố Hồ Chí Minh',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.h),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.phone_outlined,
+                                color: Colors.white,
+                                size: 32,
+                              ),
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: defaultText14M.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'Hotline:',
+                                        style: defaultText14B.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      TextSpan(text: '\n(+84)96 691 2016'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            'CÔNG TY TNHH CÔ GIÁO HEALTHY',
+                            style: defaultText16B.copyWith(color: Colors.white),
+                          ),
+                          Text(
+                            'MST: 0109187074 \nĐăng ký lần đầu ngày 19 háng 05 năm 2020 \nĐăng ký thay đổi lần thứ 4, ngày 20 tháng 06 năm 2024 \nNơi cấp: Sở kế hoạch và đầu tư thành phố Hà Nội - Phòng đăng ký kinh doanh \nĐịa chỉ trụ sở chính: Tầng 7, Tòa nhà Luxury Ofice, số 214 Lạc Long Quân, Phường Tây Hồ, Thành phố Hà Nội, Việt Nam',
+                            style: defaultText14M.copyWith(color: Colors.white),
+                          ),
+                          Text(
+                            'Thông tin',
+                            style: defaultText16B.copyWith(color: Colors.white),
+                          ),
+                          Text(
+                            'Giới thiệu chung',
+                            style: defaultText14M.copyWith(color: Colors.white),
+                          ),
+                          Text(
+                            'Khóa học'.sanitizeForApple,
+                            style: defaultText14M.copyWith(color: Colors.white),
+                          ),
+                          Text(
+                            'Sản phẩm',
+                            style: defaultText14M.copyWith(color: Colors.white),
+                          ),
+                          Text(
+                            'Chính sách bảo mật - học tập',
+                            style: defaultText14M.copyWith(color: Colors.white),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 8.h,
+                            ),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: mainGreen,
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'Theo dõi Cô Giáo Healthy',
+                                  style: defaultText16B.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
+                                      .sanitizeForApple,
+                                  style: defaultText14M.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    buildImage(
+                                      'assets/images/facebook.png',
+                                      size: 25,
+                                    ),
+                                    buildImage(
+                                      'assets/images/youtube.png',
+                                      size: 25,
+                                    ),
+                                    buildImage(
+                                      'assets/images/tiktok.png',
+                                      size: 25,
+                                    ),
+                                    buildImage(
+                                      'assets/images/zalo.png',
+                                      size: 25,
+                                    ),
+                                    buildImage(
+                                      'assets/images/ins.png',
+                                      size: 20,
+                                    ),
+                                    buildImage(
+                                      'assets/images/threads.png',
+                                      size: 25,
+                                    ),
 
-                  // Khoảng cách cuối trang
-                ],
+                                    buildImage(
+                                      'assets/images/lemon8.png',
+                                      size: 25,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            '© 2025 Cô Giáo Healthy | All Rights Reserved.',
+                            style: defaultText14M.copyWith(color: Colors.white),
+                          ),
+                          SizedBox(height: 30.h),
+                        ],
+                      ),
+                    ),
+
+                    // Khoảng cách cuối trang
+                  ],
+                ),
               ),
             ),
-          ),
-          BottomCustom(),
-        ],
+            BottomCustom(),
+          ],
+        ),
       ),
     );
   }
@@ -1459,114 +1363,248 @@ class _OnlineClassCard extends StatelessWidget {
         );
       },
       child: Container(
-        height: 294.h,
-        width: 200.w,
-        margin: EdgeInsets.only(
-          left: 16.w,
-          right: index == 2 ? 16.w : 4.w,
-          top: 20.h,
-          bottom: 28.h,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+        width: 343.w,
+        margin: EdgeInsets.symmetric(vertical: 10.h),
+        padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20.r)),
+          borderRadius: BorderRadius.all(Radius.circular(16.r)),
+          border: Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xff062905).withValues(alpha: 0.16),
+              color: Colors.black.withOpacity(0.05),
               spreadRadius: 0,
-              blurRadius: 8,
+              blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              width: 184.w,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.r),
-                child: CachedNetworkImage(
-                  imageUrl:
-                      model.img ??
-                      'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg',
-                  fit: BoxFit.fitWidth,
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12.r),
+                  child: AspectRatio(
+                    aspectRatio: 483 / 397.76,
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          model.img ??
+                          'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg',
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  bottom: 8.h,
+                  right: 8.w,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 4.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(color: mainDarkGreen),
+                    ),
+                    child: Text(
+                      model.topicName ?? 'Bánh kẹo healthy',
+                      style: defaultText12Re.copyWith(
+                        color: mainDarkGreen,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+            SizedBox(height: 16.h),
             Text(
               model.courseName ?? 'Không xác định',
               maxLines: 2,
-              style: defaultText14SB,
+              style: defaultText16B.copyWith(color: mainDarkGreen, height: 1.4),
             ),
+            SizedBox(height: 12.h),
+            Row(
+              children: [
+                Icon(
+                  Icons.location_on_outlined,
+                  color: mainDarkGreen,
+                  size: 20.sp,
+                ),
+                SizedBox(width: 4.w),
+                Text(
+                  'Học Online qua App',
+                  style: defaultText14M.copyWith(color: Colors.red),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 6.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.play_circle_fill,
+                        color: Colors.amber,
+                        size: 16.sp,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        '${model.lessonNumber ?? 0} bài học',
+                        style: defaultText12Re.copyWith(color: mainDarkGreen),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 6.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.person, color: Colors.amber, size: 16.sp),
+                      SizedBox(width: 4.w),
+                      Text(
+                        '${int.parse(model.totalEnrollments ?? '0') + int.parse(model.startCount ?? '0')} lượt học',
+                        style: defaultText12Re.copyWith(color: mainDarkGreen),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
             if (isShow == 'true')
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '') ?? 0)}đ',
-                    style: defaultText16B,
-                  ),
-                  if (model.priceOld != '0')
-                    Text(
-                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '') ?? 0)}đ',
-                      style: defaultText12Re.copyWith(
-                        decoration: TextDecoration.lineThrough,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (model.priceOld != null && model.priceOld != '0')
+                        Text(
+                          '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '') ?? 0)}đ',
+                          style: defaultText14M.copyWith(
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      Text(
+                        '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '') ?? 0)}đ',
+                        style: defaultText18B.copyWith(
+                          color: mainDarkGreen,
+                          fontSize: 20.sp,
+                        ),
                       ),
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 10.h,
                     ),
-                ],
-              ),
-            Container(
-              height: 32.h,
-              width: 184.w,
-              decoration: BoxDecoration(
-                color: const Color(0xff73BB43),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(width: 8.w),
-                  Image.asset(
-                    'assets/images/play_icon.png',
-                    height: 16.h,
-                    width: 16.w,
-                    fit: BoxFit.fill,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    '${model.lessonNumber ?? 0} bài học',
-                    style: defaultText14SB.copyWith(color: Colors.white),
+                    decoration: BoxDecoration(
+                      color: mainDarkGreen,
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Text(
+                      'Đăng ký ngay',
+                      style: defaultText14SB.copyWith(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AchievementBanner extends StatelessWidget {
+  const _AchievementBanner({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: mainGreen,
+      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 10.w),
+      margin: EdgeInsets.symmetric(vertical: 16.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildItem(
+            icon: 'assets/images/exp.png',
+            number: '10+',
+            text: 'Năm kinh nghiệm đào tạo và setup F&B\nViệt Nam',
+          ),
+          _buildItem(
+            icon: 'assets/images/course.png',
+            number: '60+',
+            text: 'Khoá học nấu ăn dinh dưỡng, làm bánh và đồ uống\nhealthy',
+          ),
+          _buildItem(
+            icon: 'assets/images/like.png',
+            number: 'No.1',
+            text:
+                'Trung tâm đầu tiên giảng dạy dinh dưỡng & thực\nphẩm healthy',
+          ),
+          _buildItem(
+            icon: 'assets/images/exp.png',
+            number: '10.000+',
+            text: 'Học viên ứng dụng & kinh doanh thành công trên toàn quốc',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItem({
+    required String icon,
+    required String number,
+    required String text,
+  }) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 2.w),
+        child: Column(
+          children: [
+            Image.asset(icon, height: 30.h, width: 30.w),
+            SizedBox(height: 8.h),
+            Text(
+              number,
+              style: defaultText20B.copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
             ),
-            // Container(
-            //   height: 32.h,
-            //   width: 184.w,
-            //   decoration: BoxDecoration(
-            //     color: const Color(0xff73BB43),
-            //     borderRadius: BorderRadius.circular(16.r),
-            //   ),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.start,
-            //     children: [
-            //       SizedBox(width: 8.w),
-            //       Image.asset(
-            //         'assets/images/play_icon.png',
-            //         height: 16.h,
-            //         width: 16.w,
-            //         fit: BoxFit.fill,
-            //       ),
-            //       SizedBox(width: 8.w),
-            //       Text(
-            //         '${model.totalEnrollments ?? 0} lượt học',
-            //         style: defaultText14SB.copyWith(color: Colors.white),
-            //       ),
-            //     ],
-            //   ),
-            // ),
+            SizedBox(height: 4.h),
+            Text(
+              text,
+              style: defaultText14B.copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

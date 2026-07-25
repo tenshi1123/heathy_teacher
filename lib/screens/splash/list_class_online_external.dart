@@ -5,7 +5,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
-import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:intl/intl.dart';
@@ -29,15 +28,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
   int itemsPerPage = 6;
   bool isLoading = false;
   List<CourseModel> localListCourse = [];
-  final List<String> _productImages = [
-    'assets/images/home1.jpg',
-    'assets/images/home2.jpg',
-    'assets/images/home3.jpg',
-    'assets/images/home4.jpg',
-  ];
-  int _currentSlide = 0;
-  final PageController _pageController =
-      PageController(); // Điều khiển PageView
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +46,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
           page: page,
           show: itemsPerPage,
           query: widget.category,
+          type: 'online',
         );
         setState(() {
           localListCourse.addAll(newItems);
@@ -104,69 +96,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                 children: [
                   const SizedBox(height: 50),
                   DefaultAppBar(),
-                  Container(
-                    width: double.infinity,
-                    height: 375.w * 4 / 3,
-                    margin: EdgeInsets.symmetric(vertical: 16.h),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        PageView.builder(
-                          controller: _pageController,
-                          itemCount: _productImages.length,
-                          onPageChanged: (index) {
-                            setState(() {
-                              _currentSlide = index;
-                            });
-                          },
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: ((context) =>
-                                //         const ListSpScreen()),
-                                //   ),
-                                // );
-                                // Xử lý khi người dùng nhấn vào ảnh (nếu cần)
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10.r),
-                                child: Image.asset(
-                                  _productImages[index],
-                                  width: double.infinity,
-                                  fit: BoxFit.cover, // 🔥 QUAN TRỌNG
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-
-                        /// DOT INDICATOR
-                        Positioned(
-                          bottom: 10.h,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              _productImages.length,
-                              (index) => Container(
-                                width: 8.w,
-                                height: 8.w,
-                                margin: EdgeInsets.symmetric(horizontal: 3.w),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _currentSlide == index
-                                      ? mainDarkGreen
-                                      : Colors.grey[400],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  const CustomImageCarousel(),
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 16.w,
@@ -235,11 +165,14 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(8.r),
-                                  child: CachedNetworkImage(
-                                    imageUrl: model.img ?? '',
-                                    width: double.infinity,
-                                    height: 180.h,
-                                    fit: BoxFit.cover,
+                                  child: AspectRatio(
+                                    aspectRatio: 483 / 397.76,
+                                    child: CachedNetworkImage(
+                                      imageUrl: model.img ?? '',
+                                      width: double.infinity,
+                                      height: 180.h,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: 12.h),
@@ -262,7 +195,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                                         color: Colors.white,
                                       ),
                                       child: Text(
-                                        'Khóa học online',
+                                        model.topicName ?? '',
                                         style: defaultText14M.copyWith(
                                           color: mainDarkGreen,
                                         ),
@@ -283,22 +216,15 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                                 Row(
                                   children: [
                                     Icon(
-                                      Icons.calendar_month_outlined,
+                                      Icons.location_on_outlined,
                                       color: mainDarkGreen,
-                                      size: 16,
+                                      size: 20.sp,
                                     ),
+                                    SizedBox(width: 4.w),
                                     Text(
-                                      '  Cô giáo Healthy',
+                                      'Học Online qua App',
                                       style: defaultText14M.copyWith(
-                                        color: mainDarkGreen,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    RatingStars(rating: 4.6, starSize: 16.r),
-                                    Text(
-                                      ' (4,6)',
-                                      style: defaultText14SB.copyWith(
-                                        fontSize: 12.sp,
+                                        color: Colors.red,
                                       ),
                                     ),
                                   ],
@@ -306,20 +232,29 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                                 if (isShow == 'true') ...[
                                   SizedBox(height: 12.h),
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      Text(
-                                        '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '0') ?? 0)}đ',
-                                        style: defaultText18B.copyWith(
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                      SizedBox(width: 12.w),
-                                      Text(
-                                        '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
-                                        style: defaultText14M.copyWith(
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                        ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '0') ?? 0)}đ',
+                                            style: defaultText18B.copyWith(
+                                              color: mainDarkGreen,
+                                            ),
+                                          ),
+                                          SizedBox(width: 12.w),
+                                          if (model.priceOld != '0')
+                                            Text(
+                                              '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
+                                              style: defaultText14M.copyWith(
+                                                color: mainDarkGreen,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -396,7 +331,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                                               size: 16,
                                             ),
                                             Text(
-                                              '  ${model.totalEnrollments} lượt học',
+                                              '  ${int.parse(model.totalEnrollments ?? '0') + int.parse(model.startCount ?? '0')} lượt học',
                                               style: defaultText12M.copyWith(
                                                 color: mainDarkGreen,
                                               ),
@@ -410,7 +345,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                                 Center(
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
-                                      horizontal: 60.w,
+                                      horizontal: 80.w,
                                       vertical: 10.h,
                                     ),
                                     decoration: BoxDecoration(
@@ -428,7 +363,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                                       color: mainDarkGreen,
                                     ),
                                     child: Text(
-                                      'Xem chi tiết',
+                                      'Đăng ký ngay',
                                       style: defaultText16B.copyWith(
                                         color: Colors.white,
                                       ),
@@ -451,7 +386,6 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                       decoration: const BoxDecoration(color: Colors.white),
                       child: PaginationWidget(
                         currentPage: currentPage,
-                        totalPages: 6,
                         onPageChanged: (page) {
                           setState(() {
                             currentPage = page;

@@ -6,7 +6,6 @@ import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
-import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:intl/intl.dart';
@@ -42,7 +41,7 @@ class _ListClassOffState extends State<ListClassOff> {
       });
       try {
         final newItems = await ExternalRepo().getListCourseOff(
-          page: page, 
+          page: page,
           show: itemsPerPage,
           place: widget.place,
         );
@@ -65,7 +64,8 @@ class _ListClassOffState extends State<ListClassOff> {
     int startIndex = (currentPage - 1) * itemsPerPage;
     int endIndex = startIndex + itemsPerPage;
     if (startIndex >= localListCourseOff.length) return [];
-    if (endIndex > localListCourseOff.length) endIndex = localListCourseOff.length;
+    if (endIndex > localListCourseOff.length)
+      endIndex = localListCourseOff.length;
     return localListCourseOff.sublist(startIndex, endIndex);
   }
 
@@ -119,115 +119,108 @@ class _ListClassOffState extends State<ListClassOff> {
             Stack(
               children: [
                 ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 20.h),
-              physics: const ClampingScrollPhysics(),
-              itemCount: currentItems.length,
-              itemBuilder: (BuildContext context, int index) {
-                var model = currentItems[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => RegisterClassOff(
-                          id: currentItems[index].id ?? '',
-                        )),
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(
+                    left: 16.w,
+                    right: 16.w,
+                    bottom: 20.h,
+                  ),
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: currentItems.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var model = currentItems[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => RegisterClassOff(
+                              id: currentItems[index].id ?? '',
+                            )),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 343.w,
+                        //height: 106.h,
+                        margin: EdgeInsets.only(bottom: index == 5 ? 80 : 16.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 8.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xff062905).withValues(alpha: 0.16),
+                              spreadRadius: 0,
+                              blurRadius: 8,
+                              offset: const Offset(
+                                0,
+                                4,
+                              ), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: model.img ?? '',
+                              height: 90.h,
+                              width: 90.w,
+                              fit: BoxFit.fill,
+                            ),
+                            SizedBox(width: 12.w),
+                            SizedBox(
+                              width: 217.w,
+                              child: Column(
+                                children: [
+                                  SizedBox(),
+                                  Text(
+                                    model.name ?? 'Không xác định',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: defaultText14SB,
+                                  ),
+                                  if (isShow == 'true')
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
+                                          style: defaultText16B,
+                                        ),
+                                        SizedBox(width: 12.w),
+                                        if (model.priceOld != '0')
+                                          Text(
+                                            '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
+                                            style: defaultText12Re.copyWith(
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
-                  child: Container(
-                    width: 343.w,
-                    //height: 106.h,
-                    margin: EdgeInsets.only(bottom: index == 5 ? 80 : 16.h),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xff062905).withValues(alpha: 0.16),
-                          spreadRadius: 0,
-                          blurRadius: 8,
-                          offset: const Offset(
-                            0,
-                            4,
-                          ), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        CachedNetworkImage(
-  imageUrl: model.img ?? '',
-                          height: 90.h,
-                          width: 90.w,
-                          fit: BoxFit.fill,
-                        ),
-                        SizedBox(width: 12.w),
-                        SizedBox(
-                          width: 217.w,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  RatingStars(
-                                    rating: 4.6, // Hiển thị 4.5 sao
-                                    starSize: 16.r,
-                                  ),
-                                  Text(
-                                    '(4,6)',
-                                    style: defaultText14SB.copyWith(
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                model.name ?? 'Không xác định',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: defaultText14SB,
-                              ),
-                              if (isShow == 'true')
-                                Row(
-                                  children: [
-                                    Text(
-                                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
-                                      style: defaultText16B,
-                                    ),
-                                    SizedBox(width: 12.w),
-                                    Text(
-                                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
-                                      style: defaultText12Re.copyWith(
-                                        decoration: TextDecoration.lineThrough,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            if (isLoading)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.white.withValues(alpha: 0.5),
-                  child: Center(
-                    child: CircularProgressIndicator(color: mainDarkGreen),
-                  ),
                 ),
-              ),
-          ],
-        ),
+                if (isLoading)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.white.withValues(alpha: 0.5),
+                      child: Center(
+                        child: CircularProgressIndicator(color: mainDarkGreen),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             Align(
               alignment: Alignment.bottomLeft,
               child: Container(

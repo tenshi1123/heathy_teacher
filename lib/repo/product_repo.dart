@@ -61,4 +61,27 @@ class ProductRepo {
       throw Exception('Lỗi xử lý dữ liệu: $e');
     }
   }
+
+  Future<ProductDetailModel> getDetailProduct(String productId) async {
+    try {
+      final dio = await DioClient.getInstance();
+      dio.options.headers['Token'] = 'Healthy1234567890HVG';
+      final response = await dio.post(
+        ApiPath.detailProduct,
+        data: jsonEncode({
+          'product_id': productId,
+        }),
+      );
+      if (response.data != null && response.data['product'] != null) {
+        return ProductDetailModel.fromJson(
+            response.data['product'] as Map<String, dynamic>);
+      } else {
+        throw Exception('Không tìm thấy dữ liệu sản phẩm');
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
 }

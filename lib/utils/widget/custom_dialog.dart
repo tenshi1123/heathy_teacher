@@ -325,9 +325,7 @@ void showCitySelectionDialog({
                 color: mainDarkGreen,
                 onTap: () {
                   Navigator.pop(context); // Đóng popup trước
-                  onCitySelected(
-                    "TP. Hồ Chí Minh",
-                  ); // Bắn dữ liệu ra bên ngoài xử lý
+                  onCitySelected("TP.HCM"); // Bắn dữ liệu ra bên ngoài xử lý
                 },
               ),
             ],

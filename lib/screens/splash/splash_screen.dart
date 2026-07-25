@@ -1,3 +1,5 @@
+import 'package:shorebird_code_push/shorebird_code_push.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -20,6 +22,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
+  final _shorebirdUpdater = ShorebirdUpdater();
+  bool _isDownloadingPatch = false;
 
   // Biến cờ để theo dõi xem app đã được mở từ Deep Link chưa
   bool _openedFromDeepLink = false;
@@ -31,9 +35,27 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkTokenAndNavigate();
   }
 
+  Future<void> _checkForUpdate() async {
+    try {
+      final status = await _shorebirdUpdater.checkForUpdate();
+      if (status == UpdateStatus.outdated) {
+        if (mounted) {
+          setState(() {
+            _isDownloadingPatch = true;
+          });
+        }
+        await _shorebirdUpdater.update();
+        await Restart.restartApp();
+      }
+    } catch (e) {
+      print('Lỗi cập nhật Shorebird: $e');
+    }
+  }
+
   Future<void> _checkTokenAndNavigate() async {
-    // Chờ 3 giây để hiển thị splash image
-    // await Future.delayed(const Duration(milliseconds: 10));
+    // Kiểm tra bản vá Shorebird trước tiên
+    await _checkForUpdate();
+
     if (_openedFromDeepLink) return;
 
     // Lấy danh sách lớp on và off lúc chờ vào app
@@ -114,8 +136,22 @@ class _SplashScreenState extends State<SplashScreen> {
             bottom: 50.h,
             left: 0,
             right: 0,
-            child: Center(
-              child: CircularProgressIndicator(color: mainDarkGreen),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: mainDarkGreen),
+                if (_isDownloadingPatch) ...[
+                  SizedBox(height: 16.h),
+                  Text(
+                    'Đang tải bản cập nhật, vui lòng đợi...',
+                    style: TextStyle(
+                      color: mainDarkGreen,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
         ],

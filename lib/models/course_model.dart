@@ -64,13 +64,15 @@ class LessonModel {
   final String? lessonsId;
   final String? name;
   final String? time;
+  final String? isTrial;
 
-  LessonModel({this.lessonsId, this.name, this.time});
+  LessonModel({this.lessonsId, this.name, this.time, this.isTrial});
 
   factory LessonModel.fromJson(Map<String, dynamic> json) => LessonModel(
     lessonsId: json['lessons_id'],
     name: json['name'],
     time: json['time'],
+    isTrial: json['is_trial'],
   );
 }
 
@@ -245,14 +247,25 @@ class CourseModel {
 }
 
 class CourseOffModel {
-  final String? id, name, img, price, priceOld, dateStart, province, lecturer;
+  final String? id,
+      name,
+      topicName,
+      img,
+      price,
+      priceOld,
+      dateStart,
+      dateEnd,
+      province,
+      lecturer;
   CourseOffModel({
     this.id,
     this.name,
+    this.topicName,
     this.img,
     this.price,
     this.priceOld,
     this.dateStart,
+    this.dateEnd,
     this.province,
     this.lecturer,
   });
@@ -260,10 +273,12 @@ class CourseOffModel {
     return CourseOffModel(
       id: json['course_type_id'],
       name: (json['course_schedule_name'] as String?).sanitizeForApple,
+      topicName: json['topic_name'],
       img: json['img'],
       price: json['price'],
       priceOld: json['price_old'],
       dateStart: json['date_start'],
+      dateEnd: json['date_end'],
       province: json['coso_province'],
       lecturer: json['lecturer_name'],
     );

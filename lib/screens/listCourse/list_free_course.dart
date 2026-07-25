@@ -12,7 +12,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
-import 'package:intl/intl.dart';
 
 class ListFreeCourse extends StatefulWidget {
   const ListFreeCourse({super.key});
@@ -26,18 +25,9 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
   static const Color secondaryGreen = Color(
     0xFF7CB342,
   ); // Màu xanh nút đăng nhập
-  final List<String> _productImages = [
-    'assets/images/home1.jpg',
-    'assets/images/home2.jpg',
-    'assets/images/home3.jpg',
-    'assets/images/home4.jpg',
-  ];
-  int _currentSlide = 0;
-  final PageController _pageController =
-      PageController(); // Điều khiển PageView
 
   late int currentPage = 1;
-  int itemsPerPage = 6;
+  int itemsPerPage = 1000;
   bool isLoading = false;
   List<CourseModel> localListCourse = [];
 
@@ -56,7 +46,7 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
       try {
         final newItems = await ExternalRepo().getListFreeCourse(
           page: page,
-          show: itemsPerPage,
+          show: 1000,
         );
         setState(() {
           localListCourse.addAll(newItems);
@@ -83,7 +73,6 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
 
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -133,103 +122,41 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                   ),
 
                   // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)
-                  Container(
-                    width: double.infinity,
-                    height: 375.w * 4 / 3,
-                    margin: EdgeInsets.symmetric(vertical: 16.h),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        PageView.builder(
-                          controller: _pageController,
-                          itemCount: _productImages.length,
-                          onPageChanged: (index) {
-                            setState(() {
-                              _currentSlide = index;
-                            });
-                          },
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: ((context) =>
-                                //         const ListSpScreen()),
-                                //   ),
-                                // );
-                                // Xử lý khi người dùng nhấn vào ảnh (nếu cần)
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10.r),
-                                child: Image.asset(
-                                  _productImages[index],
-                                  width: double.infinity,
-                                  fit: BoxFit.cover, // 🔥 QUAN TRỌNG
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-
-                        /// DOT INDICATOR
-                        Positioned(
-                          bottom: 10.h,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              _productImages.length,
-                              (index) => Container(
-                                width: 8.w,
-                                height: 8.w,
-                                margin: EdgeInsets.symmetric(horizontal: 3.w),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _currentSlide == index
-                                      ? mainDarkGreen
-                                      : Colors.grey[400],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  const CustomImageCarousel(),
 
                   //list
                   if (currentItems.isEmpty && !isLoading)
                     Padding(
                       padding: const EdgeInsets.all(20),
-                      child: Text('Không có khóa học nào.', style: defaultText16B),
+                      child: Text(
+                        'Không có khóa học nào.',
+                        style: defaultText16B,
+                      ),
                     )
                   else
-                    ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: currentItems.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return FreeCourseItem(model: currentItems[index]);
-                      },
-                    ),
+                    Builder(
+                      builder: (context) {
+                        Map<String, List<CourseModel>> grouped = {};
+                        for (var course in currentItems) {
+                          String cat = course.categoryName ?? 'Khác';
+                          if (!grouped.containsKey(cat)) grouped[cat] = [];
+                          grouped[cat]!.add(course);
+                        }
 
-                  if (currentItems.isNotEmpty)
-                    Container(
-                      height: 76.h,
-                      width: 375.w,
-                      padding: EdgeInsets.only(bottom: 20.h, top: 16.h),
-                      decoration: const BoxDecoration(color: Colors.white),
-                      child: PaginationWidget(
-                        currentPage: currentPage,
-                        totalPages: 6,
-                        onPageChanged: (page) {
-                          setState(() {
-                            currentPage = page;
-                          });
-                          _loadPage(page);
-                        },
-                      ),
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: grouped.keys.length,
+                          itemBuilder: (context, index) {
+                            String cat = grouped.keys.elementAt(index);
+                            return CategoryExpandableItem(
+                              categoryName: cat,
+                              courses: grouped[cat]!,
+                            );
+                          },
+                        );
+                      },
                     ),
 
                   if (isLoading)
@@ -297,7 +224,8 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                         SizedBox(
                           height: 140.h, // 👈 bạn control size ảnh ở đây
                           child: CachedNetworkImage(
-  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                            imageUrl:
+                                'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -323,7 +251,8 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CachedNetworkImage(
-  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+                          imageUrl:
+                              'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
                           height: 60.h,
                           fit: BoxFit.contain,
                         ),
@@ -467,7 +396,8 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                                 ),
                               ),
                               Text(
-                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'.sanitizeForApple,
+                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
+                                    .sanitizeForApple,
                                 style: defaultText14M.copyWith(
                                   color: Colors.white,
                                 ),
@@ -667,11 +597,16 @@ class FreeCourseItem extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8.r),
-            child: CachedNetworkImage(
-              imageUrl: model.img ?? 'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
-              width: double.infinity,
-              height: 180.h,
-              fit: BoxFit.cover,
+            child: AspectRatio(
+              aspectRatio: 483 / 397.76,
+              child: CachedNetworkImage(
+                imageUrl:
+                    model.img ??
+                    'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',
+                width: double.infinity,
+                height: 180.h,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Row(
@@ -685,7 +620,7 @@ class FreeCourseItem extends StatelessWidget {
                   color: Colors.white,
                 ),
                 child: Text(
-                  'Học thử miễn phí',
+                  model.topicName ?? '',
                   style: defaultText14M.copyWith(color: mainDarkGreen),
                 ),
               ),
@@ -762,7 +697,7 @@ class FreeCourseItem extends StatelessWidget {
                   children: [
                     Icon(Icons.person_outline, color: Colors.yellow, size: 16),
                     Text(
-                      '  ${model.totalEnrollments} lượt học',
+                      '  ${int.parse(model.totalEnrollments ?? '0') + int.parse(model.startCount ?? '0')}lượt học',
                       style: defaultText12M.copyWith(color: mainDarkGreen),
                     ),
                   ],
@@ -801,6 +736,67 @@ class FreeCourseItem extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CategoryExpandableItem extends StatefulWidget {
+  final String categoryName;
+  final List<CourseModel> courses;
+
+  const CategoryExpandableItem({
+    super.key,
+    required this.categoryName,
+    required this.courses,
+  });
+
+  @override
+  State<CategoryExpandableItem> createState() => _CategoryExpandableItemState();
+}
+
+class _CategoryExpandableItemState extends State<CategoryExpandableItem> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            setState(() {
+              isExpanded = !isExpanded;
+            });
+          },
+          child: Container(
+            width: double.infinity,
+            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+            decoration: BoxDecoration(
+              color: mainDarkGreen,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.categoryName,
+                    textAlign: TextAlign.center,
+                    style: defaultText16B.copyWith(color: Colors.white),
+                  ),
+                ),
+                Icon(
+                  isExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (isExpanded)
+          ...widget.courses.map((course) => FreeCourseItem(model: course)),
+      ],
     );
   }
 }

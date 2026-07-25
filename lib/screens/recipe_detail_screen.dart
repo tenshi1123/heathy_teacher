@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/home_model.dart';
@@ -124,17 +125,49 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                           YoutubePlayer.convertUrlToId(src);
 
                                       if (videoId != null) {
-                                        // Trả về trình phát video native của Flutter
-                                        return YoutubePlayer(
-                                          controller: YoutubePlayerController(
-                                            initialVideoId: videoId,
-                                            flags: const YoutubePlayerFlags(
-                                              autoPlay: false,
-                                              mute: false,
-                                              enableCaption: false,
-                                            ),
+                                        final controller = YoutubePlayerController(
+                                          initialVideoId: videoId,
+                                          flags: const YoutubePlayerFlags(
+                                            autoPlay: false,
+                                            mute: false,
+                                            enableCaption: false,
                                           ),
+                                        );
+
+                                        return YoutubePlayer(
+                                          controller: controller,
                                           showVideoProgressIndicator: true,
+                                          bottomActions: [
+                                            const CurrentPosition(),
+                                            const ProgressBar(isExpanded: true),
+                                            const RemainingDuration(),
+                                            const PlaybackSpeedButton(),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.fullscreen,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () async {
+                                                controller.pause();
+                                                final position =
+                                                    await Navigator.push<Duration>(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        _FullScreenVerticalYoutubePlayer(
+                                                      videoId: videoId,
+                                                      startAt: controller
+                                                          .value.position,
+                                                    ),
+                                                  ),
+                                                );
+                                                if (position != null) {
+                                                  controller.seekTo(position);
+                                                }
+                                                controller.play();
+                                              },
+                                            ),
+                                          ],
                                         );
                                       }
                                     }
@@ -358,3 +391,80 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     );
   }
 }
+
+class _FullScreenVerticalYoutubePlayer extends StatefulWidget {
+  final String videoId;
+  final Duration startAt;
+
+  const _FullScreenVerticalYoutubePlayer({
+    super.key,
+    required this.videoId,
+    required this.startAt,
+  });
+
+  @override
+  State<_FullScreenVerticalYoutubePlayer> createState() =>
+      _FullScreenVerticalYoutubePlayerState();
+}
+
+class _FullScreenVerticalYoutubePlayerState
+    extends State<_FullScreenVerticalYoutubePlayer> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: widget.videoId,
+      flags: YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+        enableCaption: false,
+        startAt: widget.startAt.inSeconds,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        Navigator.pop(context, _controller.value.position);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: SafeArea(
+          child: Center(
+            child: YoutubePlayer(
+              controller: _controller,
+              aspectRatio: MediaQuery.of(context).size.width /
+                  MediaQuery.of(context).size.height,
+              showVideoProgressIndicator: true,
+              bottomActions: [
+                const CurrentPosition(),
+                const ProgressBar(isExpanded: true),
+                const RemainingDuration(),
+                const PlaybackSpeedButton(),
+                IconButton(
+                  icon: const Icon(Icons.fullscreen_exit, color: Colors.white),
+                  onPressed: () {
+                    Navigator.pop(context, _controller.value.position);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+

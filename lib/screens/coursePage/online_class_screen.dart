@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
@@ -409,11 +410,16 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      'assets/images/online_course.png',
-                      width: 343.w,
-                      height: 200.h,
-                      fit: BoxFit.fill,
+                    AspectRatio(
+                      aspectRatio: 483 / 397.76,
+                      child: CachedNetworkImage(
+                        imageUrl: courses!.image!.contains('https://')
+                            ? courses!.image!
+                            : 'https://lms.cogiaohealthy.vn/${courses!.image}',
+                        width: 343.w,
+                        height: 200.h,
+                        fit: BoxFit.fill,
+                      ),
                     ),
 
                     SizedBox(height: 12.h),
@@ -434,42 +440,11 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                       //   ),
                       // },
                     ),
+
                     // Text(
                     //   courses.description ?? 'Học online với video'.sanitizeForApple,
                     //   style: defaultText14Re,
                     // ),
-                    if (isShow == 'true')
-                      Row(
-                        children: [
-                          Container(
-                            height: 8.h,
-                            width: 270.w,
-                            alignment: Alignment.centerLeft,
-                            decoration: BoxDecoration(
-                              color: const Color(0xffEDEDED),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Container(
-                              height: 8.h,
-                              width:
-                                  270.w *
-                                  (widget.course.percentLearning! / 100),
-                              decoration: BoxDecoration(
-                                color: mainDarkGreen,
-                                borderRadius: BorderRadius.circular(20.r),
-                              ),
-                            ),
-                          ),
-
-                          Text(
-                            '  ${widget.course.percentLearning!}%',
-                            style: defaultText16B.copyWith(
-                              color: mainDarkGreen,
-                            ),
-                          ),
-                        ],
-                      ),
-                    SizedBox(height: 16.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -638,6 +613,38 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                         style: defaultText16B,
                       ),
                     if (isShow == 'true')
+                      Row(
+                        children: [
+                          Container(
+                            height: 8.h,
+                            width: 270.w,
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                              color: const Color(0xffEDEDED),
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Container(
+                              height: 8.h,
+                              width:
+                                  270.w *
+                                  (widget.course.percentLearning! / 100),
+                              decoration: BoxDecoration(
+                                color: mainDarkGreen,
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                            ),
+                          ),
+
+                          Text(
+                            '  ${widget.course.percentLearning!}%',
+                            style: defaultText16B.copyWith(
+                              color: mainDarkGreen,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                    if (isShow == 'true')
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
@@ -700,20 +707,20 @@ class _LessonItemState extends State<LessonItem> {
             ),
             child: Row(
               children: [
-                Container(
-                  height: 28.h,
-                  width: 28.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: mainDarkGreen,
-                  ),
-                  child: Center(
-                    child: Text(
-                      '0${widget.index + 1}',
-                      style: defaultText14SB.copyWith(color: Colors.white),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   height: 28.h,
+                //   width: 28.w,
+                //   decoration: BoxDecoration(
+                //     shape: BoxShape.circle,
+                //     color: mainDarkGreen,
+                //   ),
+                //   child: Center(
+                //     child: Text(
+                //       '0${widget.index + 1}',
+                //       style: defaultText14SB.copyWith(color: Colors.white),
+                //     ),
+                //   ),
+                // ),
                 SizedBox(width: 16.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

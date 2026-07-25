@@ -2,35 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
-import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:heathy_teacher/utils/widget/custom_product_widget.dart';
 import 'package:heathy_teacher/main.dart';
+import 'package:heathy_teacher/repo/product_repo.dart';
+import 'package:heathy_teacher/models/product_model.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
+import 'package:heathy_teacher/utils/global_data.dart';
+import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 
 class DetailProductScreen extends StatefulWidget {
-  DetailProductScreen({super.key});
-  final List<String> images = [
-    'assets/images/material1.png',
-    'assets/images/material2.png',
-    'assets/images/material3.png',
-  ];
+  final String productId;
+  const DetailProductScreen({super.key, required this.productId});
+
   @override
   State<DetailProductScreen> createState() => _DetailProductScreenState();
 }
 
 class _DetailProductScreenState extends State<DetailProductScreen>
     with SingleTickerProviderStateMixin {
-  int selectedIndex = 0;
+  int selectedQuantity = 1;
   late TabController _tabController;
-  int activeTabIndex = 0;
+  ProductDetailModel? productDetail;
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     _tabController.addListener(() {
-      setState(() {
-        activeTabIndex = _tabController.index;
-      });
+      setState(() {});
     });
+    _fetchProductDetail();
+  }
+
+  Future<void> _fetchProductDetail() async {
+    try {
+      final result = await ProductRepo().getDetailProduct(widget.productId);
+      if (mounted) {
+        setState(() {
+          productDetail = result;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -60,261 +82,320 @@ class _DetailProductScreenState extends State<DetailProductScreen>
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 343.w,
-                height: 240.h,
-                child: Row(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator(color: mainDarkGreen))
+            : productDetail == null
+            ? Center(
+                child: Text('Không tìm thấy sản phẩm', style: defaultText16M),
+              )
+            : SingleChildScrollView(
+                padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      flex: 3,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(widget.images[selectedIndex]),
+                    Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              (productDetail!.img != null &&
+                                  productDetail!.img!.startsWith('http'))
+                              ? productDetail!.img!
+                              : (productDetail!.img != null &&
+                                        productDetail!.img!.isNotEmpty
+                                    ? 'https://lms.cogiaohealthy.vn/${productDetail!.img!.startsWith('/') || productDetail!.img!.startsWith('images') ? (productDetail!.img!.startsWith('/') ? productDetail!.img!.substring(1) : productDetail!.img) : 'images/${productDetail!.img}'}'
+                                    : ''),
+                          width: 343.w,
+                          height: 240.h,
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
                         ),
                       ),
                     ),
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      flex: 1,
-                      child: ListView.separated(
-                        itemCount: widget.images.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final isSelected = index == selectedIndex;
-                          return GestureDetector(
-                            onTap: () => setState(() => selectedIndex = index),
-                            child: Container(
-                              padding: EdgeInsets.all(isSelected ? 4 : 2),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? Colors.yellow.shade600
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? Colors.orange
-                                      : Colors.grey.shade300,
-                                  width: isSelected ? 2 : 1,
-                                ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Image.asset(widget.images[index]),
-                                ),
+                    SizedBox(height: 18.h),
+                    SizedBox(),
+                    SizedBox(height: 6.h),
+                    Text(productDetail!.name ?? '', style: defaultText18B),
+                    if (isShow == 'true') ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${NumberFormat('#,###', 'vi_VN').format(productDetail!.priceInt)}đ',
+                            style: defaultText20B.copyWith(
+                              fontSize: 24.sp,
+                              color: mainDarkGreen,
+                            ),
+                          ),
+                          if (productDetail!.priceOld != '0' &&
+                              productDetail!.priceOld != null) ...[
+                            SizedBox(width: 8.w),
+                            Text(
+                              '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(productDetail!.priceOld!) ?? 0)}đ',
+                              style: defaultText14Re.copyWith(
+                                decoration: TextDecoration.lineThrough,
                               ),
                             ),
-                          );
-                        },
+                            SizedBox(width: 8.w),
+                            Expanded(
+                              child: Text(
+                                '• Tiết kiệm: ${NumberFormat('#,###', 'vi_VN').format((int.tryParse(productDetail!.priceOld!) ?? 0) - productDetail!.priceInt)}đ',
+                                style: defaultText14SB,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 18.h),
-              Row(
-                children: [
-                  RatingStars(
-                    rating: 4.6, // Hiển thị 4.5 sao
-                    starSize: 16.r,
-                  ),
-                  Text(
-                    '(4,6)',
-                    style: defaultText14SB.copyWith(fontSize: 12.sp),
-                  ),
-                  Text(
-                    ' • Tên thương hiệu',
-                    style: defaultText14SB.copyWith(fontSize: 12.sp),
-                  ),
-                ],
-              ),
-              SizedBox(height: 6.h),
-              Text(
-                'Đường hoa dừa ăn kiêng hữu cơ Sokafarm 300g',
-                style: defaultText18B,
-              ),
-              if (isShow == 'true') ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '128.000đ',
-                      style: defaultText20B.copyWith(
-                        fontSize: 24.sp,
-                        color: mainDarkGreen,
-                      ),
-                    ),
-                    Text(
-                      '250.000đ',
-                      style: defaultText14Re.copyWith(
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-                    Text(' • Tiết kiệm: 121.480đ', style: defaultText14SB),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                  child: SizedBox(
-                    width: 181.w,
-                    child: QuantityCounter(
-                      price: 128000,
-                      quantity: 1,
-                      onChanged: (int quantity) {},
-                    ),
-                  ),
-                ),
-              ],
-              _overviewItem(label: 'Hàng CHÍNH HÃNG 100%, có tem phụ'),
-              _overviewItem(label: 'Chính sách ưu đãi cho HỌC VIÊN hấp dẫn'),
-              _overviewItem(label: 'Giao hàng TOÀN QUỐC, MIỄN PHÍ vận chuyển'),
-              _overviewItem(label: 'Liên hệ nhận GIÁ SỈ tốt nhất'),
-              SizedBox(height: 28.h),
-              if (isShow == 'true') ...[
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    height: 48.h,
-                    width: 340.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      color: Colors.white,
-                      border: Border.all(color: mainDarkGreen, width: 1.w),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset('assets/images/gio_hang.png'),
-                        Text(
-                          '  Thêm vào giỏ hàng',
-                          textAlign: TextAlign.center,
-                          style: defaultText16B.copyWith(color: mainDarkGreen),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                        child: SizedBox(
+                          width: 181.w,
+                          child: QuantityCounter(
+                            price: productDetail!.priceInt,
+                            quantity: selectedQuantity,
+                            onChanged: (int quantity) {
+                              setState(() {
+                                selectedQuantity = quantity;
+                              });
+                            },
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    height: 48.h,
-                    width: 343.w,
-                    margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      color: mainDarkGreen,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset('assets/images/lingting.png'),
-                        Text(
-                          '  Mua ngay',
-                          textAlign: TextAlign.center,
-                          style: defaultText16B.copyWith(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-              Container(
-                height: 50.h,
-                width: 375.w,
-                margin: EdgeInsets.only(top: 16.0),
-                decoration: BoxDecoration(
-                  color: Color(0xffEFEFEF),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.r),
-                    topRight: Radius.circular(20.r),
-                  ),
-                ),
-                child: TabBar.secondary(
-                  padding: EdgeInsets.zero,
-                  controller: _tabController,
-                  indicator: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.r),
-                      topRight: Radius.circular(20.r),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(50),
-                        blurRadius: 4,
-                        offset: const Offset(0, 4), // Shadow position
                       ),
                     ],
-                    color: Colors.white,
-                  ),
-                  labelColor: Colors.black,
-                  unselectedLabelColor: const Color(0xff292929).withAlpha(84),
-                  tabs: [
-                    Tab(text: "Mô tả sản phẩm"),
-                    Tab(text: "Thông số sản phẩm"),
+                    _overviewItem(label: 'Hàng CHÍNH HÃNG 100%, có tem phụ'),
+                    _overviewItem(
+                      label: 'Chính sách ưu đãi cho HỌC VIÊN hấp dẫn',
+                    ),
+                    _overviewItem(
+                      label: 'Giao hàng TOÀN QUỐC, MIỄN PHÍ vận chuyển',
+                    ),
+                    _overviewItem(label: 'Liên hệ nhận GIÁ SỈ tốt nhất'),
+                    SizedBox(height: 28.h),
+                    if (isShow == 'true') ...[
+                      InkWell(
+                        onTap: () {
+                          if (productDetail!.inventoryQuantity == '0' &&
+                              productDetail!.allowShortSelling == '0')
+                            return;
+
+                          int existingIndex = globalListCart.indexWhere(
+                            (element) => element.id == productDetail!.id,
+                          );
+                          if (existingIndex != -1) {
+                            globalListCart[existingIndex].quantity +=
+                                selectedQuantity;
+                          } else {
+                            globalListCart.add(
+                              CartItem(
+                                id: productDetail!.id ?? '',
+                                name: productDetail!.name ?? '',
+                                image: productDetail!.img ?? '',
+                                price: productDetail!.priceInt,
+                                isCourse: false,
+                                quantity: selectedQuantity,
+                              ),
+                            );
+                          }
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: const Text(
+                                  'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'OK'),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          height: 48.h,
+                          width: 340.w,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.r),
+                            color: productDetail!.inventoryQuantity == '0'
+                                ? Colors.grey
+                                : Colors.white,
+                            border: Border.all(
+                              color: productDetail!.inventoryQuantity == '0'
+                                  ? Colors.grey
+                                  : mainDarkGreen,
+                              width: 1.w,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (productDetail!.inventoryQuantity != '0' ||
+                                  productDetail!.allowShortSelling != '0')
+                                Image.asset('assets/images/gio_hang.png'),
+                              Text(
+                                productDetail!.inventoryQuantity == '0' &&
+                                        productDetail!.allowShortSelling == '0'
+                                    ? 'Hết hàng'
+                                    : '  Thêm vào giỏ hàng',
+                                textAlign: TextAlign.center,
+                                style: defaultText16B.copyWith(
+                                  color: productDetail!.inventoryQuantity == '0'
+                                      ? Colors.white
+                                      : mainDarkGreen,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          if (productDetail!.inventoryQuantity == '0' &&
+                              productDetail!.allowShortSelling == '0')
+                            return;
+
+                          globalListCart.clear();
+                          globalListCart.add(
+                            CartItem(
+                              id: productDetail!.id ?? '',
+                              name: productDetail!.name ?? '',
+                              image: productDetail!.img ?? '',
+                              price: productDetail!.priceInt,
+                              isCourse: false,
+                              quantity: selectedQuantity,
+                            ),
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const OrderPaymentScreen(),
+                            ),
+                          ).then((_) => setState(() {}));
+                        },
+                        child: Container(
+                          height: 48.h,
+                          width: 343.w,
+                          margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.r),
+                            color:
+                                productDetail!.inventoryQuantity == '0' &&
+                                    productDetail!.allowShortSelling == '0'
+                                ? Colors.grey
+                                : mainDarkGreen,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (productDetail!.inventoryQuantity != '0' ||
+                                  productDetail!.allowShortSelling != '0')
+                                Image.asset('assets/images/lingting.png'),
+                              Text(
+                                productDetail!.inventoryQuantity == '0' &&
+                                        productDetail!.allowShortSelling == '0'
+                                    ? 'Hết hàng'
+                                    : '  Mua ngay',
+                                textAlign: TextAlign.center,
+                                style: defaultText16B.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                    Container(
+                      height: 50.h,
+                      width: 375.w,
+                      margin: EdgeInsets.only(top: 16.0),
+                      decoration: BoxDecoration(
+                        color: Color(0xffEFEFEF),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.r),
+                          topRight: Radius.circular(20.r),
+                        ),
+                      ),
+                      child: TabBar.secondary(
+                        padding: EdgeInsets.zero,
+                        controller: _tabController,
+                        indicator: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.r),
+                            topRight: Radius.circular(20.r),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(50),
+                              blurRadius: 4,
+                              offset: const Offset(0, 4), // Shadow position
+                            ),
+                          ],
+                          color: Colors.white,
+                        ),
+                        labelColor: Colors.black,
+                        unselectedLabelColor: const Color(
+                          0xff292929,
+                        ).withAlpha(84),
+                        tabs: [
+                          Tab(text: "Mô tả sản phẩm"),
+                          Tab(text: "Thông số sản phẩm"),
+                        ],
+                      ),
+                    ),
+                    IndexedStack(
+                      index: _tabController.index,
+                      children: [
+                        SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('\nMô tả sản phẩm\n', style: defaultText14B),
+                              HtmlWidget(
+                                productDetail!.description ??
+                                    'Đang cập nhật...',
+                                textStyle: defaultText14Re,
+                              ),
+                              const SizedBox(),
+                              SizedBox(height: 20.h),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 343.w,
+                          margin: EdgeInsets.only(
+                            left: 16.w,
+                            right: 16.w,
+                            bottom: 16.h,
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(50),
+                                spreadRadius: 0,
+                                blurRadius: 4,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              IndexedStack(
-                index: _tabController.index,
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('\nMô tả sản phẩm\n', style: defaultText14B),
-                        Text(
-                          ' • Tên sản phẩm: Đường hoa dừa hữu cơ Sokfarm 300g\n • Nguyên liệu: 100% đường hoa dừa hữu cơ - Việt Nam\n •  Mô tả: Đường hoa dừa hữu cơ Sokfarm là vị ngọt mới từ hoa dừa, sản phẩm được thu thủ công bằng kỹ thuật mát-xa hoa dừa và thu mật truyền thống của người Khmer Trà Vinh, ứng dụng công nghệ chế biến ở nhiệt độ thấp. Đường hoa dừa nguyên chất 100%, giàu dinh dưỡng và khoáng chất tự nhiên, đặc biệt đây là đường hấp thu chậm tốt cho sức khoẻ, cả gia đình an tâm sử dụng.',
-                          style: defaultText14Re,
-                        ),
-                        SizedBox(height: 8.h),
-                        Image.asset(
-                          'assets/images/rice.png',
-                          width: 343.w,
-                          height: 200.h,
-                          fit: BoxFit.fill,
-                        ),
-                        SizedBox(height: 20.h),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 343.w,
-                    margin: EdgeInsets.only(
-                      left: 16.w,
-                      right: 16.w,
-                      bottom: 16.h,
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(50),
-                          spreadRadius: 0,
-                          blurRadius: 4,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

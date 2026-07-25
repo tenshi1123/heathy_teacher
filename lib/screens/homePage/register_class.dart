@@ -60,13 +60,10 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
     return Scaffold(
       backgroundColor: mainDarkGreen,
       appBar: AppBar(
+        toolbarHeight: 40.h,
         backgroundColor: mainDarkGreen,
         elevation: 0,
         centerTitle: true,
-        title: Text(
-          'Chi tiết lớp trực tiếp',
-          style: defaultText18B.copyWith(color: Colors.white),
-        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -84,7 +81,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                 Icon(
                   Icons.shopping_cart_outlined,
                   color: Colors.white,
-                  size: 28, // Giảm size Icon giỏ hàng một chút
+                  size: 28,
                 ),
               ],
             ),
