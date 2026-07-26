@@ -12,6 +12,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 
 class ListFreeCourse extends StatefulWidget {
   const ListFreeCourse({super.key});
@@ -708,8 +710,22 @@ class FreeCourseItem extends StatelessWidget {
           SizedBox(height: 20.h),
           Center(
             child: InkWell(
-              onTap: () {
-                showLoginDialog(context);
+              onTap: () async {
+                final prefs = await SharedPreferences.getInstance();
+                final token = prefs.getString('token');
+                if (!context.mounted) return;
+
+                if (token != null && token.isNotEmpty) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          RegisterClassON(id: model.courseTypeId ?? ''),
+                    ),
+                  );
+                } else {
+                  showLoginDialog(context);
+                }
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 60.w, vertical: 8.h),

@@ -55,8 +55,8 @@ class ChatRepo {
     dio.options.headers['Authorization'] = 'Bearer $token';
     try {
       Map<String, dynamic> requestData = {
-        'lecturers_id': int.parse(chatId),
         'content': message,
+        'course_schedule_id': chatId,
         'course_type_id': courseTypeId,
       };
       if (photo != null) {
@@ -67,7 +67,7 @@ class ChatRepo {
       }
       FormData formData = FormData.fromMap(requestData);
       Response response = await dio.post(
-        ApiPath.sendChatLecturers,
+        ApiPath.sendChatCourse,
         data: formData,
       );
       return response.data['status'] == 200;

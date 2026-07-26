@@ -13,8 +13,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key, required this.model, this.initialMessages});
+  const ChatScreen({
+    super.key,
+    required this.model,
+    this.initialMessages,
+    this.courseTypeId,
+    this.courseScheduleId,
+  });
   final LecturerModel model;
+  final String? courseTypeId;
+  final String? courseScheduleId;
   final List<MessageModel>? initialMessages;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -56,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> fetchData() async {
     if (widget.initialMessages != null) {
       setState(() {
-        listMessage = List.from(widget.initialMessages!);
+        listMessage = List.from(widget.initialMessages!.reversed);
         isLoading = false;
       });
       return;
@@ -326,9 +334,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     GestureDetector(
                       onTap: () async {
                         ChatRepo().sendChatLecturers(
-                          widget.model.userId ?? '',
+                          widget.courseScheduleId ?? '',
                           messageController.text,
-                          widget.model.courseTypeId ?? '',
+                          widget.courseTypeId ?? '',
                           photo: photos.isNotEmpty ? photos.first : null,
                         );
                         setState(() {

@@ -431,15 +431,15 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                         style: defaultText18B,
                       ),
                     ),
-                    Html(
-                      data: _formatHtml(courses?.description),
-                      // style: {
-                      //   'p': Style(
-                      //     fontSize: FontSize(14.sp),
-                      //     color: const Color(0xff3C3C3C).withValues(alpha: 0.6),
-                      //   ),
-                      // },
-                    ),
+                    // Html(
+                    //   data: _formatHtml(courses?.description),
+                    //   // style: {
+                    //   //   'p': Style(
+                    //   //     fontSize: FontSize(14.sp),
+                    //   //     color: const Color(0xff3C3C3C).withValues(alpha: 0.6),
+                    //   //   ),
+                    //   // },
+                    // ),
 
                     // Text(
                     //   courses.description ?? 'Học online với video'.sanitizeForApple,
@@ -469,6 +469,9 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => ChatScreen(
                                       model: chatCourse.courseSchedule!,
+                                      courseScheduleId:
+                                          widget.course.courseScheduleId,
+                                      courseTypeId: widget.course.courseTypeId,
                                       initialMessages: chatCourse.listMessage,
                                     ),
                                   ),
@@ -507,37 +510,37 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                             ),
                           ),
                         ),
-                        if (widget.course.percentLearning == 100)
-                          GestureDetector(
-                            onTap: _pickImagesAndSubmit,
-                            child: Container(
-                              height: 44.h,
-                              width: 162.w,
-                              decoration: BoxDecoration(
-                                color: Color(0xffEEF5EC),
-                                border: Border.all(
-                                  color: mainDarkGreen.withValues(alpha: 0.28),
-                                ),
-                                borderRadius: BorderRadius.circular(16.r),
+
+                        GestureDetector(
+                          onTap: _pickImagesAndSubmit,
+                          child: Container(
+                            height: 44.h,
+                            width: 162.w,
+                            decoration: BoxDecoration(
+                              color: Color(0xffEEF5EC),
+                              border: Border.all(
+                                color: mainDarkGreen.withValues(alpha: 0.28),
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/icons/tra_bai.svg',
-                                    width: 20.w,
-                                    height: 20.h,
-                                    colorFilter: ColorFilter.mode(
-                                      mainDarkGreen,
-                                      BlendMode.srcIn,
-                                    ),
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/tra_bai.svg',
+                                  width: 20.w,
+                                  height: 20.h,
+                                  colorFilter: ColorFilter.mode(
+                                    mainDarkGreen,
+                                    BlendMode.srcIn,
                                   ),
-                                  SizedBox(width: 8.w),
-                                  Text('Trả bài', style: defaultText14SB),
-                                ],
-                              ),
+                                ),
+                                SizedBox(width: 8.w),
+                                Text('Trả bài', style: defaultText14SB),
+                              ],
                             ),
                           ),
+                        ),
                       ],
                     ),
                     if (widget.course.percentLearning == 100) ...[
@@ -574,7 +577,9 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const StudentProductScreen(),
+                            builder: (context) => StudentProductScreen(
+                              courseId: widget.course.courseId ?? '',
+                            ),
                           ),
                         );
                       },

@@ -1,121 +1,53 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/models/course_model.dart';
+import 'package:heathy_teacher/repo/course_repo.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class StudentProductScreen extends StatefulWidget {
-  const StudentProductScreen({super.key});
+  final String courseId;
+  const StudentProductScreen({super.key, required this.courseId});
 
   @override
   State<StudentProductScreen> createState() => _StudentProductScreenState();
 }
 
 class _StudentProductScreenState extends State<StudentProductScreen> {
-  // Mock data based on the provided image
-  final List<Map<String, dynamic>> mockProducts = [
-    {
-      'images': [
-        'assets/images/default_image.png', // We'll use a placeholder or network image if available. Let's use network images for demo.
-      ],
-      'authorName': 'HVG TEST',
-      'date': '15/07/2026',
-      'avatarLabel': 'H',
-      'description': '',
-      'comments': [
-        {
-          'authorName': 'HVG DTLOAN SALE',
-          'role': 'GV',
-          'time': '17:01 15/07/2026',
-          'content': 'chị giỏi quá, cứ thế phát huy ạ',
-          'avatarLabel': 'G',
-        },
-        {
-          'authorName': 'HVG DTLOAN SALE',
-          'role': 'GV',
-          'time': '17:38 15/07/2026',
-          'content': 'oke oke',
-          'avatarLabel': 'G',
-        },
-        {
-          'authorName': 'HVG ADMIN 123',
-          'role': 'Admin',
-          'time': '09:23 16/07/2026',
-          'content': 'xxxx',
-          'avatarLabel': 'A',
-        },
-        {
-          'authorName': 'HVG TEST',
-          'role': '',
-          'time': '09:47 16/07/2026',
-          'content': 'mình cảm ơn ạ',
-          'avatarLabel': 'H',
-        },
-      ],
-    },
-    {
-      'images': ['assets/images/default_image.png'],
-      'authorName': 'Đỗ Loan',
-      'date': '15/07/2026',
-      'avatarLabel': 'D',
-      'description':
-          'Em đã làm theo công thức của cô và cho ra thành phẩm rất sánh mịn, cả nhà ai cũng khen ngon, xin cảm ơn cô giáo ạ, đây là thành phẩm sữa hạt bí đỏ',
-      'comments': [
-        {
-          'authorName': 'HVG TEST',
-          'role': '',
-          'time': '13:42 15/07/2026',
-          'content':
-              'Bạn giỏi quá, mình làm phải đến lần thứ 3 mới được ạ, may có cô giáo hỗ trợ ạ',
-          'avatarLabel': 'H',
-        },
-        {
-          'authorName': 'HVG ADMIN 123',
-          'role': 'Admin',
-          'time': '17:39 15/07/2026',
-          'content': 'quá tuyệt vời',
-          'avatarLabel': 'A',
-        },
-      ],
-    },
-    {
-      'images': ['assets/images/default_image.png'],
-      'authorName': 'HVG TEST',
-      'date': '14/07/2026',
-      'avatarLabel': 'H',
-      'description': 'em nộp bài nhé ạ',
-      'comments': [
-        {
-          'authorName': 'HVG ADMIN 123',
-          'role': 'Admin',
-          'time': '09:59 15/07/2026',
-          'content': 'giỏi quá a !!!',
-          'avatarLabel': 'A',
-        },
-        {
-          'authorName': 'HVG DTLOAN SALE',
-          'role': 'GV',
-          'time': '12:58 15/07/2026',
-          'content': 'sản phẩm trông ngon quá, chị tiếp tục phát huy nhé !!!',
-          'avatarLabel': 'G',
-        },
-        {
-          'authorName': 'HVG TEST',
-          'role': '',
-          'time': '09:48 16/07/2026',
-          'content': 'dạ vâng ạ',
-          'avatarLabel': 'H',
-        },
-      ],
-    },
-  ];
+  bool isLoading = true;
+  List<ContentSubmitModel> submissions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      final data = await CourseRepo().getContentSubmit(courseId: widget.courseId);
+      if (mounted) {
+        setState(() {
+          submissions = data;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(
-        0xFFF5F6FA,
-      ), // Light background like in the image
+      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
         title: Text('Sản phẩm của học viên', style: defaultText18B),
         centerTitle: true,
@@ -123,22 +55,27 @@ class _StudentProductScreenState extends State<StudentProductScreen> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        itemCount: mockProducts.length,
-        itemBuilder: (context, index) {
-          final product = mockProducts[index];
-          return ProductCardWidget(product: product);
-        },
-      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator(color: mainDarkGreen))
+          : submissions.isEmpty
+              ? Center(child: Text('Chưa có sản phẩm nào.', style: defaultText14M))
+              : ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                  itemCount: submissions.length,
+                  itemBuilder: (context, index) {
+                    final product = submissions[index];
+                    return ProductCardWidget(product: product, courseId: widget.courseId);
+                  },
+                ),
     );
   }
 }
 
 class ProductCardWidget extends StatefulWidget {
-  final Map<String, dynamic> product;
+  final ContentSubmitModel product;
+  final String courseId;
 
-  const ProductCardWidget({super.key, required this.product});
+  const ProductCardWidget({super.key, required this.product, required this.courseId});
 
   @override
   State<ProductCardWidget> createState() => _ProductCardWidgetState();
@@ -146,10 +83,57 @@ class ProductCardWidget extends StatefulWidget {
 
 class _ProductCardWidgetState extends State<ProductCardWidget> {
   bool isExpanded = false;
+  final TextEditingController _commentController = TextEditingController();
+  bool isSending = false;
+
+  Future<void> _sendComment() async {
+    final text = _commentController.text.trim();
+    if (text.isEmpty) return;
+
+    setState(() {
+      isSending = true;
+    });
+
+    try {
+      int submitId = int.tryParse(widget.product.id ?? '0') ?? 0;
+      int cId = int.tryParse(widget.courseId) ?? 0;
+      await CourseRepo().addComment(
+        courseCustomerSubmitId: submitId,
+        courseId: cId,
+        content: text,
+      );
+      _commentController.clear();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Đã gửi bình luận!')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isSending = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    List comments = widget.product['comments'];
+    List comments = widget.product.comments ?? [];
+    String authorName = widget.product.fullName ?? 'Học viên';
+    String avatarLabel = authorName.isNotEmpty ? authorName[0].toUpperCase() : 'H';
+    String date = widget.product.createdAt ?? '';
+    String description = widget.product.content ?? '';
+    List<String> images = widget.product.images ?? [];
+
     return Container(
       margin: EdgeInsets.only(bottom: 24.h),
       decoration: BoxDecoration(
@@ -157,7 +141,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -166,54 +150,45 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image placeholder - Using a colored container to simulate the image
           ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-            child: Container(
-              height: 200.h,
-              width: double.infinity,
-              color: Colors.grey[300],
-              child: const Icon(
-                Icons.image_outlined,
-                size: 50,
-                color: Colors.grey,
-              ), // Replace with real image in production
-            ),
+            child: images.isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: images.first,
+                    height: 200.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) => _buildPlaceholder(),
+                  )
+                : _buildPlaceholder(),
           ),
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Author info
                 Row(
                   children: [
                     CircleAvatar(
                       radius: 14.r,
                       backgroundColor: Colors.green[100],
                       child: Text(
-                        widget.product['avatarLabel'],
+                        avatarLabel,
                         style: defaultText12B.copyWith(color: mainGreen),
                       ),
                     ),
                     SizedBox(width: 8.w),
-                    Text(
-                      'By ',
-                      style: defaultText12M.copyWith(color: Colors.grey),
-                    ),
-                    Text(widget.product['authorName'], style: defaultText12B),
-                    Text(
-                      ' - ${widget.product['date']}',
-                      style: defaultText12M.copyWith(color: Colors.grey),
-                    ),
+                    Text('By ', style: defaultText12M.copyWith(color: Colors.grey)),
+                    Text(authorName, style: defaultText12B),
+                    if (date.isNotEmpty)
+                      Text(' - $date', style: defaultText12M.copyWith(color: Colors.grey)),
                   ],
                 ),
-                if (widget.product['description'] != '') ...[
+                if (description.isNotEmpty) ...[
                   SizedBox(height: 12.h),
-                  Text(widget.product['description'], style: defaultText14M),
+                  Text(description, style: defaultText14M),
                 ],
                 SizedBox(height: 16.h),
-                // Comment count - Tappable
                 InkWell(
                   onTap: () {
                     setState(() {
@@ -235,47 +210,45 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                 ),
                 if (isExpanded) ...[
                   SizedBox(height: 16.h),
-                  // Comments list
                   ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: comments.length,
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: 12.h),
+                    separatorBuilder: (context, index) => SizedBox(height: 12.h),
                     itemBuilder: (context, index) {
                       final comment = comments[index];
                       return _buildCommentItem(comment);
                     },
                   ),
                   SizedBox(height: 16.h),
-                  // Comment input box
                   Row(
                     children: [
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 8.h,
-                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 0),
                           decoration: BoxDecoration(
                             color: Colors.grey[100],
                             borderRadius: BorderRadius.circular(24.r),
                           ),
-                          child: Text(
-                            'Viết bình luận...',
-                            style: defaultText14M.copyWith(color: Colors.grey),
+                          child: TextField(
+                            controller: _commentController,
+                            decoration: InputDecoration(
+                              hintText: 'Viết bình luận...',
+                              hintStyle: defaultText14M.copyWith(color: Colors.grey),
+                              border: InputBorder.none,
+                            ),
                           ),
                         ),
                       ),
                       SizedBox(width: 12.w),
-                      Container(
-                        padding: EdgeInsets.all(10.w),
-                        decoration: BoxDecoration(
-                          color: mainGreen,
-                          shape: BoxShape.circle,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/plane_outline.svg',
+                      InkWell(
+                        onTap: isSending ? null : _sendComment,
+                        child: Container(
+                          padding: EdgeInsets.all(10.w),
+                          decoration: BoxDecoration(color: isSending ? Colors.grey : mainGreen, shape: BoxShape.circle),
+                          child: isSending 
+                             ? SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                             : SvgPicture.asset('assets/icons/plane_outline.svg'),
                         ),
                       ),
                     ],
@@ -289,17 +262,58 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
     );
   }
 
-  Widget _buildCommentItem(Map<String, dynamic> comment) {
+  Widget _buildPlaceholder() {
+    return Container(
+      height: 200.h,
+      width: double.infinity,
+      color: Colors.grey[300],
+      child: const Icon(Icons.image_outlined, size: 50, color: Colors.grey),
+    );
+  }
+
+  Widget _buildCommentItem(dynamic commentRaw) {
+    String authorName = 'Ẩn danh';
+    String role = '';
+    String time = '';
+    String content = '';
+    String avatarLabel = 'A';
+
+    if (commentRaw is SubmitCommentModel) {
+      authorName = commentRaw.commenterName ?? 'Ẩn danh';
+      role = commentRaw.commenterType == 'lecturer' ? 'GV' : (commentRaw.commenterType == 'admin' ? 'Admin' : '');
+      time = commentRaw.createdAt ?? '';
+      content = commentRaw.content ?? '';
+      avatarLabel = authorName.isNotEmpty ? authorName[0].toUpperCase() : 'A';
+    } else if (commentRaw is Map) {
+      authorName = commentRaw['authorName'] ?? 'Ẩn danh';
+      role = commentRaw['role'] ?? '';
+      time = commentRaw['time'] ?? '';
+      content = commentRaw['content'] ?? '';
+      avatarLabel = commentRaw['avatarLabel'] ?? (authorName.isNotEmpty ? authorName[0].toUpperCase() : 'A');
+    } else if (commentRaw is String) {
+      try {
+         var decoded = jsonDecode(commentRaw);
+         if (decoded is Map) {
+            authorName = decoded['authorName'] ?? 'Ẩn danh';
+            role = decoded['role'] ?? '';
+            time = decoded['time'] ?? '';
+            content = decoded['content'] ?? '';
+            avatarLabel = decoded['avatarLabel'] ?? (authorName.isNotEmpty ? authorName[0].toUpperCase() : 'A');
+         } else {
+            content = commentRaw;
+         }
+      } catch (e) {
+         content = commentRaw;
+      }
+    }
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CircleAvatar(
           radius: 12.r,
           backgroundColor: Colors.grey[200],
-          child: Text(
-            comment['avatarLabel'],
-            style: defaultText12B.copyWith(color: Colors.black54),
-          ),
+          child: Text(avatarLabel, style: defaultText12B.copyWith(color: Colors.black54)),
         ),
         SizedBox(width: 8.w),
         Expanded(
@@ -308,38 +322,25 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
             children: [
               Row(
                 children: [
-                  Text(comment['authorName'], style: defaultText12B),
-                  if (comment['role'] != '') ...[
+                  Text(authorName, style: defaultText12B),
+                  if (role.isNotEmpty) ...[
                     SizedBox(width: 4.w),
                     Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.w,
-                        vertical: 2.h,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: comment['role'] == 'GV'
-                            ? mainGreen
-                            : const Color(0xFF3B5998),
+                        color: role == 'GV' ? mainGreen : const Color(0xFF3B5998),
                         borderRadius: BorderRadius.circular(4.r),
                       ),
-                      child: Text(
-                        comment['role'],
-                        style: defaultText12B.copyWith(
-                          color: Colors.white,
-                          fontSize: 8.sp,
-                        ),
-                      ),
+                      child: Text(role, style: defaultText12B.copyWith(color: Colors.white, fontSize: 8.sp)),
                     ),
                   ],
                   const Spacer(),
-                  Text(
-                    comment['time'],
-                    style: defaultText12M.copyWith(color: Colors.grey),
-                  ),
+                  if (time.isNotEmpty)
+                    Text(time, style: defaultText12M.copyWith(color: Colors.grey)),
                 ],
               ),
               SizedBox(height: 4.h),
-              Text(comment['content'], style: defaultText12M),
+              Text(content, style: defaultText12M),
             ],
           ),
         ),

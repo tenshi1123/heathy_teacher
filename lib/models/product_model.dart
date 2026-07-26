@@ -228,8 +228,8 @@ class OrderDetail {
 
   factory OrderDetail.fromJson(Map<String, dynamic> json) {
     return OrderDetail(
-      name: json['name'],
-      productId: json['product_id'],
+      name: json['name'] ?? json['course_type_name'],
+      productId: json['product_id'] ?? json['course_type_id'],
       img: json['img'],
       price: json['price'],
       type: json['type'],

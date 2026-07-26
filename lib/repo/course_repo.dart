@@ -65,7 +65,7 @@ class CourseRepo {
     }
   }
 
-  Future<List<ProductModel>> getListProduct({
+  Future<(List<ProductModel>, List<ProductModel>)> getListProduct({
     int page = 1,
     int show = 10,
   }) async {
@@ -75,16 +75,22 @@ class CourseRepo {
         ApiPath.products,
         data: {"page": page.toString(), "show": show.toString()},
       );
-      if (response.data != null &&
-          response.data['data'] != null &&
-          response.data['data']['value'] != null) {
-        final List listData = response.data['data']['value'] as List;
+      if (response.data != null && response.data['data'] != null) {
+        final data = response.data['data'] as Map<String, dynamic>;
 
-        return listData
-            .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
-            .toList();
+        final List listProducts = data['products'] as List? ?? [];
+        final List listCourses = data['courses'] as List? ?? [];
+
+        return (
+          listProducts
+              .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
+          listCourses
+              .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
+        );
       } else {
-        return [];
+        return (<ProductModel>[], <ProductModel>[]);
       }
     } on DioException catch (e) {
       throw Exception('Lỗi kết nối mạng: ${e.message}');
@@ -219,7 +225,7 @@ class CourseRepo {
     try {
       final dio = await DioClient.getInstance();
       final response = await dio.post(
-        ApiPath.products,
+        ApiPath.contentSubmit,
         data: {"course_id": courseId},
       );
       if (response.data != null &&
@@ -232,6 +238,30 @@ class CourseRepo {
             .toList();
       } else {
         return [];
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
+  Future<void> addComment({
+    required int courseCustomerSubmitId,
+    required int courseId,
+    required String content,
+  }) async {
+    try {
+      final dio = await DioClient.getInstance();
+      final response = await dio.post(
+        ApiPath.addComment,
+        data: {
+          "course_customer_submit_id": courseCustomerSubmitId,
+          "course_id": courseId,
+          "content": content,
+        },
+      );
+      if (response.data == null || response.data['status'] != 200) {
+        throw Exception('Lỗi khi thêm bình luận: ${response.data}');
       }
     } on DioException catch (e) {
       throw Exception('Lỗi kết nối mạng: ${e.message}');

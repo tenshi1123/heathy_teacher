@@ -132,9 +132,20 @@ class ConversationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        final chatCourse = await ChatRepo().getChatCourse(
+          courseId: model.courseScheduleId ?? '',
+          courseType: model.courseTypeId ?? '',
+        );
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ChatScreen(model: model)),
+          MaterialPageRoute(
+            builder: (context) => ChatScreen(
+              model: chatCourse.courseSchedule!,
+              courseScheduleId: model.courseScheduleId,
+              courseTypeId: model.courseTypeId,
+              initialMessages: chatCourse.listMessage,
+            ),
+          ),
         );
       },
       child: Container(

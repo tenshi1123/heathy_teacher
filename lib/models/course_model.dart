@@ -285,13 +285,39 @@ class CourseOffModel {
   }
 }
 
+class SubmitCommentModel {
+  final String? id;
+  final String? commenterName;
+  final String? commenterType;
+  final String? content;
+  final String? createdAt;
+
+  SubmitCommentModel({
+    this.id,
+    this.commenterName,
+    this.commenterType,
+    this.content,
+    this.createdAt,
+  });
+
+  factory SubmitCommentModel.fromJson(Map<String, dynamic> json) {
+    return SubmitCommentModel(
+      id: json['id']?.toString(),
+      commenterName: json['commenter_name'],
+      commenterType: json['commenter_type'],
+      content: json['content'],
+      createdAt: json['created_at'],
+    );
+  }
+}
+
 class ContentSubmitModel {
   final String? fullName;
   final String? id;
   final String? content;
   final List<String>? images;
   final String? createdAt;
-  final List<String>? comments;
+  final List<SubmitCommentModel>? comments;
 
   ContentSubmitModel({
     this.fullName,
@@ -305,11 +331,15 @@ class ContentSubmitModel {
   factory ContentSubmitModel.fromJson(Map<String, dynamic> json) {
     return ContentSubmitModel(
       fullName: json['full_name'],
-      id: json['id'],
+      id: json['id']?.toString(),
       content: (json['content'] as String?).sanitizeForApple,
       images: List<String>.from(json['images'] ?? []),
       createdAt: json['created_at'],
-      comments: List<String>.from(json['comments'] ?? []),
+      comments: json['comments'] != null
+          ? (json['comments'] as List)
+              .map((e) => SubmitCommentModel.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [],
     );
   }
 }

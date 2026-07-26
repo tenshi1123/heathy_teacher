@@ -39,8 +39,10 @@ Future<void> initApiConfig() async {
   }
 }
 
-// dm Loan làm ăn như cc, api thì thay đổi liên tục, lúc trả về list lúc trả về map, lúc int lúc String, mà sửa còn đ thèm báo lại
-// description thì đ có, comment cũng không, giải thích ở response lại càng không, bắt người ta tự hiểu
+// dm Loan làm ăn như cc, api thì thay đổi liên tục, lúc trả về list lúc trả về map, 
+//lúc int lúc String, mà sửa còn đ thèm báo lại, làm như t chưa ghép í
+// description thì đ có, comment cũng không, giải thích ở response lại càng không, 
+//bắt người ta tự hiểu
 // data gửi lúc đầu thì còn đ gửi hết, hỏi mới gửi thêm
 // hỏi luồng thì paste cái code php bắt tự hiểu ???
 // hỏi thì nổi cọc lên, coi thường đ coi ai ra gì - như kiểu bà m là bề trên

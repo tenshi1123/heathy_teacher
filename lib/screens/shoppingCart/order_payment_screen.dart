@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   const OrderPaymentScreen({super.key});
@@ -410,20 +412,26 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       final payCode = hasCourse
                           ? await ExternalRepo().paymentCourse(payload, token)
                           : await ExternalRepo().paymentProduct(payload, token);
-                          
-                      final String customerId = '${DateTime.now().millisecondsSinceEpoch}${math.Random().nextInt(9999).toString().padLeft(4, '0')}';
+
+                      final String customerId =
+                          '${DateTime.now().millisecondsSinceEpoch}${math.Random().nextInt(9999).toString().padLeft(4, '0')}';
                       await prefs.setString('customer_id', customerId);
-                      
-                      String addInfo = '${payCode.payCode} W$customerId ${payCode.isLogin ?? ''}';
-                      if (payCode.courseScheduleId != null && payCode.courseScheduleId.toString().isNotEmpty) {
+
+                      String addInfo =
+                          '${payCode.payCode} W$customerId ${payCode.isLogin ?? ''}';
+                      if (payCode.courseScheduleId != null &&
+                          payCode.courseScheduleId.toString().isNotEmpty) {
                         addInfo += ' C${payCode.courseScheduleId}';
                       }
-                      
+
                       Navigator.pop(context); // close loading dialog
 
                       // If we want to show dynamic QR code, we could use payCode here,
                       // but for now keeping the existing UI logic
                       if (!context.mounted) return;
+                      ScreenshotController screenshotController =
+                          ScreenshotController();
+
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -438,40 +446,127 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
-                                    'Quét mã QR để thanh toán',
-                                    style: defaultText18B.copyWith(
-                                      color: Colors.black,
+                                  Screenshot(
+                                    controller: screenshotController,
+                                    child: Container(
+                                      color: Colors.white,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Quét mã QR để thanh toán',
+                                            style: defaultText18B.copyWith(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          SizedBox(height: 16.h),
+                                          Image.network(
+                                            'https://img.vietqr.io/image/${payCode.bankCode}-${payCode.bankAccount}-compact2.png?amount=${payCode.price}&addInfo=${Uri.encodeComponent(addInfo.trim())}',
+                                            fit: BoxFit.contain,
+                                            errorBuilder:
+                                                (
+                                                  context,
+                                                  error,
+                                                  stackTrace,
+                                                ) => Image.asset(
+                                                  'assets/images/qr-thanhtoan.png',
+                                                  fit: BoxFit.contain,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   SizedBox(height: 16.h),
-                                  Image.network(
-                                    'https://img.vietqr.io/image/${payCode.bankCode}-${payCode.bankAccount}-compact2.png?amount=${payCode.price}&addInfo=${Uri.encodeComponent(addInfo.trim())}',
-                                    fit: BoxFit.contain,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Image.asset(
-                                              'assets/images/qr-thanhtoan.png',
-                                              fit: BoxFit.contain,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: mainDarkGreen,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
                                             ),
-                                  ),
-                                  SizedBox(height: 16.h),
-                                  ElevatedButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: mainDarkGreen,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          8.r,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Đóng',
+                                          style: defaultText16B.copyWith(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    child: Text(
-                                      'Đóng',
-                                      style: defaultText16B.copyWith(
-                                        color: Colors.white,
+                                      SizedBox(width: 16.w),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          try {
+                                            final image =
+                                                await screenshotController
+                                                    .capture(
+                                                      delay: const Duration(
+                                                        milliseconds: 10,
+                                                      ),
+                                                    );
+                                            if (image != null) {
+                                              final result =
+                                                  await ImageGallerySaver.saveImage(
+                                                    image,
+                                                  );
+                                              if (result['isSuccess'] == true &&
+                                                  context.mounted) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'Lưu ảnh QR thành công!',
+                                                    ),
+                                                  ),
+                                                );
+                                              } else if (context.mounted) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'Không thể lưu ảnh QR',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          } catch (e) {
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Lỗi khi lưu ảnh: `e',
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: mainDarkGreen,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Tải QR',
+                                          style: defaultText16B.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
