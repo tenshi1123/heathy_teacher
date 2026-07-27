@@ -143,30 +143,20 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                     if (isShow == 'true')
                       SizedBox(
                         width: 343.w,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: ((context) => ListClassOff()),
-                              ),
-                            );
-                          },
-                          child: Center(
-                            child: Text(
-                              ' KHOÁ HỌC ONLINE NỔI BẬT -\n ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG',
-                              textAlign: TextAlign.center,
-
-                              style: defaultText18B.copyWith(
-                                color: mainDarkGreen,
-                                fontWeight: FontWeight.w900,
-                              ),
+                        child: Center(
+                          child: Text(
+                            ' KHOÁ HỌC ONLINE NỔI BẬT -\n ƯU ĐÃI ĐẶC BIỆT TRONG THÁNG',
+                            textAlign: TextAlign.center,
+                            style: defaultText18B.copyWith(
+                              color: mainDarkGreen,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
                         ),
                       ),
                     if (isShow == 'true')
                       ListView.builder(
+                        padding: EdgeInsets.zero,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: listCourseOnline.length,
@@ -830,19 +820,36 @@ class ServiceGrid extends StatelessWidget {
           style: defaultText14M.copyWith(color: mainDarkGreen),
         ),
         //const StatisticsBannerWidget(),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: services.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            childAspectRatio: 1.2,
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+          ), // Thêm padding 2 bên nếu cần thiết
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final spacing = 16.0;
+              // Tính toán chiều rộng mỗi item (2 item 1 hàng)
+              final itemWidth = (constraints.maxWidth - spacing) / 2;
+
+              return Wrap(
+                alignment:
+                    WrapAlignment.center, // Sẽ canh giữa các item ở dòng cuối
+                spacing: spacing, // khoảng cách ngang
+                runSpacing: 16.0, // khoảng cách dọc
+                children: List.generate(services.length, (index) {
+                  return SizedBox(
+                    width: itemWidth,
+                    child: AspectRatio(
+                      aspectRatio: 1.2,
+                      child: ServiceItem(
+                        item: services[index],
+                        isHighlight: index == 0,
+                      ),
+                    ),
+                  );
+                }),
+              );
+            },
           ),
-          itemBuilder: (context, index) {
-            return ServiceItem(item: services[index], isHighlight: index == 0);
-          },
         ),
       ],
     );
@@ -1551,58 +1558,77 @@ class _AchievementBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: mainGreen,
-      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 10.w),
-      margin: EdgeInsets.symmetric(vertical: 16.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildItem(
-            icon: 'assets/images/exp.png',
-            number: '10+',
-            text: 'Năm kinh nghiệm đào tạo và setup F&B\nViệt Nam',
-          ),
-          _buildItem(
-            icon: 'assets/images/course.png',
-            number: '60+',
-            text: 'Khoá học nấu ăn dinh dưỡng, làm bánh và đồ uống\nhealthy',
-          ),
-          _buildItem(
-            icon: 'assets/images/like.png',
-            number: 'No.1',
-            text:
-                'Trung tâm đầu tiên giảng dạy dinh dưỡng & thực\nphẩm healthy',
-          ),
-          _buildItem(
-            icon: 'assets/images/exp.png',
-            number: '10.000+',
-            text: 'Học viên ứng dụng & kinh doanh thành công trên toàn quốc',
-          ),
-        ],
+      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 6.w),
+
+      width: double.infinity,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Chia làm 4 cột trên 1 hàng (như cũ)
+          // Nếu có 5 item thì item thứ 5 sẽ xuống dòng và WrapAlignment.center sẽ đưa nó ra giữa
+          final itemWidth = constraints.maxWidth / 4;
+
+          return Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            runSpacing: 10.h,
+            children: [
+              _buildItem(
+                width: itemWidth,
+                icon: 'assets/images/exp.png',
+                number: '10+',
+                text: 'Năm kinh nghiệm đào tạo và setup F&B\nViệt Nam',
+              ),
+              _buildItem(
+                width: itemWidth,
+                icon: 'assets/images/course.png',
+                number: '60+',
+                text:
+                    'Khoá học nấu ăn dinh dưỡng, làm bánh và đồ uống\nhealthy',
+              ),
+              _buildItem(
+                width: itemWidth,
+                icon: 'assets/images/like.png',
+                number: 'No.1',
+                text:
+                    'Trung tâm đầu tiên giảng dạy dinh dưỡng & thực\nphẩm healthy',
+              ),
+              _buildItem(
+                width: itemWidth,
+                icon: 'assets/images/exp.png',
+                number: '10.000+',
+                text:
+                    'Học viên ứng dụng & kinh doanh thành công trên toàn quốc',
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
   Widget _buildItem({
+    required double width,
     required String icon,
     required String number,
     required String text,
   }) {
-    return Expanded(
+    return SizedBox(
+      width: width,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 2.w),
+        padding: EdgeInsets.symmetric(horizontal: 1.w),
         child: Column(
           children: [
             Image.asset(icon, height: 30.h, width: 30.w),
             SizedBox(height: 8.h),
             Text(
               number,
-              style: defaultText20B.copyWith(color: Colors.white),
+              style: defaultText18B.copyWith(color: Colors.white),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 4.h),
             Text(
               text,
-              style: defaultText14B.copyWith(color: Colors.white),
+              style: defaultText12B.copyWith(color: Colors.white),
               textAlign: TextAlign.center,
             ),
           ],

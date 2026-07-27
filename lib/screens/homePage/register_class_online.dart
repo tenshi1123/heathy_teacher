@@ -39,8 +39,9 @@ class _RegisterClassONState extends State<RegisterClassON> {
     } else {
       params = const PlatformWebViewControllerCreationParams();
     }
-    
-    final String htmlContent = '''
+
+    final String htmlContent =
+        '''
     <!DOCTYPE html>
     <html>
     <head>
@@ -59,15 +60,13 @@ class _RegisterClassONState extends State<RegisterClassON> {
     </body>
     </html>
     ''';
-    
+
     _webViewController = WebViewController.fromPlatformCreationParams(params)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.black)
-      ..loadHtmlString(
-        htmlContent,
-        baseUrl: 'https://lms.cogiaohealthy.vn/',
-      );
+      ..loadHtmlString(htmlContent, baseUrl: 'https://lms.cogiaohealthy.vn/');
   }
+
   @override
   void initState() {
     super.initState();
@@ -396,7 +395,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Nội dung bài Giảng",
+            "NỘI DUNG BÀI GIẢNG",
             style: defaultText20B.copyWith(color: mainDarkGreen),
           ),
           SizedBox(height: 12.h),
@@ -408,7 +407,9 @@ class _RegisterClassONState extends State<RegisterClassON> {
             itemBuilder: (context, index) {
               final topic = topicals[index];
               final lessons = topic.lessons ?? [];
-              final bool hasTrialLesson = lessons.any((lesson) => lesson.isTrial != '0');
+              final bool hasTrialLesson = lessons.any(
+                (lesson) => lesson.isTrial != '0',
+              );
 
               return Card(
                 elevation: 0,

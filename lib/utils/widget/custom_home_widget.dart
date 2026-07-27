@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:intl/intl.dart';
@@ -150,13 +151,11 @@ class PaginationWidget extends StatelessWidget {
     List<Widget> items = [];
     items.add(_navButton("«", currentPage > 1 ? 1 : null));
     items.add(_navButton("‹", currentPage > 1 ? currentPage - 1 : null));
-    
+
     items.addAll(_buildPageNumbers());
-    
+
     bool hasNext = totalPages == null ? true : currentPage < totalPages!;
-    items.add(
-      _navButton("›", hasNext ? currentPage + 1 : null),
-    );
+    items.add(_navButton("›", hasNext ? currentPage + 1 : null));
     if (totalPages != null) {
       items.add(_navButton("»", hasNext ? totalPages : null));
     }
@@ -270,7 +269,7 @@ class CustomImageCarousel extends StatefulWidget {
 
 class _CustomImageCarouselState extends State<CustomImageCarousel> {
   final List<Map<String, dynamic>> _productImages = [
-    {'image': 'assets/images/home1.jpg', 'screen': const ListSpScreen()},
+    {'image': 'assets/images/home1.jpg', 'screen': const ListClassOff()},
     {'image': 'assets/images/home2.jpg', 'screen': const IntroduceScreen()},
     {'image': 'assets/images/home3.jpg', 'screen': const ListFreeCourse()},
     {'image': 'assets/images/home4.jpg', 'screen': const ListSpScreen()},
@@ -323,10 +322,7 @@ class _CustomImageCarouselState extends State<CustomImageCarousel> {
           width: double.infinity,
           height: widget.height ?? 470.w,
           margin: EdgeInsets.symmetric(vertical: 16.h),
-          padding: EdgeInsets.symmetric(
-            vertical: 4.h,
-            horizontal: 4.w,
-          ),
+          padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [
