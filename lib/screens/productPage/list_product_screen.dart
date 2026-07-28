@@ -253,7 +253,10 @@ class _ListProductScreenState extends State<ListProductScreen> {
                                         MaterialPageRoute(
                                           builder: ((context) =>
                                               ListDetailProductScreen(
-                                                model: item,
+                                                categorySlug:
+                                                    item.categorySlug ?? '',
+                                                categoryName:
+                                                    item.categoryName ?? '',
                                               )),
                                         ),
                                       );

@@ -165,14 +165,14 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                         ),
                       ),
                     ],
-                    _overviewItem(label: 'Hàng CHÍNH HÃNG 100%, có tem phụ'),
+                    _overviewItem(label: 'Hàng chính hãng 100%, có tem phụ'),
                     _overviewItem(
-                      label: 'Chính sách ưu đãi cho HỌC VIÊN hấp dẫn',
+                      label: 'Chính sách ưu đãi cho học viên hấp dẫn',
                     ),
                     _overviewItem(
-                      label: 'Giao hàng TOÀN QUỐC, MIỄN PHÍ vận chuyển',
+                      label: 'Giao hàng toàn quốc, miễn phí vận chuyển',
                     ),
-                    _overviewItem(label: 'Liên hệ nhận GIÁ SỈ tốt nhất'),
+                    _overviewItem(label: 'Liên hệ nhận giá sỉ tốt nhất'),
                     SizedBox(height: 28.h),
                     if (isShow == 'true') ...[
                       InkWell(

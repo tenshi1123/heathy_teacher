@@ -719,8 +719,10 @@ class FreeCourseItem extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          RegisterClassON(id: model.courseTypeId ?? ''),
+                      builder: (context) => RegisterClassON(
+                        id: model.courseTypeId ?? '',
+                        isTrial: true,
+                      ),
                     ),
                   );
                 } else {

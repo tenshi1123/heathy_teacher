@@ -251,74 +251,75 @@ class _CourseScreenState extends State<CourseScreen> {
                   final course = courses[index];
                   final int percent = course.percentLearning ?? 0;
 
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) =>
-                              OnlineClassScreen(course: course)),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: 343.w,
-                      margin: EdgeInsets.only(bottom: 20.h),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 12.h,
+                  return Container(
+                    width: 343.w,
+                    margin: EdgeInsets.only(bottom: 20.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 12.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xffF5FAF5),
+                      border: Border.all(
+                        color: mainDarkGreen.withValues(alpha: 0.28),
                       ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffF5FAF5),
-                        border: Border.all(
-                          color: mainDarkGreen.withValues(alpha: 0.28),
-                        ),
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8.r),
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  'https://lms.cogiaohealthy.vn/images/${course.img}',
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.r),
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                'https://lms.cogiaohealthy.vn/images/${course.img}',
+                            width: 40.w,
+                            height: 40.h,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/course_icon_0.png',
                               width: 40.w,
                               height: 40.h,
                               fit: BoxFit.cover,
-                              errorWidget: (context, url, error) => Image.asset(
-                                'assets/images/course_icon_0.png',
-                                width: 40.w,
-                                height: 40.h,
-                                fit: BoxFit.cover,
-                              ),
                             ),
                           ),
-                          const Spacer(),
-                          SizedBox(
-                            width: 257.w,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                        ),
+                        const Spacer(),
+                        SizedBox(
+                          width: 257.w,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                course.courseName ??
+                                    'Chưa cập nhật tên khoá học'
+                                        .sanitizeForApple,
+                                style: defaultText16B,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(height: 4.h),
+                              if (isShow == 'true')
                                 Text(
-                                  course.courseName ??
-                                      'Chưa cập nhật tên khoá học'
-                                          .sanitizeForApple,
-                                  style: defaultText16B,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                                  course.settingCourseTypeName ??
+                                      'Đang cập nhật hình thức',
+                                  style: defaultText14Re,
                                 ),
-                                SizedBox(height: 4.h),
-                                if (isShow == 'true')
-                                  Text(
-                                    course.settingCourseTypeName ??
-                                        'Đang cập nhật hình thức',
-                                    style: defaultText14Re,
-                                  ),
-                                SizedBox(height: 12.h),
-                                if (course.soBuoiHoc == null)
-                                  Container(
+                              SizedBox(height: 12.h),
+                              if (course.soBuoiHoc != null)
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: ((context) =>
+                                            OnlineClassScreen(course: course)),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
                                     height: 32.h,
+                                    width: 150.w,
                                     margin: EdgeInsets.only(bottom: 8.h),
                                     decoration: BoxDecoration(
                                       border: Border.all(
@@ -335,12 +336,13 @@ class _CourseScreenState extends State<CourseScreen> {
                                             horizontal: 12.w,
                                           ),
                                           child: Text(
-                                            'Chờ thanh toán',
+                                            'Bài giảng',
                                             style: defaultText14B.copyWith(
                                               color: const Color(0xFFE89A48),
                                             ),
                                           ),
                                         ),
+                                        Spacer(),
                                         Container(
                                           width: 32.h,
                                           height: 32.h,
@@ -354,7 +356,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                             ),
                                           ),
                                           child: const Icon(
-                                            Icons.access_time_rounded,
+                                            Icons.play_arrow_outlined,
                                             color: Colors.white,
                                             size: 18,
                                           ),
@@ -362,170 +364,209 @@ class _CourseScreenState extends State<CourseScreen> {
                                       ],
                                     ),
                                   ),
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        try {
-                                          showDialog(
-                                            context: context,
-                                            barrierDismissible: false,
-                                            builder: (context) => const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          );
-                                          final chatCourse = await ChatRepo()
-                                              .getChatCourse(
-                                                courseId:
-                                                    course.courseScheduleId ??
-                                                    '',
-                                                courseType:
-                                                    course.courseTypeId ?? '',
-                                              );
-                                          Navigator.pop(context);
-                                          if (chatCourse.courseSchedule !=
-                                              null) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ChatScreen(
-                                                      model: chatCourse
-                                                          .courseSchedule!,
-                                                      courseScheduleId: course
-                                                          .courseScheduleId,
-                                                      courseTypeId:
-                                                          course.courseTypeId,
-                                                      initialMessages:
-                                                          chatCourse
-                                                              .listMessage,
-                                                    ),
-                                              ),
-                                            );
-                                          }
-                                        } catch (e) {
-                                          Navigator.pop(context);
-                                          debugPrint('Lỗi chat hỗ trợ: $e');
-                                        }
-                                      },
-                                      child: Container(
-                                        height: 44.h,
-                                        width: 162.w,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffEEF5EC),
-                                          border: Border.all(
-                                            color: mainDarkGreen.withValues(
-                                              alpha: 0.28,
-                                            ),
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            16.r,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/icons/chat.svg',
-                                              width: 20.w,
-                                              height: 20.h,
-                                              colorFilter: ColorFilter.mode(
-                                                mainDarkGreen,
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                            SizedBox(width: 8.w),
-                                            Text(
-                                              'Chat hỗ trợ',
-                                              style: defaultText14SB,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-
-                                    // GestureDetector(
-                                    //   onTap: () => _pickImagesAndSubmit(course),
-                                    //   child: Container(
-                                    //     height: 44.h,
-                                    //     width: 162.w,
-                                    //     decoration: BoxDecoration(
-                                    //       color: Color(0xffEEF5EC),
-                                    //       border: Border.all(
-                                    //         color: mainDarkGreen.withValues(
-                                    //           alpha: 0.28,
-                                    //         ),
-                                    //       ),
-                                    //       borderRadius: BorderRadius.circular(
-                                    //         16.r,
-                                    //       ),
-                                    //     ),
-                                    //     child: Row(
-                                    //       mainAxisAlignment:
-                                    //           MainAxisAlignment.center,
-                                    //       children: [
-                                    //         SvgPicture.asset(
-                                    //           'assets/icons/tra_bai.svg',
-                                    //           width: 20.w,
-                                    //           height: 20.h,
-                                    //           colorFilter: ColorFilter.mode(
-                                    //             mainDarkGreen,
-                                    //             BlendMode.srcIn,
-                                    //           ),
-                                    //         ),
-                                    //         SizedBox(width: 8.w),
-                                    //         Text(
-                                    //           'Trả bài',
-                                    //           style: defaultText14SB,
-                                    //         ),
-                                    //       ],
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                  ],
                                 ),
-                                if (isShow == 'true')
-                                  Row(
+                              if (course.soBuoiHoc == null)
+                                Container(
+                                  height: 32.h,
+                                  margin: EdgeInsets.only(bottom: 8.h),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: const Color(0xFFE89A48),
+                                      width: 1.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Container(
-                                        height: 8.h,
-                                        width: 210.w,
-                                        alignment: Alignment.centerLeft,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xffEDEDED),
-                                          borderRadius: BorderRadius.circular(
-                                            20.r,
-                                          ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 12.w,
                                         ),
-                                        child: Container(
-                                          height: 8.h,
-                                          width: 210.w * (percent / 100),
-                                          decoration: BoxDecoration(
-                                            color: mainDarkGreen,
-                                            borderRadius: BorderRadius.circular(
-                                              20.r,
-                                            ),
+                                        child: Text(
+                                          'Chờ thanh toán',
+                                          style: defaultText14B.copyWith(
+                                            color: const Color(0xFFE89A48),
                                           ),
                                         ),
                                       ),
-
-                                      Text(
-                                        ' $percent%',
-                                        style: defaultText16B.copyWith(
-                                          color: mainDarkGreen,
+                                      Container(
+                                        width: 32.h,
+                                        height: 32.h,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFE89A48),
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(20.r),
+                                            bottomRight: Radius.circular(20.r),
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.access_time_rounded,
+                                          color: Colors.white,
+                                          size: 18,
                                         ),
                                       ),
                                     ],
                                   ),
-                              ],
-                            ),
+                                ),
+                              if (course.soBuoiHoc != null)
+                                GestureDetector(
+                                  onTap: () async {
+                                    try {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context) => const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                      final chatCourse = await ChatRepo()
+                                          .getChatCourse(
+                                            courseId:
+                                                course.courseScheduleId ?? '',
+                                            courseType:
+                                                course.courseTypeId ?? '',
+                                          );
+                                      Navigator.pop(context);
+                                      if (chatCourse.courseSchedule != null) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ChatScreen(
+                                              model: chatCourse.courseSchedule!,
+                                              courseScheduleId:
+                                                  course.courseScheduleId,
+                                              courseTypeId: course.courseTypeId,
+                                              initialMessages:
+                                                  chatCourse.listMessage,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      Navigator.pop(context);
+                                      debugPrint('Lỗi chat hỗ trợ: $e');
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 32.h,
+                                    width: 150.w,
+                                    margin: EdgeInsets.only(bottom: 8.h),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: const Color(0xFFE89A48),
+                                        width: 1.5,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12.w,
+                                          ),
+                                          child: Text(
+                                            'Chat hỗ trợ',
+                                            style: defaultText14B.copyWith(
+                                              color: const Color(0xFFE89A48),
+                                            ),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Container(
+                                          width: 32.h,
+                                          height: 32.h,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFE89A48),
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(20.r),
+                                              bottomRight: Radius.circular(
+                                                20.r,
+                                              ),
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.message,
+                                            color: Colors.white,
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Container(
+                                  //   height: 44.h,
+                                  //   width: 162.w,
+                                  //   decoration: BoxDecoration(
+                                  //     color: Color(0xffEEF5EC),
+                                  //     border: Border.all(
+                                  //       color: mainDarkGreen.withValues(
+                                  //         alpha: 0.28,
+                                  //       ),
+                                  //     ),
+                                  //     borderRadius: BorderRadius.circular(16.r),
+                                  //   ),
+                                  //   child: Row(
+                                  //     mainAxisAlignment:
+                                  //         MainAxisAlignment.center,
+                                  //     children: [
+                                  //       SvgPicture.asset(
+                                  //         'assets/icons/chat.svg',
+                                  //         width: 20.w,
+                                  //         height: 20.h,
+                                  //         colorFilter: ColorFilter.mode(
+                                  //           mainDarkGreen,
+                                  //           BlendMode.srcIn,
+                                  //         ),
+                                  //       ),
+                                  //       SizedBox(width: 8.w),
+                                  //       Text(
+                                  //         'Chat hỗ trợ',
+                                  //         style: defaultText14SB,
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                ),
+                              if (isShow == 'true')
+                                Row(
+                                  children: [
+                                    Container(
+                                      height: 8.h,
+                                      width: 210.w,
+                                      alignment: Alignment.centerLeft,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffEDEDED),
+                                        borderRadius: BorderRadius.circular(
+                                          20.r,
+                                        ),
+                                      ),
+                                      child: Container(
+                                        height: 8.h,
+                                        width: 210.w * (percent / 100),
+                                        decoration: BoxDecoration(
+                                          color: mainDarkGreen,
+                                          borderRadius: BorderRadius.circular(
+                                            20.r,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    Text(
+                                      ' $percent%',
+                                      style: defaultText16B.copyWith(
+                                        color: mainDarkGreen,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 },

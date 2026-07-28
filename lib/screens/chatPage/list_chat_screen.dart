@@ -80,9 +80,12 @@ class _ListChatScreenState extends State<ListChatScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.phone, color: Colors.white),
+            icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: () {
-              _makePhoneCall('19008978');
+              setState(() {
+                isLoading = true;
+              });
+              fetchData();
             },
           ),
           SizedBox(width: 16.w),

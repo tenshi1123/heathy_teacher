@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:heathy_teacher/screens/productPage/list_detail_product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
@@ -10,17 +13,29 @@ import 'package:screen_protector/screen_protector.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/repo/home_repo.dart';
+import 'package:heathy_teacher/models/course_model.dart';
+import 'package:heathy_teacher/screens/coursePage/online_class_screen.dart';
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 
 class DetailVideo extends StatefulWidget {
   const DetailVideo({
     super.key,
-
     required this.name,
     required this.streamingUrl,
+    this.courses,
+    this.percentLearning,
+    this.isShow,
+    this.description,
   });
 
   final String streamingUrl;
   final String name;
+  final CourseDetailModel? courses;
+  final double? percentLearning;
+  final String? isShow;
+  final String? description;
   @override
   State<DetailVideo> createState() => _DetailVideoState();
 }
@@ -33,6 +48,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
 
   late final WebViewController _controller;
   Timer? _trackingTimer;
+  String watermarkText = "Bản quyền thuộc về CGH";
   @override
   void initState() {
     super.initState();
@@ -84,7 +100,17 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
 
   /// 🌐 WebView setup + detect fullscreen
   void _initWebView() {
-    String watermarkText = "Bản quyền thuộc về CGH";
+    HomeRepo().getUserProfile().then((res) {
+      setState(() {
+        watermarkText = '${res.fullName ?? ""} - ${res.phone ?? ""}';
+      });
+      _controller.runJavaScript('''
+        var wm = document.getElementById("flutter-watermark");
+        if (wm) {
+          wm.innerHTML = "$watermarkText";
+        }
+      ''');
+    });
 
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
@@ -289,6 +315,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     return Stack(
       children: [
         Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
             backgroundColor: mainDarkGreen,
             elevation: 0,
@@ -332,7 +359,19 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
               ),
             ],
           ),
-          body: WebViewWidget(controller: _controller),
+          body: MediaQuery.of(context).orientation == Orientation.landscape
+              ? WebViewWidget(controller: _controller)
+              : Column(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: WebViewWidget(controller: _controller),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(child: _buildTextContent()),
+                    ),
+                  ],
+                ),
         ),
         if (_isRecording) _buildBlockOverlay("Screen recording is not allowed"),
         if (_isFullscreen && Platform.isIOS)
@@ -348,6 +387,167 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
       child: Text(
         text,
         style: const TextStyle(color: Colors.white, fontSize: 16),
+      ),
+    );
+  }
+
+  Widget _buildTextContent() {
+    return Container(
+      color: Colors.white,
+      width: double.infinity,
+      padding: EdgeInsets.all(16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Nội dung chi tiết', style: defaultText16B),
+          Html(data: widget.description),
+          if (widget.isShow == 'true' && widget.courses != null) ...[
+            SizedBox(height: 28.h),
+            Text('Nội dung khoá học'.sanitizeForApple, style: defaultText16B),
+            if (widget.percentLearning != null)
+              Row(
+                children: [
+                  Container(
+                    height: 8.h,
+                    width: 270.w,
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      color: const Color(0xffEDEDED),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Container(
+                      height: 8.h,
+                      width: 270.w * ((widget.percentLearning ?? 0) / 100),
+                      decoration: BoxDecoration(
+                        color: mainDarkGreen,
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '  ${widget.percentLearning}%',
+                    style: defaultText16B.copyWith(color: mainDarkGreen),
+                  ),
+                ],
+              ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              itemCount: widget.courses?.topicals?.length ?? 0,
+              itemBuilder: (BuildContext context, int index) {
+                return LessonItem(
+                  index: index,
+                  topicModel: widget.courses?.topicals![index],
+                  courses: widget.courses,
+                  percentLearning: widget.percentLearning,
+                  isShow: widget.isShow,
+                );
+              },
+            ),
+            if (widget.courses?.loTrinh != null &&
+                widget.courses!.loTrinh!.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Nguyên liệu liên quan',
+                    style: defaultText18B.copyWith(
+                      color: const Color(0xff00204A),
+                      fontSize: 20.sp,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  RichText(
+                    text: TextSpan(
+                      text: 'Xem đầy đủ tại ',
+                      style: defaultText16M.copyWith(
+                        color: const Color(0xff00204A),
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Gian hàng nguyên liệu',
+                          style: defaultText16B.copyWith(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ListDetailProductScreen(
+                            categorySlug:
+                                widget.courses?.slugProductCateGory ?? '',
+                            categoryName: '',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 16.h, bottom: 16.h),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            'https://lms.cogiaohealthy.vn/images/${widget.courses?.loTrinh}',
+                        width: 343.w,
+                        fit: BoxFit.fitWidth,
+                        errorWidget: (context, url, error) => const SizedBox(),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ListDetailProductScreen(
+                            categorySlug:
+                                widget.courses?.slugProductCateGory ?? '',
+                            categoryName: '',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ListDetailProductScreen(
+                                  categorySlug:
+                                      widget.courses?.slugProductCateGory ?? '',
+                                  categoryName: '',
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 24.w,
+                              vertical: 8.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(24.r),
+                            ),
+                            child: Text(
+                              'Mua ngay',
+                              style: defaultText16B.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ],
       ),
     );
   }

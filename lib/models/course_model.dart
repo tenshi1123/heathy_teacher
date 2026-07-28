@@ -65,14 +65,21 @@ class LessonModel {
   final String? name;
   final String? time;
   final String? isTrial;
-
-  LessonModel({this.lessonsId, this.name, this.time, this.isTrial});
+  final String? description;
+  LessonModel({
+    this.lessonsId,
+    this.name,
+    this.time,
+    this.isTrial,
+    this.description,
+  });
 
   factory LessonModel.fromJson(Map<String, dynamic> json) => LessonModel(
     lessonsId: json['lessons_id'],
     name: json['name'],
     time: json['time'],
     isTrial: json['is_trial'],
+    description: json['description'],
   );
 }
 
@@ -124,6 +131,8 @@ class CourseDetailModel {
   final String? courseTypeId;
   final List<TopicalModel>? topicals;
   final List<dynamic>? feedbacks; // Thêm list feedback
+  final String? slugProductCateGory;
+  final String? loTrinh;
 
   CourseDetailModel({
     this.id,
@@ -137,6 +146,8 @@ class CourseDetailModel {
     this.courseTypeId,
     this.topicals,
     this.feedbacks,
+    this.slugProductCateGory,
+    this.loTrinh,
   });
 
   factory CourseDetailModel.fromJson(Map<String, dynamic> json) {
@@ -184,6 +195,8 @@ class CourseDetailModel {
               .toList() ??
           [],
       feedbacks: parsedFeedbacks,
+      slugProductCateGory: json['slug_product_category'],
+      loTrinh: rootObj['value'] != null ? rootObj['value']['lo_trinh'] : null,
     );
   }
 }
@@ -272,7 +285,9 @@ class CourseOffModel {
   factory CourseOffModel.fromJson(Map<String, dynamic> json) {
     return CourseOffModel(
       id: json['course_type_id'],
-      name: (json['course_schedule_name'] as String?).sanitizeForApple,
+      name:
+          json['course_name'] ??
+          (json['course_schedule_name'] as String?).sanitizeForApple,
       topicName: json['topic_name'],
       img: json['img'],
       price: json['price'],
@@ -337,8 +352,10 @@ class ContentSubmitModel {
       createdAt: json['created_at'],
       comments: json['comments'] != null
           ? (json['comments'] as List)
-              .map((e) => SubmitCommentModel.fromJson(e as Map<String, dynamic>))
-              .toList()
+                .map(
+                  (e) => SubmitCommentModel.fromJson(e as Map<String, dynamic>),
+                )
+                .toList()
           : [],
     );
   }

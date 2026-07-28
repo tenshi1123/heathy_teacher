@@ -14,8 +14,13 @@ import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 
 class ListDetailProductScreen extends StatefulWidget {
-  final CategoryModel model;
-  const ListDetailProductScreen({super.key, required this.model});
+  final String categorySlug;
+  final String categoryName;
+  const ListDetailProductScreen({
+    super.key,
+    required this.categorySlug,
+    required this.categoryName,
+  });
 
   @override
   State<ListDetailProductScreen> createState() =>
@@ -52,7 +57,7 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
       _hasMore = true;
     });
     coursesDetail = await ProductRepo().getListProduct(
-      widget.model.categorySlug ?? '',
+      widget.categorySlug,
       page: _page,
       show: _show,
     );
@@ -70,7 +75,7 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
     });
     _page++;
     final moreCourses = await ProductRepo().getListProduct(
-      widget.model.categorySlug ?? '',
+      widget.categorySlug,
       page: _page,
       show: _show,
     );
@@ -102,7 +107,7 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          widget.model.categoryName ?? '',
+          widget.categoryName,
           maxLines: 2,
           style: defaultText18B.copyWith(color: mainDarkGreen),
         ),

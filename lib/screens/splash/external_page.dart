@@ -140,6 +140,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                     const CustomImageCarousel(),
                     ServiceGrid(),
                     const _AchievementBanner(),
+                    SizedBox(height: 12.h),
                     if (isShow == 'true')
                       SizedBox(
                         width: 343.w,

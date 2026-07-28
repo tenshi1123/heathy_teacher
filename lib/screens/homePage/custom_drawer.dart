@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:heathy_teacher/screens/drawer/thong_tin_uu_dai.dart';
 import 'package:heathy_teacher/screens/homePage/home_screen.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
@@ -164,11 +165,18 @@ class MyCustomDrawer extends StatelessWidget {
                     );
                   },
                 ),
-                // _buildMenuItem(
-                //   icon: Icons.view_in_ar_outlined,
-                //   title: 'Thông tin ưu đãi',
-                //   isSelected: selectedIndex == 5,
-                // ),
+                _buildMenuItem(
+                  icon: Icons.view_in_ar_outlined,
+                  title: 'Thông tin ưu đãi',
+                  isSelected: selectedIndex == 5,
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: ((context) => UuDaiScreen())),
+                    );
+                  },
+                ),
                 _buildMenuItem(
                   icon: Icons.format_list_bulleted,
                   title: 'Chính sách',
@@ -186,7 +194,13 @@ class MyCustomDrawer extends StatelessWidget {
                 _buildMenuItem(
                   icon: Icons.logout,
                   title: 'Đăng xuất',
-                  onTap: () => dialogBuilder(context, type: 1),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: ((context) => UuDaiScreen())),
+                    );
+                  },
                 ),
               ],
             ),

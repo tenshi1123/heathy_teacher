@@ -808,7 +808,10 @@ class _ProductCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: ((context) => ListDetailProductScreen(model: model)),
+            builder: ((context) => ListDetailProductScreen(
+              categorySlug: model.categorySlug ?? '',
+              categoryName: model.categoryName ?? '',
+            )),
           ),
         );
       },

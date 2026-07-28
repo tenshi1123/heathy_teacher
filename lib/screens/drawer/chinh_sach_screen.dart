@@ -111,7 +111,7 @@ class _ListChinhSachState extends State<ListChinhSach> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Học viên",
+                          "Chính sách học viên",
                           style: defaultText14B.copyWith(
                             color: selectedTab == 0
                                 ? colorText
@@ -139,7 +139,7 @@ class _ListChinhSachState extends State<ListChinhSach> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Tich điểm",
+                          "Chính sách tích điểm",
                           style: defaultText14B.copyWith(
                             color: selectedTab == 1
                                 ? colorText

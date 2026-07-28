@@ -699,7 +699,7 @@ class _SaleScreenState extends State<SaleScreen> {
                   color: mainDarkGreen,
                 ),
                 child: Text(
-                  'Xem chi tiết',
+                  'Đăng ký',
                   style: defaultText16B.copyWith(color: Colors.white),
                 ),
               ),

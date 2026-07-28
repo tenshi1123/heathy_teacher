@@ -29,24 +29,4 @@ subprojects {
             }
         }
     }
-    
-    // Fix Namespace và JVM Target cho image_gallery_saver trên AGP 8+
-    if (project.name == "image_gallery_saver") {
-        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-        afterEvaluate {
-            val androidExtension = extensions.findByName("android")
-            if (androidExtension != null) {
-                try {
-                    val setNamespace = androidExtension.javaClass.getMethod("setNamespace", String::class.java)
-                    setNamespace.invoke(androidExtension, "com.example.imagegallerysaver")
-                } catch (e: Exception) {
-                    // Bỏ qua nếu có lỗi
-                }
-            }
-        }
-    }
 }

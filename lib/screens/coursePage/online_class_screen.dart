@@ -18,6 +18,7 @@ import 'package:heathy_teacher/repo/chat_repo.dart';
 import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:heathy_teacher/screens/coursePage/student_product_screen.dart';
+import 'package:heathy_teacher/screens/productPage/list_detail_product_screen.dart';
 
 class OnlineClassScreen extends StatefulWidget {
   const OnlineClassScreen({super.key, required this.course});
@@ -658,8 +659,105 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                           return LessonItem(
                             index: index,
                             topicModel: courses?.topicals![index],
+                            courses: courses,
+                            percentLearning: widget.course.percentLearning
+                                ?.toDouble(),
+                            isShow: isShow,
                           );
                         },
+                      ),
+                    if (courses?.loTrinh != null &&
+                        courses!.loTrinh!.isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Nguyên liệu liên quan',
+                            style: defaultText18B.copyWith(
+                              color: const Color(0xff00204A),
+                              fontSize: 20.sp,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          RichText(
+                            text: TextSpan(
+                              text: 'Xem đầy đủ tại ',
+                              style: defaultText16M.copyWith(
+                                color: const Color(0xff00204A),
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: 'Gian hàng nguyên liệu',
+                                  style: defaultText16B.copyWith(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ListDetailProductScreen(
+                                    categorySlug:
+                                        courses?.slugProductCateGory ?? '',
+                                    categoryName: '',
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 16.h, bottom: 16.h),
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    'https://lms.cogiaohealthy.vn/images/${courses?.loTrinh}',
+                                width: 343.w,
+                                fit: BoxFit.fitWidth,
+                                errorWidget: (context, url, error) =>
+                                    const SizedBox(),
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ListDetailProductScreen(
+                                            categorySlug:
+                                                courses?.slugProductCateGory ??
+                                                '',
+                                            categoryName: '',
+                                          ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 24.w,
+                                    vertical: 8.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(24.r),
+                                  ),
+                                  child: Text(
+                                    'Mua ngay',
+                                    style: defaultText16B.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     SizedBox(height: 36.h),
                   ],
@@ -671,9 +769,19 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
 }
 
 class LessonItem extends StatefulWidget {
-  const LessonItem({super.key, required this.index, required this.topicModel});
+  const LessonItem({
+    super.key,
+    required this.index,
+    required this.topicModel,
+    this.courses,
+    this.percentLearning,
+    this.isShow,
+  });
   final int index;
   final TopicalModel? topicModel;
+  final CourseDetailModel? courses;
+  final double? percentLearning;
+  final String? isShow;
   @override
   State<LessonItem> createState() => _LessonItemState();
 }
@@ -766,6 +874,10 @@ class _LessonItemState extends State<LessonItem> {
                           builder: ((context) => (DetailVideo(
                             streamingUrl: url,
                             name: e.name ?? 'Không có tên bài giảng',
+                            courses: widget.courses,
+                            percentLearning: widget.percentLearning,
+                            isShow: widget.isShow,
+                            description: e.description,
                           ))),
                         ),
                       );

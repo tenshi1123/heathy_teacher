@@ -1,3 +1,4 @@
+import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
@@ -23,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
   final _shorebirdUpdater = ShorebirdUpdater();
-  bool _isDownloadingPatch = false;
+  final bool _isDownloadingPatch = false;
 
   // Biến cờ để theo dõi xem app đã được mở từ Deep Link chưa
   bool _openedFromDeepLink = false;
@@ -35,26 +36,91 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkTokenAndNavigate();
   }
 
-  Future<void> _checkForUpdate() async {
+  Future<bool> _checkForUpdate() async {
     try {
       final status = await _shorebirdUpdater.checkForUpdate();
       if (status == UpdateStatus.outdated) {
         if (mounted) {
-          setState(() {
-            _isDownloadingPatch = true;
-          });
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                title: Text(
+                  'Có bản cập nhật mới',
+                  style: defaultText16B,
+                  textAlign: TextAlign.center,
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(color: mainDarkGreen),
+                    SizedBox(height: 16.h),
+                    Text(
+                      'Hệ thống đang tải dữ liệu bản vá mới, vui lòng không tắt ứng dụng...',
+                      style: defaultText14M,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
         }
+
         await _shorebirdUpdater.update();
-        await Restart.restartApp();
+
+        if (mounted) {
+          Navigator.pop(context); // Đóng dialog đang tải
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                title: Text('Cập nhật hoàn tất', style: defaultText16B),
+                content: Text(
+                  'Vui lòng khởi động lại ứng dụng để áp dụng thay đổi mới nhất.',
+                  style: defaultText14M,
+                ),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Restart.restartApp();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: mainDarkGreen,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                    ),
+                    child: Text(
+                      'Khởi động lại ngay',
+                      style: defaultText16B.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        return true; // Có update và đang chờ restart
       }
     } catch (e) {
       print('Lỗi cập nhật Shorebird: $e');
     }
+    return false; // Không có update
   }
 
   Future<void> _checkTokenAndNavigate() async {
     // Kiểm tra bản vá Shorebird trước tiên
-    await _checkForUpdate();
+    bool isUpdating = await _checkForUpdate();
+    if (isUpdating) return; // Dừng luồng chờ user khởi động lại
 
     if (_openedFromDeepLink) return;
 

@@ -11,7 +11,7 @@ import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   const OrderPaymentScreen({super.key});
@@ -511,7 +511,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                                                     );
                                             if (image != null) {
                                               final result =
-                                                  await ImageGallerySaver.saveImage(
+                                                  await ImageGallerySaverPlus.saveImage(
                                                     image,
                                                   );
                                               if (result['isSuccess'] == true &&
