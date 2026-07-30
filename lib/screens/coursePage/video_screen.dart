@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:heathy_teacher/screens/productPage/list_detail_product_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -122,6 +123,17 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     } else {
       params = const PlatformWebViewControllerCreationParams();
     }
+    String extractIframeUrl(String input) {
+      final RegExp regExp = RegExp(r'src="([^"]+)"');
+      final match = regExp.firstMatch(input);
+      if (match != null && match.groupCount >= 1) {
+        return match.group(1)!;
+      }
+      return input;
+    }
+
+    String videoUrl = extractIframeUrl(widget.streamingUrl);
+
     final String htmlContent =
         '''
     <!DOCTYPE html>
@@ -135,7 +147,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     </head>
     <body>
       <iframe 
-        src="${widget.streamingUrl}" 
+        src="$videoUrl" 
         allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" 
         allowfullscreen="true">
       </iframe>
@@ -182,92 +194,68 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
           Element.prototype.mozRequestFullScreen = function() { return Promise.reject(); };
           Element.prototype.msRequestFullscreen = function() { return Promise.reject(); };
           
-          // Bước C: Chèn watermark giới hạn TRONG KHUNG VIDEO
+          // Bước C: Chèn watermark trên khung hiển thị
           if (!document.getElementById("flutter-watermark")) {
-          var wm = document.createElement("div");
-          wm.id = "flutter-watermark";
-          wm.innerHTML = "$watermarkText";
-          wm.style.position = "absolute"; // Đổi thành absolute
-          wm.style.color = "rgba(255, 165, 0, 0.8)";
-          wm.style.fontSize = "14px";
-          wm.style.fontWeight = "bold";
-          wm.style.zIndex = "999999"; 
-          wm.style.pointerEvents = "none";
-          wm.style.textShadow = "1px 1px 2px rgba(0, 0, 0, 0.8)"; 
-          wm.style.transition = "all 0.3s ease"; // Cho phép mượt mà khi đổi góc
-          // Tìm thẻ chứa video (Thường BunnyCDN dùng Plyr player)
-          var videoElement = document.querySelector('video');
-          var videoContainer = videoElement ? videoElement.parentElement : document.body;
-          // Đảm bảo container chứa video có position relative để watermark neo theo
-          if (getComputedStyle(videoContainer).position === "static") {
-          videoContainer.style.position = "relative";
-          }
-          videoContainer.appendChild(wm);
-          var currentIndex = 0;
-          function updatePosition() {
-            var video = document.querySelector('video');
-            var wm = document.getElementById("flutter-watermark");
-            if (!video || !wm) return;
+            var wm = document.createElement("div");
+            wm.id = "flutter-watermark";
+            wm.innerHTML = "$watermarkText";
+            wm.style.position = "absolute"; 
+            wm.style.color = "rgba(255, 255, 255, 0.6)";
+            wm.style.fontSize = "14px";
+            wm.style.fontWeight = "bold";
+            wm.style.zIndex = "999999"; 
+            wm.style.pointerEvents = "none";
+            wm.style.textShadow = "1px 1px 2px rgba(0, 0, 0, 0.8)"; 
+            wm.style.transition = "all 0.5s ease"; // Cho phép mượt mà khi đổi góc
+            
+            document.body.appendChild(wm);
+            
+            var currentIndex = 0;
+            function updatePosition() {
+              var wm = document.getElementById("flutter-watermark");
+              if (!wm) return;
 
-            var rect = video.getBoundingClientRect();
-            var vw = video.videoWidth;
-            var vh = video.videoHeight;
+              var padding = 20;
+              var bottomOffset = 60; // Tránh thanh điều khiển video ở dưới
+              var wmWidth = wm.offsetWidth || 150; 
+              var wmHeight = wm.offsetHeight || 20;
+              var w = window.innerWidth;
+              var h = window.innerHeight;
 
-            // Đợi đến khi video tải xong metadata mới có kích thước thực
-            if (!vw || !vh) return;
+              // Reset toàn bộ CSS vị trí
+              wm.style.top = "auto"; 
+              wm.style.bottom = "auto"; 
+              wm.style.left = "auto"; 
+              wm.style.right = "auto";
 
-            var videoRatio = vw / vh;
-            var containerRatio = rect.width / rect.height;
-
-            var actualWidth = rect.width;
-            var actualHeight = rect.height;
-            var startX = rect.left;
-            var startY = rect.top;
-
-            // BƯỚC QUAN TRỌNG: Loại bỏ khoảng viền đen (Black bars)
-            if (containerRatio > videoRatio) {
-              // Viền đen ở 2 bên trái/phải (Ví dụ: Video dọc xem trên màn hình ngang)
-              actualWidth = rect.height * videoRatio;
-              startX = rect.left + (rect.width - actualWidth) / 2;
-            } else {
-              // Viền đen ở trên/dưới (Ví dụ: Video ngang xem trên màn hình đứng)
-              actualHeight = rect.width / videoRatio;
-              startY = rect.top + (rect.height - actualHeight) / 2;
+              // Gắn tọa độ theo 4 góc màn hình
+              if (currentIndex === 0) { // Góc trên trái
+                wm.style.top = padding + "px";
+                wm.style.left = padding + "px";
+              } else if (currentIndex === 1) { // Góc trên phải
+                wm.style.top = padding + "px";
+                wm.style.left = (w - wmWidth - padding) + "px";
+              } else if (currentIndex === 2) { // Góc dưới phải
+                wm.style.bottom = bottomOffset + "px";
+                wm.style.left = (w - wmWidth - padding) + "px";
+              } else if (currentIndex === 3) { // Góc dưới trái
+                wm.style.bottom = bottomOffset + "px";
+                wm.style.left = padding + "px";
+              }
             }
 
-            var padding = 15;
-            var bottomOffset = 50; // Tránh thanh điều khiển video
-            var wmWidth = wm.offsetWidth || 150; 
-            var wmHeight = wm.offsetHeight || 20;
+            // Gọi thử liên tục trong thời gian đầu để chắc chắn kích thước đúng
+            var initCount = 0;
+            var initInterval = setInterval(function() {
+              updatePosition();
+              initCount++;
+              if (initCount > 10) clearInterval(initInterval);
+            }, 500);
 
-            // Reset toàn bộ CSS vị trí
-            wm.style.top = "auto"; 
-            wm.style.bottom = "auto"; 
-            wm.style.left = "auto"; 
-            wm.style.right = "auto";
-
-            // Gắn tọa độ theo góc của VÙNG HÌNH ẢNH THỰC TẾ
-            if (currentIndex === 0) { // Góc trên trái
-              wm.style.top = (startY + padding) + "px";
-              wm.style.left = (startX + padding) + "px";
-            } else if (currentIndex === 1) { // Góc trên phải
-              wm.style.top = (startY + padding) + "px";
-              wm.style.left = (startX + actualWidth - wmWidth - padding) + "px";
-            } else if (currentIndex === 2) { // Góc dưới phải
-              wm.style.top = (startY + actualHeight - wmHeight - bottomOffset) + "px";
-              wm.style.left = (startX + actualWidth - wmWidth - padding) + "px";
-            } else if (currentIndex === 3) { // Góc dưới trái
-              wm.style.top = (startY + actualHeight - wmHeight - bottomOffset) + "px";
-              wm.style.left = (startX + padding) + "px";
-            }
-          }
-
-          updatePosition();
-
-          setInterval(function() {
-            currentIndex = (currentIndex + 1) % 4;
-            updatePosition();
-          }, 3000); 
+            setInterval(function() {
+              currentIndex = (currentIndex + 1) % 4;
+              updatePosition();
+            }, 3500);
 
           // Sử dụng Event Capturing để bắt sự kiện ended kể cả khi video được tạo động (ended không bubble)
           document.addEventListener('ended', function(e) {

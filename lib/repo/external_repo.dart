@@ -142,6 +142,9 @@ class ExternalRepo {
       );
 
       if (response.data != null) {
+        if (response.data['streaming_url'] == '') {
+          return response.data['lesson_content'];
+        }
         return (response.data['streaming_url']);
       } else {
         throw Exception('Không tìm thấy dữ liệu khách hàng từ server.');

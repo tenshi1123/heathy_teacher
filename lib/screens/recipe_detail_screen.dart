@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/home_model.dart';
@@ -9,7 +8,6 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final String slug;
@@ -125,14 +123,15 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                           YoutubePlayer.convertUrlToId(src);
 
                                       if (videoId != null) {
-                                        final controller = YoutubePlayerController(
-                                          initialVideoId: videoId,
-                                          flags: const YoutubePlayerFlags(
-                                            autoPlay: false,
-                                            mute: false,
-                                            enableCaption: false,
-                                          ),
-                                        );
+                                        final controller =
+                                            YoutubePlayerController(
+                                              initialVideoId: videoId,
+                                              flags: const YoutubePlayerFlags(
+                                                autoPlay: false,
+                                                mute: false,
+                                                enableCaption: false,
+                                              ),
+                                            );
 
                                         return YoutubePlayer(
                                           controller: controller,
@@ -150,17 +149,21 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                               onPressed: () async {
                                                 controller.pause();
                                                 final position =
-                                                    await Navigator.push<Duration>(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        _FullScreenVerticalYoutubePlayer(
-                                                      videoId: videoId,
-                                                      startAt: controller
-                                                          .value.position,
-                                                    ),
-                                                  ),
-                                                );
+                                                    await Navigator.push<
+                                                      Duration
+                                                    >(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            _FullScreenVerticalYoutubePlayer(
+                                                              videoId: videoId,
+                                                              startAt:
+                                                                  controller
+                                                                      .value
+                                                                      .position,
+                                                            ),
+                                                      ),
+                                                    );
                                                 if (position != null) {
                                                   controller.seekTo(position);
                                                 }
@@ -204,7 +207,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         ),
 
                   // Footer
-                  _buildFooter(context),
+                  const CustomFooterInfo(),
                 ],
               ),
             ),
@@ -214,182 +217,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       ),
     );
   }
-
-  Widget _buildFooter(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16.r),
-          topRight: Radius.circular(16.r),
-        ),
-        color: mainDarkGreen,
-        border: Border.all(color: mainDarkGreen, width: 1.w),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CachedNetworkImage(
-  imageUrl: 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
-            height: 60.h,
-            fit: BoxFit.contain,
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.location_on_outlined, color: Colors.white, size: 24),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    style: defaultText14M.copyWith(color: Colors.white),
-                    children: [
-                      TextSpan(
-                        text: 'Hà Nội:',
-                        style: defaultText14B.copyWith(color: Colors.white),
-                      ),
-                      TextSpan(text: ' 214 Lạc Long Quân, quận Tây Hồ, Hà Nội'),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.location_on_outlined, color: Colors.white, size: 24),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    style: defaultText14M.copyWith(color: Colors.white),
-                    children: [
-                      TextSpan(
-                        text: 'HCM:',
-                        style: defaultText14B.copyWith(color: Colors.white),
-                      ),
-                      TextSpan(
-                        text:
-                            ' SkyVilla P2406, Celadon City, số 02 Tân Thanh, phường Tân Sơn Nhì, thành phố Hồ Chí Minh',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.phone_outlined, color: Colors.white, size: 24),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    style: defaultText14M.copyWith(color: Colors.white),
-                    children: [
-                      TextSpan(
-                        text: 'Hotline: ',
-                        style: defaultText14B.copyWith(color: Colors.white),
-                      ),
-                      TextSpan(text: '(+84)96 691 2016'),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            'CÔNG TY TNHH CÔ GIÁO HEALTHY',
-            style: defaultText16B.copyWith(color: Colors.white),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'MST: 0109187074 \nĐăng ký lần đầu ngày 19 tháng 05 năm 2020 \nĐăng ký thay đổi lần thứ 4, ngày 20 tháng 06 năm 2024 \nNơi cấp: Sở kế hoạch và đầu tư thành phố Hà Nội - Phòng đăng ký kinh doanh \nĐịa chỉ trụ sở chính: Tầng 7, Tòa nhà Luxury Ofice, số 214 Lạc Long Quân, Phường Tây Hồ, Thành phố Hà Nội, Việt Nam',
-            style: defaultText14M.copyWith(color: Colors.white, height: 1.5),
-          ),
-          SizedBox(height: 24.h),
-          Text(
-            'Thông tin',
-            style: defaultText16B.copyWith(color: Colors.white),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'Giới thiệu chung',
-            style: defaultText14M.copyWith(color: Colors.white),
-          ),
-          SizedBox(height: 8.h),
-          Text('Khóa học', style: defaultText14M.copyWith(color: Colors.white)),
-          SizedBox(height: 8.h),
-          Text('Sản phẩm', style: defaultText14M.copyWith(color: Colors.white)),
-          SizedBox(height: 8.h),
-          Text(
-            'Chính sách bảo mật - học tập',
-            style: defaultText14M.copyWith(color: Colors.white),
-          ),
-          SizedBox(height: 24.h),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: mainGreen,
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Theo dõi Cô Giáo Healthy',
-                  style: defaultText16B.copyWith(color: Colors.white),
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!',
-                  style: defaultText14M.copyWith(color: Colors.white),
-                ),
-                SizedBox(height: 16.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildSocialIcon('assets/images/facebook.png'),
-                    _buildSocialIcon('assets/images/youtube.png'),
-                    _buildSocialIcon('assets/images/tiktok.png'),
-                    _buildSocialIcon('assets/images/zalo.png'),
-                    _buildSocialIcon('assets/images/ins.png', size: 20),
-                    _buildSocialIcon('assets/images/threads.png'),
-                    _buildSocialIcon('assets/images/lemon8.png'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 24.h),
-          Text(
-            '© 2025 Cô Giáo Healthy | All Rights Reserved.',
-            style: defaultText14M.copyWith(color: Colors.white),
-          ),
-          SizedBox(height: 40.h),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSocialIcon(String path, {double size = 28}) {
-    return Container(
-      padding: EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Image.asset(path, width: size, height: size, fit: BoxFit.contain),
-    );
-  }
 }
 
 class _FullScreenVerticalYoutubePlayer extends StatefulWidget {
@@ -397,7 +224,6 @@ class _FullScreenVerticalYoutubePlayer extends StatefulWidget {
   final Duration startAt;
 
   const _FullScreenVerticalYoutubePlayer({
-    super.key,
     required this.videoId,
     required this.startAt,
   });
@@ -445,7 +271,8 @@ class _FullScreenVerticalYoutubePlayerState
           child: Center(
             child: YoutubePlayer(
               controller: _controller,
-              aspectRatio: MediaQuery.of(context).size.width /
+              aspectRatio:
+                  MediaQuery.of(context).size.width /
                   MediaQuery.of(context).size.height,
               showVideoProgressIndicator: true,
               bottomActions: [
@@ -467,4 +294,3 @@ class _FullScreenVerticalYoutubePlayerState
     );
   }
 }
-

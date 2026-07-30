@@ -463,15 +463,47 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                                           Image.network(
                                             'https://img.vietqr.io/image/${payCode.bankCode}-${payCode.bankAccount}-compact2.png?amount=${payCode.price}&addInfo=${Uri.encodeComponent(addInfo.trim())}',
                                             fit: BoxFit.contain,
-                                            errorBuilder:
-                                                (
-                                                  context,
-                                                  error,
-                                                  stackTrace,
-                                                ) => Image.asset(
-                                                  'assets/images/qr-thanhtoan.png',
-                                                  fit: BoxFit.contain,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                if (context.mounted) {
+                                                  Navigator.pop(context); // Đóng dialog QR hiện tại
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) => AlertDialog(
+                                                      title: const Text(
+                                                        'Lỗi',
+                                                        style: TextStyle(
+                                                          color: Colors.red,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      content: const Text('Không thể tạo mã QR thanh toán lúc này. Vui lòng thử lại sau!'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () => Navigator.pop(context),
+                                                          child: Text(
+                                                            'Đóng',
+                                                            style: TextStyle(
+                                                              color: mainDarkGreen,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+                                              });
+                                              return const SizedBox(
+                                                height: 200,
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.error_outline,
+                                                    color: Colors.red,
+                                                    size: 48,
+                                                  ),
                                                 ),
+                                              );
+                                            },
                                           ),
                                         ],
                                       ),

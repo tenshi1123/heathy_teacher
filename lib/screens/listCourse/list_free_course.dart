@@ -14,6 +14,7 @@ import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
+import 'package:heathy_teacher/repo/course_repo.dart';
 
 class ListFreeCourse extends StatefulWidget {
   const ListFreeCourse({super.key});
@@ -33,10 +34,28 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
   bool isLoading = false;
   List<CourseModel> localListCourse = [];
 
+  List<CourseScheduleModel> myCourses = [];
+
   @override
   void initState() {
     super.initState();
+    _fetchMyCourses();
     _loadPage(1);
+  }
+
+  Future<void> _fetchMyCourses() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token != null && token.isNotEmpty) {
+      try {
+        final courses = await CourseRepo().getCourse(show: 100);
+        if (mounted) {
+          setState(() {
+            myCourses = courses;
+          });
+        }
+      } catch (e) {}
+    }
   }
 
   Future<void> _loadPage(int page) async {
@@ -66,11 +85,17 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
   }
 
   List<CourseModel> get currentItems {
+    final filtered = localListCourse.where((course) {
+      return !myCourses.any(
+        (myCourse) => myCourse.settingCourseTypeId == course.courseTypeId,
+      );
+    }).toList();
+
     int startIndex = (currentPage - 1) * itemsPerPage;
     int endIndex = startIndex + itemsPerPage;
-    if (startIndex >= localListCourse.length) return [];
-    if (endIndex > localListCourse.length) endIndex = localListCourse.length;
-    return localListCourse.sublist(startIndex, endIndex);
+    if (startIndex >= filtered.length) return [];
+    if (endIndex > filtered.length) endIndex = filtered.length;
+    return filtered.sublist(startIndex, endIndex);
   }
 
   @override
@@ -234,219 +259,7 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                       ],
                     ),
                   ),
-                  Container(
-                    width: 375.w,
-
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 12.h,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.r),
-                        topRight: Radius.circular(16.r),
-                      ),
-                      color: mainDarkGreen,
-                      border: Border.all(color: mainDarkGreen, width: 1.w),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl:
-                              'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
-                          height: 60.h,
-                          fit: BoxFit.contain,
-                        ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  style: defaultText14M.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'Hà Nội:',
-                                      style: defaultText14B.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          ' 214 Lạc Long Quân, quận Tây Hồ, Hà Nội',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  style: defaultText14M.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'HCM:',
-                                      style: defaultText14B.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          ' SkyVilla P2406, Celadon City, số 02 Tân Thanh, phường Tân Sơn Nhì, thành phố Hồ Chí Minh',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.phone_outlined,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  style: defaultText14M.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'Hotline:',
-                                      style: defaultText14B.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    TextSpan(text: '\n(+84)96 691 2016'),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          'CÔNG TY TNHH CÔ GIÁO HEALTHY',
-                          style: defaultText16B.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'MST: 0109187074 \nĐăng ký lần đầu ngày 19 háng 05 năm 2020 \nĐăng ký thay đổi lần thứ 4, ngày 20 tháng 06 năm 2024 \nNơi cấp: Sở kế hoạch và đầu tư thành phố Hà Nội - Phòng đăng ký kinh doanh \nĐịa chỉ trụ sở chính: Tầng 7, Tòa nhà Luxury Ofice, số 214 Lạc Long Quân, Phường Tây Hồ, Thành phố Hà Nội, Việt Nam',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Thông tin',
-                          style: defaultText16B.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Giới thiệu chung',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Khóa học'.sanitizeForApple,
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Sản phẩm',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Text(
-                          'Chính sách bảo mật - học tập',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 8.h,
-                          ),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: mainGreen,
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              SizedBox(height: 8.h),
-                              Text(
-                                'Theo dõi Cô Giáo Healthy',
-                                style: defaultText16B.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
-                                    .sanitizeForApple,
-                                style: defaultText14M.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  buildImage(
-                                    'assets/images/facebook.png',
-                                    size: 25,
-                                  ),
-                                  buildImage(
-                                    'assets/images/youtube.png',
-                                    size: 25,
-                                  ),
-                                  buildImage(
-                                    'assets/images/tiktok.png',
-                                    size: 25,
-                                  ),
-                                  buildImage(
-                                    'assets/images/zalo.png',
-                                    size: 25,
-                                  ),
-                                  buildImage('assets/images/ins.png', size: 20),
-                                  buildImage(
-                                    'assets/images/threads.png',
-                                    size: 25,
-                                  ),
-
-                                  buildImage(
-                                    'assets/images/lemon8.png',
-                                    size: 25,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          '© 2025 Cô Giáo Healthy | All Rights Reserved.',
-                          style: defaultText14M.copyWith(color: Colors.white),
-                        ),
-                        SizedBox(height: 30.h),
-                      ],
-                    ),
-                  ),
+                  const CustomFooterInfo(),
                   // Khoảng cách cuối trang
                 ],
               ),
@@ -470,22 +283,6 @@ Widget buildIcon(String iconPath, {double size = 28}) {
       fit: BoxFit.contain,
     );
   }
-}
-
-Widget buildImage(String iconPath, {double size = 28}) {
-  return Container(
-    padding: EdgeInsets.all(6),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Image.asset(
-      iconPath,
-      width: size,
-      height: size,
-      fit: BoxFit.contain,
-    ),
-  );
 }
 
 class PulseIcon extends StatefulWidget {

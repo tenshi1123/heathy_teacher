@@ -56,8 +56,8 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
 
   Future<void> _pickImagesAndSubmit() async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile> images = await picker.pickMultiImage();
-    if (images.isNotEmpty) {
+    final List<XFile> medias = await picker.pickMultipleMedia();
+    if (medias.isNotEmpty) {
       if (!mounted) return;
       final TextEditingController textController = TextEditingController();
       showDialog(
@@ -74,7 +74,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Bạn có chắc chắn muốn trả bài với các ảnh đã chọn không?',
+                    'Bạn có chắc chắn muốn trả bài với các file đã chọn không?',
                     style: defaultText14M,
                   ),
                   SizedBox(height: 16.h),
@@ -83,18 +83,34 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                     width: double.maxFinite,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: images.length,
+                      itemCount: medias.length,
                       itemBuilder: (ctx, index) {
+                        final path = medias[index].path.toLowerCase();
+                        final isVideo = path.endsWith('.mp4') || 
+                                        path.endsWith('.mov') || 
+                                        path.endsWith('.avi') || 
+                                        path.endsWith('.mkv');
                         return Padding(
                           padding: EdgeInsets.only(right: 8.w),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8.r),
-                            child: Image.file(
-                              File(images[index].path),
-                              height: 80.h,
-                              width: 80.h,
-                              fit: BoxFit.cover,
-                            ),
+                            child: isVideo 
+                                ? Container(
+                                    height: 80.h,
+                                    width: 80.h,
+                                    color: Colors.grey.shade200,
+                                    child: Icon(
+                                      Icons.videocam, 
+                                      size: 40.h, 
+                                      color: Colors.grey.shade500,
+                                    ),
+                                  )
+                                : Image.file(
+                                    File(medias[index].path),
+                                    height: 80.h,
+                                    width: 80.h,
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
                         );
                       },
@@ -154,7 +170,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                       content: textContent,
                       courseTypeId: widget.course.settingCourseTypeId ?? '1',
                       isPointAcc: 0,
-                      files: images.map((e) => e.path).toList(),
+                      files: medias.map((e) => e.path).toList(),
                     );
 
                     if (context.mounted) {

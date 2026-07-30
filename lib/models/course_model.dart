@@ -133,6 +133,8 @@ class CourseDetailModel {
   final List<dynamic>? feedbacks; // Thêm list feedback
   final String? slugProductCateGory;
   final String? loTrinh;
+  final String? lessonNumber;
+  final String? startCount;
 
   CourseDetailModel({
     this.id,
@@ -148,6 +150,8 @@ class CourseDetailModel {
     this.feedbacks,
     this.slugProductCateGory,
     this.loTrinh,
+    this.lessonNumber,
+    this.startCount,
   });
 
   factory CourseDetailModel.fromJson(Map<String, dynamic> json) {
@@ -197,6 +201,12 @@ class CourseDetailModel {
       feedbacks: parsedFeedbacks,
       slugProductCateGory: json['slug_product_category'],
       loTrinh: rootObj['value'] != null ? rootObj['value']['lo_trinh'] : null,
+      lessonNumber: rootObj['value'] != null
+          ? rootObj['value']['lesson_number']
+          : null,
+      startCount: rootObj['value'] != null
+          ? rootObj['value']['start_count']
+          : null,
     );
   }
 }

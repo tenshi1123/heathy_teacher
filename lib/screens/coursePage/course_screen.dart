@@ -184,7 +184,7 @@ class _CourseScreenState extends State<CourseScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Khoá học'.sanitizeForApple,
+          'Khoá học của tôi'.sanitizeForApple,
           style: defaultText18B.copyWith(color: Colors.white),
         ),
         //automaticallyImplyLeading: false,

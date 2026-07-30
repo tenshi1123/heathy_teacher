@@ -7,7 +7,6 @@ import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
 import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ListChatScreen extends StatefulWidget {
@@ -18,11 +17,6 @@ class ListChatScreen extends StatefulWidget {
 }
 
 class _ListChatScreenState extends State<ListChatScreen> {
-  Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
-    await launchUrl(launchUri);
-  }
-
   List<LecturerModel> listLecturers = [];
   bool isLoading = true;
 

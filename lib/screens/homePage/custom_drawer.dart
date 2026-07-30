@@ -194,13 +194,7 @@ class MyCustomDrawer extends StatelessWidget {
                 _buildMenuItem(
                   icon: Icons.logout,
                   title: 'Đăng xuất',
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: ((context) => UuDaiScreen())),
-                    );
-                  },
+                  onTap: () => dialogBuilder(context, type: 1),
                 ),
               ],
             ),

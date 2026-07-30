@@ -194,6 +194,78 @@ class _RegisterClassONState extends State<RegisterClassON> {
                         ),
                       ),
 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: mainDarkGreen.withValues(alpha: 0.1),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.play_circle_outline,
+                                color: Colors.yellow,
+                                size: 16,
+                              ),
+                              Text(
+                                '  ${courses.lessonNumber} bài học',
+                                style: defaultText12M.copyWith(
+                                  color: mainDarkGreen,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (isShow == 'true')
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 4.h,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: mainDarkGreen.withValues(alpha: 0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                              color: Colors.white,
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.person_outline,
+                                  color: Colors.yellow,
+                                  size: 16,
+                                ),
+                                Text(
+                                  '  ${int.parse(courses.startCount ?? '0')} lượt học',
+                                  style: defaultText12M.copyWith(
+                                    color: mainDarkGreen,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
                     SizedBox(height: 12.h),
                     if (isShow == 'true') ...[
                       if (widget.isTrial) ...[
@@ -922,25 +994,25 @@ class _VideoPopupWidgetState extends State<VideoPopupWidget> {
               onPressed: () => Navigator.pop(context),
             ),
           ),
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: IconButton(
-              icon: const Icon(Icons.fullscreen, color: Colors.white, size: 32),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailVideo(
-                      streamingUrl: widget.url,
-                      name: widget.name,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          // Positioned(
+          //   bottom: 20,
+          //   right: 20,
+          //   child: IconButton(
+          //     icon: const Icon(Icons.fullscreen, color: Colors.white, size: 32),
+          //     onPressed: () {
+          //       Navigator.pop(context);
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) => DetailVideo(
+          //             streamingUrl: widget.url,
+          //             name: widget.name,
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );

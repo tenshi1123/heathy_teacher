@@ -133,7 +133,20 @@ class BottomBarScreenState extends State<BottomBarScreen> {
                 CourseScreen(userModel: userModel!),
                 ListChatScreen(userModel: userModel!),
                 ListProductScreen(userModel: userModel!),
-                ProfileScreen(userModel: userModel!),
+                HomeScreen(
+                  userModel: userModel!,
+                  customerModel: customerModel!,
+                  onCourseTabRequested: () {
+                    setState(() {
+                      currentIndex = 1;
+                    });
+                  },
+                  onProductTabRequested: () {
+                    setState(() {
+                      currentIndex = 3;
+                    });
+                  },
+                ),
               ],
             ),
             bottomNavigationBar: CustomBottomNavBar(
@@ -149,7 +162,9 @@ class BottomBarScreenState extends State<BottomBarScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: ((context) => ShoppingCartScreen())),
+                  MaterialPageRoute(
+                    builder: ((context) => ShoppingCartScreen()),
+                  ),
                 );
               },
             ),

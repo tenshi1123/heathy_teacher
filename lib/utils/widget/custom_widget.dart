@@ -17,6 +17,7 @@ import 'package:heathy_teacher/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
 import 'package:heathy_teacher/screens/recipe_detail_screen.dart';
+import 'package:heathy_teacher/utils/global_data.dart';
 
 class CustomDotLine extends StatelessWidget {
   final double dotSize;
@@ -822,46 +823,320 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
                       ),
                     );
                   },
-                  child: Stack(
-                    children: [
-                      Icon(
-                        Icons.shopping_cart_outlined,
-                        color: mainDarkGreen,
-                        size: 28, // Giảm size Icon giỏ hàng một chút
-                      ),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(3), // Padding nhỏ hơn
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
+                  child: SizedBox(
+                    width: 40.dg,
+                    height: 40.dg,
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        Icon(
+                          Icons.shopping_cart,
+                          color: mainDarkGreen,
+                          size: 30.dg, // Giảm size Icon giỏ hàng một chút
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
                           child: Container(
-                            padding: const EdgeInsets.all(1),
+                            padding: const EdgeInsets.all(3), // Padding nhỏ hơn
                             decoration: const BoxDecoration(
-                              color: Color(0xFFFFF176),
+                              color: Colors.white,
                               shape: BoxShape.circle,
                             ),
-                            child: const Text(
-                              ' 0 ',
-                              style: TextStyle(
-                                color: accentBrown,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 8, // Font chữ số nhỏ hơn
+                            child: Container(
+                              padding: const EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                color: subYellow2,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                ' ${globalListCart.length} ',
+                                style: defaultText12B.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CustomFooterInfo extends StatelessWidget {
+  const CustomFooterInfo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 375.w,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16.r),
+          topRight: Radius.circular(16.r),
+        ),
+        color: mainDarkGreen,
+        border: Border.all(color: mainDarkGreen, width: 1.w),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CachedNetworkImage(
+            imageUrl:
+                'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
+            height: 60.h,
+            fit: BoxFit.contain,
+          ),
+          GestureDetector(
+            onTap: () async {
+              final Uri url = Uri.parse(
+                'https://maps.app.goo.gl/HokDJtxrPcZxkHNP9',
+              );
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url, mode: LaunchMode.externalApplication);
+              }
+            },
+            child: Row(
+              children: [
+                Icon(Icons.location_on_outlined, color: Colors.white, size: 32),
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      style: defaultText14M.copyWith(color: Colors.white),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Hà Nội:',
+                          style: defaultText14B.copyWith(color: Colors.white),
+                        ),
+                        TextSpan(
+                          text: ' 214 Lạc Long Quân, quận Tây Hồ, Hà Nội',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 8.h),
+          GestureDetector(
+            onTap: () async {
+              final Uri url = Uri.parse(
+                'https://maps.app.goo.gl/owfRdPrmmCCeRhpC7?g_st=ipc',
+              );
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url, mode: LaunchMode.externalApplication);
+              }
+            },
+            child: Row(
+              children: [
+                Icon(Icons.location_on_outlined, color: Colors.white, size: 32),
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      style: defaultText14M.copyWith(color: Colors.white),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'HCM:',
+                          style: defaultText14B.copyWith(color: Colors.white),
+                        ),
+                        TextSpan(
+                          text:
+                              ' SkyVilla P2406, Celadon City, số 02 Tân Thanh, phường Tân Sơn Nhì, thành phố Hồ Chí Minh',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 8.h),
+          GestureDetector(
+            onTap: () {
+              final Uri launchUri = Uri(
+                scheme: 'tel',
+                path: '(+84)96 691 2016',
+              );
+              launchUrl(launchUri);
+            },
+            child: Row(
+              children: [
+                Icon(Icons.phone_outlined, color: Colors.white, size: 32),
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      style: defaultText14M.copyWith(color: Colors.white),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Hotline:',
+                          style: defaultText14B.copyWith(color: Colors.white),
+                        ),
+                        TextSpan(text: '(+84)96 691 2016'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              final Uri launchUri = Uri(
+                scheme: 'mailto',
+                path: 'cogiaohealthy@gmail.com',
+              );
+              launchUrl(launchUri);
+            },
+            child: Row(
+              children: [
+                Icon(Icons.email_outlined, color: Colors.white, size: 32),
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      style: defaultText14M.copyWith(color: Colors.white),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Email: ',
+                          style: defaultText14B.copyWith(color: Colors.white),
+                        ),
+                        TextSpan(text: 'cogiaohealthy@gmail.com'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            'CÔNG TY TNHH CÔ GIÁO HEALTHY',
+            style: defaultText16B.copyWith(color: Colors.white),
+          ),
+          Text(
+            'MST: 0109187074 \nĐăng ký lần đầu ngày 19 háng 05 năm 2020 \nĐăng ký thay đổi lần thứ 4, ngày 20 tháng 06 năm 2024 \nNơi cấp: Sở kế hoạch và đầu tư thành phố Hà Nội - Phòng đăng ký kinh doanh \nĐịa chỉ trụ sở chính: Tầng 7, Tòa nhà Luxury Ofice, số 214 Lạc Long Quân, Phường Tây Hồ, Thành phố Hà Nội, Việt Nam',
+            style: defaultText14M.copyWith(color: Colors.white),
+          ),
+          Text(
+            'Thông tin',
+            style: defaultText16B.copyWith(color: Colors.white),
+          ),
+          Text(
+            'Giới thiệu chung',
+            style: defaultText14M.copyWith(color: Colors.white),
+          ),
+          Text(
+            'Khóa học'.sanitizeForApple,
+            style: defaultText14M.copyWith(color: Colors.white),
+          ),
+          Text('Sản phẩm', style: defaultText14M.copyWith(color: Colors.white)),
+          Text(
+            'Chính sách bảo mật - học tập',
+            style: defaultText14M.copyWith(color: Colors.white),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: mainGreen,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(height: 8.h),
+                Text(
+                  'Theo dõi Cô Giáo Healthy',
+                  style: defaultText16B.copyWith(color: Colors.white),
+                ),
+                Text(
+                  'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
+                      .sanitizeForApple,
+                  style: defaultText14M.copyWith(color: Colors.white),
+                ),
+                Builder(
+                  builder: (context) {
+                    void openUrl(String link) async {
+                      final Uri url = Uri.parse(link);
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        );
+                      }
+                    }
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        buildImage(
+                          'assets/images/facebook.png',
+                          size: 25,
+                          onTap: () =>
+                              openUrl('https://www.facebook.com/cogiaohealthy'),
+                        ),
+                        buildImage(
+                          'assets/images/youtube.png',
+                          size: 25,
+                          onTap: () =>
+                              openUrl('https://www.youtube.com/@cogiaohealthy'),
+                        ),
+                        buildImage(
+                          'assets/images/tiktok.png',
+                          size: 25,
+                          onTap: () =>
+                              openUrl('https://www.tiktok.com/@cogiaohealthy'),
+                        ),
+                        buildImage(
+                          'assets/images/zalo.png',
+                          size: 25,
+                          onTap: () =>
+                              openUrl('https://zalo.me/4529987293035203584'),
+                        ),
+                        buildImage(
+                          'assets/images/ins.png',
+                          size: 20,
+                          onTap: () => openUrl(
+                            'https://www.instagram.com/cogiaohealthy',
+                          ),
+                        ),
+                        buildImage(
+                          'assets/images/threads.png',
+                          size: 25,
+                          onTap: () =>
+                              openUrl('https://www.threads.com/@cogiaohealthy'),
+                        ),
+                        buildImage(
+                          'assets/images/lemon8.png',
+                          size: 25,
+                          onTap: () => openUrl(
+                            'https://www.lemon8-app.com/@cogiaohealthy',
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          Text(
+            '© 2025 Cô Giáo Healthy | All Rights Reserved.',
+            style: defaultText14M.copyWith(color: Colors.white),
+          ),
+          SizedBox(height: 30.h),
+        ],
       ),
     );
   }
@@ -1657,4 +1932,23 @@ class AppImage extends StatelessWidget {
 
     return image;
   }
+}
+
+Widget buildImage(String iconPath, {double size = 28, VoidCallback? onTap}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Image.asset(
+        iconPath,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+      ),
+    ),
+  );
 }
