@@ -28,7 +28,9 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   int get totalPrice {
     int total = 0;
     for (var item in globalListCart) {
-      total += item.price * item.quantity;
+      if (item.isSelected ?? true) {
+        total += item.price * item.quantity;
+      }
     }
     return total;
   }
@@ -123,6 +125,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 120.h),
                 ],
               ),
             ),
@@ -144,6 +147,43 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                 ),
                 child: GestureDetector(
                   onTap: () async {
+                    final selectedItems = globalListCart
+                        .where((item) => item.isSelected == true)
+                        .toList();
+                    if (selectedItems.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Vui lòng chọn ít nhất 1 sản phẩm'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    bool hasCourse = selectedItems.any((e) => e.isCourse);
+                    bool hasProduct = selectedItems.any((e) => !e.isCourse);
+
+                    if (hasCourse && hasProduct) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text(
+                            'Cảnh báo',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          content: const Text(
+                            'Bạn chỉ được thanh toán một loại sản phẩm (khóa học hoặc nguyên liệu - máy) trên cùng một đơn hàng. Vui lòng tách riêng đơn thanh toán.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Đóng'),
+                            ),
+                          ],
+                        ),
+                      );
+                      return;
+                    }
+
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     final String? token = prefs.getString('remember_token');

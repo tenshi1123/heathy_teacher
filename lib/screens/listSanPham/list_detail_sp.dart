@@ -221,36 +221,35 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                         itemBuilder: (context, index) {
                           final item = coursesDetail[index];
 
-                          return Container(
-                            padding: EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 3),
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailProductScreen(
+                                    productId: item.id ?? '',
+                                  ),
                                 ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// IMAGE
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            DetailProductScreen(
-                                              productId: item.id ?? '',
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                  child: ClipRRect(
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  /// IMAGE
+                                  ClipRRect(
                                     borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(16),
                                       bottom: Radius.circular(16),
@@ -280,110 +279,117 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                       // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
                                     ),
                                   ),
-                                ),
 
-                                Text(
-                                  item.productName ?? 'Không xác định',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: defaultText16B.copyWith(
-                                    color: mainDarkGreen,
-                                  ),
-                                ),
-                                SizedBox(height: 8.h),
-
-                                Text(
-                                  '${formatPrice(item.price)}đ',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: defaultText16B.copyWith(
-                                    color: mainDarkGreen,
-                                  ),
-                                ),
-                                if (item.priceOld != '0')
                                   Text(
-                                    '${formatPrice(item.priceOld)}đ',
-                                    maxLines: 1,
+                                    item.productName ?? 'Không xác định',
+                                    maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: defaultText12M.copyWith(
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.lineThrough,
+                                    style: defaultText16B.copyWith(
+                                      color: mainDarkGreen,
                                     ),
                                   ),
-                                const Spacer(),
+                                  SizedBox(height: 8.h),
 
-                                /// BUTTON
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 2.w,
-                                    vertical: 4.h,
+                                  Text(
+                                    '${formatPrice(item.price)}đ',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: defaultText16B.copyWith(
+                                      color: mainDarkGreen,
+                                    ),
                                   ),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      int existingIndex = globalListCart
-                                          .indexWhere(
-                                            (element) => element.id == item.id,
-                                          );
-                                      if (existingIndex != -1) {
-                                        globalListCart[existingIndex]
-                                            .quantity++;
-                                      } else {
-                                        globalListCart.add(
-                                          CartItem(
-                                            id: item.id ?? '',
-                                            name: item.productName ?? '',
-                                            image: item.img ?? '',
-                                            price:
-                                                int.tryParse(
-                                                  item.price ?? '0',
-                                                ) ??
-                                                0,
-                                            isCourse: false,
-                                          ),
-                                        );
-                                      }
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            //title:  Text('Đã thêm vào giỏ hàng'),
-                                            content: const Text(
-                                              'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                                  if (item.priceOld != null &&
+                                      item.priceOld != '0' &&
+                                      item.priceOld != '')
+                                    Text(
+                                      '${formatPrice(item.priceOld)}đ',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: defaultText12M.copyWith(
+                                        color: Colors.grey,
+                                        fontSize: 10.sp,
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                    ),
+                                  const Spacer(),
+
+                                  /// BUTTON
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 2.w,
+                                      vertical: 4.h,
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        int existingIndex = globalListCart
+                                            .indexWhere(
+                                              (element) =>
+                                                  element.id == item.id,
+                                            );
+                                        if (existingIndex != -1) {
+                                          globalListCart[existingIndex]
+                                              .quantity++;
+                                        } else {
+                                          globalListCart.add(
+                                            CartItem(
+                                              id: item.id ?? '',
+                                              name: item.productName ?? '',
+                                              image: item.img ?? '',
+                                              price:
+                                                  int.tryParse(
+                                                    item.price ?? '0',
+                                                  ) ??
+                                                  0,
+                                              isCourse: false,
                                             ),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                  context,
-                                                  'OK',
-                                                ),
-                                                child: const Text('OK'),
-                                              ),
-                                            ],
                                           );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 10.h,
-                                        horizontal: 8.w,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: mainDarkGreen,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Thêm vào giỏ hàng",
-                                          style: defaultText12B.copyWith(
-                                            color: Colors.white,
+                                        }
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              //title:  Text('Đã thêm vào giỏ hàng'),
+                                              content: const Text(
+                                                'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                        context,
+                                                        'OK',
+                                                      ),
+                                                  child: const Text('OK'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 10.h,
+                                          horizontal: 8.w,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: mainDarkGreen,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "Thêm vào giỏ hàng",
+                                            style: defaultText12B.copyWith(
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },

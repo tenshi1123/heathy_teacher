@@ -14,6 +14,7 @@ import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class RegisterClassOff extends StatefulWidget {
   const RegisterClassOff({super.key, required this.id});
@@ -290,26 +291,37 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
     return GestureDetector(
       onTap: () async {
         String urlString = courses.youtubeUrl!;
-        // Chuyển link embed thành link watch thông thường để app YouTube dễ mở hơn
-        if (urlString.contains('youtube.com/embed/')) {
-          final uri = Uri.parse(urlString);
-          final pathSegments = uri.pathSegments;
-          if (pathSegments.isNotEmpty && pathSegments.first == 'embed') {
-            final videoId = pathSegments.length > 1 ? pathSegments[1] : '';
-            if (videoId.isNotEmpty) {
-              urlString = 'https://www.youtube.com/watch?v=$videoId';
+        String? videoId = YoutubePlayer.convertUrlToId(urlString);
+        
+        if (videoId != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => _YoutubePlayerScreen(videoId: videoId),
+            ),
+          );
+        } else {
+          // Fallback if not a valid youtube url
+          if (urlString.contains('youtube.com/embed/')) {
+            final uri = Uri.parse(urlString);
+            final pathSegments = uri.pathSegments;
+            if (pathSegments.isNotEmpty && pathSegments.first == 'embed') {
+              final id = pathSegments.length > 1 ? pathSegments[1] : '';
+              if (id.isNotEmpty) {
+                urlString = 'https://www.youtube.com/watch?v=$id';
+              }
             }
           }
-        }
 
-        final url = Uri.parse(urlString);
-        try {
-          await launchUrl(url, mode: LaunchMode.externalApplication);
-        } catch (_) {
+          final url = Uri.parse(urlString);
           try {
-            await launchUrl(url, mode: LaunchMode.platformDefault);
-          } catch (e) {
-            debugPrint("Không thể mở link: $url");
+            await launchUrl(url, mode: LaunchMode.inAppWebView);
+          } catch (_) {
+            try {
+              await launchUrl(url, mode: LaunchMode.platformDefault);
+            } catch (e) {
+              debugPrint("Không thể mở link: $url");
+            }
           }
         }
       },
@@ -567,3 +579,62 @@ class _FeedbackCarouselState extends State<_FeedbackCarousel> {
     );
   }
 }
+
+class _YoutubePlayerScreen extends StatefulWidget {
+  final String videoId;
+
+  const _YoutubePlayerScreen({Key? key, required this.videoId}) : super(key: key);
+
+  @override
+  State<_YoutubePlayerScreen> createState() => _YoutubePlayerScreenState();
+}
+
+class _YoutubePlayerScreenState extends State<_YoutubePlayerScreen> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: widget.videoId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Center(
+          child: YoutubePlayer(
+            controller: _controller,
+            showVideoProgressIndicator: true,
+            bottomActions: [
+              const CurrentPosition(),
+              const ProgressBar(isExpanded: true),
+              const RemainingDuration(),
+              const PlaybackSpeedButton(),
+              IconButton(
+                icon: const Icon(Icons.close, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+

@@ -389,17 +389,18 @@ class _SaleScreenState extends State<SaleScreen> {
             ),
             ...[
               SizedBox(height: 12.h),
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '0') ?? 0)}đ',
                     style: defaultText18B.copyWith(color: Colors.red),
                   ),
-                  SizedBox(width: 12.w),
-                  if (model.priceOld != '0')
+                  if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
                       style: defaultText14M.copyWith(
+                        fontSize: 10.sp,
                         decoration: TextDecoration.lineThrough,
                       ),
                     ),
@@ -558,10 +559,11 @@ class _SaleScreenState extends State<SaleScreen> {
                     style: defaultText14B.copyWith(color: mainDarkGreen),
                   ),
                   SizedBox(height: 2.h),
-                  if (item.priceOld != '0')
+                  if (item.priceOld != null && item.priceOld != '0' && item.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.priceOld ?? '0') ?? 0)}đ',
                       style: defaultText12Re.copyWith(
+                        fontSize: 10.sp,
                         decoration: TextDecoration.lineThrough,
                       ),
                     ),

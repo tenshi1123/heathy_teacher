@@ -19,6 +19,7 @@ class CourseScheduleModel {
   final String? settingCourseTypeType;
   final String? price;
   final int? percentLearning;
+  final String? orderId;
 
   CourseScheduleModel({
     this.courseId,
@@ -36,6 +37,7 @@ class CourseScheduleModel {
     this.settingCourseTypeType,
     this.price,
     this.percentLearning,
+    this.orderId,
   });
 
   factory CourseScheduleModel.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class CourseScheduleModel {
       settingCourseTypeType: json['setting_course_type_type'],
       price: json['price'],
       percentLearning: json['percent_learning'],
+      orderId: json['order_id']?.toString(),
     );
   }
 }

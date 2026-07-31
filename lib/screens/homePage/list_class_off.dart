@@ -184,17 +184,18 @@ class _ListClassOffState extends State<ListClassOff> {
                                     style: defaultText14SB,
                                   ),
                                   if (isShow == 'true')
-                                    Row(
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
                                           style: defaultText16B,
                                         ),
-                                        SizedBox(width: 12.w),
-                                        if (model.priceOld != '0')
+                                        if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
                                           Text(
                                             '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
                                             style: defaultText12Re.copyWith(
+                                              fontSize: 10.sp,
                                               decoration:
                                                   TextDecoration.lineThrough,
                                             ),

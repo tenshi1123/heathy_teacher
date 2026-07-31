@@ -118,9 +118,8 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                     SizedBox(height: 6.h),
                     Text(productDetail!.name ?? '', style: defaultText18B),
                     if (isShow == 'true') ...[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             '${NumberFormat('#,###', 'vi_VN').format(productDetail!.priceInt)}đ',
@@ -130,21 +129,26 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                             ),
                           ),
                           if (productDetail!.priceOld != '0' &&
-                              productDetail!.priceOld != null) ...[
-                            SizedBox(width: 8.w),
-                            Text(
-                              '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(productDetail!.priceOld!) ?? 0)}đ',
-                              style: defaultText14Re.copyWith(
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                            SizedBox(width: 8.w),
-                            Expanded(
-                              child: Text(
-                                '• Tiết kiệm: ${NumberFormat('#,###', 'vi_VN').format((int.tryParse(productDetail!.priceOld!) ?? 0) - productDetail!.priceInt)}đ',
-                                style: defaultText14SB,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              productDetail!.priceOld != null &&
+                              productDetail!.priceOld != '') ...[
+                            Row(
+                              children: [
+                                Text(
+                                  '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(productDetail!.priceOld!) ?? 0)}đ',
+                                  style: defaultText14Re.copyWith(
+                                    fontSize: 10.sp,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                                SizedBox(width: 8.w),
+                                Expanded(
+                                  child: Text(
+                                    '• Tiết kiệm: ${NumberFormat('#,###', 'vi_VN').format((int.tryParse(productDetail!.priceOld!) ?? 0) - productDetail!.priceInt)}đ',
+                                    style: defaultText14SB,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ],
@@ -165,7 +169,7 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                         ),
                       ),
                     ],
-                    _overviewItem(label: 'Hàng chính hãng 100%, có tem phụ'),
+                    _overviewItem(label: 'Hàng chính hãng 100%'),
                     _overviewItem(
                       label: 'Chính sách ưu đãi cho học viên hấp dẫn',
                     ),
@@ -222,11 +226,15 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                           width: 340.w,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16.r),
-                            color: productDetail!.inventoryQuantity == '0'
+                            color:
+                                productDetail!.inventoryQuantity == '0' &&
+                                    productDetail!.allowShortSelling == '0'
                                 ? Colors.grey
                                 : Colors.white,
                             border: Border.all(
-                              color: productDetail!.inventoryQuantity == '0'
+                              color:
+                                  productDetail!.inventoryQuantity == '0' &&
+                                      productDetail!.allowShortSelling == '0'
                                   ? Colors.grey
                                   : mainDarkGreen,
                               width: 1.w,
@@ -245,7 +253,10 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                                     : '  Thêm vào giỏ hàng',
                                 textAlign: TextAlign.center,
                                 style: defaultText16B.copyWith(
-                                  color: productDetail!.inventoryQuantity == '0'
+                                  color:
+                                      productDetail!.inventoryQuantity == '0' &&
+                                          productDetail!.allowShortSelling ==
+                                              '0'
                                       ? Colors.white
                                       : mainDarkGreen,
                                 ),
@@ -356,7 +367,7 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('\nMô tả sản phẩm\n', style: defaultText14B),
+                              SizedBox(height: 16.h),
                               HtmlWidget(
                                 productDetail!.description ??
                                     'Đang cập nhật...',
@@ -367,28 +378,18 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                             ],
                           ),
                         ),
-                        Container(
-                          width: 343.w,
-                          margin: EdgeInsets.only(
-                            left: 16.w,
-                            right: 16.w,
-                            bottom: 16.h,
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(20),
-                              bottomRight: Radius.circular(20),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(50),
-                                spreadRadius: 0,
-                                blurRadius: 4,
-                                offset: const Offset(0, 4),
+                        SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 16.h),
+                              HtmlWidget(
+                                productDetail!.content ?? 'Đang cập nhật...',
+                                textStyle: defaultText14Re,
                               ),
+                              const SizedBox(),
+                              SizedBox(height: 20.h),
                             ],
-                            color: Colors.white,
                           ),
                         ),
                       ],

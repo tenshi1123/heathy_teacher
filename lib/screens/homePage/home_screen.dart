@@ -145,25 +145,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Column(
                               children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.arrow_back_ios_new,
-                                    size: 32,
-                                    color: Colors.white,
-                                  ), // Nút 3 gạch tự tạo
-                                  onPressed: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CoGiaoHealthyScreen(
-                                              type: 'home',
-                                              place: 'Hà Nội',
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                                // IconButton(
+                                //   icon: const Icon(
+                                //     Icons.arrow_back_ios_new,
+                                //     size: 32,
+                                //     color: Colors.white,
+                                //   ), // Nút 3 gạch tự tạo
+                                //   onPressed: () {
+                                //     Navigator.pushReplacement(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             const CoGiaoHealthyScreen(
+                                //               type: 'home',
+                                //               place: 'Hà Nội',
+                                //             ),
+                                //       ),
+                                //     );
+                                //   },
+                                // ),
                                 Builder(
                                   builder: (BuildContext context) {
                                     return IconButton(
@@ -613,17 +613,18 @@ class _OfflineClassCard extends StatelessWidget {
               style: defaultText14SB,
             ),
             if (isShow == 'true')
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
                     style: defaultText16B,
                   ),
-                  if (model.priceOld != '0')
+                  if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
                       style: defaultText12Re.copyWith(
+                        fontSize: 10.sp,
                         decoration: TextDecoration.lineThrough,
                       ),
                     ),
@@ -723,17 +724,18 @@ class _OnlineClassCard extends StatelessWidget {
               style: defaultText14SB,
             ),
             if (isShow == 'true')
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
                     style: defaultText16B,
                   ),
-                  if (model.priceOld != '0')
+                  if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
                       style: defaultText12Re.copyWith(
+                        fontSize: 10.sp,
                         decoration: TextDecoration.lineThrough,
                       ),
                     ),

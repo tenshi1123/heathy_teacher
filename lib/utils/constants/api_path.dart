@@ -21,6 +21,7 @@ class ApiPath {
   static String detailChatLecturer = '$baseUrl/customer/detail_chat_lecturers';
   static String sendChatLecturers = '$baseUrl/customer/send_chat_lecturers';
   static String loadChatCourse = '$baseUrl/customer/load_chat_course';
+
   //web ngoài
 
   //khóa học
@@ -30,13 +31,15 @@ class ApiPath {
   static String detailCourse = '$baseUrl/chi-tiet-khoa-hoc';
   static String coursePayment = '$baseUrl/thanh-toan-khoa-hoc';
   static String playVideo = '$baseUrl/play-video';
-
+  static String orderInfo = '$baseUrl/customer/course/order_info';
   //sản phẩm
   static String listProduct = '$baseUrl/danh-sach-san-pham';
   static String productCatalog = '$baseUrl/danh-muc-san-pham';
   static String detailProduct = '$baseUrl/chi-tiet-san-pham';
   static String productPayment = '$baseUrl/thanh-toan-san-pham';
 
+  // mã giảm giá
+  static String listPromoCode = '$baseUrl/list-promo-code';
   //feedback và bài viết
   static String listFeedback = '$baseUrl/danh-sach-feedback';
   static String listBaiviet = '$baseUrl/danh-sach-bai-viet-wp';

@@ -212,8 +212,9 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
+                              SizedBox(height: 5.h),
                               Text(
                                 'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
                                 style: defaultText14B.copyWith(

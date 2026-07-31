@@ -537,17 +537,23 @@ class ServiceGrid extends StatelessWidget {
           title: "KHÓA HỌC ONLINE".sanitizeForApple,
           icon: "assets/images/home2.png",
           onTap: () {
-            showOnlineCategoriesDialog(
-              context: context,
-              onCategorySelected: (category) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ListClassOnlineExternal(category: category),
-                  ),
-                );
-              },
-            );
+            void openCategoryDialog() {
+              if (!context.mounted) return;
+              showOnlineCategoriesDialog(
+                context: context,
+                onCategorySelected: (category) async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ListClassOnlineExternal(category: category),
+                    ),
+                  );
+                  openCategoryDialog();
+                },
+              );
+            }
+
+            openCategoryDialog();
           },
         ),
       ServiceModel(
@@ -1094,17 +1100,18 @@ class _OfflineClassCard extends StatelessWidget {
               style: defaultText14SB,
             ),
             if (isShow == 'true')
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '') ?? 0)}đ',
                     style: defaultText16B,
                   ),
-                  if (model.priceOld != '0')
+                  if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '') ?? 0)}đ',
                       style: defaultText12Re.copyWith(
+                        fontSize: 10.sp,
                         decoration: TextDecoration.lineThrough,
                       ),
                     ),
@@ -1294,14 +1301,6 @@ class _OnlineClassCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (model.priceOld != null && model.priceOld != '0')
-                        Text(
-                          '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '') ?? 0)}đ',
-                          style: defaultText14M.copyWith(
-                            decoration: TextDecoration.lineThrough,
-                            color: Colors.grey,
-                          ),
-                        ),
                       Text(
                         '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '') ?? 0)}đ',
                         style: defaultText18B.copyWith(
@@ -1309,6 +1308,15 @@ class _OnlineClassCard extends StatelessWidget {
                           fontSize: 20.sp,
                         ),
                       ),
+                      if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
+                        Text(
+                          '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '') ?? 0)}đ',
+                          style: defaultText14M.copyWith(
+                            fontSize: 10.sp,
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey,
+                          ),
+                        ),
                     ],
                   ),
                   Container(

@@ -19,6 +19,8 @@ import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:heathy_teacher/screens/coursePage/student_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/list_detail_product_screen.dart';
+import 'package:heathy_teacher/repo/payment_repo.dart';
+import 'package:heathy_teacher/screens/order/order_info_screen.dart';
 
 class OnlineClassScreen extends StatefulWidget {
   const OnlineClassScreen({super.key, required this.course});
@@ -86,22 +88,23 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                       itemCount: medias.length,
                       itemBuilder: (ctx, index) {
                         final path = medias[index].path.toLowerCase();
-                        final isVideo = path.endsWith('.mp4') || 
-                                        path.endsWith('.mov') || 
-                                        path.endsWith('.avi') || 
-                                        path.endsWith('.mkv');
+                        final isVideo =
+                            path.endsWith('.mp4') ||
+                            path.endsWith('.mov') ||
+                            path.endsWith('.avi') ||
+                            path.endsWith('.mkv');
                         return Padding(
                           padding: EdgeInsets.only(right: 8.w),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8.r),
-                            child: isVideo 
+                            child: isVideo
                                 ? Container(
                                     height: 80.h,
                                     width: 80.h,
                                     color: Colors.grey.shade200,
                                     child: Icon(
-                                      Icons.videocam, 
-                                      size: 40.h, 
+                                      Icons.videocam,
+                                      size: 40.h,
                                       color: Colors.grey.shade500,
                                     ),
                                   )
@@ -393,17 +396,9 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
         actions: [
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: ((context) => NotificationScreen())),
-              );
+              _fetchData();
             },
-            child: SvgPicture.asset(
-              'assets/icons/bell.svg',
-              width: 20.w,
-              height: 20.h,
-              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
-            ),
+            child: Icon(Icons.refresh, color: Colors.white, size: 24.w),
           ),
           SizedBox(width: 16.w),
         ],
@@ -422,7 +417,50 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : courses == null
-            ? const Center(child: Text('Không có dữ liệu'))
+            ? Center(
+                child: GestureDetector(
+                  onTap: () async {
+                    if (widget.course.orderId == null) return;
+                    try {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) =>
+                            const Center(child: CircularProgressIndicator()),
+                      );
+                      final orderInfo = await PaymentRepo().getOrderInfo(
+                        int.tryParse(widget.course.orderId!) ?? 0,
+                      );
+                      Navigator.pop(context);
+                      if (orderInfo != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                OrderInfoScreen(orderResponse: orderInfo),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Không thể tải thông tin đơn hàng'),
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      Navigator.pop(context);
+                      debugPrint('Lỗi tải order info: $e');
+                    }
+                  },
+                  child: Text(
+                    'Chờ thanh toán',
+                    style: defaultText16M.copyWith(
+                      color: mainDarkGreen,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              )
             : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

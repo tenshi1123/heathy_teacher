@@ -22,6 +22,7 @@ class CartItem {
   int quantity;
   final bool isCourse;
   String? courseTypeId;
+  bool? isSelected;
   CartItem({
     required this.id,
     required this.name,
@@ -30,6 +31,7 @@ class CartItem {
     this.quantity = 1,
     this.isCourse = false,
     this.courseTypeId,
+    this.isSelected = true,
   });
 }
 
@@ -337,6 +339,7 @@ class ProductDetailModel {
   final String? price;
   final String? priceOld;
   final String? description;
+  final String? content;
   final String? inventoryQuantity;
   final String? allowShortSelling;
 
@@ -348,6 +351,7 @@ class ProductDetailModel {
     this.price,
     this.priceOld,
     this.description,
+    this.content,
     this.inventoryQuantity,
     this.allowShortSelling,
   });
@@ -361,6 +365,7 @@ class ProductDetailModel {
       price: json['price'] as String?,
       priceOld: json['price_old'] as String?,
       description: (json['description'] as String?).sanitizeForApple,
+      content: (json['content'] as String?).sanitizeForApple,
       inventoryQuantity: json['inventory_quantity'] as String?,
       allowShortSelling: json['allow_short_selling'],
     );

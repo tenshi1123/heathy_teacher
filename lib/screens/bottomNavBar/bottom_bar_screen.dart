@@ -35,7 +35,7 @@ class BottomBarScreenState extends State<BottomBarScreen> {
   UserModel? userModel;
 
   bool isLoading = true;
-  int currentIndex = 0;
+  int currentIndex = 4; // Default to Account tab (index 4)
 
   @override
   void initState() {
@@ -147,11 +147,26 @@ class BottomBarScreenState extends State<BottomBarScreen> {
                     });
                   },
                 ),
+                //ofileScreen(userModel: userModel!),
               ],
             ),
             bottomNavigationBar: CustomBottomNavBar(
               currentIndex: currentIndex,
-              onTap: (i) => setState(() => currentIndex = i),
+              onTap: (i) {
+                if (i == 0) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) => const CoGiaoHealthyScreen(
+                        type: 'home',
+                        place: 'Hà Nội',
+                      )),
+                    ),
+                  );
+                } else {
+                  setState(() => currentIndex = i);
+                }
+              },
             ),
           ),
           //if (isShow == 'true')

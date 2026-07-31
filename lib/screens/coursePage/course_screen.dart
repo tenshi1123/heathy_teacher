@@ -10,6 +10,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/repo/course_repo.dart';
+import 'package:heathy_teacher/repo/payment_repo.dart';
+import 'package:heathy_teacher/screens/order/order_info_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/online_class_screen.dart';
 import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
@@ -366,47 +368,92 @@ class _CourseScreenState extends State<CourseScreen> {
                                   ),
                                 ),
                               if (course.soBuoiHoc == null)
-                                Container(
-                                  height: 32.h,
-                                  margin: EdgeInsets.only(bottom: 8.h),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: const Color(0xFFE89A48),
-                                      width: 1.5,
+                                GestureDetector(
+                                  onTap: () async {
+                                    if (course.orderId == null) return;
+                                    try {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context) => const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                      final orderInfo = await PaymentRepo()
+                                          .getOrderInfo(
+                                            int.tryParse(course.orderId!) ?? 0,
+                                          );
+                                      Navigator.pop(context);
+                                      if (orderInfo != null) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                OrderInfoScreen(
+                                                  orderResponse: orderInfo,
+                                                ),
+                                          ),
+                                        );
+                                      } else {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'Không thể tải thông tin đơn hàng',
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      Navigator.pop(context);
+                                      debugPrint('Lỗi tải order info: $e');
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 32.h,
+                                    margin: EdgeInsets.only(bottom: 8.h),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: const Color(0xFFE89A48),
+                                        width: 1.5,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20.r),
                                     ),
-                                    borderRadius: BorderRadius.circular(20.r),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 12.w,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12.w,
+                                          ),
+                                          child: Text(
+                                            'Chờ thanh toán',
+                                            style: defaultText14B.copyWith(
+                                              color: const Color(0xFFE89A48),
+                                            ),
+                                          ),
                                         ),
-                                        child: Text(
-                                          'Chờ thanh toán',
-                                          style: defaultText14B.copyWith(
+                                        Container(
+                                          width: 32.h,
+                                          height: 32.h,
+                                          decoration: BoxDecoration(
                                             color: const Color(0xFFE89A48),
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(20.r),
+                                              bottomRight: Radius.circular(
+                                                20.r,
+                                              ),
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.access_time_rounded,
+                                            color: Colors.white,
+                                            size: 18,
                                           ),
                                         ),
-                                      ),
-                                      Container(
-                                        width: 32.h,
-                                        height: 32.h,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFFE89A48),
-                                          borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(20.r),
-                                            bottomRight: Radius.circular(20.r),
-                                          ),
-                                        ),
-                                        child: const Icon(
-                                          Icons.access_time_rounded,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               if (course.soBuoiHoc != null)

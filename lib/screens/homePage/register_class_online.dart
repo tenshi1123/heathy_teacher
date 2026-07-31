@@ -170,7 +170,8 @@ class _RegisterClassONState extends State<RegisterClassON> {
                     if (isShow == 'true')
                       SizedBox(
                         width: 343.w,
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               NumberFormat.decimalPattern(
@@ -181,15 +182,16 @@ class _RegisterClassONState extends State<RegisterClassON> {
                                 fontSize: 24.sp,
                               ),
                             ),
-                            SizedBox(width: 12.w),
-                            Text(
-                              NumberFormat.decimalPattern(
-                                'vi_VN',
-                              ).format(int.parse(courses.priceOld ?? '')),
-                              style: defaultText14Re.copyWith(
-                                decoration: TextDecoration.lineThrough,
+                            if (courses.priceOld != null && courses.priceOld != '0' && courses.priceOld != '')
+                              Text(
+                                NumberFormat.decimalPattern(
+                                  'vi_VN',
+                                ).format(int.parse(courses.priceOld ?? '')),
+                                style: defaultText14Re.copyWith(
+                                  fontSize: 10.sp,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),

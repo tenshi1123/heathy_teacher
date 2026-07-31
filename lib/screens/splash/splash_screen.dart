@@ -142,20 +142,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (!mounted) return;
 
-    if (token != null && token.isNotEmpty) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const BottomBarScreen()),
-      );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              const CoGiaoHealthyScreen(type: 'home', place: 'Hà Nội'),
-        ),
-      );
-    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            const CoGiaoHealthyScreen(type: 'home', place: 'Hà Nội'),
+      ),
+    );
   }
 
   void initDeepLinks() async {

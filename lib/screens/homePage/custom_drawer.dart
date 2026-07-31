@@ -12,6 +12,8 @@ import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/screens/drawer/hoc_phi_screen.dart';
 import 'package:heathy_teacher/screens/profilePage/profile_screen.dart';
+import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
+import 'package:heathy_teacher/screens/profilePage/detail_info_screen.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
 class MyCustomDrawer extends StatelessWidget {
@@ -39,9 +41,27 @@ class MyCustomDrawer extends StatelessWidget {
                 avatar(userModel.img),
                 const SizedBox(height: 16),
                 // Tên người dùng
-                Text(
-                  userModel.fullName ?? 'Không xác định',
-                  style: defaultText18B,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      userModel.fullName ?? 'Không xác định',
+                      style: defaultText18B,
+                    ),
+                    SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context); // Close drawer first
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailInfoScreen(model: userModel),
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.edit_outlined, size: 20, color: Colors.black87),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 // Số điện thoại
@@ -53,6 +73,19 @@ class MyCustomDrawer extends StatelessWidget {
                   ),
                 ),
                 Text('${userModel.memberRanking}', style: defaultText14B),
+                RichText(
+                  text: TextSpan(
+                    style: defaultText14M,
+                    children: [
+                      TextSpan(text: 'Điểm tích lũy: '),
+                      TextSpan(
+                        text: formatPrice(userModel.accumulatedPoint),
+                        style: defaultText14B,
+                      ),
+                      TextSpan(text: ' điểm'),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -138,19 +171,7 @@ class MyCustomDrawer extends StatelessWidget {
                     );
                   },
                 ),
-                _buildMenuItem(
-                  icon: Icons.attach_money,
-                  title: 'Lịch sử thanh toán',
-                  //hasTrailingArrow: true,
-                  isSelected: selectedIndex == 3,
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: ((context) => HocPhiScreen())),
-                    );
-                  },
-                ),
+                _ExpandablePaymentHistory(isSelected: selectedIndex == 3),
                 _buildMenuItem(
                   icon: Icons.notifications_none,
                   title: 'Thông báo',
@@ -265,6 +286,130 @@ class MyCustomDrawer extends StatelessWidget {
             : null,
         onTap: onTap,
       ),
+    );
+  }
+}
+
+class _ExpandablePaymentHistory extends StatefulWidget {
+  final bool isSelected;
+  const _ExpandablePaymentHistory({super.key, required this.isSelected});
+
+  @override
+  State<_ExpandablePaymentHistory> createState() =>
+      _ExpandablePaymentHistoryState();
+}
+
+class _ExpandablePaymentHistoryState extends State<_ExpandablePaymentHistory> {
+  bool _isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = widget.isSelected;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Color itemColor = widget.isSelected || _isExpanded
+        ? Colors.white
+        : const Color(0xFF4A5568);
+    final Color bgColor = widget.isSelected || _isExpanded
+        ? const Color(0xFF388E3C)
+        : Colors.transparent;
+
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: bgColor,
+            border: Border(
+              bottom: BorderSide(
+                color: (widget.isSelected || _isExpanded)
+                    ? Colors.transparent
+                    : Colors.grey.shade200,
+                width: 1,
+              ),
+            ),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 4,
+            ),
+            leading: Icon(Icons.attach_money, color: itemColor, size: 26),
+            title: Text(
+              'Lịch sử thanh toán',
+              style: TextStyle(
+                color: itemColor,
+                fontSize: 16,
+                fontWeight: (widget.isSelected || _isExpanded)
+                    ? FontWeight.w600
+                    : FontWeight.w500,
+              ),
+            ),
+            trailing: Icon(
+              _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+              color: itemColor,
+            ),
+            onTap: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
+          ),
+        ),
+        if (_isExpanded)
+          Container(
+            color: const Color(0xFFF9FAFB),
+            child: Column(
+              children: [
+                _buildSubItem('Sản phẩm', () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HocPhiScreen(),
+                    ),
+                  );
+                }),
+                _buildSubItem('Đã thanh toán', () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HocPhiScreen(),
+                    ),
+                  );
+                }),
+                _buildSubItem('Chờ thanh toán', () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HocPhiScreen(),
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildSubItem(String title, VoidCallback onTap) {
+    return ListTile(
+      contentPadding: const EdgeInsets.only(left: 48, right: 24),
+      leading: const Icon(
+        Icons.radio_button_unchecked,
+        size: 14,
+        color: Color(0xFF4A5568),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(color: Color(0xFF4A5568), fontSize: 15),
+      ),
+      onTap: onTap,
     );
   }
 }

@@ -15,6 +15,7 @@ import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:heathy_teacher/repo/course_repo.dart';
+import 'package:heathy_teacher/screens/coursePage/online_class_screen.dart';
 
 class ListClassOnlineExternal extends StatefulWidget {
   final String? category;
@@ -84,11 +85,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
   }
 
   List<CourseModel> get currentItems {
-    final filtered = localListCourse.where((course) {
-      return !myCourses.any(
-        (myCourse) => myCourse.settingCourseTypeId == course.courseTypeId,
-      );
-    }).toList();
+    final filtered = localListCourse.toList();
 
     int startIndex = (currentPage - 1) * itemsPerPage;
     int endIndex = startIndex + itemsPerPage;
@@ -157,16 +154,37 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                       itemCount: currentItems.length,
                       itemBuilder: (BuildContext context, int index) {
                         var model = currentItems[index];
+                        bool isBought = false;
+                        CourseScheduleModel? boughtCourse;
+                        try {
+                          boughtCourse = myCourses.firstWhere(
+                            (c) => c.courseTypeId == model.courseTypeId,
+                          );
+                          isBought = true;
+                        } catch (e) {
+                          isBought = false;
+                        }
+
                         return GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: ((context) => RegisterClassON(
-                                  id: currentItems[index].courseTypeId ?? '',
-                                )),
-                              ),
-                            );
+                            if (isBought && boughtCourse != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: ((context) =>
+                                      OnlineClassScreen(course: boughtCourse!)),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: ((context) => RegisterClassON(
+                                    id: currentItems[index].courseTypeId ?? '',
+                                  )),
+                                ),
+                              );
+                            }
                           },
                           child: Container(
                             margin: EdgeInsets.only(bottom: 16.h),
@@ -270,12 +288,14 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                                               color: mainDarkGreen,
                                             ),
                                           ),
-                                          SizedBox(width: 12.w),
-                                          if (model.priceOld != '0')
+                                          if (model.priceOld != null &&
+                                              model.priceOld != '0' &&
+                                              model.priceOld != '')
                                             Text(
                                               '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
                                               style: defaultText14M.copyWith(
                                                 color: mainDarkGreen,
+                                                fontSize: 10.sp,
                                                 decoration:
                                                     TextDecoration.lineThrough,
                                               ),
@@ -386,10 +406,12 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                                           offset: const Offset(0, 3),
                                         ),
                                       ],
-                                      color: mainDarkGreen,
+                                      color: isBought
+                                          ? const Color(0xFFF26522)
+                                          : mainDarkGreen,
                                     ),
                                     child: Text(
-                                      'Đăng ký ngay',
+                                      isBought ? 'Học ngay' : 'Đăng ký ngay',
                                       style: defaultText16B.copyWith(
                                         color: Colors.white,
                                       ),
@@ -404,22 +426,21 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                       },
                     ),
 
-                  if (currentItems.isNotEmpty)
-                    Container(
-                      height: 76.h,
-                      width: 375.w,
-                      padding: EdgeInsets.only(bottom: 20.h, top: 16.h),
-                      decoration: const BoxDecoration(color: Colors.white),
-                      child: PaginationWidget(
-                        currentPage: currentPage,
-                        onPageChanged: (page) {
-                          setState(() {
-                            currentPage = page;
-                          });
-                          _loadPage(page);
-                        },
-                      ),
+                  Container(
+                    height: 76.h,
+                    width: 375.w,
+                    padding: EdgeInsets.only(bottom: 20.h, top: 16.h),
+                    decoration: const BoxDecoration(color: Colors.white),
+                    child: PaginationWidget(
+                      currentPage: currentPage,
+                      onPageChanged: (page) {
+                        setState(() {
+                          currentPage = page;
+                        });
+                        _loadPage(page);
+                      },
                     ),
+                  ),
 
                   if (isLoading)
                     Padding(

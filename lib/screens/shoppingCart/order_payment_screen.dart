@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:heathy_teacher/models/payment_model.dart';
+import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_product_widget.dart';
@@ -12,6 +14,12 @@ import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:flutter/gestures.dart';
+import 'package:heathy_teacher/screens/drawer/chinh_sach_screen.dart';
+import 'package:heathy_teacher/screens/shoppingCart/voucher_dialog.dart';
+import 'package:heathy_teacher/screens/shoppingCart/address_selection_dialog.dart';
+import 'package:heathy_teacher/repo/payment_repo.dart';
+import 'package:heathy_teacher/repo/home_repo.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   const OrderPaymentScreen({super.key});
@@ -27,6 +35,77 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   final TextEditingController _districtController = TextEditingController();
   final TextEditingController _wardController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  bool _isAgreed = true;
+  PromoCodeModel? _selectedPromoCode;
+  String? _selectedProvinceCode;
+  String? _selectedDistrictCode;
+
+  void _showVoucherDialog() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) =>
+          Center(child: CircularProgressIndicator(color: mainDarkGreen)),
+    );
+    try {
+      final userModel = await HomeRepo().getUserProfile();
+      int memberRankingValue = 1; // Default
+      if (userModel.memberRanking != null) {
+        final ranking = userModel.memberRanking!.toLowerCase();
+        if (ranking.contains('kim cương')) {
+          memberRankingValue = 3;
+        } else if (ranking.contains('vàng')) {
+          memberRankingValue = 2;
+        } else if (ranking.contains('bạc')) {
+          memberRankingValue = 1;
+        }
+      }
+
+      final promos = await PaymentRepo().getListPromoCode(
+        type: selectedCartItems.any((item) => item.isCourse) ? "course" : "product",
+        memberRanking: memberRankingValue,
+        totalPrice: totalPrice,
+      );
+      if (!context.mounted) return;
+      Navigator.pop(context); // close loading
+
+      final result = await showDialog<dynamic>(
+        context: context,
+        builder: (context) => VoucherDialog(
+          vouchers: promos,
+          selectedVoucher: _selectedPromoCode,
+        ),
+      );
+
+      if (result == 'clear') {
+        setState(() {
+          _selectedPromoCode = null;
+        });
+      } else if (result is PromoCodeModel) {
+        setState(() {
+          _selectedPromoCode = result;
+        });
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+      Navigator.pop(context); // close loading
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+    }
+  }
+
+  int get discountValue {
+    if (_selectedPromoCode == null) return 0;
+    int percent = int.tryParse(_selectedPromoCode!.valuePercent ?? '0') ?? 0;
+    int maxUse = int.tryParse(_selectedPromoCode!.priceMaxUse ?? '0') ?? 0;
+
+    int discount = (totalPrice * percent / 100).round();
+    if (maxUse > 0 && discount > maxUse) {
+      discount = maxUse;
+    }
+    return discount;
+  }
 
   Widget _buildInputField({
     required String hintText,
@@ -55,9 +134,12 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
     );
   }
 
+  List<CartItem> get selectedCartItems =>
+      globalListCart.where((item) => item.isSelected ?? true).toList();
+
   int get totalPrice {
     int total = 0;
-    for (var item in globalListCart) {
+    for (var item in selectedCartItems) {
       total += item.price * item.quantity;
     }
     return total;
@@ -70,6 +152,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isCourse = selectedCartItems.any((e) => e.isCourse);
     return Scaffold(
       backgroundColor: mainDarkGreen,
       appBar: AppBar(
@@ -113,25 +196,73 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                   ),
-                  CustomTextField(
-                    hintText: 'Tỉnh/Thành phố',
-                    controller: _provinceController,
-                  ),
-                  CustomTextField(
-                    hintText: 'Quận/Huyện',
-                    controller: _districtController,
-                  ),
-                  CustomTextField(
-                    hintText: 'Xã/Phường',
-                    controller: _wardController,
-                  ),
-                  CustomTextField(
-                    hintText: 'Địa chỉ cụ thể*',
-                    controller: _addressController,
-                  ),
+                  if (!isCourse) ...[
+                    GestureDetector(
+                      onTap: () async {
+                        final res = await AddressSelectionDialog.show(context, 'province');
+                        if (res != null) {
+                          setState(() {
+                            _provinceController.text = res['name'];
+                            _selectedProvinceCode = res['code'].toString();
+                            _districtController.text = '';
+                            _selectedDistrictCode = null;
+                            _wardController.text = '';
+                          });
+                        }
+                      },
+                      child: AbsorbPointer(
+                        child: CustomTextField(
+                          hintText: 'Tỉnh/Thành phố*',
+                          controller: _provinceController,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        final res = await AddressSelectionDialog.show(
+                          context, 'district', parentCode: _selectedProvinceCode
+                        );
+                        if (res != null) {
+                          setState(() {
+                            _districtController.text = res['name'];
+                            _selectedDistrictCode = res['code'].toString();
+                            _wardController.text = '';
+                          });
+                        }
+                      },
+                      child: AbsorbPointer(
+                        child: CustomTextField(
+                          hintText: 'Quận/Huyện*',
+                          controller: _districtController,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        final res = await AddressSelectionDialog.show(
+                          context, 'ward', parentCode: _selectedDistrictCode
+                        );
+                        if (res != null) {
+                          setState(() {
+                            _wardController.text = res['name'];
+                          });
+                        }
+                      },
+                      child: AbsorbPointer(
+                        child: CustomTextField(
+                          hintText: 'Xã/Phường*',
+                          controller: _wardController,
+                        ),
+                      ),
+                    ),
+                    CustomTextField(
+                      hintText: 'Địa chỉ cụ thể*',
+                      controller: _addressController,
+                    ),
+                  ],
                   SizedBox(height: 24.h),
                   Text('Thông tin đơn hàng', style: defaultText16B),
-                  ...globalListCart.map((item) {
+                  ...selectedCartItems.map((item) {
                     return Container(
                       height: 106.h,
                       width: 343.w,
@@ -226,42 +357,51 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   ),
                   Row(
                     children: [
-                      Container(
-                        width: 211.w,
-                        height: 48.h,
-                        margin: EdgeInsets.only(right: 12.w),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF7F9FB), // nền giống ảnh
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: TextField(
-                          //ontroller: widget.controller,
-                          style: defaultText14B, // màu text nhập
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Mã Giảm giá',
-                            hintStyle: defaultText14Re, // hint luôn xám
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _showVoucherDialog,
+                          child: Container(
+                            height: 48.h,
+                            margin: EdgeInsets.only(right: 12.w),
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF7F9FB),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              _selectedPromoCode != null
+                                  ? (_selectedPromoCode!.code ??
+                                        'Đã chọn voucher')
+                                  : 'Mã Giảm giá',
+                              style: _selectedPromoCode != null
+                                  ? defaultText14B.copyWith(
+                                      color: mainDarkGreen,
+                                    )
+                                  : defaultText14Re,
+                            ),
                           ),
                         ),
                       ),
-                      Container(
-                        width: 120.w,
-                        height: 48.h,
-                        decoration: BoxDecoration(
-                          color: mainGreen,
-                          borderRadius: BorderRadius.circular(16.r),
-                          border: Border.all(
-                            color: mainDarkGreen.withValues(alpha: 0.2),
+                      GestureDetector(
+                        onTap: _showVoucherDialog,
+                        child: Container(
+                          width: 120.w,
+                          height: 48.h,
+                          decoration: BoxDecoration(
+                            color: mainGreen,
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(
+                              color: mainDarkGreen.withValues(alpha: 0.2),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Áp dụng',
-                            style: defaultText16B.copyWith(color: Colors.white),
+                          child: Center(
+                            child: Text(
+                              'Áp dụng',
+                              style: defaultText16B.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -296,7 +436,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                       Text(
-                        '0đ',
+                        '-${NumberFormat('#,###', 'vi_VN').format(discountValue)}đ',
                         style: defaultText20B.copyWith(fontSize: 16.sp),
                       ),
                     ],
@@ -309,10 +449,75 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                       Text(
-                        '${NumberFormat('#,###', 'vi_VN').format(totalPrice)} đ',
+                        '${NumberFormat('#,###', 'vi_VN').format(totalPrice - discountValue)} đ',
                         style: defaultText20B.copyWith(
                           fontSize: 24.sp,
                           color: mainDarkGreen,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.h),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isAgreed = !_isAgreed;
+                          });
+                        },
+                        child: Container(
+                          width: 24.w,
+                          height: 24.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _isAgreed
+                                ? const Color(0xFFF26522)
+                                : Colors.transparent,
+                            border: Border.all(
+                              color: _isAgreed
+                                  ? const Color(0xFFF26522)
+                                  : Colors.grey,
+                            ),
+                          ),
+                          child: _isAgreed
+                              ? Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 16.w,
+                                )
+                              : null,
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: RichText(
+                          text: TextSpan(
+                            style: defaultText14M.copyWith(
+                              color: Colors.black87,
+                            ),
+                            children: [
+                              const TextSpan(text: 'Đồng ý với '),
+                              TextSpan(
+                                text: 'chính sách',
+                                style: defaultText14M.copyWith(
+                                  color: mainDarkGreen,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ChinhSachScreen(),
+                                      ),
+                                    );
+                                  },
+                              ),
+                              const TextSpan(text: ' của Cô Giáo Healthy'),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -339,6 +544,17 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 ),
                 child: GestureDetector(
                   onTap: () async {
+                    if (!_isAgreed) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Vui lòng đồng ý với chính sách của chúng tôi',
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+
                     if (_nameController.text.trim().isEmpty ||
                         _phoneController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -351,11 +567,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       return;
                     }
 
-                    bool hasCourse = globalListCart.any(
-                      (item) => item.isCourse,
+                    bool hasCourse = selectedCartItems.any(
+                      (element) => element.isCourse == true,
                     );
-                    bool hasProduct = globalListCart.any(
-                      (item) => !item.isCourse,
+                    bool hasProduct = selectedCartItems.any(
+                      (element) => element.isCourse == false,
                     );
 
                     if (hasCourse && hasProduct) {
@@ -367,6 +583,22 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         ),
                       );
                       return;
+                    }
+
+                    if (!hasCourse) {
+                      if (_selectedProvinceCode == null ||
+                          _selectedDistrictCode == null ||
+                          _wardController.text.trim().isEmpty ||
+                          _addressController.text.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Vui lòng điền đầy đủ thông tin địa chỉ giao hàng',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
                     }
 
                     try {
@@ -389,7 +621,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         "district": _districtController.text.trim(),
                         "ward": _wardController.text.trim(),
                         "address": _addressController.text.trim(),
-                        "cart": globalListCart
+                        "cart": selectedCartItems
                             .map(
                               (item) => hasCourse
                                   ? {
@@ -464,9 +696,13 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                                             'https://img.vietqr.io/image/${payCode.bankCode}-${payCode.bankAccount}-compact2.png?amount=${payCode.price}&addInfo=${Uri.encodeComponent(addInfo.trim())}',
                                             fit: BoxFit.contain,
                                             errorBuilder: (context, error, stackTrace) {
-                                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                              WidgetsBinding.instance.addPostFrameCallback((
+                                                _,
+                                              ) {
                                                 if (context.mounted) {
-                                                  Navigator.pop(context); // Đóng dialog QR hiện tại
+                                                  Navigator.pop(
+                                                    context,
+                                                  ); // Đóng dialog QR hiện tại
                                                   showDialog(
                                                     context: context,
                                                     builder: (context) => AlertDialog(
@@ -474,17 +710,24 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                                                         'Lỗi',
                                                         style: TextStyle(
                                                           color: Colors.red,
-                                                          fontWeight: FontWeight.bold,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
                                                       ),
-                                                      content: const Text('Không thể tạo mã QR thanh toán lúc này. Vui lòng thử lại sau!'),
+                                                      content: const Text(
+                                                        'Không thể tạo mã QR thanh toán lúc này. Vui lòng thử lại sau!',
+                                                      ),
                                                       actions: [
                                                         TextButton(
-                                                          onPressed: () => Navigator.pop(context),
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                context,
+                                                              ),
                                                           child: Text(
                                                             'Đóng',
                                                             style: TextStyle(
-                                                              color: mainDarkGreen,
+                                                              color:
+                                                                  mainDarkGreen,
                                                             ),
                                                           ),
                                                         ),

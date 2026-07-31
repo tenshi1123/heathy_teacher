@@ -142,6 +142,7 @@ class CartItemWidget extends StatelessWidget {
   final Function() onDelete;
   final Function() onIncrease;
   final Function() onDecrease;
+  final Function(bool?)? onSelect;
 
   const CartItemWidget({
     super.key,
@@ -149,6 +150,7 @@ class CartItemWidget extends StatelessWidget {
     required this.onDelete,
     required this.onIncrease,
     required this.onDecrease,
+    this.onSelect,
   });
 
   @override
@@ -159,7 +161,7 @@ class CartItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// checkbox
-          Checkbox(value: false, onChanged: (_) {}),
+          Checkbox(value: item.isSelected ?? true, onChanged: onSelect),
 
           /// image
           ClipRRect(
@@ -291,6 +293,10 @@ class CartSection extends StatelessWidget {
             },
             onDecrease: () {
               if (item.quantity > 1) item.quantity--;
+              onChanged?.call();
+            },
+            onSelect: (val) {
+              item.isSelected = val ?? false;
               onChanged?.call();
             },
           ),
@@ -437,6 +443,7 @@ class CourseItem extends StatelessWidget {
                     '6,990,000đ',
                     style: defaultText12M.copyWith(
                       color: colorText,
+                      fontSize: 10.sp,
                       decoration: TextDecoration.lineThrough,
                     ),
                   ),
@@ -588,7 +595,7 @@ class CourseItemOnline extends StatelessWidget {
                   '2,990,000đ',
                   style: TextStyle(
                     color: Color(0xFF759E73),
-                    fontSize: 18,
+                    fontSize: 10,
                     decoration: TextDecoration.lineThrough,
                   ),
                 ),

@@ -240,7 +240,7 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
               context: context,
               isDateField: true,
             ),
-            SizedBox(height: 200.h),
+            SizedBox(height: 150.h),
             GestureDetector(
               onTap: isFilled
                   ? () async {
@@ -294,6 +294,7 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 30.h),
           ],
         ),
       ),
