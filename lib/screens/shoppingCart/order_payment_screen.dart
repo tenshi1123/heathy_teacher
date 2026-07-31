@@ -20,6 +20,7 @@ import 'package:heathy_teacher/screens/shoppingCart/voucher_dialog.dart';
 import 'package:heathy_teacher/screens/shoppingCart/address_selection_dialog.dart';
 import 'package:heathy_teacher/repo/payment_repo.dart';
 import 'package:heathy_teacher/repo/home_repo.dart';
+import 'package:heathy_teacher/models/home_model.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   const OrderPaymentScreen({super.key});
@@ -36,9 +37,35 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   final TextEditingController _wardController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   bool _isAgreed = true;
+  bool _isUsePoint = false;
   PromoCodeModel? _selectedPromoCode;
   String? _selectedProvinceCode;
   String? _selectedDistrictCode;
+  UserModel? _userModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  Future<void> _fetchUser() async {
+    try {
+      final userModel = await HomeRepo().getUserProfile();
+      if (mounted) {
+        setState(() {
+          _userModel = userModel;
+        });
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  int get userPoints {
+    if (_userModel == null) return 0;
+    return int.tryParse(_userModel!.accumulatedPoint ?? '0') ?? 0;
+  }
 
   void _showVoucherDialog() async {
     showDialog(
@@ -62,7 +89,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
       }
 
       final promos = await PaymentRepo().getListPromoCode(
-        type: selectedCartItems.any((item) => item.isCourse) ? "course" : "product",
+        type: selectedCartItems.any((item) => item.isCourse)
+            ? "course"
+            : "product",
         memberRanking: memberRankingValue,
         totalPrice: totalPrice,
       );
@@ -146,11 +175,6 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     bool isCourse = selectedCartItems.any((e) => e.isCourse);
     return Scaffold(
@@ -199,7 +223,10 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   if (!isCourse) ...[
                     GestureDetector(
                       onTap: () async {
-                        final res = await AddressSelectionDialog.show(context, 'province');
+                        final res = await AddressSelectionDialog.show(
+                          context,
+                          'province',
+                        );
                         if (res != null) {
                           setState(() {
                             _provinceController.text = res['name'];
@@ -220,7 +247,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     GestureDetector(
                       onTap: () async {
                         final res = await AddressSelectionDialog.show(
-                          context, 'district', parentCode: _selectedProvinceCode
+                          context,
+                          'district',
+                          parentCode: _selectedProvinceCode,
                         );
                         if (res != null) {
                           setState(() {
@@ -240,7 +269,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     GestureDetector(
                       onTap: () async {
                         final res = await AddressSelectionDialog.show(
-                          context, 'ward', parentCode: _selectedDistrictCode
+                          context,
+                          'ward',
+                          parentCode: _selectedDistrictCode,
                         );
                         if (res != null) {
                           setState(() {
@@ -457,7 +488,87 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       ),
                     ],
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 16.h),
+                    child: RichText(
+                      text: TextSpan(
+                        style: defaultText14M.copyWith(
+                          color: Colors.black87,
+                          fontSize: 16.sp,
+                        ),
+                        children: [
+                          const TextSpan(text: 'Đặt hàng để nhận '),
+                          TextSpan(
+                            text: NumberFormat('#,###', 'vi_VN').format(totalPrice - discountValue),
+                            style: defaultText14B.copyWith(
+                              color: const Color(0xFFF26522),
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                          const TextSpan(text: ' điểm'),
+                        ],
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 16.h),
+                  if (userPoints > 0)
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 16.h),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _isUsePoint = !_isUsePoint;
+                              });
+                            },
+                            child: Container(
+                              width: 24.w,
+                              height: 24.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _isUsePoint
+                                    ? const Color(0xFFF26522)
+                                    : Colors.transparent,
+                                border: Border.all(
+                                  color: _isUsePoint
+                                      ? const Color(0xFFF26522)
+                                      : Colors.grey,
+                                ),
+                              ),
+                              child: _isUsePoint
+                                  ? Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 16.w,
+                                    )
+                                  : null,
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                style: defaultText14M.copyWith(
+                                  color: Colors.black87,
+                                ),
+                                children: [
+                                  const TextSpan(text: 'Sử dụng '),
+                                  TextSpan(
+                                    text:
+                                        '${NumberFormat('#,###', 'vi_VN').format(userPoints)} điểm',
+                                    style: defaultText14B.copyWith(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const TextSpan(text: ' tích lũy'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   Row(
                     children: [
                       GestureDetector(
@@ -612,11 +723,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       final payload = {
                         "full_name": _nameController.text.trim(),
                         "phone": _phoneController.text.trim(),
-                        "promo_code": "",
+                        "promo_code": _selectedPromoCode?.code ?? "",
                         "payment_method_id": 1,
-                        "price_promo_code_online": 0,
+                        "price_promo_code_online": discountValue,
                         "free_ship": 0,
-                        "accumulate_point": 0,
+                        "accumulate_point": _isUsePoint ? userPoints : 0,
                         "province": _provinceController.text.trim(),
                         "district": _districtController.text.trim(),
                         "ward": _wardController.text.trim(),
