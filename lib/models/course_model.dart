@@ -282,7 +282,8 @@ class CourseOffModel {
       dateStart,
       dateEnd,
       province,
-      lecturer;
+      lecturer,
+      startCount;
   CourseOffModel({
     this.id,
     this.name,
@@ -294,6 +295,7 @@ class CourseOffModel {
     this.dateEnd,
     this.province,
     this.lecturer,
+    this.startCount,
   });
   factory CourseOffModel.fromJson(Map<String, dynamic> json) {
     return CourseOffModel(
@@ -309,6 +311,7 @@ class CourseOffModel {
       dateEnd: json['date_end'],
       province: json['coso_province'],
       lecturer: json['lecturer_name'],
+      startCount: json['start_count'],
     );
   }
 }

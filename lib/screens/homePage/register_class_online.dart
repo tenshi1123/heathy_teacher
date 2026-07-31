@@ -17,9 +17,10 @@ import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class RegisterClassON extends StatefulWidget {
-  const RegisterClassON({super.key, required this.id, this.isTrial = false});
+  const RegisterClassON({super.key, required this.id, this.isTrial = false, this.model});
   final String id;
   final bool isTrial;
+  final CourseModel? model;
   @override
   State<RegisterClassON> createState() => _RegisterClassONState();
 }
@@ -174,21 +175,19 @@ class _RegisterClassONState extends State<RegisterClassON> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              NumberFormat.decimalPattern(
-                                'vi_VN',
-                              ).format(int.parse(courses.price ?? '')),
+                              '${NumberFormat.decimalPattern('vi_VN').format(int.parse(courses.price ?? ''))} đ',
                               style: defaultText16B.copyWith(
                                 color: mainDarkGreen,
                                 fontSize: 24.sp,
                               ),
                             ),
-                            if (courses.priceOld != null && courses.priceOld != '0' && courses.priceOld != '')
+                            if (courses.priceOld != null &&
+                                courses.priceOld != '0' &&
+                                courses.priceOld != '')
                               Text(
-                                NumberFormat.decimalPattern(
-                                  'vi_VN',
-                                ).format(int.parse(courses.priceOld ?? '')),
+                                '${NumberFormat.decimalPattern('vi_VN').format(int.parse(courses.priceOld ?? ''))} đ',
                                 style: defaultText14Re.copyWith(
-                                  fontSize: 10.sp,
+                                  fontSize: 12.sp,
                                   decoration: TextDecoration.lineThrough,
                                 ),
                               ),
@@ -224,7 +223,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
                                 size: 16,
                               ),
                               Text(
-                                '  ${courses.lessonNumber} bài học',
+                                '  ${widget.model?.lessonNumber ?? courses.lessonNumber ?? '0'} bài học',
                                 style: defaultText12M.copyWith(
                                   color: mainDarkGreen,
                                 ),
@@ -258,7 +257,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
                                   size: 16,
                                 ),
                                 Text(
-                                  '  ${int.parse(courses.startCount ?? '0')} lượt học',
+                                  '  ${int.parse(widget.model?.startCount ?? courses.startCount ?? '0')} lượt học',
                                   style: defaultText12M.copyWith(
                                     color: mainDarkGreen,
                                   ),
@@ -279,6 +278,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
                                 builder: (context) => RegisterClassON(
                                   id: widget.id,
                                   isTrial: false,
+                                  model: widget.model,
                                 ),
                               ),
                             );

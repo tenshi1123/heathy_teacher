@@ -135,7 +135,8 @@ class _ListClassOffState extends State<ListClassOff> {
                           context,
                           MaterialPageRoute(
                             builder: ((context) => RegisterClassOff(
-                              id: currentItems[index].id ?? '',
+                              id: model.id ?? '',
+                              model: model,
                             )),
                           ),
                         );

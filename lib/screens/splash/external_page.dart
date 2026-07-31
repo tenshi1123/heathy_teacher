@@ -250,31 +250,43 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Text(
-                                  'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
+                                  '',
                                   style: defaultText14B.copyWith(
                                     color: Colors.white,
                                   ),
                                 ),
                                 Text(
-                                  'NGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
+                                  'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%\nNGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
                                   style: defaultText14B.copyWith(
                                     color: Colors.white,
                                   ),
                                 ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 12.w,
-                                    vertical: 8.h,
-                                  ),
 
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16.r),
-                                    color: Colors.white,
-                                  ),
-                                  child: Text(
-                                    'Nhận ưu đãi ngay',
-                                    style: defaultText16B.copyWith(
-                                      color: mainDarkGreen,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: ((context) =>
+                                            const SaleScreen()),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 12.w,
+                                      vertical: 8.h,
+                                    ),
+
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.r),
+                                      color: Colors.white,
+                                    ),
+                                    child: Text(
+                                      'Nhận ưu đãi ngay',
+                                      style: defaultText16B.copyWith(
+                                        color: mainDarkGreen,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -284,7 +296,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
 
                           /// IMAGE (giữ kích thước mong muốn)
                           SizedBox(
-                            height: 140.h, // 👈 bạn control size ảnh ở đây
+                            height: 150.h, // 👈 bạn control size ảnh ở đây
                             child: CachedNetworkImage(
                               imageUrl:
                                   'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
@@ -545,7 +557,8 @@ class ServiceGrid extends StatelessWidget {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ListClassOnlineExternal(category: category),
+                      builder: (_) =>
+                          ListClassOnlineExternal(category: category),
                     ),
                   );
                   openCategoryDialog();
@@ -1107,7 +1120,9 @@ class _OfflineClassCard extends StatelessWidget {
                     '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '') ?? 0)}đ',
                     style: defaultText16B,
                   ),
-                  if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
+                  if (model.priceOld != null &&
+                      model.priceOld != '0' &&
+                      model.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '') ?? 0)}đ',
                       style: defaultText12Re.copyWith(
@@ -1308,7 +1323,9 @@ class _OnlineClassCard extends StatelessWidget {
                           fontSize: 20.sp,
                         ),
                       ),
-                      if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
+                      if (model.priceOld != null &&
+                          model.priceOld != '0' &&
+                          model.priceOld != '')
                         Text(
                           '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '') ?? 0)}đ',
                           style: defaultText14M.copyWith(

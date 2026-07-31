@@ -122,6 +122,7 @@ class _ListClassOnlineState extends State<ListClassOnline> {
                           MaterialPageRoute(
                             builder: ((context) => RegisterClassON(
                               id: currentItems[index].courseTypeId ?? '',
+                              model: model,
                             )),
                           ),
                         );

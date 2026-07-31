@@ -181,6 +181,7 @@ class _ListClassOnlineExternalState extends State<ListClassOnlineExternal> {
                                 MaterialPageRoute(
                                   builder: ((context) => RegisterClassON(
                                     id: currentItems[index].courseTypeId ?? '',
+                                    model: model,
                                   )),
                                 ),
                               );

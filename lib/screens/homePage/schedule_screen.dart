@@ -183,17 +183,17 @@ class _CalenderScreenState extends State<CalenderScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 16.w),
-                child: HinhThucHocDropdown(
-                  value: selectedHinhThuc,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedHinhThuc = value;
-                    });
-                  },
-                ),
-              ),
+              // Padding(
+              //   padding: EdgeInsetsGeometry.symmetric(horizontal: 16.w),
+              //   child: HinhThucHocDropdown(
+              //     value: selectedHinhThuc,
+              //     onChanged: (value) {
+              //       setState(() {
+              //         selectedHinhThuc = value;
+              //       });
+              //     },
+              //   ),
+              // ),
               SizedBox(height: 12.h),
               Container(
                 //height: 403.h,

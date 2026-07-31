@@ -17,8 +17,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class RegisterClassOff extends StatefulWidget {
-  const RegisterClassOff({super.key, required this.id});
+  const RegisterClassOff({super.key, required this.id, this.model});
   final String id;
+  final CourseOffModel? model;
   @override
   State<RegisterClassOff> createState() => _RegisterClassOffState();
 }
@@ -119,147 +120,261 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                       width: 343.w,
                       height: 280.h,
                     ),
-                    Html(data: _formatHtml(courses.description)),
-                    SizedBox(height: 20.h),
-                    //if (isShow == 'true')
-                    SizedBox(
-                      width: 343.w,
-                      child: Row(
-                        children: [
-                          Text(
-                            NumberFormat.decimalPattern(
-                              'vi_VN',
-                            ).format(int.parse(courses.price ?? '')),
-                            style: defaultText16B.copyWith(
-                              color: mainDarkGreen,
-                              fontSize: 24.sp,
+                    if (widget.model != null)
+                      Builder(
+                        builder: (context) {
+                          final model = widget.model!;
+                          return Padding(
+                            padding: EdgeInsetsGeometry.symmetric(
+                              horizontal: 16.w,
                             ),
-                          ),
-                          SizedBox(width: 12.w),
-                          if (courses.priceOld != '0')
-                            Text(
-                              NumberFormat.decimalPattern(
-                                'vi_VN',
-                              ).format(int.parse(courses.priceOld ?? '')),
-                              style: defaultText14Re.copyWith(
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 12.h),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_month_outlined,
+                                      color: mainDarkGreen,
+                                      size: 16,
+                                    ),
+                                    Text(
+                                      '  ${model.dateStart != null ? DateFormat('dd/MM/yy').format(DateTime.tryParse(model.dateStart!) ?? DateTime.now()) : ""} - ${model.dateEnd != null ? DateFormat('dd/MM/yy').format(DateTime.tryParse(model.dateEnd!) ?? DateTime.now()) : ""}',
+                                      style: defaultText14M.copyWith(
+                                        color: mainDarkGreen,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 4.h),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_on_outlined,
+                                      color: mainDarkGreen,
+                                      size: 16,
+                                    ),
+                                    Text(
+                                      '  Trực tiếp tại ${model.province}',
+                                      style: defaultText14M.copyWith(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 4.h),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.person_outline,
+                                      color: mainDarkGreen,
+                                      size: 16,
+                                    ),
+                                    Text(
+                                      '  Giảng viên ${model.lecturer}',
+                                      style: defaultText14M.copyWith(
+                                        color: mainDarkGreen,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                  ],
+                                ),
+                                SizedBox(height: 8.h),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(
+                                      Icons.group_outlined,
+                                      color: mainDarkGreen,
+                                      size: 16,
+                                    ),
+                                    Text(
+                                      '  ${model.startCount ?? '0'} lượt học',
+                                      style: defaultText14M.copyWith(
+                                        color: mainDarkGreen,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 12.h),
+                                //if (isShow == 'true')
+                                SizedBox(
+                                  width: 343.w,
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        NumberFormat.decimalPattern(
+                                          'vi_VN',
+                                        ).format(
+                                          int.parse(courses.price ?? ''),
+                                        ),
+                                        style: defaultText16B.copyWith(
+                                          color: mainDarkGreen,
+                                          fontSize: 24.sp,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12.w),
+                                      if (courses.priceOld != '0')
+                                        Text(
+                                          NumberFormat.decimalPattern(
+                                            'vi_VN',
+                                          ).format(
+                                            int.parse(courses.priceOld ?? ''),
+                                          ),
+                                          style: defaultText14Re.copyWith(
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
 
-                    //SizedBox(height: 12.h),
-                    InkWell(
-                      onTap: () async {
-                        final SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        final String? token = prefs.getString('remember_token');
-                        if (token == null) {
-                          showLoginDialog(context);
-                        } else {
-                          globalListCart.clear();
-                          globalListCart.add(
-                            CartItem(
-                              id: courses.id ?? '',
-                              name: courses.title ?? '',
-                              image: courses.image ?? '',
-                              price: int.tryParse(courses.price ?? '0') ?? 0,
-                              isCourse: true,
-                              courseTypeId: courses.courseTypeId,
-                            ),
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const OrderPaymentScreen(),
-                            ),
-                          ).then((_) => setState(() {}));
-                        }
-                      },
-                      child: Container(
-                        height: 48.h,
-                        width: 343.w,
-                        margin: EdgeInsets.only(bottom: 28.h, top: 16.h),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.r),
-                          color: mainDarkGreen,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset('assets/images/lingting.png'),
-                            Text(
-                              '  Đăng ký ngay',
-                              textAlign: TextAlign.center,
-                              style: defaultText16B.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        int existingIndex = globalListCart.indexWhere(
-                          (element) => element.id == courses.id,
-                        );
-                        if (existingIndex != -1) {
-                          globalListCart[existingIndex].quantity++;
-                        } else {
-                          globalListCart.add(
-                            CartItem(
-                              id: courses.id ?? '',
-                              name: courses.title ?? '',
-                              image: courses.image ?? '',
-                              price: int.tryParse(courses.price ?? '0') ?? 0,
-                              isCourse: true,
-                              courseTypeId: courses.courseTypeId,
-                            ),
-                          );
-                        }
-                        setState(() {});
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content: const Text(
-                                'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, 'OK'),
-                                  child: const Text('OK'),
+                                //SizedBox(height: 12.h),
+                                InkWell(
+                                  onTap: () async {
+                                    final SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    final String? token = prefs.getString(
+                                      'remember_token',
+                                    );
+                                    if (token == null) {
+                                      showLoginDialog(context);
+                                    } else {
+                                      globalListCart.clear();
+                                      globalListCart.add(
+                                        CartItem(
+                                          id: courses.id ?? '',
+                                          name: courses.title ?? '',
+                                          image: courses.image ?? '',
+                                          price:
+                                              int.tryParse(
+                                                courses.price ?? '0',
+                                              ) ??
+                                              0,
+                                          isCourse: true,
+                                          courseTypeId: courses.courseTypeId,
+                                        ),
+                                      );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const OrderPaymentScreen(),
+                                        ),
+                                      ).then((_) => setState(() {}));
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 48.h,
+                                    width: 343.w,
+                                    margin: EdgeInsets.only(
+                                      bottom: 28.h,
+                                      top: 16.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.r),
+                                      color: mainDarkGreen,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/lingting.png',
+                                        ),
+                                        Text(
+                                          '  Đăng ký ngay',
+                                          textAlign: TextAlign.center,
+                                          style: defaultText16B.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    int existingIndex = globalListCart
+                                        .indexWhere(
+                                          (element) => element.id == courses.id,
+                                        );
+                                    if (existingIndex != -1) {
+                                      globalListCart[existingIndex].quantity++;
+                                    } else {
+                                      globalListCart.add(
+                                        CartItem(
+                                          id: courses.id ?? '',
+                                          name: courses.title ?? '',
+                                          image: courses.image ?? '',
+                                          price:
+                                              int.tryParse(
+                                                courses.price ?? '0',
+                                              ) ??
+                                              0,
+                                          isCourse: true,
+                                          courseTypeId: courses.courseTypeId,
+                                        ),
+                                      );
+                                    }
+                                    setState(() {});
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: const Text(
+                                            'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, 'OK'),
+                                              child: const Text('OK'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 48.h,
+                                    width: 340.w,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.r),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        color: mainDarkGreen,
+                                        width: 1.w,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/gio_hang.png',
+                                        ),
+                                        Text(
+                                          '  Thêm vào giỏ hàng',
+                                          textAlign: TextAlign.center,
+                                          style: defaultText16B.copyWith(
+                                            color: mainDarkGreen,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
-                            );
-                          },
-                        );
-                      },
-                      child: Container(
-                        height: 48.h,
-                        width: 340.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.r),
-                          color: Colors.white,
-                          border: Border.all(color: mainDarkGreen, width: 1.w),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset('assets/images/gio_hang.png'),
-                            Text(
-                              '  Thêm vào giỏ hàng',
-                              textAlign: TextAlign.center,
-                              style: defaultText16B.copyWith(
-                                color: mainDarkGreen,
-                              ),
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    ),
+
+                    Html(data: _formatHtml(courses.description)),
+                    SizedBox(height: 20.h),
 
                     _buildVideoSection(),
                     SizedBox(height: 28.h),
@@ -288,19 +403,20 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
       return const SizedBox.shrink();
     }
 
-    return GestureDetector(
-      onTap: () async {
-        String urlString = courses.youtubeUrl!;
-        String? videoId = YoutubePlayer.convertUrlToId(urlString);
-        
-        if (videoId != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => _YoutubePlayerScreen(videoId: videoId),
-            ),
-          );
-        } else {
+    String urlString = courses.youtubeUrl!;
+    String? videoId = YoutubePlayer.convertUrlToId(urlString);
+
+    if (videoId != null) {
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12.r),
+          child: InlineYoutubePlayer(videoId: videoId),
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () async {
           // Fallback if not a valid youtube url
           if (urlString.contains('youtube.com/embed/')) {
             final uri = Uri.parse(urlString);
@@ -323,31 +439,35 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
               debugPrint("Không thể mở link: $url");
             }
           }
-        }
-      },
-      child: Container(
-        width: double.infinity,
-        height: 220.h,
-        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        decoration: BoxDecoration(
-          color: Colors.black87,
-          borderRadius: BorderRadius.circular(12.r),
-          image: courses.image != null
-              ? DecorationImage(
-                  image: NetworkImage(courses.image!),
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.4),
-                    BlendMode.darken,
-                  ),
-                )
-              : null,
+        },
+        child: Container(
+          width: double.infinity,
+          height: 220.h,
+          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          decoration: BoxDecoration(
+            color: Colors.black87,
+            borderRadius: BorderRadius.circular(12.r),
+            image: courses.image != null
+                ? DecorationImage(
+                    image: NetworkImage(courses.image!),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.4),
+                      BlendMode.darken,
+                    ),
+                  )
+                : null,
+          ),
+          child: Center(
+            child: Icon(
+              Icons.play_circle_fill,
+              color: Colors.white,
+              size: 60.w,
+            ),
+          ),
         ),
-        child: Center(
-          child: Icon(Icons.play_circle_fill, color: Colors.white, size: 60.w),
-        ),
-      ),
-    );
+      );
+    }
   }
 
   Widget _buildFeedbackSection() {
@@ -580,16 +700,16 @@ class _FeedbackCarouselState extends State<_FeedbackCarousel> {
   }
 }
 
-class _YoutubePlayerScreen extends StatefulWidget {
+class InlineYoutubePlayer extends StatefulWidget {
   final String videoId;
 
-  const _YoutubePlayerScreen({Key? key, required this.videoId}) : super(key: key);
+  const InlineYoutubePlayer({super.key, required this.videoId});
 
   @override
-  State<_YoutubePlayerScreen> createState() => _YoutubePlayerScreenState();
+  State<InlineYoutubePlayer> createState() => _InlineYoutubePlayerState();
 }
 
-class _YoutubePlayerScreenState extends State<_YoutubePlayerScreen> {
+class _InlineYoutubePlayerState extends State<InlineYoutubePlayer> {
   late YoutubePlayerController _controller;
 
   @override
@@ -597,10 +717,7 @@ class _YoutubePlayerScreenState extends State<_YoutubePlayerScreen> {
     super.initState();
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
-      flags: const YoutubePlayerFlags(
-        autoPlay: true,
-        mute: false,
-      ),
+      flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
     );
   }
 
@@ -612,29 +729,15 @@ class _YoutubePlayerScreenState extends State<_YoutubePlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Center(
-          child: YoutubePlayer(
-            controller: _controller,
-            showVideoProgressIndicator: true,
-            bottomActions: [
-              const CurrentPosition(),
-              const ProgressBar(isExpanded: true),
-              const RemainingDuration(),
-              const PlaybackSpeedButton(),
-              IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+    return YoutubePlayer(
+      controller: _controller,
+      showVideoProgressIndicator: true,
+      bottomActions: [
+        const CurrentPosition(),
+        const ProgressBar(isExpanded: true),
+        const RemainingDuration(),
+        const PlaybackSpeedButton(),
+      ],
     );
   }
 }
-

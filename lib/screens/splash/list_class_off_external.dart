@@ -89,8 +89,7 @@ class _ListClassOffExternalState extends State<ListClassOffExternal> {
     int startIndex = (currentPage - 1) * itemsPerPage;
     int endIndex = startIndex + itemsPerPage;
     if (startIndex >= filtered.length) return [];
-    if (endIndex > filtered.length)
-      endIndex = filtered.length;
+    if (endIndex > filtered.length) endIndex = filtered.length;
     return filtered.sublist(startIndex, endIndex);
   }
 
@@ -148,7 +147,8 @@ class _ListClassOffExternalState extends State<ListClassOffExternal> {
                                     context,
                                     MaterialPageRoute(
                                       builder: ((context) => RegisterClassOff(
-                                        id: currentItems[index].id ?? '',
+                                        id: model.id ?? '',
+                                        model: model,
                                       )),
                                     ),
                                   );
@@ -234,7 +234,7 @@ class _ListClassOffExternalState extends State<ListClassOffExternal> {
                                             size: 16,
                                           ),
                                           Text(
-                                            '  ${model.dateStart?.replaceRange(10, null, '')} - ${model.dateEnd?.replaceRange(10, null, '')}',
+                                            '  ${model.dateStart != null ? DateFormat('dd/MM/yy').format(DateTime.tryParse(model.dateStart!) ?? DateTime.now()) : ""} - ${model.dateEnd != null ? DateFormat('dd/MM/yy').format(DateTime.tryParse(model.dateEnd!) ?? DateTime.now()) : ""}',
                                             style: defaultText14M.copyWith(
                                               color: mainDarkGreen,
                                             ),
@@ -260,7 +260,7 @@ class _ListClassOffExternalState extends State<ListClassOffExternal> {
                                       Row(
                                         children: [
                                           Icon(
-                                            Icons.calendar_month_outlined,
+                                            Icons.person_outline,
                                             color: mainDarkGreen,
                                             size: 16,
                                           ),
@@ -273,60 +273,94 @@ class _ListClassOffExternalState extends State<ListClassOffExternal> {
                                           const Spacer(),
                                         ],
                                       ),
+                                      SizedBox(height: 8.h),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Icon(
+                                            Icons.group_outlined,
+                                            color: mainDarkGreen,
+                                            size: 16,
+                                          ),
+                                          Text(
+                                            '  ${model.startCount ?? '0'} lượt học',
+                                            style: defaultText14M.copyWith(
+                                              color: mainDarkGreen,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                       if (isShow == 'true') ...[
                                         SizedBox(height: 12.h),
                                         Row(
                                           children: [
-                                            Text(
-                                              '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '0') ?? 0)}đ',
-                                              style: defaultText18B.copyWith(
-                                                color: mainDarkGreen,
-                                              ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '0') ?? 0)}đ',
+                                                  style: defaultText18B
+                                                      .copyWith(
+                                                        color: mainDarkGreen,
+                                                      ),
+                                                ),
+                                                SizedBox(width: 12.w),
+                                                if (model.priceOld != '0')
+                                                  Text(
+                                                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
+                                                    style: defaultText12B
+                                                        .copyWith(
+                                                          color: mainDarkGreen,
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .lineThrough,
+                                                        ),
+                                                  ),
+                                              ],
                                             ),
-                                            SizedBox(width: 12.w),
-                                            if (model.priceOld != '0')
-                                              Text(
-                                                '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
-                                                style: defaultText14M.copyWith(
+                                            Spacer(),
+                                            Center(
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 16.w,
+                                                  vertical: 10.h,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        12.r,
+                                                      ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: mainDarkGreen
+                                                          .withValues(
+                                                            alpha: 0.1,
+                                                          ),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 5,
+                                                      offset: const Offset(
+                                                        0,
+                                                        3,
+                                                      ),
+                                                    ),
+                                                  ],
                                                   color: mainDarkGreen,
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
+                                                ),
+                                                child: Text(
+                                                  'Đăng ký ngay',
+                                                  style: defaultText16B
+                                                      .copyWith(
+                                                        color: Colors.white,
+                                                      ),
                                                 ),
                                               ),
+                                            ),
                                           ],
                                         ),
                                       ],
-                                      SizedBox(height: 16.h),
-                                      Center(
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 60.w,
-                                            vertical: 10.h,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              12.r,
-                                            ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: mainDarkGreen.withValues(
-                                                  alpha: 0.1,
-                                                ),
-                                                spreadRadius: 2,
-                                                blurRadius: 5,
-                                                offset: const Offset(0, 3),
-                                              ),
-                                            ],
-                                            color: mainDarkGreen,
-                                          ),
-                                          child: Text(
-                                            'Đăng ký ngay',
-                                            style: defaultText16B.copyWith(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+
                                       SizedBox(height: 8.h),
                                     ],
                                   ),
