@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
+import 'package:heathy_teacher/screens/splash/list_class_off_external.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:intl/intl.dart';
@@ -269,7 +270,10 @@ class CustomImageCarousel extends StatefulWidget {
 
 class _CustomImageCarouselState extends State<CustomImageCarousel> {
   final List<Map<String, dynamic>> _productImages = [
-    {'image': 'assets/images/home1.jpg', 'screen': const ListClassOff()},
+    {
+      'image': 'assets/images/home1.jpg',
+      'screen': const ListClassOffExternal(),
+    },
     {'image': 'assets/images/home2.jpg', 'screen': const IntroduceScreen()},
     {'image': 'assets/images/home3.jpg', 'screen': const ListFreeCourse()},
     {'image': 'assets/images/home4.jpg', 'screen': const ListSpScreen()},
