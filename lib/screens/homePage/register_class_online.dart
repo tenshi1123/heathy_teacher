@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
-import 'package:heathy_teacher/screens/coursePage/video_screen.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -17,10 +16,15 @@ import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class RegisterClassON extends StatefulWidget {
-  const RegisterClassON({super.key, required this.id, this.isTrial = false, this.model});
+  const RegisterClassON({
+    super.key,
+    required this.id,
+    this.isTrial = false,
+    required this.model,
+  });
   final String id;
   final bool isTrial;
-  final CourseModel? model;
+  final CourseModel model;
   @override
   State<RegisterClassON> createState() => _RegisterClassONState();
 }
@@ -166,8 +170,124 @@ class _RegisterClassONState extends State<RegisterClassON> {
                       width: 343.w,
                       height: 280.h,
                     ),
-
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6.r),
+                            border: Border.all(
+                              color: mainDarkGreen,
+                              width: 1.5,
+                            ),
+                            color: Colors.white,
+                          ),
+                          child: Text(
+                            widget.model.topicName ?? '',
+                            style: defaultText14M.copyWith(
+                              color: mainDarkGreen,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 20.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            color: mainDarkGreen,
+                            size: 20.sp,
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            'Học Online qua App',
+                            style: defaultText14M.copyWith(color: Colors.red),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 4.h,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: mainDarkGreen.withValues(alpha: 0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                              color: Colors.white,
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.play_circle_outline,
+                                  color: Colors.yellow,
+                                  size: 16,
+                                ),
+                                Text(
+                                  '  ${widget.model.lessonNumber ?? courses.lessonNumber ?? '0'} bài học',
+                                  style: defaultText12M.copyWith(
+                                    color: mainDarkGreen,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (isShow == 'true')
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 4.h,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: mainDarkGreen.withValues(alpha: 0.1),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                                color: Colors.white,
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.person_outline,
+                                    color: Colors.yellow,
+                                    size: 16,
+                                  ),
+                                  Text(
+                                    '  ${int.parse(widget.model.startCount ?? courses.startCount ?? '0')} lượt học',
+                                    style: defaultText12M.copyWith(
+                                      color: mainDarkGreen,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                     if (isShow == 'true')
                       SizedBox(
                         width: 343.w,
@@ -194,79 +314,6 @@ class _RegisterClassONState extends State<RegisterClassON> {
                           ],
                         ),
                       ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 4.h,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: mainDarkGreen.withValues(alpha: 0.1),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                            color: Colors.white,
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.play_circle_outline,
-                                color: Colors.yellow,
-                                size: 16,
-                              ),
-                              Text(
-                                '  ${widget.model?.lessonNumber ?? courses.lessonNumber ?? '0'} bài học',
-                                style: defaultText12M.copyWith(
-                                  color: mainDarkGreen,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (isShow == 'true')
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.r),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: mainDarkGreen.withValues(alpha: 0.1),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                              color: Colors.white,
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.person_outline,
-                                  color: Colors.yellow,
-                                  size: 16,
-                                ),
-                                Text(
-                                  '  ${int.parse(widget.model?.startCount ?? courses.startCount ?? '0')} lượt học',
-                                  style: defaultText12M.copyWith(
-                                    color: mainDarkGreen,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
                     SizedBox(height: 12.h),
                     if (isShow == 'true') ...[
                       if (widget.isTrial) ...[

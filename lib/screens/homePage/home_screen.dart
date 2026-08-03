@@ -1,5 +1,3 @@
-import 'package:heathy_teacher/screens/splash/external_page.dart';
-import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,9 +5,6 @@ import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
-import 'package:heathy_teacher/screens/homePage/list_class_off.dart';
-import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
-import 'package:heathy_teacher/screens/homePage/register_class.dart';
 import 'package:heathy_teacher/screens/homePage/register_class_online.dart';
 import 'package:heathy_teacher/screens/homePage/schedule_screen.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
@@ -22,8 +17,6 @@ import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/repo/product_repo.dart';
-import 'package:heathy_teacher/screens/productPage/list_detail_product_screen.dart';
-import 'package:heathy_teacher/screens/productPage/list_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/detail_product_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -76,25 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Lọc danh sách online (loại bỏ các khoá học có courseTypeId nằm trong settingCourseTypeId của myCourses)
-    final filteredOnlineCourses = globalListCourse.where((course) {
-      return !myCourses.any(
-        (myCourse) => myCourse.settingCourseTypeId == course.courseTypeId,
-      );
-    }).toList();
-
-    // Lọc danh sách miễn phí
-    final filteredFreeCourses = globalListFreeCourse.where((course) {
-      return !myCourses.any(
-        (myCourse) => myCourse.settingCourseTypeId == course.courseTypeId,
-      );
-    }).toList();
-
-    // Lọc danh sách offline (loại bỏ các khoá học có id nằm trong courseId của myCourses)
-    final filteredOfflineCourses = globalListCourseOff.where((course) {
-      return !myCourses.any((myCourse) => myCourse.courseId == course.id);
-    }).toList();
-
     return Scaffold(
       drawer: MyCustomDrawer(userModel: userModel, selectedIndex: 0),
       backgroundColor: Colors.white,
@@ -355,348 +329,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _OfflineClassCard extends StatelessWidget {
-  final CourseOffModel model;
-  const _OfflineClassCard({required this.model});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: ((context) => RegisterClassOff(id: model.id ?? '')),
-          ),
-        );
-      },
-      child: Container(
-        height: 260.h,
-        width: 200.w,
-        margin: EdgeInsets.only(
-          left: 16.w,
-          right: 8.w,
-          top: 16.h,
-          bottom: 14.h,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20.r)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xff062905).withValues(alpha: 0.16),
-              spreadRadius: 0,
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CachedNetworkImage(
-              imageUrl: model.img ?? '',
-              //height: 103.h,
-              width: 184.w,
-              fit: BoxFit.fitWidth,
-              errorWidget: (context, url, error) {
-                return Icon(Icons.broken_image, color: Colors.grey);
-              },
-            ),
-            // Row(
-            //   children: [
-            //     RatingStars(rating: 4.5, starSize: 16.r),
-            //     Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
-            //   ],
-            // ),
-            Text(
-              model.name ?? 'Không xác định',
-              maxLines: isShow == 'true' ? 2 : 3,
-              overflow: TextOverflow.ellipsis,
-              style: defaultText14SB,
-            ),
-            if (isShow == 'true')
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
-                    style: defaultText16B,
-                  ),
-                  if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
-                    Text(
-                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
-                      style: defaultText12Re.copyWith(
-                        fontSize: 10.sp,
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-                ],
-              ),
-            // Container(
-            //   height: 32.h,
-            //   width: 184.w,
-            //   decoration: BoxDecoration(
-            //     color: mainDarkGreen,
-            //     borderRadius: BorderRadius.circular(16.r),
-            //   ),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       Text(
-            //         'Tham gia ngay ',
-            //         style: defaultText14SB.copyWith(color: Colors.white),
-            //       ),
-            //       const Icon(Icons.arrow_right_alt, color: Colors.white),
-            //     ],
-            //   ),
-            // ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _OnlineClassCard extends StatelessWidget {
-  final int index;
-  final CourseModel model;
-  const _OnlineClassCard({required this.index, required this.model});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: ((context) =>
-                RegisterClassON(id: model.courseTypeId ?? '', model: model)),
-          ),
-        );
-      },
-      child: Container(
-        height: 294.h,
-        width: 200.w,
-        margin: EdgeInsets.only(
-          left: 16.w,
-          right: index == 2 ? 16.w : 4.w,
-          top: 20.h,
-          bottom: 28.h,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20.r)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xff062905).withValues(alpha: 0.16),
-              spreadRadius: 0,
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 184.w, // Cố định chiều rộng
-              // Cố tình KHÔNG set height ở đây để chiều cao tự động co giãn
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  8.r,
-                ), // Vẫn giữ được bo góc như cũ
-                child: CachedNetworkImage(
-                  imageUrl:
-                      model.img ??
-                      'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg', // URL ảnh dự phòng
-                  fit: BoxFit.fitWidth,
-                ),
-              ),
-            ),
-            // Row(
-            //   children: [
-            //     RatingStars(rating: 4.5, starSize: 16.r),
-            //     Text('(4,5)', style: defaultText14SB.copyWith(fontSize: 12.sp)),
-            //   ],
-            // ),
-            Text(
-              model.courseName ?? 'Không xác định',
-              maxLines: 2,
-              style: defaultText14SB,
-            ),
-            if (isShow == 'true')
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? ''))}đ',
-                    style: defaultText16B,
-                  ),
-                  if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
-                    Text(
-                      '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? ''))}đ',
-                      style: defaultText12Re.copyWith(
-                        fontSize: 10.sp,
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-                ],
-              ),
-            Container(
-              height: 32.h,
-              width: 184.w,
-              decoration: BoxDecoration(
-                color: const Color(0xff73BB43),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(width: 8.w),
-                  Image.asset(
-                    'assets/images/play_icon.png',
-                    height: 16.h,
-                    width: 16.w,
-                    fit: BoxFit.fill,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    '${model.lessonNumber} bài học',
-                    style: defaultText14SB.copyWith(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-            if (isShow == 'true')
-              Container(
-                height: 32.h,
-                width: 184.w,
-                decoration: BoxDecoration(
-                  color: const Color(0xff73BB43),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(width: 8.w),
-                    Image.asset(
-                      'assets/images/play_icon.png',
-                      height: 16.h,
-                      width: 16.w,
-                      fit: BoxFit.fill,
-                    ),
-                    SizedBox(width: 8.w),
-                    Text(
-                      '${int.parse(model.totalEnrollments ?? '0') + int.parse(model.startCount ?? '0')} lượt học',
-                      style: defaultText14SB.copyWith(color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProductCard extends StatelessWidget {
-  final CategoryModel model;
-  const _ProductCard({required this.model});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: ((context) => ListDetailProductScreen(
-              categorySlug: model.categorySlug ?? '',
-              categoryName: model.categoryName ?? '',
-            )),
-          ),
-        );
-      },
-      child: Container(
-        height: 260.h,
-        width: 160.w,
-        margin: EdgeInsets.only(
-          left: 16.w,
-          right: 8.w,
-          top: 16.h,
-          bottom: 14.h,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20.r)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xff062905).withValues(alpha: 0.16),
-              spreadRadius: 0,
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.r),
-              child: CachedNetworkImage(
-                imageUrl: model.img ?? '',
-                height: 120.h,
-                width: 144.w,
-                fit: BoxFit.cover,
-                errorWidget: (context, url, error) {
-                  return Container(
-                    height: 120.h,
-                    width: 144.w,
-                    color: Colors.grey[200],
-                    child: Icon(Icons.broken_image, color: Colors.grey),
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 12.h),
-            Text(
-              model.categoryName ?? 'Không xác định',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: defaultText14SB,
-            ),
-            Spacer(),
-            Container(
-              height: 32.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: mainDarkGreen,
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Center(
-                child: Text(
-                  'Xem tất cả',
-                  style: defaultText14SB.copyWith(color: Colors.white),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 class HomeSaleSection extends StatefulWidget {
   const HomeSaleSection({super.key});
 
   @override
   State<HomeSaleSection> createState() => _HomeSaleSectionState();
 }
+
 class _HomeSaleSectionState extends State<HomeSaleSection> {
   bool isLoading = true;
   List<CourseModel> saleCourses = [];
@@ -798,164 +437,149 @@ class _HomeSaleSectionState extends State<HomeSaleSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (isLoading)
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: CircularProgressIndicator(color: mainDarkGreen),
+          Center(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: CircularProgressIndicator(color: mainDarkGreen),
+            ),
+          )
+        else ...[
+          // Khóa học online
+          if (saleCourses.isNotEmpty && isShow == 'true') ...[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              child: Text(
+                'ƯU ĐÃI KHÓA HỌC',
+                style: defaultText18B.copyWith(color: mainDarkGreen),
+              ),
+            ),
+            SizedBox(
+              height: 550.h,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ListView.builder(
+                    controller: _courseScrollController,
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    itemCount: saleCourses.length,
+                    itemBuilder: (context, index) {
+                      return SizedBox(
+                        width: 320.w,
+                        child: _buildCourseItem(saleCourses[index]),
+                      );
+                    },
+                  ),
+                  Positioned(
+                    left: 8.w,
+                    child: GestureDetector(
+                      onTap: () => _scrollCourses(false),
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: mainDarkGreen,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.chevron_left,
+                          color: Colors.white,
+                        ),
                       ),
-                    )
-                  else ...[
-                    // Khóa học online
-                    if (saleCourses.isNotEmpty && isShow == 'true') ...[
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
+                    ),
+                  ),
+                  Positioned(
+                    right: 8.w,
+                    child: GestureDetector(
+                      onTap: () => _scrollCourses(true),
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: mainDarkGreen,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.chevron_right,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          // Sản phẩm
+          if (saleProducts.isNotEmpty) ...[
+            SizedBox(height: 16.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              child: Text(
+                'ƯU ĐÃI NGUYÊN LIỆU - MÁY MÓC',
+                style: defaultText18B.copyWith(color: mainDarkGreen),
+              ),
+            ),
+            SizedBox(
+              height: 380.h,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ListView.builder(
+                    controller: _productScrollController,
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    itemCount: saleProducts.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: 170.w,
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 8.w,
                           vertical: 8.h,
                         ),
-                        child: Text(
-                          'ƯU ĐÃI KHÓA HỌC',
-                          style: defaultText18B.copyWith(color: mainDarkGreen),
+                        child: _buildProductItem(saleProducts[index]),
+                      );
+                    },
+                  ),
+                  Positioned(
+                    left: 8.w,
+                    child: GestureDetector(
+                      onTap: () => _scrollProducts(false),
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: mainDarkGreen,
+                          shape: BoxShape.circle,
                         ),
+                        child: Icon(Icons.chevron_left, color: Colors.white),
                       ),
-                      SizedBox(
-                        height: 550.h,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            ListView.builder(
-                              controller: _courseScrollController,
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: 8.w),
-                              itemCount: saleCourses.length,
-                              itemBuilder: (context, index) {
-                                return SizedBox(
-                                  width: 320.w,
-                                  child: _buildCourseItem(saleCourses[index]),
-                                );
-                              },
-                            ),
-                            Positioned(
-                              left: 8.w,
-                              child: GestureDetector(
-                                onTap: () => _scrollCourses(false),
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.chevron_left,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 8.w,
-                              child: GestureDetector(
-                                onTap: () => _scrollCourses(true),
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.chevron_right,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                    ),
+                  ),
+                  Positioned(
+                    right: 8.w,
+                    child: GestureDetector(
+                      onTap: () => _scrollProducts(true),
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: mainDarkGreen,
+                          shape: BoxShape.circle,
                         ),
+                        child: Icon(Icons.chevron_right, color: Colors.white),
                       ),
-                    ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
 
-                    // Sản phẩm
-                    if (saleProducts.isNotEmpty) ...[
-                      SizedBox(height: 16.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 8.h,
-                        ),
-                        child: Text(
-                          'ƯU ĐÃI NGUYÊN LIỆU - MÁY MÓC',
-                          style: defaultText18B.copyWith(color: mainDarkGreen),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 380.h,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            ListView.builder(
-                              controller: _productScrollController,
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: 8.w),
-                              itemCount: saleProducts.length,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: 170.w,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 8.w,
-                                    vertical: 8.h,
-                                  ),
-                                  child: _buildProductItem(saleProducts[index]),
-                                );
-                              },
-                            ),
-                            Positioned(
-                              left: 8.w,
-                              child: GestureDetector(
-                                onTap: () => _scrollProducts(false),
-                                child: Container(
-                                  padding: EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.chevron_left,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 8.w,
-                              child: GestureDetector(
-                                onTap: () => _scrollProducts(true),
-                                child: Container(
-                                  padding: EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.chevron_right,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-
-                    if (saleCourses.isEmpty && saleProducts.isEmpty)
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32),
-                          child: Text(
-                            'Chưa có ưu đãi nào',
-                            style: defaultText16M,
-                          ),
-                        ),
-                      ),
+          if (saleCourses.isEmpty && saleProducts.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Text('Chưa có ưu đãi nào', style: defaultText16M),
+              ),
+            ),
         ],
         SizedBox(height: 20.h),
       ],
@@ -968,7 +592,8 @@ class _HomeSaleSectionState extends State<HomeSaleSection> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RegisterClassON(id: model.courseTypeId ?? ''),
+            builder: (context) =>
+                RegisterClassON(id: model.courseTypeId ?? '', model: model),
           ),
         );
       },
@@ -1055,7 +680,9 @@ class _HomeSaleSectionState extends State<HomeSaleSection> {
                     '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '0') ?? 0)}đ',
                     style: defaultText18B.copyWith(color: Colors.red),
                   ),
-                  if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
+                  if (model.priceOld != null &&
+                      model.priceOld != '0' &&
+                      model.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
                       style: defaultText14M.copyWith(
@@ -1218,7 +845,9 @@ class _HomeSaleSectionState extends State<HomeSaleSection> {
                     style: defaultText14B.copyWith(color: mainDarkGreen),
                   ),
                   SizedBox(height: 2.h),
-                  if (item.priceOld != null && item.priceOld != '0' && item.priceOld != '')
+                  if (item.priceOld != null &&
+                      item.priceOld != '0' &&
+                      item.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.priceOld ?? '0') ?? 0)}đ',
                       style: defaultText12Re.copyWith(
@@ -1256,4 +885,3 @@ class _HomeSaleSectionState extends State<HomeSaleSection> {
     );
   }
 }
-

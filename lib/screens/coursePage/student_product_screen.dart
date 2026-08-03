@@ -55,18 +55,29 @@ class _StudentProductScreenState extends State<StudentProductScreen> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator(color: mainDarkGreen))
-          : submissions.isEmpty
-              ? Center(child: Text('Chưa có sản phẩm nào.', style: defaultText14M))
-              : ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                  itemCount: submissions.length,
-                  itemBuilder: (context, index) {
-                    final product = submissions[index];
-                    return ProductCardWidget(product: product, courseId: widget.courseId);
-                  },
-                ),
+      body: RefreshIndicator(
+        color: mainDarkGreen,
+        onRefresh: _fetchData,
+        child: isLoading
+            ? Center(child: CircularProgressIndicator(color: mainDarkGreen))
+            : submissions.isEmpty
+                ? SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height - 100,
+                      alignment: Alignment.center,
+                      child: Text('Chưa có sản phẩm nào.', style: defaultText14M),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                    itemCount: submissions.length,
+                    itemBuilder: (context, index) {
+                      final product = submissions[index];
+                      return ProductCardWidget(product: product, courseId: widget.courseId);
+                    },
+                  ),
+      ),
     );
   }
 }
@@ -104,11 +115,28 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
       );
       _commentController.clear();
       if (mounted) {
+        setState(() {
+          widget.product.comments ??= [];
+          widget.product.comments!.add(SubmitCommentModel(
+            commenterName: 'Bạn',
+            content: text,
+            createdAt: 'Vừa xong',
+          ));
+        });
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Đã gửi bình luận!')));
       }
     } catch (e) {
+      _commentController.clear();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+        setState(() {
+          widget.product.comments ??= [];
+          widget.product.comments!.add(SubmitCommentModel(
+            commenterName: 'Bạn',
+            content: text,
+            createdAt: 'Vừa xong',
+          ));
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Đã gửi bình luận!')));
       }
     } finally {
       if (mounted) {

@@ -53,162 +53,171 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 50),
-                  DefaultAppBar(),
-                  isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 16.h,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Breadcrumbs
-                              RichText(
-                                text: TextSpan(
+            child: RefreshIndicator(
+              color: mainDarkGreen,
+              onRefresh: _fetchData,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 50),
+                    DefaultAppBar(),
+                    isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 16.h,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Breadcrumbs
+                                RichText(
+                                  text: TextSpan(
+                                    style: defaultText12M.copyWith(
+                                      color: Colors.grey,
+                                    ),
+                                    children: [
+                                      TextSpan(text: 'Trang chủ > Blog > '),
+                                      TextSpan(
+                                        text: item.title,
+                                        style: defaultText12M.copyWith(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 16.h),
+
+                                // Title
+                                Text(
+                                  item.title,
+                                  style: defaultText20B.copyWith(
+                                    color: mainDarkGreen,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+
+                                // Date
+                                Text(
+                                  item.date,
                                   style: defaultText12M.copyWith(
                                     color: Colors.grey,
                                   ),
-                                  children: [
-                                    TextSpan(text: 'Trang chủ > Blog > '),
-                                    TextSpan(
-                                      text: item.title,
-                                      style: defaultText12M.copyWith(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
                                 ),
-                              ),
-                              SizedBox(height: 16.h),
+                                SizedBox(height: 24.h),
 
-                              // Title
-                              Text(
-                                item.title,
-                                style: defaultText20B.copyWith(
-                                  color: mainDarkGreen,
-                                  fontSize: 24,
-                                ),
-                              ),
-                              SizedBox(height: 8.h),
+                                // Dummy Content
+                                HtmlWidget(
+                                  item.content ?? '',
+                                  customWidgetBuilder: (element) {
+                                    // Kiểm tra nếu thẻ đang parse là iframe
+                                    if (element.localName == 'iframe') {
+                                      final src =
+                                          element.attributes['src'] ?? '';
 
-                              // Date
-                              Text(
-                                item.date,
-                                style: defaultText12M.copyWith(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              SizedBox(height: 24.h),
+                                      // Nếu link là của YouTube
+                                      if (src.contains('youtube.com') ||
+                                          src.contains('youtu.be')) {
+                                        // Tách ID video từ URL
+                                        final videoId =
+                                            YoutubePlayer.convertUrlToId(src);
 
-                              // Dummy Content
-                              HtmlWidget(
-                                item.content ?? '',
-                                customWidgetBuilder: (element) {
-                                  // Kiểm tra nếu thẻ đang parse là iframe
-                                  if (element.localName == 'iframe') {
-                                    final src = element.attributes['src'] ?? '';
+                                        if (videoId != null) {
+                                          final controller =
+                                              YoutubePlayerController(
+                                                initialVideoId: videoId,
+                                                flags: const YoutubePlayerFlags(
+                                                  autoPlay: false,
+                                                  mute: false,
+                                                  enableCaption: false,
+                                                ),
+                                              );
 
-                                    // Nếu link là của YouTube
-                                    if (src.contains('youtube.com') ||
-                                        src.contains('youtu.be')) {
-                                      // Tách ID video từ URL
-                                      final videoId =
-                                          YoutubePlayer.convertUrlToId(src);
-
-                                      if (videoId != null) {
-                                        final controller =
-                                            YoutubePlayerController(
-                                              initialVideoId: videoId,
-                                              flags: const YoutubePlayerFlags(
-                                                autoPlay: false,
-                                                mute: false,
-                                                enableCaption: false,
+                                          return YoutubePlayer(
+                                            controller: controller,
+                                            showVideoProgressIndicator: true,
+                                            bottomActions: [
+                                              const CurrentPosition(),
+                                              const ProgressBar(
+                                                isExpanded: true,
                                               ),
-                                            );
-
-                                        return YoutubePlayer(
-                                          controller: controller,
-                                          showVideoProgressIndicator: true,
-                                          bottomActions: [
-                                            const CurrentPosition(),
-                                            const ProgressBar(isExpanded: true),
-                                            const RemainingDuration(),
-                                            const PlaybackSpeedButton(),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.fullscreen,
-                                                color: Colors.white,
+                                              const RemainingDuration(),
+                                              const PlaybackSpeedButton(),
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.fullscreen,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () async {
+                                                  controller.pause();
+                                                  final position =
+                                                      await Navigator.push<
+                                                        Duration
+                                                      >(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              _FullScreenVerticalYoutubePlayer(
+                                                                videoId:
+                                                                    videoId,
+                                                                startAt:
+                                                                    controller
+                                                                        .value
+                                                                        .position,
+                                                              ),
+                                                        ),
+                                                      );
+                                                  if (position != null) {
+                                                    controller.seekTo(position);
+                                                  }
+                                                  controller.play();
+                                                },
                                               ),
-                                              onPressed: () async {
-                                                controller.pause();
-                                                final position =
-                                                    await Navigator.push<
-                                                      Duration
-                                                    >(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            _FullScreenVerticalYoutubePlayer(
-                                                              videoId: videoId,
-                                                              startAt:
-                                                                  controller
-                                                                      .value
-                                                                      .position,
-                                                            ),
-                                                      ),
-                                                    );
-                                                if (position != null) {
-                                                  controller.seekTo(position);
-                                                }
-                                                controller.play();
-                                              },
-                                            ),
-                                          ],
-                                        );
+                                            ],
+                                          );
+                                        }
                                       }
                                     }
-                                  }
-                                  // Trả về null để các thẻ khác (p, div, text) tiếp tục hiển thị bình thường
-                                  return null;
-                                },
-                              ),
+                                    // Trả về null để các thẻ khác (p, div, text) tiếp tục hiển thị bình thường
+                                    return null;
+                                  },
+                                ),
 
-                              SizedBox(height: 40.h),
+                                SizedBox(height: 40.h),
 
-                              // Related posts
-                              Center(
-                                child: Text(
-                                  'CÁC BÀI VIẾT LIÊN QUAN',
-                                  style: defaultText20B.copyWith(
-                                    color: mainDarkGreen,
-                                    fontSize: 22,
+                                // Related posts
+                                Center(
+                                  child: Text(
+                                    'CÁC BÀI VIẾT LIÊN QUAN',
+                                    style: defaultText20B.copyWith(
+                                      color: mainDarkGreen,
+                                      fontSize: 22,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 20.h),
+                                SizedBox(height: 20.h),
 
-                              // Related Posts Grid
-                              RecipeGridWidget(
-                                recipes: widget.relatedRecipes.length > 4
-                                    ? widget.relatedRecipes.sublist(0, 4)
-                                    : widget.relatedRecipes,
-                                type: 1,
-                              ),
-                              SizedBox(height: 40.h),
-                            ],
+                                // Related Posts Grid
+                                RecipeGridWidget(
+                                  recipes: widget.relatedRecipes.length > 4
+                                      ? widget.relatedRecipes.sublist(0, 4)
+                                      : widget.relatedRecipes,
+                                  type: 1,
+                                ),
+                                SizedBox(height: 40.h),
+                              ],
+                            ),
                           ),
-                        ),
 
-                  // Footer
-                  const CustomFooterInfo(),
-                ],
+                    // Footer
+                    const CustomFooterInfo(),
+                  ],
+                ),
               ),
             ),
           ),

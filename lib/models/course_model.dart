@@ -283,7 +283,8 @@ class CourseOffModel {
       dateEnd,
       province,
       lecturer,
-      startCount;
+      startCount,
+      totalEnrollments;
   CourseOffModel({
     this.id,
     this.name,
@@ -296,6 +297,7 @@ class CourseOffModel {
     this.province,
     this.lecturer,
     this.startCount,
+    this.totalEnrollments,
   });
   factory CourseOffModel.fromJson(Map<String, dynamic> json) {
     return CourseOffModel(
@@ -312,6 +314,7 @@ class CourseOffModel {
       province: json['coso_province'],
       lecturer: json['lecturer_name'],
       startCount: json['start_count'],
+      totalEnrollments: json['total_enrollments'],
     );
   }
 }
@@ -348,7 +351,7 @@ class ContentSubmitModel {
   final String? content;
   final List<String>? images;
   final String? createdAt;
-  final List<SubmitCommentModel>? comments;
+  late List<SubmitCommentModel>? comments;
 
   ContentSubmitModel({
     this.fullName,

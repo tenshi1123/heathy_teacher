@@ -21,7 +21,7 @@ class ApiPath {
   static String detailChatLecturer = '$baseUrl/customer/detail_chat_lecturers';
   static String sendChatLecturers = '$baseUrl/customer/send_chat_lecturers';
   static String loadChatCourse = '$baseUrl/customer/load_chat_course';
-
+  static String chinhSach = '$baseUrl/customer/chinh-sach';
   //web ngoài
 
   //khóa học

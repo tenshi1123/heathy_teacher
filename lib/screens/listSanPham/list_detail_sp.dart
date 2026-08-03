@@ -102,370 +102,388 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
           Column(
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 50), // Khoảng cách cho status bar
+                child: RefreshIndicator(
+                  color: mainGreen,
+                  onRefresh: _fetchData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 50,
+                        ), // Khoảng cách cho status bar
 
-                      DefaultAppBar(),
+                        DefaultAppBar(),
 
-                      // 2. SEARCH BAR AREA
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 6.h,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: const Color(0xFFC0CA33),
-                              width: 1.5,
-                            ),
+                        // 2. SEARCH BAR AREA
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 6.h,
                           ),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Nhập để tìm kiếm...',
-                              hintStyle: const TextStyle(color: Colors.grey),
-                              prefixIcon: Icon(Icons.search, color: mainGreen),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 15,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(
+                                color: const Color(0xFFC0CA33),
+                                width: 1.5,
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-
-                      // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)
-                      Container(
-                        width: double.infinity,
-                        //height: 375.w * 4 / 3,
-                        margin: EdgeInsets.symmetric(vertical: 16.h),
-                        child: Image.asset(
-                          'assets/images/sptitle.jpg',
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      //back button
-                      Row(
-                        children: [
-                          SizedBox(width: 16.w),
-
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Colors.green, // Cài đặt màu nền cho nút
-                              foregroundColor: Colors
-                                  .white, // Chuyển màu chữ thành trắng để tương phản tốt hơn
-                              elevation: 2, // (Tùy chọn) Độ đổ bóng của nút
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  8,
-                                ), // (Tùy chọn) Bo góc cho nút mềm mại hơn
-                              ),
-                            ),
-                            child: const Text('Trở về'),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Text(
-                          widget.model.categoryName ?? '',
-                          style: defaultText18B.copyWith(color: mainDarkGreen),
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                      Row(
-                        children: [
-                          Text(
-                            '    Sắp xếp theo: ',
-                            style: defaultText14B.copyWith(color: colorText),
-                          ),
-                          FilterDropdownDialog(
-                            options: const [
-                              "Sản phẩm bán chạy",
-                              "Giá tăng dần",
-                              "Giá giảm dần",
-                            ],
-                            selected: selected,
-                            onSelected: (value) {
-                              setState(() {
-                                selected = value; // 👈 update UI bên ngoài
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      //list
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(12),
-                        itemCount: coursesDetail.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 0.6,
-                            ),
-                        itemBuilder: (context, index) {
-                          final item = coursesDetail[index];
-
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetailProductScreen(
-                                    productId: item.id ?? '',
-                                  ),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Nhập để tìm kiếm...',
+                                hintStyle: const TextStyle(color: Colors.grey),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: mainGreen,
                                 ),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 15,
+                                ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  /// IMAGE
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(16),
-                                      bottom: Radius.circular(16),
-                                    ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: item.img!.contains('https://')
-                                          ? item.img ?? ''
-                                          : 'https://lms.cogiaohealthy.vn/images/${item.img}',
-                                      width: double.infinity,
-                                      height: 120.dg,
-                                      fit: BoxFit.cover,
-                                      errorWidget: (context, url, error) {
-                                        return Container(
-                                          width: 50.dg,
-                                          height: 50.dg,
-                                          color: Colors
-                                              .grey[200], // Màu nền của icon mặc định
-                                          child: Icon(
-                                            Icons
-                                                .error_outline, // Hoặc Icons.error_outline tuỳ ý bạn
-                                            size: 30.dg,
-                                            color: Colors.grey,
-                                          ),
-                                        );
-                                      },
+                            ),
+                          ),
+                        ),
 
-                                      // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
+                        // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)
+                        Container(
+                          width: double.infinity,
+                          //height: 375.w * 4 / 3,
+                          margin: EdgeInsets.symmetric(vertical: 16.h),
+                          child: Image.asset(
+                            'assets/images/sptitle.jpg',
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        //back button
+                        Row(
+                          children: [
+                            SizedBox(width: 16.w),
+
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Colors.green, // Cài đặt màu nền cho nút
+                                foregroundColor: Colors
+                                    .white, // Chuyển màu chữ thành trắng để tương phản tốt hơn
+                                elevation: 2, // (Tùy chọn) Độ đổ bóng của nút
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    8,
+                                  ), // (Tùy chọn) Bo góc cho nút mềm mại hơn
+                                ),
+                              ),
+                              child: const Text('Trở về'),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: Text(
+                            widget.model.categoryName ?? '',
+                            style: defaultText18B.copyWith(
+                              color: mainDarkGreen,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 12.h),
+                        // Row(
+                        //   children: [
+                        //     Text(
+                        //       '    Sắp xếp theo: ',
+                        //       style: defaultText14B.copyWith(color: colorText),
+                        //     ),
+                        //     FilterDropdownDialog(
+                        //       options: const [
+                        //         "Sản phẩm bán chạy",
+                        //         "Giá tăng dần",
+                        //         "Giá giảm dần",
+                        //       ],
+                        //       selected: selected,
+                        //       onSelected: (value) {
+                        //         setState(() {
+                        //           selected = value; // 👈 update UI bên ngoài
+                        //         });
+                        //       },
+                        //     ),
+                        //   ],
+                        // ),
+                        //list
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(12),
+                          itemCount: coursesDetail.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.6,
+                              ),
+                          itemBuilder: (context, index) {
+                            final item = coursesDetail[index];
+
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailProductScreen(
+                                      productId: item.id ?? '',
                                     ),
                                   ),
-
-                                  Text(
-                                    item.productName ?? 'Không xác định',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: defaultText16B.copyWith(
-                                      color: mainDarkGreen,
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 3),
                                     ),
-                                  ),
-                                  SizedBox(height: 8.h),
-
-                                  Text(
-                                    '${formatPrice(item.price)}đ',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: defaultText16B.copyWith(
-                                      color: mainDarkGreen,
-                                    ),
-                                  ),
-                                  if (item.priceOld != null &&
-                                      item.priceOld != '0' &&
-                                      item.priceOld != '')
-                                    Text(
-                                      '${formatPrice(item.priceOld)}đ',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: defaultText12M.copyWith(
-                                        color: Colors.grey,
-                                        fontSize: 10.sp,
-                                        decoration: TextDecoration.lineThrough,
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    /// IMAGE
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(16),
+                                        bottom: Radius.circular(16),
                                       ),
-                                    ),
-                                  const Spacer(),
-
-                                  /// BUTTON
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 2.w,
-                                      vertical: 4.h,
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        int existingIndex = globalListCart
-                                            .indexWhere(
-                                              (element) =>
-                                                  element.id == item.id,
-                                            );
-                                        if (existingIndex != -1) {
-                                          globalListCart[existingIndex]
-                                              .quantity++;
-                                        } else {
-                                          globalListCart.add(
-                                            CartItem(
-                                              id: item.id ?? '',
-                                              name: item.productName ?? '',
-                                              image: item.img ?? '',
-                                              price:
-                                                  int.tryParse(
-                                                    item.price ?? '0',
-                                                  ) ??
-                                                  0,
-                                              isCourse: false,
+                                      child: CachedNetworkImage(
+                                        imageUrl: item.img!.contains('https://')
+                                            ? item.img ?? ''
+                                            : 'https://lms.cogiaohealthy.vn/images/${item.img}',
+                                        width: double.infinity,
+                                        height: 120.dg,
+                                        fit: BoxFit.cover,
+                                        errorWidget: (context, url, error) {
+                                          return Container(
+                                            width: 50.dg,
+                                            height: 50.dg,
+                                            color: Colors
+                                                .grey[200], // Màu nền của icon mặc định
+                                            child: Icon(
+                                              Icons
+                                                  .error_outline, // Hoặc Icons.error_outline tuỳ ý bạn
+                                              size: 30.dg,
+                                              color: Colors.grey,
                                             ),
                                           );
-                                        }
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              //title:  Text('Đã thêm vào giỏ hàng'),
-                                              content: const Text(
-                                                'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                        context,
-                                                        'OK',
-                                                      ),
-                                                  child: const Text('OK'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 10.h,
-                                          horizontal: 8.w,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: mainDarkGreen,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            "Thêm vào giỏ hàng",
-                                            style: defaultText12B.copyWith(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
+                                        },
+
+                                        // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      Container(
-                        height: 160.h,
-                        width: 375.w,
-                        margin: EdgeInsets.only(bottom: 20.h),
-                        padding: EdgeInsets.only(left: 16.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.r),
-                          gradient: LinearGradient(
-                            colors: [mainDarkGreen, mainGreen],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          border: Border.all(color: mainDarkGreen, width: 1.w),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            /// TEXT (tự co lại)
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
-                                    style: defaultText14B.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    'NGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
-                                    style: defaultText14B.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 12.w,
-                                      vertical: 8.h,
-                                    ),
 
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16.r),
-                                      color: Colors.white,
-                                    ),
-                                    child: Text(
-                                      'Nhận ưu đãi ngay',
+                                    Text(
+                                      item.productName ?? 'Không xác định',
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                       style: defaultText16B.copyWith(
                                         color: mainDarkGreen,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                    SizedBox(height: 8.h),
 
-                            /// IMAGE (giữ kích thước mong muốn)
-                            SizedBox(
-                              height: 140.h, // 👈 bạn control size ảnh ở đây
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
-                                fit: BoxFit.contain,
+                                    Text(
+                                      '${formatPrice(item.price)}đ',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: defaultText16B.copyWith(
+                                        color: mainDarkGreen,
+                                      ),
+                                    ),
+                                    if (item.priceOld != null &&
+                                        item.priceOld != '0' &&
+                                        item.priceOld != '')
+                                      Text(
+                                        '${formatPrice(item.priceOld)}đ',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: defaultText12M.copyWith(
+                                          color: Colors.grey,
+                                          fontSize: 10.sp,
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                        ),
+                                      ),
+                                    const Spacer(),
+
+                                    /// BUTTON
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 2.w,
+                                        vertical: 4.h,
+                                      ),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          int existingIndex = globalListCart
+                                              .indexWhere(
+                                                (element) =>
+                                                    element.id == item.id,
+                                              );
+                                          if (existingIndex != -1) {
+                                            globalListCart[existingIndex]
+                                                .quantity++;
+                                          } else {
+                                            globalListCart.add(
+                                              CartItem(
+                                                id: item.id ?? '',
+                                                name: item.productName ?? '',
+                                                image: item.img ?? '',
+                                                price:
+                                                    int.tryParse(
+                                                      item.price ?? '0',
+                                                    ) ??
+                                                    0,
+                                                isCourse: false,
+                                              ),
+                                            );
+                                          }
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                //title:  Text('Đã thêm vào giỏ hàng'),
+                                                content: const Text(
+                                                  'Sản phẩm đã được thêm vào giỏ hàng của bạn.',
+                                                ),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                          context,
+                                                          'OK',
+                                                        ),
+                                                    child: const Text('OK'),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 10.h,
+                                            horizontal: 8.w,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: mainDarkGreen,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              "Thêm vào giỏ hàng",
+                                              style: defaultText12B.copyWith(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      ),
-                      const CustomFooterInfo(),
-                      // Khoảng cách cuối trang
-                    ],
+                        Container(
+                          height: 160.h,
+                          width: 375.w,
+                          margin: EdgeInsets.only(bottom: 20.h),
+                          padding: EdgeInsets.only(left: 16.w),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.r),
+                            gradient: LinearGradient(
+                              colors: [mainDarkGreen, mainGreen],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            border: Border.all(
+                              color: mainDarkGreen,
+                              width: 1.w,
+                            ),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              /// TEXT (tự co lại)
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
+                                      style: defaultText14B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      'NGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
+                                      style: defaultText14B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12.w,
+                                        vertical: 8.h,
+                                      ),
+
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          16.r,
+                                        ),
+                                        color: Colors.white,
+                                      ),
+                                      child: Text(
+                                        'Nhận ưu đãi ngay',
+                                        style: defaultText16B.copyWith(
+                                          color: mainDarkGreen,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              /// IMAGE (giữ kích thước mong muốn)
+                              SizedBox(
+                                height: 140.h, // 👈 bạn control size ảnh ở đây
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const CustomFooterInfo(),
+                        // Khoảng cách cuối trang
+                      ],
+                    ),
                   ),
                 ),
               ),

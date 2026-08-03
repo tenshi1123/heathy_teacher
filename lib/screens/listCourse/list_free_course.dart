@@ -111,158 +111,173 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 50), // Khoảng cách cho status bar
+            child: RefreshIndicator(
+              color: mainDarkGreen,
+              onRefresh: () async {
+                setState(() {
+                  localListCourse.clear();
+                  currentPage = 1;
+                });
+                await _fetchMyCourses();
+                await _loadPage(1);
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 50), // Khoảng cách cho status bar
 
-                  DefaultAppBar(),
+                    DefaultAppBar(),
 
-                  // 2. SEARCH BAR AREA
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 6.h,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: const Color(0xFFC0CA33),
-                          width: 1.5,
-                        ),
+                    // 2. SEARCH BAR AREA
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 6.h,
                       ),
-                      child: const TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Nhập để tìm kiếm...',
-                          hintStyle: TextStyle(color: Colors.grey),
-                          prefixIcon: Icon(Icons.search, color: secondaryGreen),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 15,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: const Color(0xFFC0CA33),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: const TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Nhập để tìm kiếm...',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: secondaryGreen,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 15,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)
-                  const CustomImageCarousel(),
+                    // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)
+                    const CustomImageCarousel(),
 
-                  //list
-                  if (currentItems.isEmpty && !isLoading)
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        'Không có khóa học nào.',
-                        style: defaultText16B,
+                    //list
+                    if (currentItems.isEmpty && !isLoading)
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          'Không có khóa học nào.',
+                          style: defaultText16B,
+                        ),
+                      )
+                    else
+                      Builder(
+                        builder: (context) {
+                          Map<String, List<CourseModel>> grouped = {};
+                          for (var course in currentItems) {
+                            String cat = course.categoryName ?? 'Khác';
+                            if (!grouped.containsKey(cat)) grouped[cat] = [];
+                            grouped[cat]!.add(course);
+                          }
+
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: grouped.keys.length,
+                            itemBuilder: (context, index) {
+                              String cat = grouped.keys.elementAt(index);
+                              return CategoryExpandableItem(
+                                categoryName: cat,
+                                courses: grouped[cat]!,
+                              );
+                            },
+                          );
+                        },
                       ),
-                    )
-                  else
-                    Builder(
-                      builder: (context) {
-                        Map<String, List<CourseModel>> grouped = {};
-                        for (var course in currentItems) {
-                          String cat = course.categoryName ?? 'Khác';
-                          if (!grouped.containsKey(cat)) grouped[cat] = [];
-                          grouped[cat]!.add(course);
-                        }
 
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: grouped.keys.length,
-                          itemBuilder: (context, index) {
-                            String cat = grouped.keys.elementAt(index);
-                            return CategoryExpandableItem(
-                              categoryName: cat,
-                              courses: grouped[cat]!,
-                            );
-                          },
-                        );
-                      },
-                    ),
-
-                  if (isLoading)
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: CircularProgressIndicator(color: mainDarkGreen),
-                    ),
-                  Container(
-                    height: 160.h,
-                    width: 375.w,
-                    margin: EdgeInsets.only(bottom: 20.h),
-                    padding: EdgeInsets.only(left: 16.w),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      gradient: LinearGradient(
-                        colors: [mainDarkGreen, mainGreen],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                    if (isLoading)
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: CircularProgressIndicator(color: mainDarkGreen),
                       ),
-                      border: Border.all(color: mainDarkGreen, width: 1.w),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        /// TEXT (tự co lại)
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              SizedBox(height: 5.h),
-                              Text(
-                                'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
-                                style: defaultText14B.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                'NGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
-                                style: defaultText14B.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w,
-                                  vertical: 8.h,
-                                ),
-
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16.r),
-                                  color: Colors.white,
-                                ),
-                                child: Text(
-                                  'Nhận ưu đãi ngay',
-                                  style: defaultText16B.copyWith(
-                                    color: mainDarkGreen,
+                    Container(
+                      height: 160.h,
+                      width: 375.w,
+                      margin: EdgeInsets.only(bottom: 20.h),
+                      padding: EdgeInsets.only(left: 16.w),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.r),
+                        gradient: LinearGradient(
+                          colors: [mainDarkGreen, mainGreen],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        border: Border.all(color: mainDarkGreen, width: 1.w),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          /// TEXT (tự co lại)
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SizedBox(height: 5.h),
+                                Text(
+                                  'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
+                                  style: defaultText14B.copyWith(
+                                    color: Colors.white,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
+                                Text(
+                                  'NGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
+                                  style: defaultText14B.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 8.h,
+                                  ),
 
-                        /// IMAGE (giữ kích thước mong muốn)
-                        SizedBox(
-                          height: 140.h, // 👈 bạn control size ảnh ở đây
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
-                            fit: BoxFit.contain,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16.r),
+                                    color: Colors.white,
+                                  ),
+                                  child: Text(
+                                    'Nhận ưu đãi ngay',
+                                    style: defaultText16B.copyWith(
+                                      color: mainDarkGreen,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+
+                          /// IMAGE (giữ kích thước mong muốn)
+                          SizedBox(
+                            height: 140.h, // 👈 bạn control size ảnh ở đây
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const CustomFooterInfo(),
-                  // Khoảng cách cuối trang
-                ],
+                    const CustomFooterInfo(),
+                    // Khoảng cách cuối trang
+                  ],
+                ),
               ),
             ),
           ),
@@ -520,6 +535,7 @@ class FreeCourseItem extends StatelessWidget {
                       builder: (context) => RegisterClassON(
                         id: model.courseTypeId ?? '',
                         isTrial: true,
+                        model: model,
                       ),
                     ),
                   );

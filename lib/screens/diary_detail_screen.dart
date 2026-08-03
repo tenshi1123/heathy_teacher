@@ -54,114 +54,128 @@ class _DiaryDetailScreenState extends State<DiaryDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 50),
-                  DefaultAppBar(),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator(color: mainDarkGreen))
+          : Column(
+              children: [
+                Expanded(
+                  child: RefreshIndicator(
+                    color: mainDarkGreen,
+                    onRefresh: _fetchData,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 50),
+                          DefaultAppBar(),
 
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 16.h,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Breadcrumbs
-                        RichText(
-                          text: TextSpan(
-                            style: defaultText12M.copyWith(color: Colors.grey),
-                            children: [
-                              TextSpan(text: 'Trang chủ > Blog > '),
-                              TextSpan(
-                                text: item.title,
-                                style: defaultText12M.copyWith(
-                                  color: Colors.grey,
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 16.h,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Breadcrumbs
+                                RichText(
+                                  text: TextSpan(
+                                    style: defaultText12M.copyWith(
+                                      color: Colors.grey,
+                                    ),
+                                    children: [
+                                      TextSpan(text: 'Trang chủ > Blog > '),
+                                      TextSpan(
+                                        text: item.title,
+                                        style: defaultText12M.copyWith(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 16.h),
+                                SizedBox(height: 16.h),
 
-                        // Title
-                        Text(
-                          item.title,
-                          style: defaultText20B.copyWith(
-                            color: mainDarkGreen,
-                            fontSize: 24,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
+                                // Title
+                                Text(
+                                  item.title,
+                                  style: defaultText20B.copyWith(
+                                    color: mainDarkGreen,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
 
-                        // Date
-                        Text(
-                          item.date,
-                          style: defaultText12M.copyWith(color: Colors.grey),
-                        ),
-                        SizedBox(height: 24.h),
+                                // Date
+                                Text(
+                                  item.date,
+                                  style: defaultText12M.copyWith(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                SizedBox(height: 24.h),
 
-                        // YouTube embed widget
-                        Center(
-                          child: Container(
-                            width: 300.w, // Approximate width for youtube short
-                            height: 500.h,
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(12),
+                                // YouTube embed widget
+                                Center(
+                                  child: Container(
+                                    width: 300
+                                        .w, // Approximate width for youtube short
+                                    height: 500.h,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    clipBehavior: Clip.hardEdge,
+                                    child: WebViewWidget(
+                                      controller: _controller,
+                                    ),
+                                  ),
+                                ),
+
+                                SizedBox(height: 24.h),
+
+                                // Description Content
+                                Text(
+                                  "Cùng khám phá lịch trình ngày 1 tại lớp trực tiếp của Cô Giáo Healthy nha 😍\n"
+                                  "ĐĂNG KÝ NGAY SUẤT HỌC TRONG THÁNG...",
+                                  style: defaultText14M.copyWith(
+                                    color: Colors.black87,
+                                    height: 1.6,
+                                  ),
+                                ),
+
+                                SizedBox(height: 40.h),
+
+                                // Related posts
+                                Center(
+                                  child: Text(
+                                    'CÁC BÀI VIẾT LIÊN QUAN',
+                                    style: defaultText20B.copyWith(
+                                      color: mainDarkGreen,
+                                      fontSize: 22,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 20.h),
+
+                                // Related Posts Grid (Using type 2)
+                                //RecipeGridWidget(recipes: relatedDiaries, type: 2),
+                                SizedBox(height: 40.h),
+                              ],
                             ),
-                            clipBehavior: Clip.hardEdge,
-                            child: WebViewWidget(controller: _controller),
                           ),
-                        ),
 
-                        SizedBox(height: 24.h),
-
-                        // Description Content
-                        Text(
-                          "Cùng khám phá lịch trình ngày 1 tại lớp trực tiếp của Cô Giáo Healthy nha 😍\n"
-                          "ĐĂNG KÝ NGAY SUẤT HỌC TRONG THÁNG...",
-                          style: defaultText14M.copyWith(
-                            color: Colors.black87,
-                            height: 1.6,
-                          ),
-                        ),
-
-                        SizedBox(height: 40.h),
-
-                        // Related posts
-                        Center(
-                          child: Text(
-                            'CÁC BÀI VIẾT LIÊN QUAN',
-                            style: defaultText20B.copyWith(
-                              color: mainDarkGreen,
-                              fontSize: 22,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
-
-                        // Related Posts Grid (Using type 2)
-                        //RecipeGridWidget(recipes: relatedDiaries, type: 2),
-                        SizedBox(height: 40.h),
-                      ],
+                          // Footer
+                          const CustomFooterInfo(),
+                        ],
+                      ),
                     ),
                   ),
-
-                  // Footer
-                  const CustomFooterInfo(),
-                ],
-              ),
+                ),
+                BottomCustom(),
+              ],
             ),
-          ),
-          BottomCustom(),
-        ],
-      ),
     );
   }
 }

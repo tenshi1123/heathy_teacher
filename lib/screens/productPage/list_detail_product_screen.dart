@@ -136,13 +136,18 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                     color: Colors.red,
                     shape: BoxShape.circle,
                   ),
-                  child: Text(
-                    '${globalListCart.length}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: ValueListenableBuilder<int>(
+                    valueListenable: globalListCart.lengthNotifier,
+                    builder: (context, count, child) {
+                      return Text(
+                        '$count',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -155,9 +160,13 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
           Column(
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
+                child: RefreshIndicator(
+                  color: mainDarkGreen,
+                  onRefresh: _fetchData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    child: Column(
                     children: [
                       SizedBox(height: 12.h),
                       Row(
@@ -391,6 +400,7 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                     ],
                   ),
                 ),
+              ),
               ),
             ],
           ),

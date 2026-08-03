@@ -21,6 +21,7 @@ import 'package:heathy_teacher/screens/shoppingCart/address_selection_dialog.dar
 import 'package:heathy_teacher/repo/payment_repo.dart';
 import 'package:heathy_teacher/repo/home_repo.dart';
 import 'package:heathy_teacher/models/home_model.dart';
+import 'package:heathy_teacher/repo/course_repo.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   const OrderPaymentScreen({super.key});
@@ -42,6 +43,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   String? _selectedProvinceCode;
   String? _selectedDistrictCode;
   UserModel? _userModel;
+  bool _isFirstCoursePurchase = false;
 
   @override
   void initState() {
@@ -51,10 +53,23 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
 
   Future<void> _fetchUser() async {
     try {
-      final userModel = await HomeRepo().getUserProfile();
+      final isCourse = selectedCartItems.any((item) => item.isCourse);
+      final futures = <Future>[HomeRepo().getUserProfile()];
+      if (isCourse) {
+        futures.add(CourseRepo().getCourse(show: 1));
+      }
+
+      final results = await Future.wait(futures);
+
       if (mounted) {
         setState(() {
-          _userModel = userModel;
+          _userModel = results[0] as UserModel;
+          if (isCourse) {
+            final myCourses = results[1] as List;
+            if (myCourses.isEmpty) {
+              _isFirstCoursePurchase = true;
+            }
+          }
         });
       }
     } catch (e) {
@@ -125,7 +140,13 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   }
 
   int get discountValue {
-    if (_selectedPromoCode == null) return 0;
+    if (_selectedPromoCode == null) {
+      if (_isFirstCoursePurchase &&
+          selectedCartItems.any((item) => item.isCourse)) {
+        return (totalPrice * 0.1).round();
+      }
+      return 0;
+    }
     int percent = int.tryParse(_selectedPromoCode!.valuePercent ?? '0') ?? 0;
     int maxUse = int.tryParse(_selectedPromoCode!.priceMaxUse ?? '0') ?? 0;
 
@@ -172,6 +193,38 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
       total += item.price * item.quantity;
     }
     return total;
+  }
+
+  int get accumulatedPoints {
+    double finalAmount =
+        (totalPrice - discountValue - (_isUsePoint ? userPoints : 0))
+            .toDouble();
+    if (finalAmount < 0) finalAmount = 0;
+
+    double ratio = totalPrice > 0 ? finalAmount / totalPrice : 0.0;
+
+    double points = 0;
+    for (var item in selectedCartItems) {
+      double itemFinalPrice = (item.price * item.quantity) * ratio;
+      if (item.isCourse) {
+        points += itemFinalPrice * 0.02;
+      } else {
+        points += itemFinalPrice * 0.005;
+      }
+    }
+    return points.round();
+  }
+
+  int get shippingFee {
+    if (selectedCartItems.any((item) => item.isCourse)) return 0;
+
+    final province = _provinceController.text.trim().toLowerCase();
+    if (province.isEmpty) return 0;
+
+    if (province.contains('hà nội') || province.contains('ha noi')) {
+      return 40000;
+    }
+    return 50000;
   }
 
   @override
@@ -463,7 +516,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Giảm giá:',
+                        (_selectedPromoCode == null &&
+                                _isFirstCoursePurchase &&
+                                isCourse)
+                            ? 'Giảm giá (-10%):'
+                            : 'Giảm giá:',
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                       Text(
@@ -472,6 +529,20 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       ),
                     ],
                   ),
+                  if (!isCourse && shippingFee > 0)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Phí vận chuyển:',
+                          style: defaultText14SB.copyWith(fontSize: 16.sp),
+                        ),
+                        Text(
+                          '${NumberFormat('#,###', 'vi_VN').format(shippingFee)} đ',
+                          style: defaultText20B.copyWith(fontSize: 16.sp),
+                        ),
+                      ],
+                    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -480,7 +551,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                       Text(
-                        '${NumberFormat('#,###', 'vi_VN').format(totalPrice - discountValue)} đ',
+                        '${NumberFormat('#,###', 'vi_VN').format(totalPrice - discountValue + shippingFee)} đ',
                         style: defaultText20B.copyWith(
                           fontSize: 24.sp,
                           color: mainDarkGreen,
@@ -499,7 +570,10 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         children: [
                           const TextSpan(text: 'Đặt hàng để nhận '),
                           TextSpan(
-                            text: NumberFormat('#,###', 'vi_VN').format(totalPrice - discountValue),
+                            text: NumberFormat(
+                              '#,###',
+                              'vi_VN',
+                            ).format(accumulatedPoints),
                             style: defaultText14B.copyWith(
                               color: const Color(0xFFF26522),
                               fontSize: 16.sp,
@@ -726,7 +800,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         "promo_code": _selectedPromoCode?.code ?? "",
                         "payment_method_id": 1,
                         "price_promo_code_online": discountValue,
-                        "free_ship": 0,
+                        "free_ship": shippingFee,
                         "accumulate_point": _isUsePoint ? userPoints : 0,
                         "province": _provinceController.text.trim(),
                         "district": _districtController.text.trim(),

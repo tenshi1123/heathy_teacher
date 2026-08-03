@@ -45,6 +45,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   bool _isRecording = false;
   final bool _isFullscreen = false;
   bool _isLandscape = false;
+  bool _isLoading = true;
   StreamSubscription? _recordingSub;
 
   late final WebViewController _controller;
@@ -106,9 +107,9 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
         watermarkText = '${res.fullName ?? ""} - ${res.phone ?? ""}';
       });
       _controller.runJavaScript('''
-        var wm = document.getElementById("flutter-watermark");
-        if (wm) {
-          wm.innerHTML = "$watermarkText";
+        var wms = document.getElementsByClassName("wm-item");
+        for(var i = 0; i < wms.length; i++) {
+          wms[i].innerHTML = "$watermarkText";
         }
       ''');
     });
@@ -143,14 +144,19 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
       <style>
         body { margin: 0; padding: 0; background-color: black; overflow: hidden; }
         iframe { width: 100vw; height: 100vh; border: none; }
+        .block-overlay { position: absolute; bottom: 0; right: 0; width: 60px; height: 50px; z-index: 9999; background: transparent; }
       </style>
     </head>
     <body>
-      <iframe 
-        src="$videoUrl" 
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" 
-        allowfullscreen="true">
-      </iframe>
+      <div style="position: relative; width: 100vw; height: 100vh;">
+        <iframe 
+          src="$videoUrl" 
+          style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; border: none;"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;">
+        </iframe>
+        <!-- Lớp phủ trong suốt chặn mọi thao tác nhấn vào nút fullscreen mặc định của player ở góc dưới phải -->
+        <div class="block-overlay" onclick="if (window.VideoChannel) window.VideoChannel.postMessage('toggle_fullscreen');"></div>
+      </div>
     </body>
     </html>
     ''';
@@ -172,14 +178,38 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
               Navigator.pop(context, true);
             }
           }
+          if (message.message == 'toggle_fullscreen') {
+            if (mounted) {
+              bool isCurrentlyLandscape =
+                  MediaQuery.of(context).orientation == Orientation.landscape;
+              setState(() {
+                _isLandscape = !isCurrentlyLandscape;
+              });
+              if (!isCurrentlyLandscape) {
+                SystemChrome.setPreferredOrientations([
+                  DeviceOrientation.landscapeLeft,
+                  DeviceOrientation.landscapeRight,
+                ]);
+              } else {
+                SystemChrome.setPreferredOrientations([
+                  DeviceOrientation.portraitUp,
+                ]);
+              }
+            }
+          }
         },
       )
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (String url) async {
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+            }
             // CHẶN PHÓNG TO VÀ CHÈN WATERMARK DI CHUYỂN
             await _controller.runJavaScript('''
-          // Bước A: Ẩn nút Fullscreen bằng CSS
+          // Ẩn nút Fullscreen bằng CSS (dành cho iOS native hoặc video player)
           var style = document.createElement('style');
           style.innerHTML = `
             video::-webkit-media-controls-fullscreen-button { display: none !important; }
@@ -188,74 +218,80 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
           `;
           document.head.appendChild(style);
 
-          // Bước B: Bẻ gãy tính năng Fullscreen của Javascript API
-          Element.prototype.requestFullscreen = function() { return Promise.reject(); };
-          Element.prototype.webkitRequestFullscreen = function() { return Promise.reject(); };
-          Element.prototype.mozRequestFullScreen = function() { return Promise.reject(); };
-          Element.prototype.msRequestFullscreen = function() { return Promise.reject(); };
+          // Ngăn chặn thao tác phóng to (pinch-to-zoom và double tap)
+          document.addEventListener('touchmove', function(event) {
+            if (event.scale !== 1) {
+              event.preventDefault();
+            }
+          }, { passive: false });
+          var lastTouchEnd = 0;
+          document.addEventListener('touchend', function(event) {
+            var now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+              event.preventDefault();
+            }
+            lastTouchEnd = now;
+          }, false);
           
           // Bước C: Chèn watermark trên khung hiển thị
-          if (!document.getElementById("flutter-watermark")) {
-            var wm = document.createElement("div");
-            wm.id = "flutter-watermark";
-            wm.innerHTML = "$watermarkText";
-            wm.style.position = "absolute"; 
-            wm.style.color = "rgba(255, 255, 255, 0.6)";
-            wm.style.fontSize = "14px";
-            wm.style.fontWeight = "bold";
-            wm.style.zIndex = "999999"; 
-            wm.style.pointerEvents = "none";
-            wm.style.textShadow = "1px 1px 2px rgba(0, 0, 0, 0.8)"; 
-            wm.style.transition = "all 0.5s ease"; // Cho phép mượt mà khi đổi góc
+          if (!document.getElementById("flutter-watermark-container")) {
+            var container = document.createElement("div");
+            container.id = "flutter-watermark-container";
+            container.style.position = "absolute";
+            container.style.top = "0";
+            container.style.left = "0";
+            container.style.width = "100%";
+            container.style.height = "100%";
+            container.style.pointerEvents = "none";
+            container.style.zIndex = "999999";
+            container.style.overflow = "hidden";
             
-            document.body.appendChild(wm);
-            
-            var currentIndex = 0;
-            function updatePosition() {
-              var wm = document.getElementById("flutter-watermark");
-              if (!wm) return;
+            document.body.appendChild(container);
 
-              var padding = 20;
-              var bottomOffset = 60; // Tránh thanh điều khiển video ở dưới
-              var wmWidth = wm.offsetWidth || 150; 
-              var wmHeight = wm.offsetHeight || 20;
-              var w = window.innerWidth;
-              var h = window.innerHeight;
-
-              // Reset toàn bộ CSS vị trí
-              wm.style.top = "auto"; 
-              wm.style.bottom = "auto"; 
-              wm.style.left = "auto"; 
-              wm.style.right = "auto";
-
-              // Gắn tọa độ theo 4 góc màn hình
-              if (currentIndex === 0) { // Góc trên trái
-                wm.style.top = padding + "px";
-                wm.style.left = padding + "px";
-              } else if (currentIndex === 1) { // Góc trên phải
-                wm.style.top = padding + "px";
-                wm.style.left = (w - wmWidth - padding) + "px";
-              } else if (currentIndex === 2) { // Góc dưới phải
-                wm.style.bottom = bottomOffset + "px";
-                wm.style.left = (w - wmWidth - padding) + "px";
-              } else if (currentIndex === 3) { // Góc dưới trái
-                wm.style.bottom = bottomOffset + "px";
-                wm.style.left = padding + "px";
+            var style = document.createElement('style');
+            style.innerHTML = `
+              @keyframes moveHorizontally1 {
+                0% { transform: translateX(100vw); }
+                100% { transform: translateX(-100%); }
               }
+              @keyframes moveHorizontally2 {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(100vw); }
+              }
+              .wm-item {
+                position: absolute;
+                color: rgba(255, 255, 255, 0.4);
+                font-size: 14px;
+                font-weight: bold;
+                pointer-events: none;
+                text-shadow: none;
+                white-space: nowrap;
+              }
+            `;
+            document.head.appendChild(style);
+
+            var numWatermarks = 5;
+            for (var i = 0; i < numWatermarks; i++) {
+               var wm = document.createElement("div");
+               wm.className = "wm-item";
+               wm.innerHTML = "$watermarkText";
+               
+               // Random height between 10% and 85%
+               var topPercent = 10 + Math.random() * 75;
+               wm.style.top = topPercent + "%";
+               
+               // Random duration between 15s and 25s
+               var duration = 15 + Math.random() * 10;
+               
+               // Random start delay
+               var delay = -(Math.random() * 20);
+               
+               // Alternate direction
+               var animName = (i % 2 === 0) ? "moveHorizontally1" : "moveHorizontally2";
+               
+               wm.style.animation = animName + " " + duration + "s linear " + delay + "s infinite";
+               container.appendChild(wm);
             }
-
-            // Gọi thử liên tục trong thời gian đầu để chắc chắn kích thước đúng
-            var initCount = 0;
-            var initInterval = setInterval(function() {
-              updatePosition();
-              initCount++;
-              if (initCount > 10) clearInterval(initInterval);
-            }, 500);
-
-            setInterval(function() {
-              currentIndex = (currentIndex + 1) % 4;
-              updatePosition();
-            }, 3500);
 
           // Sử dụng Event Capturing để bắt sự kiện ended kể cả khi video được tạo động (ended không bubble)
           document.addEventListener('ended', function(e) {
@@ -304,56 +340,82 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
       children: [
         Scaffold(
           backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: mainDarkGreen,
-            elevation: 0,
-            centerTitle: true,
-            title: Text(
-              widget.name,
-              style: defaultText16B.copyWith(color: Colors.white),
-            ),
-            leading: IconButton(
-              onPressed: () {
-                SystemChrome.setPreferredOrientations([
-                  DeviceOrientation.portraitUp,
-                ]);
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-            ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    _isLandscape = !_isLandscape;
-                  });
-                  if (_isLandscape) {
-                    SystemChrome.setPreferredOrientations([
-                      DeviceOrientation.landscapeLeft,
-                      DeviceOrientation.landscapeRight,
-                    ]);
-                  } else {
-                    SystemChrome.setPreferredOrientations([
-                      DeviceOrientation.portraitUp,
-                    ]);
-                  }
-                },
-                icon: Icon(
-                  _isLandscape
-                      ? Icons.screen_lock_portrait
-                      : Icons.screen_rotation,
-                  color: Colors.white,
+          appBar: MediaQuery.of(context).orientation == Orientation.landscape
+              ? null
+              : AppBar(
+                  backgroundColor: mainDarkGreen,
+                  elevation: 0,
+                  centerTitle: true,
+                  title: Text(
+                    widget.name,
+                    style: defaultText16B.copyWith(color: Colors.white),
+                  ),
+                  leading: IconButton(
+                    onPressed: () {
+                      SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                      ]);
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                  ),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        bool isCurrentlyLandscape =
+                            MediaQuery.of(context).orientation ==
+                            Orientation.landscape;
+                        setState(() {
+                          _isLandscape = !isCurrentlyLandscape;
+                        });
+                        if (!isCurrentlyLandscape) {
+                          SystemChrome.setPreferredOrientations([
+                            DeviceOrientation.landscapeLeft,
+                            DeviceOrientation.landscapeRight,
+                          ]);
+                        } else {
+                          SystemChrome.setPreferredOrientations([
+                            DeviceOrientation.portraitUp,
+                          ]);
+                        }
+                      },
+                      icon: Icon(
+                        MediaQuery.of(context).orientation ==
+                                Orientation.landscape
+                            ? Icons.screen_lock_portrait
+                            : Icons.screen_rotation,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
           body: MediaQuery.of(context).orientation == Orientation.landscape
-              ? WebViewWidget(controller: _controller)
+              ? Stack(
+                  children: [
+                    WebViewWidget(controller: _controller),
+                    if (_isLoading)
+                      Center(
+                        child: CircularProgressIndicator(color: mainDarkGreen),
+                      ),
+                    _buildCustomFullscreenButton(),
+                  ],
+                )
               : Column(
                   children: [
                     AspectRatio(
                       aspectRatio: 16 / 9,
-                      child: WebViewWidget(controller: _controller),
+                      child: Stack(
+                        children: [
+                          WebViewWidget(controller: _controller),
+                          if (_isLoading)
+                            Center(
+                              child: CircularProgressIndicator(
+                                color: mainDarkGreen,
+                              ),
+                            ),
+                          _buildCustomFullscreenButton(),
+                        ],
+                      ),
                     ),
                     Expanded(
                       child: SingleChildScrollView(child: _buildTextContent()),
@@ -536,6 +598,46 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
               ),
           ],
         ],
+      ),
+    );
+  }
+
+  Widget _buildCustomFullscreenButton() {
+    bool isCurrentlyLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    return Positioned(
+      bottom: 8.h,
+      right: 8.w,
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _isLandscape = !isCurrentlyLandscape;
+          });
+          if (!isCurrentlyLandscape) {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.landscapeLeft,
+              DeviceOrientation.landscapeRight,
+            ]);
+          } else {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+          }
+        },
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(
+              alpha: 0.8,
+            ), // Đen đặc để che hoàn toàn nút bên dưới
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: Icon(
+            isCurrentlyLandscape ? Icons.fullscreen_exit : Icons.fullscreen,
+            color: Colors.white,
+            size: 24.sp,
+          ),
+        ),
       ),
     );
   }

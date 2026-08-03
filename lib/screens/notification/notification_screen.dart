@@ -59,14 +59,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                padding: EdgeInsets.all(16.w),
-                itemCount: keys.length,
-                itemBuilder: (context, index) {
-                  String date = keys[index];
-                  List<NotificationModel> items = grouped[date]!;
+        child: RefreshIndicator(
+          color: mainDarkGreen,
+          onRefresh: _fetchData,
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : keys.isEmpty
+              ? SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height - 100,
+                    alignment: Alignment.center,
+                    child: Text('Không có thông báo mới', style: defaultText16M),
+                  ),
+                )
+              : ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(16.w),
+                  itemCount: keys.length,
+                  itemBuilder: (context, index) {
+                    String date = keys[index];
+                    List<NotificationModel> items = grouped[date]!;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,6 +103,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   );
                 },
               ),
+        ),
       ),
     );
   }

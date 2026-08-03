@@ -137,4 +137,21 @@ class HomeRepo {
       throw Exception('Lỗi xử lý dữ liệu: $e');
     }
   }
+
+  Future<PolicyModel> getPolicy() async {
+    try {
+      final dio = await DioClient.getInstance();
+      final response = await dio.post(ApiPath.chinhSach);
+
+      if (response.data != null && response.data['data'] != null) {
+        return PolicyModel.fromJson(response.data['data']);
+      } else {
+        throw Exception('Không tìm thấy dữ liệu chính sách từ server.');
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
 }

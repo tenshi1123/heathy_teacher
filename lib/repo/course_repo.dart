@@ -158,11 +158,12 @@ class CourseRepo {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? token = prefs.getString('token');
       dio.options.headers['Authorization'] = 'Bearer $token';
+
       Map<String, dynamic> requestData = {
         'content': content,
         'course_id': courseId,
         'course_type_id': courseTypeId,
-        'is_point_acc': isPointAcc,
+        'is_point_acc': isPointAcc.toString(),
       };
 
       for (int i = 0; i < files.length; i++) {
@@ -174,9 +175,35 @@ class CourseRepo {
 
       FormData formData = FormData.fromMap(requestData);
 
+      // Lưu lại timeout cũ
+      final oldSendTimeout = dio.options.sendTimeout;
+      final oldReceiveTimeout = dio.options.receiveTimeout;
+
+      // Tăng timeout cho tác vụ này
+      dio.options.sendTimeout = const Duration(minutes: 30);
+      dio.options.receiveTimeout = const Duration(minutes: 30);
+
       final response = await dio.post(ApiPath.customerSubmit, data: formData);
-      if (response.data == null || response.data['status'] != 200) {
-        throw Exception('Lỗi khi gửi bài: ${response.data}');
+
+      // Trả lại timeout cũ
+      dio.options.sendTimeout = oldSendTimeout;
+      dio.options.receiveTimeout = oldReceiveTimeout;
+
+      if (response.data == null) {
+        throw Exception('Lỗi từ Server: Không nhận được dữ liệu');
+      }
+
+      if (response.data is Map) {
+        final data = response.data;
+        final isSuccess =
+            data['status'] == 200 ||
+            data['status'] == '200' ||
+            data['type'] == 'success' ||
+            data['status'] == 'success';
+
+        if (!isSuccess) {
+          throw Exception('Lỗi từ Server: ${response.data}');
+        }
       }
     } on DioException catch (e) {
       throw Exception('Lỗi kết nối mạng: ${e.message}');
@@ -245,6 +272,7 @@ class CourseRepo {
       throw Exception('Lỗi xử lý dữ liệu: $e');
     }
   }
+
   Future<void> addComment({
     required int courseCustomerSubmitId,
     required int courseId,

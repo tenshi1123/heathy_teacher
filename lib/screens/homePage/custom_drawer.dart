@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/screens/drawer/thong_tin_uu_dai.dart';
 import 'package:heathy_teacher/screens/homePage/home_screen.dart';
+import 'package:heathy_teacher/screens/productPage/product_screen.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,11 +56,16 @@ class MyCustomDrawer extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DetailInfoScreen(model: userModel),
+                            builder: (context) =>
+                                DetailInfoScreen(model: userModel),
                           ),
                         );
                       },
-                      child: Icon(Icons.edit_outlined, size: 20, color: Colors.black87),
+                      child: Icon(
+                        Icons.edit_outlined,
+                        size: 20,
+                        color: Colors.black87,
+                      ),
                     ),
                   ],
                 ),
@@ -171,7 +177,10 @@ class MyCustomDrawer extends StatelessWidget {
                     );
                   },
                 ),
-                _ExpandablePaymentHistory(isSelected: selectedIndex == 3),
+                _ExpandablePaymentHistory(
+                  isSelected: selectedIndex == 3,
+                  userModel: userModel,
+                ),
                 _buildMenuItem(
                   icon: Icons.notifications_none,
                   title: 'Thông báo',
@@ -292,7 +301,12 @@ class MyCustomDrawer extends StatelessWidget {
 
 class _ExpandablePaymentHistory extends StatefulWidget {
   final bool isSelected;
-  const _ExpandablePaymentHistory({super.key, required this.isSelected});
+  final UserModel userModel;
+  const _ExpandablePaymentHistory({
+    super.key,
+    required this.isSelected,
+    required this.userModel,
+  });
 
   @override
   State<_ExpandablePaymentHistory> createState() =>
@@ -368,7 +382,8 @@ class _ExpandablePaymentHistoryState extends State<_ExpandablePaymentHistory> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const HocPhiScreen(),
+                      builder: (context) =>
+                          ProductScreen(type: 2, userModel: widget.userModel),
                     ),
                   );
                 }),
@@ -377,7 +392,7 @@ class _ExpandablePaymentHistoryState extends State<_ExpandablePaymentHistory> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const HocPhiScreen(),
+                      builder: (context) => const HocPhiScreen(initialIndex: 1),
                     ),
                   );
                 }),
@@ -386,7 +401,7 @@ class _ExpandablePaymentHistoryState extends State<_ExpandablePaymentHistory> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const HocPhiScreen(),
+                      builder: (context) => const HocPhiScreen(initialIndex: 0),
                     ),
                   );
                 }),

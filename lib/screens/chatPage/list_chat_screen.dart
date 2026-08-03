@@ -96,26 +96,37 @@ class _ListChatScreenState extends State<ListChatScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : listLecturers.isEmpty
-            ? Center(child: Text('Không có dữ liệu', style: defaultText14M))
-            : ListView.builder(
-                padding: EdgeInsets.only(
-                  left: 20.w,
-                  right: 20.w,
-                  bottom: 80.w,
-                  top: 10.h, // Added top padding replacing SizedBox
+        child: RefreshIndicator(
+          color: mainDarkGreen,
+          onRefresh: fetchData,
+          child: isLoading
+              ? Center(child: CircularProgressIndicator(color: mainDarkGreen))
+              : listLecturers.isEmpty
+              ? SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height - 100,
+                    alignment: Alignment.center,
+                    child: Text('Không có dữ liệu', style: defaultText14M),
+                  ),
+                )
+              : ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.only(
+                    left: 20.w,
+                    right: 20.w,
+                    bottom: 80.w,
+                    top: 10.h,
+                  ),
+                  itemCount: listLecturers.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 10.h),
+                      child: ConversationItem(model: listLecturers[index]),
+                    );
+                  },
                 ),
-                physics: const ClampingScrollPhysics(),
-                itemCount: listLecturers.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 10.h),
-                    child: ConversationItem(model: listLecturers[index]),
-                  );
-                },
-              ),
+        ),
       ),
     );
   }

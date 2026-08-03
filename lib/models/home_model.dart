@@ -120,3 +120,47 @@ class PostModel {
     };
   }
 }
+
+class PolicyModel {
+  final PolicyItemModel? policyCustomer;
+  final PolicyItemModel? policyPoint;
+
+  PolicyModel({
+    this.policyCustomer,
+    this.policyPoint,
+  });
+
+  factory PolicyModel.fromJson(Map<String, dynamic> json) {
+    return PolicyModel(
+      policyCustomer: json['policy_customer'] != null
+          ? PolicyItemModel.fromJson(json['policy_customer'])
+          : null,
+      policyPoint: json['policy_point'] != null
+          ? PolicyItemModel.fromJson(json['policy_point'])
+          : null,
+    );
+  }
+}
+
+class PolicyItemModel {
+  final String? id;
+  final String? type;
+  final String? content;
+  final String? createdAt;
+
+  PolicyItemModel({
+    this.id,
+    this.type,
+    this.content,
+    this.createdAt,
+  });
+
+  factory PolicyItemModel.fromJson(Map<String, dynamic> json) {
+    return PolicyItemModel(
+      id: json['id']?.toString(),
+      type: json['type']?.toString(),
+      content: json['content']?.toString(),
+      createdAt: json['created_at']?.toString(),
+    );
+  }
+}

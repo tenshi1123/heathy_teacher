@@ -9,7 +9,8 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:intl/intl.dart';
 
 class HocPhiScreen extends StatefulWidget {
-  const HocPhiScreen({super.key});
+  final int initialIndex;
+  const HocPhiScreen({super.key, this.initialIndex = 0});
 
   @override
   State<HocPhiScreen> createState() => _HocPhiScreenState();
@@ -94,6 +95,7 @@ class _HocPhiScreenState extends State<HocPhiScreen> {
                     child: LessonHistoryBody(
                       listPaymented: listPaymented,
                       listPayment: listPayment,
+                      initialIndex: widget.initialIndex,
                     ),
                   ),
                 ],
@@ -108,15 +110,23 @@ class LessonHistoryBody extends StatefulWidget {
     super.key,
     required this.listPaymented,
     required this.listPayment,
+    this.initialIndex = 0,
   });
   final List<PaymentModel> listPaymented;
   final List<PaymentModel> listPayment;
+  final int initialIndex;
   @override
   State<LessonHistoryBody> createState() => _LessonHistoryBodyState();
 }
 
 class _LessonHistoryBodyState extends State<LessonHistoryBody> {
-  int selectedTab = 0;
+  late int selectedTab;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedTab = widget.initialIndex;
+  }
 
   @override
   Widget build(BuildContext context) {

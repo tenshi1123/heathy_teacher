@@ -123,178 +123,191 @@ class _SaleScreenState extends State<SaleScreen> {
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 50),
-                  DefaultAppBar(),
+            child: RefreshIndicator(
+              color: mainDarkGreen,
+              onRefresh: _fetchData,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 50),
+                    DefaultAppBar(),
 
-                  if (isLoading)
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: CircularProgressIndicator(color: mainDarkGreen),
-                      ),
-                    )
-                  else ...[
-                    // Khóa học online
-                    if (saleCourses.isNotEmpty && isShow == 'true') ...[
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 8.h,
-                        ),
-                        child: Text(
-                          'ƯU ĐÃI KHÓA HỌC',
-                          style: defaultText18B.copyWith(color: mainDarkGreen),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 550.h,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            ListView.builder(
-                              controller: _courseScrollController,
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: 8.w),
-                              itemCount: saleCourses.length,
-                              itemBuilder: (context, index) {
-                                return SizedBox(
-                                  width: 320.w,
-                                  child: _buildCourseItem(saleCourses[index]),
-                                );
-                              },
-                            ),
-                            Positioned(
-                              left: 8.w,
-                              child: GestureDetector(
-                                onTap: () => _scrollCourses(false),
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.chevron_left,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 8.w,
-                              child: GestureDetector(
-                                onTap: () => _scrollCourses(true),
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.chevron_right,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-
-                    // Sản phẩm
-                    if (saleProducts.isNotEmpty) ...[
-                      SizedBox(height: 16.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 8.h,
-                        ),
-                        child: Text(
-                          'ƯU ĐÃI NGUYÊN LIỆU - MÁY MÓC',
-                          style: defaultText18B.copyWith(color: mainDarkGreen),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 380.h,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            ListView.builder(
-                              controller: _productScrollController,
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: 8.w),
-                              itemCount: saleProducts.length,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: 170.w,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 8.w,
-                                    vertical: 8.h,
-                                  ),
-                                  child: _buildProductItem(saleProducts[index]),
-                                );
-                              },
-                            ),
-                            Positioned(
-                              left: 8.w,
-                              child: GestureDetector(
-                                onTap: () => _scrollProducts(false),
-                                child: Container(
-                                  padding: EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.chevron_left,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 8.w,
-                              child: GestureDetector(
-                                onTap: () => _scrollProducts(true),
-                                child: Container(
-                                  padding: EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: mainDarkGreen,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.chevron_right,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-
-                    if (saleCourses.isEmpty && saleProducts.isEmpty)
+                    if (isLoading)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(32),
-                          child: Text(
-                            'Chưa có ưu đãi nào',
-                            style: defaultText16M,
+                          padding: EdgeInsets.all(20.0),
+                          child: CircularProgressIndicator(
+                            color: mainDarkGreen,
                           ),
                         ),
-                      ),
-                  ],
-                  SizedBox(height: 20.h),
-                  CustomFooterInfo(),
+                      )
+                    else ...[
+                      // Khóa học online
+                      if (saleCourses.isNotEmpty && isShow == 'true') ...[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 8.h,
+                          ),
+                          child: Text(
+                            'ƯU ĐÃI KHÓA HỌC',
+                            style: defaultText18B.copyWith(
+                              color: mainDarkGreen,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 550.h,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              ListView.builder(
+                                controller: _courseScrollController,
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                itemCount: saleCourses.length,
+                                itemBuilder: (context, index) {
+                                  return SizedBox(
+                                    width: 320.w,
+                                    child: _buildCourseItem(saleCourses[index]),
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                left: 8.w,
+                                child: GestureDetector(
+                                  onTap: () => _scrollCourses(false),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: mainDarkGreen,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.chevron_left,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 8.w,
+                                child: GestureDetector(
+                                  onTap: () => _scrollCourses(true),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: mainDarkGreen,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.chevron_right,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
 
-                  BottomCustom(),
-                ],
+                      // Sản phẩm
+                      if (saleProducts.isNotEmpty) ...[
+                        SizedBox(height: 16.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 8.h,
+                          ),
+                          child: Text(
+                            'ƯU ĐÃI NGUYÊN LIỆU - MÁY MÓC',
+                            style: defaultText18B.copyWith(
+                              color: mainDarkGreen,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 380.h,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              ListView.builder(
+                                controller: _productScrollController,
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                itemCount: saleProducts.length,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    width: 170.w,
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal: 8.w,
+                                      vertical: 8.h,
+                                    ),
+                                    child: _buildProductItem(
+                                      saleProducts[index],
+                                    ),
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                left: 8.w,
+                                child: GestureDetector(
+                                  onTap: () => _scrollProducts(false),
+                                  child: Container(
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: mainDarkGreen,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.chevron_left,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 8.w,
+                                child: GestureDetector(
+                                  onTap: () => _scrollProducts(true),
+                                  child: Container(
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: mainDarkGreen,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.chevron_right,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+
+                      if (saleCourses.isEmpty && saleProducts.isEmpty)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Text(
+                              'Chưa có ưu đãi nào',
+                              style: defaultText16M,
+                            ),
+                          ),
+                        ),
+                    ],
+                    SizedBox(height: 20.h),
+                    CustomFooterInfo(),
+
+                    BottomCustom(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -309,7 +322,8 @@ class _SaleScreenState extends State<SaleScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RegisterClassON(id: model.courseTypeId ?? ''),
+            builder: (context) =>
+                RegisterClassON(id: model.courseTypeId ?? '', model: model),
           ),
         );
       },
@@ -396,7 +410,9 @@ class _SaleScreenState extends State<SaleScreen> {
                     '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.price ?? '0') ?? 0)}đ',
                     style: defaultText18B.copyWith(color: Colors.red),
                   ),
-                  if (model.priceOld != null && model.priceOld != '0' && model.priceOld != '')
+                  if (model.priceOld != null &&
+                      model.priceOld != '0' &&
+                      model.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(model.priceOld ?? '0') ?? 0)}đ',
                       style: defaultText14M.copyWith(
@@ -559,7 +575,9 @@ class _SaleScreenState extends State<SaleScreen> {
                     style: defaultText14B.copyWith(color: mainDarkGreen),
                   ),
                   SizedBox(height: 2.h),
-                  if (item.priceOld != null && item.priceOld != '0' && item.priceOld != '')
+                  if (item.priceOld != null &&
+                      item.priceOld != '0' &&
+                      item.priceOld != '')
                     Text(
                       '${NumberFormat('#,###', 'vi_VN').format(int.tryParse(item.priceOld ?? '0') ?? 0)}đ',
                       style: defaultText12Re.copyWith(

@@ -153,9 +153,13 @@ class _ListProductScreenState extends State<ListProductScreen> {
           Column(
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
+                child: RefreshIndicator(
+                  color: mainDarkGreen,
+                  onRefresh: _fetchData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    child: Column(
                     children: [
                       GridView.builder(
                         shrinkWrap: true,
@@ -291,6 +295,7 @@ class _ListProductScreenState extends State<ListProductScreen> {
                     ],
                   ),
                 ),
+              ),
               ),
             ],
           ),

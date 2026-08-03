@@ -1,7 +1,7 @@
 name: heathy_teacher
 description: "application for heathy teacher"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 0.0.8+3
+version: 0.0.8+4
 
 environment:
   sdk: ^3.8.1
@@ -36,6 +36,8 @@ dependencies:
   upgrader: ^13.6.0
   screenshot: ^3.0.0
   image_gallery_saver_plus: ^4.0.1
+  google_fonts: ^6.3.2
+  visibility_detector: ^0.4.0+2
 dev_dependencies:
   flutter_test:
     sdk: flutter

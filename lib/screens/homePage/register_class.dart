@@ -115,10 +115,38 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                       ),
                     ),
                     SizedBox(height: 6.h),
-                    CachedNetworkImage(
-                      imageUrl: courses.image ?? '',
-                      width: 343.w,
-                      height: 280.h,
+                    AspectRatio(
+                      aspectRatio: 483 / 397.76,
+                      child: CachedNetworkImage(
+                        imageUrl: courses.image ?? '',
+                        width: 343.w,
+                        height: 280.h,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6.r),
+                            border: Border.all(
+                              color: mainDarkGreen,
+                              width: 1.5,
+                            ),
+                            color: Colors.white,
+                          ),
+                          child: Text(
+                            widget.model?.topicName ?? '',
+                            style: defaultText14M.copyWith(
+                              color: mainDarkGreen,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     if (widget.model != null)
                       Builder(
@@ -184,15 +212,41 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Icon(
-                                      Icons.group_outlined,
-                                      color: mainDarkGreen,
-                                      size: 16,
-                                    ),
-                                    Text(
-                                      '  ${model.startCount ?? '0'} lượt học',
-                                      style: defaultText14M.copyWith(
-                                        color: mainDarkGreen,
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 8.w,
+                                        vertical: 4.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          12.r,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: mainDarkGreen.withValues(
+                                              alpha: 0.1,
+                                            ),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
+                                        color: Colors.white,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.person_outline,
+                                            color: Colors.yellow,
+                                            size: 16,
+                                          ),
+                                          Text(
+                                            '  ${int.parse(model.totalEnrollments ?? '0') + int.parse(model.startCount ?? '0')} lượt học',
+                                            style: defaultText12M.copyWith(
+                                              color: mainDarkGreen,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -201,7 +255,9 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                                 //if (isShow == 'true')
                                 SizedBox(
                                   width: 343.w,
-                                  child: Row(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         NumberFormat.decimalPattern(

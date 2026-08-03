@@ -102,17 +102,26 @@ class _ListClassOnlineState extends State<ListClassOnline> {
         ),
         child: Stack(
           children: [
-            Stack(
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(
-                    left: 16.w,
-                    right: 16.w,
-                    bottom: 20.h,
-                  ),
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: currentItems.length,
+            RefreshIndicator(
+              color: mainDarkGreen,
+              onRefresh: () async {
+                setState(() {
+                  globalListCourse.clear();
+                  currentPage = 1;
+                });
+                await _loadPage(1);
+              },
+              child: Stack(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.only(
+                      left: 16.w,
+                      right: 16.w,
+                      bottom: 20.h,
+                    ),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: currentItems.length,
                   itemBuilder: (BuildContext context, int index) {
                     var model = currentItems[index];
                     return GestureDetector(
@@ -292,7 +301,8 @@ class _ListClassOnlineState extends State<ListClassOnline> {
                   ),
               ],
             ),
-            Align(
+          ),
+          Align(
               alignment: Alignment.bottomLeft,
               child: Container(
                 height: 76.h,

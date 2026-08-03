@@ -8,11 +8,9 @@ import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:heathy_teacher/screens/coursePage/video_screen.dart';
-import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'dart:io';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:heathy_teacher/repo/chat_repo.dart';
 import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
@@ -58,7 +56,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
 
   Future<void> _pickImagesAndSubmit() async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile> medias = await picker.pickMultipleMedia();
+    final List<XFile> medias = await picker.pickMultiImage();
     if (medias.isNotEmpty) {
       if (!mounted) return;
       final TextEditingController textController = TextEditingController();
@@ -87,33 +85,16 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                       scrollDirection: Axis.horizontal,
                       itemCount: medias.length,
                       itemBuilder: (ctx, index) {
-                        final path = medias[index].path.toLowerCase();
-                        final isVideo =
-                            path.endsWith('.mp4') ||
-                            path.endsWith('.mov') ||
-                            path.endsWith('.avi') ||
-                            path.endsWith('.mkv');
                         return Padding(
                           padding: EdgeInsets.only(right: 8.w),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8.r),
-                            child: isVideo
-                                ? Container(
-                                    height: 80.h,
-                                    width: 80.h,
-                                    color: Colors.grey.shade200,
-                                    child: Icon(
-                                      Icons.videocam,
-                                      size: 40.h,
-                                      color: Colors.grey.shade500,
-                                    ),
-                                  )
-                                : Image.file(
-                                    File(medias[index].path),
-                                    height: 80.h,
-                                    width: 80.h,
-                                    fit: BoxFit.cover,
-                                  ),
+                            child: Image.file(
+                              File(medias[index].path),
+                              height: 80.h,
+                              width: 80.h,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         );
                       },
@@ -172,7 +153,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                           '',
                       content: textContent,
                       courseTypeId: widget.course.settingCourseTypeId ?? '1',
-                      isPointAcc: 0,
+                      isPointAcc: 1,
                       files: medias.map((e) => e.path).toList(),
                     );
 
@@ -370,13 +351,6 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
     );
   }
 
-  String _formatHtml(String? html) {
-    if (html == null) return '';
-    return html
-        .replaceAll(RegExp(r'width:\s*\d+px;?'), '')
-        .replaceAll(RegExp(r'height:\s*\d+px;?'), '');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -414,208 +388,269 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : courses == null
-            ? Center(
-                child: GestureDetector(
-                  onTap: () async {
-                    if (widget.course.orderId == null) return;
-                    try {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) =>
-                            const Center(child: CircularProgressIndicator()),
-                      );
-                      final orderInfo = await PaymentRepo().getOrderInfo(
-                        int.tryParse(widget.course.orderId!) ?? 0,
-                      );
-                      Navigator.pop(context);
-                      if (orderInfo != null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                OrderInfoScreen(orderResponse: orderInfo),
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Không thể tải thông tin đơn hàng'),
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      Navigator.pop(context);
-                      debugPrint('Lỗi tải order info: $e');
-                    }
-                  },
-                  child: Text(
-                    'Chờ thanh toán',
-                    style: defaultText16M.copyWith(
-                      color: mainDarkGreen,
-                      decoration: TextDecoration.underline,
+        child: RefreshIndicator(
+          color: mainDarkGreen,
+          onRefresh: _fetchData,
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : courses == null
+              ? SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Container(
+                    height: 500.h,
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: () async {
+                        if (widget.course.orderId == null) return;
+                        try {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                          final orderInfo = await PaymentRepo().getOrderInfo(
+                            int.tryParse(widget.course.orderId!) ?? 0,
+                          );
+                          Navigator.pop(context);
+                          if (orderInfo != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    OrderInfoScreen(orderResponse: orderInfo),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Không thể tải thông tin đơn hàng',
+                                ),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          Navigator.pop(context);
+                          debugPrint('Lỗi tải order info: $e');
+                        }
+                      },
+                      child: Text(
+                        'Chờ thanh toán',
+                        style: defaultText16M.copyWith(
+                          color: mainDarkGreen,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              )
-            : SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 483 / 397.76,
-                      child: CachedNetworkImage(
-                        imageUrl: courses!.image!.contains('https://')
-                            ? courses!.image!
-                            : 'https://lms.cogiaohealthy.vn/${courses!.image}',
+                )
+              : SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 483 / 397.76,
+                        child: CachedNetworkImage(
+                          imageUrl: courses!.image!.contains('https://')
+                              ? courses!.image!
+                              : 'https://lms.cogiaohealthy.vn/${courses!.image}',
+                          width: 343.w,
+                          height: 200.h,
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+
+                      SizedBox(height: 12.h),
+                      SizedBox(
                         width: 343.w,
-                        height: 200.h,
-                        fit: BoxFit.fill,
+                        child: Text(
+                          courses?.title ??
+                              'Lớp Combo chuyên đề Eatclean nâng cao',
+                          style: defaultText18B,
+                        ),
                       ),
-                    ),
+                      // Html(
+                      //   data: _formatHtml(courses?.description),
+                      //   // style: {
+                      //   //   'p': Style(
+                      //   //     fontSize: FontSize(14.sp),
+                      //   //     color: const Color(0xff3C3C3C).withValues(alpha: 0.6),
+                      //   //   ),
+                      //   // },
+                      // ),
 
-                    SizedBox(height: 12.h),
-                    SizedBox(
-                      width: 343.w,
-                      child: Text(
-                        courses?.title ??
-                            'Lớp Combo chuyên đề Eatclean nâng cao',
-                        style: defaultText18B,
-                      ),
-                    ),
-                    // Html(
-                    //   data: _formatHtml(courses?.description),
-                    //   // style: {
-                    //   //   'p': Style(
-                    //   //     fontSize: FontSize(14.sp),
-                    //   //     color: const Color(0xff3C3C3C).withValues(alpha: 0.6),
-                    //   //   ),
-                    //   // },
-                    // ),
-
-                    // Text(
-                    //   courses.description ?? 'Học online với video'.sanitizeForApple,
-                    //   style: defaultText14Re,
-                    // ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            try {
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (context) => const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                              final chatCourse = await ChatRepo().getChatCourse(
-                                courseId: widget.course.courseScheduleId ?? '',
-                                courseType: widget.course.courseTypeId ?? '',
-                              );
-                              Navigator.pop(context);
-                              if (chatCourse.courseSchedule != null) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ChatScreen(
-                                      model: chatCourse.courseSchedule!,
-                                      courseScheduleId:
-                                          widget.course.courseScheduleId,
-                                      courseTypeId: widget.course.courseTypeId,
-                                      initialMessages: chatCourse.listMessage,
-                                    ),
+                      // Text(
+                      //   courses.description ?? 'Học online với video'.sanitizeForApple,
+                      //   style: defaultText14Re,
+                      // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              try {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (context) => const Center(
+                                    child: CircularProgressIndicator(),
                                   ),
                                 );
+                                final chatCourse = await ChatRepo()
+                                    .getChatCourse(
+                                      courseId:
+                                          widget.course.courseScheduleId ?? '',
+                                      courseType:
+                                          widget.course.courseTypeId ?? '',
+                                    );
+                                Navigator.pop(context);
+                                if (chatCourse.courseSchedule != null) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ChatScreen(
+                                        model: chatCourse.courseSchedule!,
+                                        courseScheduleId:
+                                            widget.course.courseScheduleId,
+                                        courseTypeId:
+                                            widget.course.courseTypeId,
+                                        initialMessages: chatCourse.listMessage,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                Navigator.pop(context);
+                                debugPrint('Lỗi chat hỗ trợ: $e');
                               }
-                            } catch (e) {
-                              Navigator.pop(context);
-                              debugPrint('Lỗi chat hỗ trợ: $e');
-                            }
-                          },
-                          child: Container(
-                            height: 44.h,
-                            width: 162.w,
-                            decoration: BoxDecoration(
-                              color: Color(0xffEEF5EC),
-                              border: Border.all(
-                                color: mainDarkGreen.withValues(alpha: 0.28),
-                              ),
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/chat.svg',
-                                  width: 20.w,
-                                  height: 20.h,
-                                  colorFilter: ColorFilter.mode(
-                                    mainDarkGreen,
-                                    BlendMode.srcIn,
-                                  ),
+                            },
+                            child: Container(
+                              height: 44.h,
+                              width: 162.w,
+                              decoration: BoxDecoration(
+                                color: Color(0xffEEF5EC),
+                                border: Border.all(
+                                  color: mainDarkGreen.withValues(alpha: 0.28),
                                 ),
-                                SizedBox(width: 8.w),
-                                Text('Chat hỗ trợ', style: defaultText14SB),
-                              ],
+                                borderRadius: BorderRadius.circular(16.r),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/icons/chat.svg',
+                                    width: 20.w,
+                                    height: 20.h,
+                                    colorFilter: ColorFilter.mode(
+                                      mainDarkGreen,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text('Chat hỗ trợ', style: defaultText14SB),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-
+                          GestureDetector(
+                            onTap: _pickImagesAndSubmit,
+                            child: Container(
+                              height: 44.h,
+                              width: 162.w,
+                              decoration: BoxDecoration(
+                                color: Color(0xffEEF5EC),
+                                border: Border.all(
+                                  color: mainDarkGreen.withValues(alpha: 0.28),
+                                ),
+                                borderRadius: BorderRadius.circular(16.r),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/icons/tra_bai.svg',
+                                    width: 20.w,
+                                    height: 20.h,
+                                    colorFilter: ColorFilter.mode(
+                                      mainDarkGreen,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text('Trả bài', style: defaultText14SB),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (widget.course.percentLearning == 100) ...[
+                        SizedBox(height: 16.h),
                         GestureDetector(
-                          onTap: _pickImagesAndSubmit,
+                          onTap: _requestCertificate,
                           child: Container(
                             height: 44.h,
-                            width: 162.w,
+                            width: double.infinity,
                             decoration: BoxDecoration(
-                              color: Color(0xffEEF5EC),
-                              border: Border.all(
-                                color: mainDarkGreen.withValues(alpha: 0.28),
-                              ),
+                              color: mainDarkGreen,
                               borderRadius: BorderRadius.circular(16.r),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SvgPicture.asset(
-                                  'assets/icons/tra_bai.svg',
-                                  width: 20.w,
-                                  height: 20.h,
-                                  colorFilter: ColorFilter.mode(
-                                    mainDarkGreen,
-                                    BlendMode.srcIn,
-                                  ),
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.white,
+                                  size: 20.w,
                                 ),
                                 SizedBox(width: 8.w),
-                                Text('Trả bài', style: defaultText14SB),
+                                Text(
+                                  ' Cấp chứng nhận',
+                                  style: defaultText14SB.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ),
                       ],
-                    ),
-                    if (widget.course.percentLearning == 100) ...[
-                      SizedBox(height: 16.h),
-                      GestureDetector(
-                        onTap: _requestCertificate,
+
+                      SizedBox(height: 20.h),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => StudentProductScreen(
+                                courseId: widget.course.courseId ?? '',
+                              ),
+                            ),
+                          );
+                        },
                         child: Container(
+                          width: 343.w,
                           height: 44.h,
-                          width: double.infinity,
                           decoration: BoxDecoration(
-                            color: mainDarkGreen,
+                            color: mainGreen,
+                            border: Border.all(
+                              color: mainDarkGreen.withValues(alpha: 0.08),
+                            ),
                             borderRadius: BorderRadius.circular(16.r),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.star, color: Colors.white, size: 20.w),
-                              SizedBox(width: 8.w),
+                              SvgPicture.asset(
+                                'assets/icons/bling.svg',
+                                width: 20.w,
+                                height: 20.h,
+                              ),
                               Text(
-                                ' Cấp chứng nhận',
+                                ' Sản phẩm của học viên',
                                 style: defaultText14SB.copyWith(
                                   color: Colors.white,
                                 ),
@@ -624,199 +659,164 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                           ),
                         ),
                       ),
-                    ],
-
-                    SizedBox(height: 20.h),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => StudentProductScreen(
-                              courseId: widget.course.courseId ?? '',
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        width: 343.w,
-                        height: 44.h,
-                        decoration: BoxDecoration(
-                          color: mainGreen,
-                          border: Border.all(
-                            color: mainDarkGreen.withValues(alpha: 0.08),
-                          ),
-                          borderRadius: BorderRadius.circular(16.r),
+                      SizedBox(height: 28.h),
+                      if (isShow == 'true')
+                        Text(
+                          'Nội dung khoá học'.sanitizeForApple,
+                          style: defaultText16B,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      if (isShow == 'true')
+                        Row(
                           children: [
-                            SvgPicture.asset(
-                              'assets/icons/bling.svg',
-                              width: 20.w,
-                              height: 20.h,
+                            Container(
+                              height: 8.h,
+                              width: 270.w,
+                              alignment: Alignment.centerLeft,
+                              decoration: BoxDecoration(
+                                color: const Color(0xffEDEDED),
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                              child: Container(
+                                height: 8.h,
+                                width:
+                                    270.w *
+                                    (widget.course.percentLearning! / 100),
+                                decoration: BoxDecoration(
+                                  color: mainDarkGreen,
+                                  borderRadius: BorderRadius.circular(20.r),
+                                ),
+                              ),
                             ),
+
                             Text(
-                              ' Sản phẩm của học viên',
-                              style: defaultText14SB.copyWith(
-                                color: Colors.white,
+                              '  ${widget.course.percentLearning!}%',
+                              style: defaultText16B.copyWith(
+                                color: mainDarkGreen,
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                    SizedBox(height: 28.h),
-                    if (isShow == 'true')
-                      Text(
-                        'Nội dung khoá học'.sanitizeForApple,
-                        style: defaultText16B,
-                      ),
-                    if (isShow == 'true')
-                      Row(
-                        children: [
-                          Container(
-                            height: 8.h,
-                            width: 270.w,
-                            alignment: Alignment.centerLeft,
-                            decoration: BoxDecoration(
-                              color: const Color(0xffEDEDED),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Container(
-                              height: 8.h,
-                              width:
-                                  270.w *
-                                  (widget.course.percentLearning! / 100),
-                              decoration: BoxDecoration(
-                                color: mainDarkGreen,
-                                borderRadius: BorderRadius.circular(20.r),
-                              ),
-                            ),
-                          ),
 
-                          Text(
-                            '  ${widget.course.percentLearning!}%',
-                            style: defaultText16B.copyWith(
-                              color: mainDarkGreen,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                    if (isShow == 'true')
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        itemCount: courses?.topicals?.length ?? 0,
-                        itemBuilder: (BuildContext context, int index) {
-                          return LessonItem(
-                            index: index,
-                            topicModel: courses?.topicals![index],
-                            courses: courses,
-                            percentLearning: widget.course.percentLearning
-                                ?.toDouble(),
-                            isShow: isShow,
-                          );
-                        },
-                      ),
-                    if (courses?.loTrinh != null &&
-                        courses!.loTrinh!.isNotEmpty)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Nguyên liệu liên quan',
-                            style: defaultText18B.copyWith(
-                              color: const Color(0xff00204A),
-                              fontSize: 20.sp,
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Xem đầy đủ tại ',
-                              style: defaultText16M.copyWith(
+                      if (isShow == 'true')
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const ClampingScrollPhysics(),
+                          itemCount: courses?.topicals?.length ?? 0,
+                          itemBuilder: (BuildContext context, int index) {
+                            return LessonItem(
+                              index: index,
+                              topicModel: courses?.topicals![index],
+                              courses: courses,
+                              percentLearning: widget.course.percentLearning
+                                  ?.toDouble(),
+                              isShow: isShow,
+                            );
+                          },
+                        ),
+                      if (courses?.loTrinh != null &&
+                          courses!.loTrinh!.isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Nguyên liệu liên quan',
+                              style: defaultText18B.copyWith(
                                 color: const Color(0xff00204A),
+                                fontSize: 20.sp,
                               ),
+                            ),
+                            SizedBox(height: 8.h),
+                            RichText(
+                              text: TextSpan(
+                                text: 'Xem đầy đủ tại ',
+                                style: defaultText16M.copyWith(
+                                  color: const Color(0xff00204A),
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: 'Gian hàng nguyên liệu',
+                                    style: defaultText16B.copyWith(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ListDetailProductScreen(
+                                          categorySlug:
+                                              courses?.slugProductCateGory ??
+                                              '',
+                                          categoryName: '',
+                                        ),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: 16.h,
+                                  bottom: 16.h,
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      'https://lms.cogiaohealthy.vn/images/${courses?.loTrinh}',
+                                  width: 343.w,
+                                  fit: BoxFit.fitWidth,
+                                  errorWidget: (context, url, error) =>
+                                      const SizedBox(),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                TextSpan(
-                                  text: 'Gian hàng nguyên liệu',
-                                  style: defaultText16B.copyWith(
-                                    color: Colors.red,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ListDetailProductScreen(
+                                              categorySlug:
+                                                  courses
+                                                      ?.slugProductCateGory ??
+                                                  '',
+                                              categoryName: '',
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 24.w,
+                                      vertical: 8.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(24.r),
+                                    ),
+                                    child: Text(
+                                      'Mua ngay',
+                                      style: defaultText16B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ListDetailProductScreen(
-                                    categorySlug:
-                                        courses?.slugProductCateGory ?? '',
-                                    categoryName: '',
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 16.h, bottom: 16.h),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    'https://lms.cogiaohealthy.vn/images/${courses?.loTrinh}',
-                                width: 343.w,
-                                fit: BoxFit.fitWidth,
-                                errorWidget: (context, url, error) =>
-                                    const SizedBox(),
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ListDetailProductScreen(
-                                            categorySlug:
-                                                courses?.slugProductCateGory ??
-                                                '',
-                                            categoryName: '',
-                                          ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 24.w,
-                                    vertical: 8.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(24.r),
-                                  ),
-                                  child: Text(
-                                    'Mua ngay',
-                                    style: defaultText16B.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    SizedBox(height: 36.h),
-                  ],
+                          ],
+                        ),
+                      SizedBox(height: 36.h),
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

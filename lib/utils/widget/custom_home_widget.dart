@@ -272,7 +272,7 @@ class _CustomImageCarouselState extends State<CustomImageCarousel> {
   final List<Map<String, dynamic>> _productImages = [
     {
       'image': 'assets/images/home1.jpg',
-      'screen': const ListClassOffExternal(),
+      'screen': const ListClassOffExternal(place: "sao"),
     },
     {'image': 'assets/images/home2.jpg', 'screen': const IntroduceScreen()},
     {'image': 'assets/images/home3.jpg', 'screen': const ListFreeCourse()},

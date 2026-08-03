@@ -13,6 +13,8 @@ import 'package:heathy_teacher/utils/constants/styles.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:heathy_teacher/repo/payment_repo.dart';
+import 'package:heathy_teacher/screens/order/order_info_screen.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key, required this.type, required this.userModel});
@@ -102,142 +104,167 @@ class _ProductScreenState extends State<ProductScreen>
           ? Center(child: CircularProgressIndicator(color: mainDarkGreen))
           : Stack(
               children: [
-                SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 24.h),
-
-                      listData.isEmpty
-                          ? Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 50.h),
-                                child: Text(
-                                  'Chưa có dữ liệu.',
-                                  style: defaultText14SB,
-                                ),
-                              ),
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.only(
-                                left: 16.w,
-                                right: 16.w,
-                                bottom: 20.w,
-                              ),
-                              physics: const ClampingScrollPhysics(),
-                              itemCount: displayedProducts.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final product = displayedProducts[index];
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: ((context) =>
-                                    //         DetailProductScreen(
-                                    //           productId:
-                                    //               product
-                                    //                   .detail
-                                    //                   ?.first
-                                    //                   .productId ??
-                                    //               '',
-                                    //         )),
-                                    //   ),
-                                    // );
-                                  },
-                                  child: Container(
-                                    width: 343.w,
-                                    margin: EdgeInsets.only(bottom: 16.h),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w,
-                                      vertical: 8.h,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20.r),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color(
-                                            0xff062905,
-                                          ).withValues(alpha: 0.16),
-                                          spreadRadius: 0,
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            8.r,
-                                          ),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                product.detail?[0].img ??
-                                                'https://lms.cogiaohealthy.vn/${product.img}',
-                                            height: 90.h,
-                                            width: 90.w,
-                                            fit: BoxFit.cover,
-                                            errorWidget: (context, url, error) {
-                                              return Container(
-                                                height: 90.h,
-                                                width: 90.w,
-                                                color: Colors.grey.shade200,
-                                                child: const Icon(
-                                                  Icons.image_not_supported,
-                                                  color: Colors.grey,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        SizedBox(width: 12.w),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(height: 4.h),
-                                              Text(
-                                                product.detail?[0].name ??
-                                                    ' Không có data',
-                                                style: defaultText14SB,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              SizedBox(height: 8.h),
-                                              if (isShow == 'true' &&
-                                                  product.detail?[0].price !=
-                                                      null)
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      '${NumberFormat.decimalPattern('vi_VN').format(int.tryParse(product.detail?[0].price ?? '0'))} VNĐ',
-                                                      style: defaultText16B
-                                                          .copyWith(
-                                                            color:
-                                                                mainDarkGreen,
-                                                          ),
-                                                    ),
-                                                  ],
-                                                ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                RefreshIndicator(
+                  color: mainDarkGreen,
+                  onRefresh: _fetchData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 24.h),
+                        listData.isEmpty
+                            ? Center(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 50.h),
+                                  child: Text(
+                                    'Chưa có dữ liệu.',
+                                    style: defaultText14SB,
                                   ),
-                                );
-                              },
-                            ),
-                      SizedBox(height: 80.h),
-                    ],
+                                ),
+                              )
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.only(
+                                  left: 16.w,
+                                  right: 16.w,
+                                  bottom: 20.w,
+                                ),
+                                physics: const ClampingScrollPhysics(),
+                                itemCount: displayedProducts.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final product = displayedProducts[index];
+
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      if (product.orderId == null) return;
+                                      try {
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (context) => const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        );
+                                        final orderInfo = await PaymentRepo()
+                                            .getOrderInfo(
+                                              int.tryParse(product.orderId!) ??
+                                                  0,
+                                            );
+                                        Navigator.pop(context);
+                                        if (orderInfo != null) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OrderInfoScreen(
+                                                    orderResponse: orderInfo,
+                                                  ),
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        Navigator.pop(context);
+                                      }
+                                    },
+                                    child: Container(
+                                      width: 343.w,
+                                      margin: EdgeInsets.only(bottom: 16.h),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 8.w,
+                                        vertical: 8.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(
+                                          20.r,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(
+                                              0xff062905,
+                                            ).withValues(alpha: 0.16),
+                                            spreadRadius: 0,
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  product.detail?[0].img ??
+                                                  'https://lms.cogiaohealthy.vn/${product.img}',
+                                              height: 90.h,
+                                              width: 90.w,
+                                              fit: BoxFit.cover,
+                                              errorWidget:
+                                                  (context, url, error) {
+                                                    return Container(
+                                                      height: 90.h,
+                                                      width: 90.w,
+                                                      color:
+                                                          Colors.grey.shade200,
+                                                      child: const Icon(
+                                                        Icons
+                                                            .image_not_supported,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    );
+                                                  },
+                                            ),
+                                          ),
+                                          SizedBox(width: 12.w),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(height: 4.h),
+                                                Text(
+                                                  product.detail?[0].name ??
+                                                      ' Không có data',
+                                                  style: defaultText14SB,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                SizedBox(height: 8.h),
+                                                if (isShow == 'true' &&
+                                                    product.detail?[0].price !=
+                                                        null)
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        '${NumberFormat.decimalPattern('vi_VN').format(int.tryParse(product.detail?[0].price ?? '0'))} VNĐ',
+                                                        style: defaultText16B
+                                                            .copyWith(
+                                                              color:
+                                                                  mainDarkGreen,
+                                                            ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                        SizedBox(height: 80.h),
+                      ],
+                    ),
                   ),
                 ),
                 Align(

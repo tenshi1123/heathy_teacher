@@ -23,55 +23,21 @@ class _ListSpScreenState extends State<ListSpScreen> {
   bool isLoading = true;
   List<CategoryModel> courses = [];
   final ScrollController _scrollController = ScrollController();
-  int _page = 1;
-  final int _show = 10;
-  bool _hasMore = true;
-  bool _isLoadingMore = false;
+  final int _show = 100;
 
   @override
   void initState() {
     super.initState();
     _fetchData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 500 &&
-          !_isLoadingMore &&
-          _hasMore) {
-        _loadMore();
-      }
-    });
   }
 
   Future<void> _fetchData() async {
     setState(() {
       isLoading = true;
-      _page = 1;
-      _hasMore = true;
     });
-    courses = await ProductRepo().getCategory(page: _page, show: _show);
-    if (courses.length < _show) {
-      _hasMore = false;
-    }
+    courses = await ProductRepo().getCategory(page: 1, show: _show);
     setState(() {
       isLoading = false;
-    });
-  }
-
-  Future<void> _loadMore() async {
-    setState(() {
-      _isLoadingMore = true;
-    });
-    _page++;
-    final moreCourses = await ProductRepo().getCategory(
-      page: _page,
-      show: _show,
-    );
-    if (moreCourses.length < _show) {
-      _hasMore = false;
-    }
-    setState(() {
-      courses.addAll(moreCourses);
-      _isLoadingMore = false;
     });
   }
 
@@ -91,297 +57,288 @@ class _ListSpScreenState extends State<ListSpScreen> {
           Column(
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 50),
-                      DefaultAppBar(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 6.h,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: const Color(0xFFC0CA33),
-                              width: 1.5,
-                            ),
+                child: RefreshIndicator(
+                  color: mainDarkGreen,
+                  onRefresh: _fetchData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 50),
+                        DefaultAppBar(),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 6.h,
                           ),
-                          child: const TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Nhập để tìm kiếm...',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: secondaryGreen,
-                              ),
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 15,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)
-                      Container(
-                        width: double.infinity,
-                        //height: 375.w * 4 / 3,
-                        margin: EdgeInsets.symmetric(vertical: 16.h),
-                        child: Image.asset(
-                          'assets/images/sptitle.jpg',
-                          width: double.infinity,
-                          fit: BoxFit.cover, // 🔥 QUAN TRỌNG
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(width: 16.w),
-
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Colors.green, // Cài đặt màu nền cho nút
-                              foregroundColor: Colors
-                                  .white, // Chuyển màu chữ thành trắng để tương phản tốt hơn
-                              elevation: 2, // (Tùy chọn) Độ đổ bóng của nút
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  8,
-                                ), // (Tùy chọn) Bo góc cho nút mềm mại hơn
-                              ),
-                            ),
-                            child: const Text('Trở về'),
-                          ),
-                        ],
-                      ),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(12),
-                        itemCount: courses.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 0.6,
-                            ),
-                        itemBuilder: (context, index) {
-                          final item = courses[index];
-
-                          return Container(
-                            padding: EdgeInsets.all(6),
+                          child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(
+                                color: const Color(0xFFC0CA33),
+                                width: 1.5,
+                              ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// IMAGE
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(16),
-                                    bottom: Radius.circular(16),
-                                  ),
-                                  child: CachedNetworkImage(
-                                    imageUrl: item.img ?? '',
-                                    height: 160.h,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorWidget: (context, url, error) {
-                                      return Container(
-                                        width: 50.dg,
-                                        height: 50.dg,
-                                        color: Colors.grey[200],
-                                        child: Icon(
-                                          Icons.error_outline,
-                                          size: 30.dg,
-                                          color: Colors.grey,
-                                        ),
-                                      );
-                                    },
-                                    // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
-                                    placeholder: (context, url) {
-                                      return Container(
-                                        width: 80.w,
-                                        height: 80.h,
-                                        color: Colors.grey[100],
-                                        child: const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                            child: const TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Nhập để tìm kiếm...',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: secondaryGreen,
                                 ),
-
-                                Text(
-                                  item.categoryName ?? '',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: defaultText16B.copyWith(
-                                    color: mainDarkGreen,
-                                  ),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 15,
                                 ),
+                              ),
+                            ),
+                          ),
+                        ),
 
-                                const Spacer(),
+                        // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)
+                        Container(
+                          width: double.infinity,
+                          //height: 375.w * 4 / 3,
+                          margin: EdgeInsets.symmetric(vertical: 16.h),
+                          child: Image.asset(
+                            'assets/images/sptitle.jpg',
+                            width: double.infinity,
+                            fit: BoxFit.cover, // 🔥 QUAN TRỌNG
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(width: 16.w),
 
-                                /// BUTTON
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: ((context) =>
-                                              ListDetailSpScreen(model: item)),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Colors.green, // Cài đặt màu nền cho nút
+                                foregroundColor: Colors
+                                    .white, // Chuyển màu chữ thành trắng để tương phản tốt hơn
+                                elevation: 2, // (Tùy chọn) Độ đổ bóng của nút
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    8,
+                                  ), // (Tùy chọn) Bo góc cho nút mềm mại hơn
+                                ),
+                              ),
+                              child: const Text('Trở về'),
+                            ),
+                          ],
+                        ),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(12),
+                          itemCount: courses.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.6,
+                              ),
+                          itemBuilder: (context, index) {
+                            final item = courses[index];
+
+                            return Container(
+                              padding: EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  /// IMAGE
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(16),
+                                      bottom: Radius.circular(16),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      imageUrl: item.img ?? '',
+                                      height: 160.h,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (context, url, error) {
+                                        return Container(
+                                          width: 50.dg,
+                                          height: 50.dg,
+                                          color: Colors.grey[200],
+                                          child: Icon(
+                                            Icons.error_outline,
+                                            size: 30.dg,
+                                            color: Colors.grey,
+                                          ),
+                                        );
+                                      },
+                                      // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
+                                      placeholder: (context, url) {
+                                        return Container(
+                                          width: 80.w,
+                                          height: 80.h,
+                                          color: Colors.grey[100],
+                                          child: const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+
+                                  Text(
+                                    item.categoryName ?? '',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: defaultText16B.copyWith(
+                                      color: mainDarkGreen,
+                                    ),
+                                  ),
+
+                                  const Spacer(),
+
+                                  /// BUTTON
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: ((context) =>
+                                                ListDetailSpScreen(
+                                                  model: item,
+                                                )),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 6,
                                         ),
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 4,
-                                        horizontal: 6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: mainDarkGreen,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Xem tất cả",
-                                          style: defaultText14B.copyWith(
-                                            color: Colors.white,
+                                        decoration: BoxDecoration(
+                                          color: mainDarkGreen,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "Xem tất cả",
+                                            style: defaultText14B.copyWith(
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      Container(
-                        height: 160.h,
-                        width: 375.w,
-                        margin: EdgeInsets.only(bottom: 20.h),
-                        padding: EdgeInsets.only(left: 16.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.r),
-                          gradient: LinearGradient(
-                            colors: [mainDarkGreen, mainGreen],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          border: Border.all(color: mainDarkGreen, width: 1.w),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            /// TEXT (tự co lại)
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
-                                    style: defaultText14B.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    'NGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
-                                    style: defaultText14B.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 12.w,
-                                      vertical: 8.h,
-                                    ),
-
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16.r),
-                                      color: Colors.white,
-                                    ),
-                                    child: Text(
-                                      'Nhận ưu đãi ngay',
-                                      style: defaultText16B.copyWith(
-                                        color: mainDarkGreen,
-                                      ),
-                                    ),
-                                  ),
                                 ],
                               ),
-                            ),
-
-                            /// IMAGE (giữ kích thước mong muốn)
-                            SizedBox(
-                              height: 140.h, // 👈 bạn control size ảnh ở đây
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      ),
-                      const CustomFooterInfo(),
-                      // Khoảng cách cuối trang
-                    ],
+                        Container(
+                          height: 160.h,
+                          width: 375.w,
+                          margin: EdgeInsets.only(bottom: 20.h),
+                          padding: EdgeInsets.only(left: 16.w),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.r),
+                            gradient: LinearGradient(
+                              colors: [mainDarkGreen, mainGreen],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            border: Border.all(
+                              color: mainDarkGreen,
+                              width: 1.w,
+                            ),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              /// TEXT (tự co lại)
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      'ƯU ĐÃI ĐẶC QUYỀN GIẢM ĐẾN 30%',
+                                      style: defaultText14B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      'NGUYÊN LIỆU VÀ DỤNG CỤ CHO HỌC VIÊN',
+                                      style: defaultText14B.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12.w,
+                                        vertical: 8.h,
+                                      ),
+
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          16.r,
+                                        ),
+                                        color: Colors.white,
+                                      ),
+                                      child: Text(
+                                        'Nhận ưu đãi ngay',
+                                        style: defaultText16B.copyWith(
+                                          color: mainDarkGreen,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              /// IMAGE (giữ kích thước mong muốn)
+                              SizedBox(
+                                height: 140.h, // 👈 bạn control size ảnh ở đây
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const CustomFooterInfo(),
+                        // Khoảng cách cuối trang
+                      ],
+                    ),
                   ),
                 ),
               ),
               BottomCustom(),
             ],
           ),
-          if (_isLoadingMore)
-            Positioned(
-              bottom: 80, // Hiện phía trên thanh BottomCustom
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 6,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: CircularProgressIndicator(color: mainDarkGreen),
-                ),
-              ),
-            ),
         ],
       ),
     );
