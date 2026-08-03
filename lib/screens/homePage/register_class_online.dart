@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
+import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:heathy_teacher/screens/shoppingCart/shopping_cart_screen.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -34,6 +35,9 @@ class _RegisterClassONState extends State<RegisterClassON> {
   late CourseDetailModel courses;
   bool _isVideoPlaying = false;
   WebViewController? _webViewController;
+
+  List<CourseScheduleModel> myCourses = [];
+  bool isLoadingMyCourses = true;
 
   void _initWebView() {
     late final PlatformWebViewControllerCreationParams params;
@@ -82,13 +86,17 @@ class _RegisterClassONState extends State<RegisterClassON> {
   Future<void> _fetchData() async {
     try {
       final data = await ExternalRepo().getDetailCourseExternal(widget.id);
+      final fetchedMyCourses = await CourseRepo().getCourse();
       setState(() {
         courses = data;
+        myCourses = fetchedMyCourses;
         isLoading = false;
+        isLoadingMyCourses = false;
       });
     } catch (e) {
       setState(() {
         isLoading = false;
+        isLoadingMyCourses = false;
       });
       ScaffoldMessenger.of(
         context,
@@ -445,7 +453,9 @@ class _RegisterClassONState extends State<RegisterClassON> {
                               children: [
                                 Image.asset('assets/images/lingting.png'),
                                 Text(
-                                  '  Đăng ký ngay',
+                                  (!isLoadingMyCourses && myCourses.isEmpty)
+                                      ? '  Đăng ký ngay để giảm 10%'
+                                      : '  Đăng ký ngay',
                                   textAlign: TextAlign.center,
                                   style: defaultText16B.copyWith(
                                     color: Colors.white,

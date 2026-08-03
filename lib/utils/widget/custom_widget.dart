@@ -4,6 +4,7 @@ import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
 import 'package:heathy_teacher/screens/homePage/list_class_online.dart';
 import 'package:heathy_teacher/screens/drawer/chinh_sach_screen.dart';
+import 'package:heathy_teacher/screens/splash/list_class_online_external.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -687,7 +688,7 @@ class CustomFooterInfo extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ListClassOnline(),
+                  builder: (context) => const ListClassOnlineExternal(),
                 ),
               );
             },

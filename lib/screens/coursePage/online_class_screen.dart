@@ -726,20 +726,36 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                               ),
                             ),
                             SizedBox(height: 8.h),
-                            RichText(
-                              text: TextSpan(
-                                text: 'Xem đầy đủ tại ',
-                                style: defaultText16M.copyWith(
-                                  color: const Color(0xff00204A),
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: 'Gian hàng nguyên liệu',
-                                    style: defaultText16B.copyWith(
-                                      color: Colors.red,
-                                    ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ListDetailProductScreen(
+                                          categorySlug:
+                                              courses?.slugProductCateGory ??
+                                              '',
+                                          categoryName: '',
+                                        ),
                                   ),
-                                ],
+                                );
+                              },
+                              child: RichText(
+                                text: TextSpan(
+                                  text: 'Xem đầy đủ tại ',
+                                  style: defaultText16M.copyWith(
+                                    color: const Color(0xff00204A),
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: 'Gian hàng nguyên liệu',
+                                      style: defaultText16B.copyWith(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             GestureDetector(

@@ -239,22 +239,42 @@ class _HomeScreenState extends State<HomeScreen> {
                     Positioned(
                       bottom: 97.w,
                       right: 40.w,
-                      child: GestureDetector(
+                      child: InkWell(
                         onTap: onCourseTabRequested,
-                        child: Text(
-                          customerModel.course.toString(),
-                          style: defaultText16B.copyWith(color: Colors.white),
+                        child: SizedBox(
+                          width: 343.w,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                customerModel.course.toString(),
+                                style: defaultText16B.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     Positioned(
                       bottom: 48.w,
                       right: 40.w,
-                      child: GestureDetector(
+                      child: InkWell(
                         onTap: onProductTabRequested,
-                        child: Text(
-                          customerModel.product.toString(),
-                          style: defaultText16B.copyWith(color: Colors.white),
+                        child: SizedBox(
+                          width: 343.w,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                customerModel.product.toString(),
+                                style: defaultText16B.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

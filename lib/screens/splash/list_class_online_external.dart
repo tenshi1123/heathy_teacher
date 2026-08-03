@@ -302,7 +302,9 @@ class _CategoryExpandableOnlineItemState
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: ((context) => CourseScreen(userModel: widget.userModel ?? UserModel())),
+                          builder: ((context) => CourseScreen(
+                            userModel: widget.userModel ?? UserModel(),
+                          )),
                         ),
                       );
                     } else {
@@ -525,12 +527,7 @@ class _CategoryExpandableOnlineItemState
                                   : mainDarkGreen,
                             ),
                             child: Text(
-                              isBought
-                                  ? 'Học ngay'
-                                  : (!widget.isLoadingMyCourses &&
-                                        widget.myCourses.isEmpty)
-                                  ? 'Đăng ký ngay để giảm 10%'
-                                  : 'Đăng ký ngay',
+                              isBought ? 'Học ngay' : 'Đăng ký ngay',
                               style: defaultText16B.copyWith(
                                 color: Colors.white,
                               ),
