@@ -153,8 +153,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             _nameController.text,
                             fingerprint,
                           );
-                          if (message != 'Đăng nhập thành công') {
-                            // Hiển thị thông báo lỗi nếu đăng nhập thất bại
+                          if (message != 'Đăng ký thành công') {
+                            // Hiển thị thông báo lỗi nếu đăng ký thất bại
                             // show dialog thay cho snackbar để người dùng dễ thấy hơn
                             showDialog(
                               context: context,
@@ -171,7 +171,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                             return;
                           }
-                          if (message == 'Đăng nhập thành công') {
+                          if (message == 'Đăng ký thành công') {
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(

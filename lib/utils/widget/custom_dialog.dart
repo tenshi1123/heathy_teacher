@@ -498,3 +498,320 @@ void showOnlineCategoriesDialog({
     },
   );
 }
+
+void showStudentCommitmentDialog(BuildContext context, {required VoidCallback onAgree}) {
+  showDialog(
+    context: context,
+    barrierDismissible: false, // Bắt buộc phải đồng ý hoặc hủy
+    builder: (context) => StudentCommitmentDialog(onAgree: onAgree),
+  );
+}
+
+class StudentCommitmentDialog extends StatefulWidget {
+  final VoidCallback onAgree;
+
+  const StudentCommitmentDialog({super.key, required this.onAgree});
+
+  @override
+  State<StudentCommitmentDialog> createState() => _StudentCommitmentDialogState();
+}
+
+class _StudentCommitmentDialogState extends State<StudentCommitmentDialog> {
+  bool isChecked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
+              color: const Color(0xFFC70014), // Màu đỏ header
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.assignment_turned_in, color: Colors.white, size: 24.sp),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Cam kết học viên",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          "Vui lòng đọc kỹ và đồng ý trước khi bắt đầu học",
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.9),
+                            fontSize: 13.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Content
+            Flexible(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(20.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Khung chính sách
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFAFAFA),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                              width: 4.w,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFC70014),
+                                borderRadius: BorderRadius.horizontal(
+                                  left: Radius.circular(12.r),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.all(16.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.track_changes, color: const Color(0xFFC70014), size: 20.sp),
+                                        SizedBox(width: 8.w),
+                                        Expanded(
+                                          child: Text(
+                                            "Chính sách sử dụng khóa học của Cô Giáo Healthy",
+                                            style: TextStyle(
+                                              color: const Color(0xFFC70014),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15.sp,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    Text(
+                                      "Bằng việc đồng ý và bắt đầu học, bạn cam kết tuân thủ các quy định sau:",
+                                      style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade800),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    _buildPolicyItem("1.", "Tài liệu, video bài giảng chỉ dành cho cá nhân học viên, ", "không được chia sẻ, phát tán", " dưới bất kỳ hình thức nào."),
+                                    _buildPolicyItem("2.", "", "Không quay màn hình, chụp ảnh", " nội dung bài giảng để chia sẻ lên mạng xã hội hoặc các nền tảng khác."),
+                                    _buildPolicyItem("3.", "", "Không bán lại, cho mượn", " tài khoản học hoặc nội dung khóa học cho người khác."),
+                                    _buildPolicyItem("4.", "Nội dung khóa học được bảo hộ bản quyền. Mọi hành vi vi phạm sẽ bị ", "xử lý theo quy định pháp luật.", ""),
+                                    _buildPolicyItem("5.", "Cô Giáo Healthy có quyền ", "khóa tài khoản vĩnh viễn", " nếu phát hiện vi phạm mà không hoàn lại học phí."),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+
+                    // Hộp lưu ý
+                    Container(
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.info, color: Colors.blue.shade600, size: 20.sp),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                style: TextStyle(fontSize: 13.sp, color: Colors.blue.shade800, height: 1.4),
+                                children: [
+                                  const TextSpan(text: "Lưu ý: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                  const TextSpan(text: "Cam kết này chỉ hiển thị một lần khi bạn bắt đầu khóa học lần đầu tiên."),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+
+                    // Nút Checkbox
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isChecked = !isChecked;
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: isChecked ? const Color(0xFFC70014) : Colors.grey.shade300,
+                          ),
+                          borderRadius: BorderRadius.circular(12.r),
+                          color: isChecked ? const Color(0xFFC70014).withOpacity(0.05) : Colors.transparent,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              isChecked ? Icons.check_box : Icons.check_box_outline_blank,
+                              color: isChecked ? const Color(0xFFC70014) : Colors.grey.shade400,
+                              size: 24.sp,
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  style: TextStyle(fontSize: 14.sp, color: Colors.black87, height: 1.4),
+                                  children: [
+                                    const TextSpan(text: "Tôi đã đọc, hiểu rõ và "),
+                                    TextSpan(text: "đồng ý tuân thủ", style: TextStyle(color: const Color(0xFFC70014), fontWeight: FontWeight.bold)),
+                                    const TextSpan(text: " toàn bộ chính sách sử dụng khóa học của Cô Giáo Healthy."),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Nút điều hướng
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        side: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      child: Text(
+                        "Không đồng ý → Quay lại",
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.sp,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: isChecked
+                          ? () {
+                              Navigator.pop(context);
+                              widget.onAgree();
+                            }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFC70014),
+                        disabledBackgroundColor: Colors.grey.shade300,
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        "✓ Đồng ý & Bắt đầu học",
+                        style: TextStyle(
+                          color: isChecked ? Colors.white : Colors.grey.shade500,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.sp,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPolicyItem(String number, String text1, String textBold, String text2) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 12.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            number,
+            style: TextStyle(
+              color: const Color(0xFFC70014),
+              fontWeight: FontWeight.bold,
+              fontSize: 14.sp,
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade800, height: 1.4),
+                children: [
+                  if (text1.isNotEmpty) TextSpan(text: text1),
+                  TextSpan(text: textBold, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  if (text2.isNotEmpty) TextSpan(text: text2),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

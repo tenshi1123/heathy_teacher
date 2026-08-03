@@ -146,17 +146,29 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   }
 
   int get discountValue {
+    int applicableTotal = 0;
+    bool hasCourse = selectedCartItems.any((item) => item.isCourse);
+
+    if (hasCourse) {
+      for (var item in selectedCartItems) {
+        if (item.isOnlineCourse) {
+          applicableTotal += item.price * item.quantity;
+        }
+      }
+    } else {
+      applicableTotal = totalPrice;
+    }
+
     if (_selectedPromoCode == null) {
-      if (_isFirstCoursePurchase &&
-          selectedCartItems.any((item) => item.isCourse)) {
-        return (totalPrice * 0.1).round();
+      if (_isFirstCoursePurchase && applicableTotal > 0) {
+        return (applicableTotal * 0.1).round();
       }
       return 0;
     }
     int percent = int.tryParse(_selectedPromoCode!.valuePercent ?? '0') ?? 0;
     int maxUse = int.tryParse(_selectedPromoCode!.priceMaxUse ?? '0') ?? 0;
 
-    int discount = (totalPrice * percent / 100).round();
+    int discount = (applicableTotal * percent / 100).round();
     if (maxUse > 0 && discount > maxUse) {
       discount = maxUse;
     }
@@ -522,11 +534,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        (_selectedPromoCode == null &&
-                                _isFirstCoursePurchase &&
-                                isCourse)
-                            ? 'Giảm giá (-10%):'
-                            : 'Giảm giá:',
+                        'Giảm giá:',
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                       Text(
@@ -807,7 +815,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         "payment_method_id": 1,
                         "price_promo_code_online": discountValue,
                         "free_ship": shippingFee,
-                        "accumulate_point": _isUsePoint ? maxApplicablePoints : 0,
+                        "accumulate_point": _isUsePoint
+                            ? maxApplicablePoints
+                            : 0,
                         "province": _provinceController.text.trim(),
                         "district": _districtController.text.trim(),
                         "ward": _wardController.text.trim(),

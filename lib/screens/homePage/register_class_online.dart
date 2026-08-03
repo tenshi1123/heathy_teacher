@@ -15,6 +15,8 @@ import 'package:heathy_teacher/utils/global_data.dart';
 import 'package:heathy_teacher/models/product_model.dart';
 import 'package:heathy_teacher/screens/shoppingCart/order_payment_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 
 class RegisterClassON extends StatefulWidget {
   const RegisterClassON({
@@ -420,25 +422,32 @@ class _RegisterClassONState extends State<RegisterClassON> {
                         ),
                       ] else ...[
                         InkWell(
-                          onTap: () {
-                            globalListCart.clear();
-                            globalListCart.add(
-                              CartItem(
-                                id: courses.id ?? '',
-                                name: courses.title ?? '',
-                                image: courses.image ?? '',
-                                price: int.tryParse(courses.price ?? '0') ?? 0,
-                                isCourse: true,
-                                courseTypeId: courses.courseTypeId,
-                              ),
-                            );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const OrderPaymentScreen(),
-                              ),
-                            ).then((_) => setState(() {}));
+                          onTap: () async {
+                            final SharedPreferences prefs = await SharedPreferences.getInstance();
+                            final String? token = prefs.getString('remember_token');
+                            
+                            if (token == null) {
+                              showLoginDialog(context);
+                            } else {
+                              globalListCart.clear();
+                              globalListCart.add(
+                                CartItem(
+                                  id: courses.id ?? '',
+                                  name: courses.title ?? '',
+                                  image: courses.image ?? '',
+                                  price: int.tryParse(courses.price ?? '0') ?? 0,
+                                  isCourse: true,
+                                  isOnlineCourse: true,
+                                  courseTypeId: courses.courseTypeId,
+                                ),
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const OrderPaymentScreen(),
+                                ),
+                              ).then((_) => setState(() {}));
+                            }
                           },
                           child: Container(
                             height: 48.h,
@@ -481,6 +490,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
                                   price:
                                       int.tryParse(courses.price ?? '0') ?? 0,
                                   isCourse: true,
+                                  isOnlineCourse: true,
                                   courseTypeId: courses.courseTypeId,
                                 ),
                               );

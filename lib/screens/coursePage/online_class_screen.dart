@@ -19,6 +19,8 @@ import 'package:heathy_teacher/screens/coursePage/student_product_screen.dart';
 import 'package:heathy_teacher/screens/productPage/list_detail_product_screen.dart';
 import 'package:heathy_teacher/repo/payment_repo.dart';
 import 'package:heathy_teacher/screens/order/order_info_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 
 class OnlineClassScreen extends StatefulWidget {
   const OnlineClassScreen({super.key, required this.course});
@@ -935,22 +937,45 @@ class _LessonItemState extends State<LessonItem> {
                 .map(
                   (e) => GestureDetector(
                     onTap: () async {
-                      String url = await ExternalRepo().getStreamingUrl(
-                        lessonId: e.lessonsId ?? '',
-                      );
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => (DetailVideo(
-                            streamingUrl: url,
-                            name: e.name ?? 'Không có tên bài giảng',
-                            courses: widget.courses,
-                            percentLearning: widget.percentLearning,
-                            isShow: widget.isShow,
-                            description: e.description,
-                          ))),
-                        ),
-                      );
+                      void openVideo() async {
+                        String url = await ExternalRepo().getStreamingUrl(
+                          lessonId: e.lessonsId ?? '',
+                        );
+                        if (!mounted) return;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => (DetailVideo(
+                              streamingUrl: url,
+                              name: e.name ?? 'Không có tên bài giảng',
+                              courses: widget.courses,
+                              percentLearning: widget.percentLearning,
+                              isShow: widget.isShow,
+                              description: e.description,
+                            ))),
+                          ),
+                        );
+                      }
+
+                      if (widget.percentLearning == 0 || widget.percentLearning == 0.0) {
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        bool hasAgreed = prefs.getBool('agreed_commitment_${widget.courses?.id}') ?? false;
+
+                        if (!hasAgreed) {
+                          if (mounted) {
+                            showStudentCommitmentDialog(
+                              context,
+                              onAgree: () async {
+                                await prefs.setBool('agreed_commitment_${widget.courses?.id}', true);
+                                openVideo();
+                              },
+                            );
+                          }
+                          return;
+                        }
+                      }
+                      
+                      openVideo();
                     },
                     child: DetailItem(
                       title: e.name ?? 'Không có tên bài giảng',

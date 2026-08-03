@@ -421,10 +421,7 @@ class _ListClassOffExternalState extends State<ListClassOffExternal> {
                                                     color: mainDarkGreen,
                                                   ),
                                                   child: Text(
-                                                    (!_isLoadingMyCourses &&
-                                                            myCourses.isEmpty)
-                                                        ? 'Đăng ký ngay để giảm 10%'
-                                                        : 'Đăng ký ngay',
+                                                    'Đăng ký ngay',
                                                     style: defaultText16B
                                                         .copyWith(
                                                           color: Colors.white,

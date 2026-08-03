@@ -104,27 +104,27 @@ class _ListProductScreenState extends State<ListProductScreen> {
             );
           },
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ProductScreen(type: 2, userModel: widget.userModel),
-                ),
-              );
-            },
-            child: Text(
-              'Đã mua',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   TextButton(
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //           builder: (context) =>
+        //               ProductScreen(type: 2, userModel: widget.userModel),
+        //         ),
+        //       );
+        //     },
+        //     child: Text(
+        //       'Đã mua',
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //         fontSize: 14.sp,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        // ],
 
         // actions: [
         //   Builder(
@@ -160,142 +160,144 @@ class _ListProductScreenState extends State<ListProductScreen> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     controller: _scrollController,
                     child: Column(
-                    children: [
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(12),
-                        itemCount: courses.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 0.6,
-                            ),
-                        itemBuilder: (context, index) {
-                          final item = courses[index];
+                      children: [
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(12),
+                          itemCount: courses.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.6,
+                              ),
+                          itemBuilder: (context, index) {
+                            final item = courses[index];
 
-                          return Container(
-                            padding: EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// IMAGE
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(16),
-                                    bottom: Radius.circular(16),
+                            return Container(
+                              padding: EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
                                   ),
-                                  child: CachedNetworkImage(
-                                    imageUrl: item.img ?? '',
-                                    height: 160.h,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorWidget: (context, url, error) {
-                                      return Container(
-                                        width: 50.dg,
-                                        height: 50.dg,
-                                        color: Colors.grey[200],
-                                        child: Icon(
-                                          Icons.error_outline,
-                                          size: 30.dg,
-                                          color: Colors.grey,
-                                        ),
-                                      );
-                                    },
-                                    // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
-                                    placeholder: (context, url) {
-                                      return Container(
-                                        width: 80.w,
-                                        height: 80.h,
-                                        color: Colors.grey[100],
-                                        child: const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 8.w,
-                                    right: 8.w,
-                                    top: 8.h,
-                                  ),
-                                  child: Text(
-                                    item.categoryName ?? '',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: defaultText16B.copyWith(
-                                      color: mainDarkGreen,
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  /// IMAGE
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(16),
+                                      bottom: Radius.circular(16),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      imageUrl: item.img ?? '',
+                                      height: 160.h,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (context, url, error) {
+                                        return Container(
+                                          width: 50.dg,
+                                          height: 50.dg,
+                                          color: Colors.grey[200],
+                                          child: Icon(
+                                            Icons.error_outline,
+                                            size: 30.dg,
+                                            color: Colors.grey,
+                                          ),
+                                        );
+                                      },
+                                      // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
+                                      placeholder: (context, url) {
+                                        return Container(
+                                          width: 80.w,
+                                          height: 80.h,
+                                          color: Colors.grey[100],
+                                          child: const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
-                                ),
 
-                                const Spacer(),
-
-                                /// BUTTON
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: ((context) =>
-                                              ListDetailProductScreen(
-                                                categorySlug:
-                                                    item.categorySlug ?? '',
-                                                categoryName:
-                                                    item.categoryName ?? '',
-                                              )),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 4,
-                                        horizontal: 6,
-                                      ),
-                                      decoration: BoxDecoration(
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 8.w,
+                                      right: 8.w,
+                                      top: 8.h,
+                                    ),
+                                    child: Text(
+                                      item.categoryName ?? '',
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: defaultText16B.copyWith(
                                         color: mainDarkGreen,
-                                        borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          "Xem tất cả",
-                                          style: defaultText14B.copyWith(
-                                            color: Colors.white,
+                                    ),
+                                  ),
+
+                                  const Spacer(),
+
+                                  /// BUTTON
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: ((context) =>
+                                                ListDetailProductScreen(
+                                                  categorySlug:
+                                                      item.categorySlug ?? '',
+                                                  categoryName:
+                                                      item.categoryName ?? '',
+                                                )),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: mainDarkGreen,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "Xem tất cả",
+                                            style: defaultText14B.copyWith(
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
 
-                      // Khoảng cách cuối trang
-                    ],
+                        // Khoảng cách cuối trang
+                      ],
+                    ),
                   ),
                 ),
-              ),
               ),
             ],
           ),

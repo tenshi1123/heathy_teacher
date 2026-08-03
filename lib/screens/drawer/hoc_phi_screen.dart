@@ -355,7 +355,7 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            item.title,
+                            'Thanh toán đơn hàng #${item.orderId}',
                             style: defaultText16M, // hoặc style bạn có sẵn
                           ),
                           SizedBox(height: 12),

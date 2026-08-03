@@ -21,6 +21,7 @@ class CartItem {
   final int price;
   int quantity;
   final bool isCourse;
+  final bool isOnlineCourse;
   String? courseTypeId;
   bool? isSelected;
   CartItem({
@@ -30,6 +31,7 @@ class CartItem {
     required this.price,
     this.quantity = 1,
     this.isCourse = false,
+    this.isOnlineCourse = false,
     this.courseTypeId,
     this.isSelected = true,
   });
