@@ -154,4 +154,22 @@ class HomeRepo {
       throw Exception('Lỗi xử lý dữ liệu: $e');
     }
   }
+
+  Future<List<InfoUuDaiModel>> getInfoUuDai() async {
+    try {
+      final dio = await DioClient.getInstance();
+      final response = await dio.post(ApiPath.infoUuDai);
+
+      if (response.data != null && response.data['data'] != null && response.data['data']['value'] != null) {
+        final List<dynamic> listData = response.data['data']['value'];
+        return listData.map((e) => InfoUuDaiModel.fromJson(e)).toList();
+      } else {
+        return [];
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
 }

@@ -164,3 +164,23 @@ class PolicyItemModel {
     );
   }
 }
+
+class InfoUuDaiModel {
+  final String? id;
+  final String? name;
+  final String? createdAt;
+
+  InfoUuDaiModel({
+    this.id,
+    this.name,
+    this.createdAt,
+  });
+
+  factory InfoUuDaiModel.fromJson(Map<String, dynamic> json) {
+    return InfoUuDaiModel(
+      id: json['id']?.toString(),
+      name: json['name']?.toString(),
+      createdAt: json['created_at']?.toString(),
+    );
+  }
+}

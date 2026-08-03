@@ -82,6 +82,12 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
     return int.tryParse(_userModel!.accumulatedPoint ?? '0') ?? 0;
   }
 
+  int get maxApplicablePoints {
+    int maxCanUse = totalPrice - discountValue + shippingFee;
+    if (maxCanUse < 0) maxCanUse = 0;
+    return userPoints > maxCanUse ? maxCanUse : userPoints;
+  }
+
   void _showVoucherDialog() async {
     showDialog(
       context: context,
@@ -197,7 +203,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
 
   int get accumulatedPoints {
     double finalAmount =
-        (totalPrice - discountValue - (_isUsePoint ? userPoints : 0))
+        (totalPrice - discountValue - (_isUsePoint ? maxApplicablePoints : 0))
             .toDouble();
     if (finalAmount < 0) finalAmount = 0;
 
@@ -630,7 +636,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                                   const TextSpan(text: 'Sử dụng '),
                                   TextSpan(
                                     text:
-                                        '${NumberFormat('#,###', 'vi_VN').format(userPoints)} điểm',
+                                        '${NumberFormat('#,###', 'vi_VN').format(maxApplicablePoints)} điểm',
                                     style: defaultText14B.copyWith(
                                       color: Colors.black,
                                     ),
@@ -801,7 +807,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         "payment_method_id": 1,
                         "price_promo_code_online": discountValue,
                         "free_ship": shippingFee,
-                        "accumulate_point": _isUsePoint ? userPoints : 0,
+                        "accumulate_point": _isUsePoint ? maxApplicablePoints : 0,
                         "province": _provinceController.text.trim(),
                         "district": _districtController.text.trim(),
                         "ward": _wardController.text.trim(),
