@@ -423,9 +423,12 @@ class _RegisterClassONState extends State<RegisterClassON> {
                       ] else ...[
                         InkWell(
                           onTap: () async {
-                            final SharedPreferences prefs = await SharedPreferences.getInstance();
-                            final String? token = prefs.getString('remember_token');
-                            
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            final String? token = prefs.getString(
+                              'remember_token',
+                            );
+
                             if (token == null) {
                               showLoginDialog(context);
                             } else {
@@ -435,7 +438,8 @@ class _RegisterClassONState extends State<RegisterClassON> {
                                   id: courses.id ?? '',
                                   name: courses.title ?? '',
                                   image: courses.image ?? '',
-                                  price: int.tryParse(courses.price ?? '0') ?? 0,
+                                  price:
+                                      int.tryParse(courses.price ?? '0') ?? 0,
                                   isCourse: true,
                                   isOnlineCourse: true,
                                   courseTypeId: courses.courseTypeId,
@@ -444,7 +448,8 @@ class _RegisterClassONState extends State<RegisterClassON> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const OrderPaymentScreen(),
+                                  builder: (context) =>
+                                      const OrderPaymentScreen(),
                                 ),
                               ).then((_) => setState(() {}));
                             }
@@ -1013,6 +1018,29 @@ class _VideoPopupWidgetState extends State<VideoPopupWidget> {
   }
 
   String _buildHtml(String url) {
+    if (url.toLowerCase().endsWith('.mp4') ||
+        url.toLowerCase().endsWith('.mov') ||
+        url.toLowerCase().endsWith('.mkv')) {
+      return '''
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+          <style>
+            body { margin: 0; padding: 0; background-color: black; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; width: 100vw; }
+            video { max-width: 100%; max-height: 100%; object-fit: contain; }
+          </style>
+        </head>
+        <body>
+          <video controls autoplay playsinline>
+            <source src="\$url">
+            Trình duyệt của bạn không hỗ trợ thẻ video.
+          </video>
+        </body>
+        </html>
+      ''';
+    }
+
     return '''
       <!DOCTYPE html>
       <html>
@@ -1025,7 +1053,7 @@ class _VideoPopupWidgetState extends State<VideoPopupWidget> {
       </head>
       <body>
         <iframe 
-          src="$url" 
+          src="\$url" 
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" 
           allowfullscreen="true">
         </iframe>

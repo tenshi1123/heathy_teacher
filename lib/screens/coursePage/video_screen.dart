@@ -280,8 +280,8 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
                var topPercent = 10 + Math.random() * 75;
                wm.style.top = topPercent + "%";
                
-               // Random duration between 15s and 25s
-               var duration = 15 + Math.random() * 10;
+               // Random duration between 25s and 45s
+               var duration = 25 + Math.random() * 20;
                
                // Random start delay
                var delay = -(Math.random() * 20);

@@ -1,4 +1,5 @@
 import 'package:heathy_teacher/repo/course_repo.dart';
+import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -779,12 +780,24 @@ class BottomCustom extends StatelessWidget {
               } else if (item['type'] == 'phone') {
                 await _launchUrl(context, item['url'], isPhone: true);
               } else if (item['type'] == 'login') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: ((context) => const LoginScreen()),
-                  ),
-                );
+                final prefs = await SharedPreferences.getInstance();
+                final token = prefs.getString('token');
+                if (token != null && token.isNotEmpty) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) => const BottomBarScreen()),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) => const LoginScreen()),
+                    ),
+                  );
+                }
               }
             },
             child: _BottomNavItem(
@@ -1203,23 +1216,13 @@ class _OnlineClassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (purchasedCourse != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: ((context) =>
-                  CourseScreen(userModel: userModel ?? UserModel())),
-            ),
-          );
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: ((context) =>
-                  RegisterClassON(id: model.courseTypeId ?? '', model: model)),
-            ),
-          );
-        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: ((context) =>
+                RegisterClassON(id: model.courseTypeId ?? '', model: model)),
+          ),
+        );
       },
       child: Container(
         width: 343.w,
@@ -1383,18 +1386,42 @@ class _OnlineClassCard extends StatelessWidget {
                         ),
                     ],
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 10.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: mainDarkGreen,
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: Text(
-                      purchasedCourse != null ? 'Học ngay' : 'Đăng ký ngay',
-                      style: defaultText14SB.copyWith(color: Colors.white),
+                  GestureDetector(
+                    onTap: () {
+                      if (purchasedCourse != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => CourseScreen(
+                              userModel: userModel ?? UserModel(),
+                            )),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => RegisterClassON(
+                              id: model.courseTypeId ?? '',
+                              model: model,
+                            )),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 10.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: mainDarkGreen,
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Text(
+                        purchasedCourse != null ? 'Học ngay' : 'Đăng ký ngay',
+                        style: defaultText14SB.copyWith(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],

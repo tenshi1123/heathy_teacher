@@ -64,6 +64,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
       if (mounted) {
         setState(() {
           _userModel = results[0] as UserModel;
+          _nameController.text = _userModel?.fullName ?? '';
+          _phoneController.text = _userModel?.phone ?? '';
+
           if (isCourse) {
             final myCourses = results[1] as List;
             if (myCourses.isEmpty) {
@@ -235,6 +238,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
 
   int get shippingFee {
     if (selectedCartItems.any((item) => item.isCourse)) return 0;
+    if (selectedCartItems.any((item) => item.name.toLowerCase().contains('máy'))) return 0;
 
     final province = _provinceController.text.trim().toLowerCase();
     if (province.isEmpty) return 0;
@@ -557,6 +561,20 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         ),
                       ],
                     ),
+                  if (_isUsePoint)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Sử dụng điểm:',
+                          style: defaultText14SB.copyWith(fontSize: 16.sp),
+                        ),
+                        Text(
+                          '-${NumberFormat('#,###', 'vi_VN').format(maxApplicablePoints)} đ',
+                          style: defaultText20B.copyWith(fontSize: 16.sp),
+                        ),
+                      ],
+                    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -565,7 +583,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         style: defaultText14SB.copyWith(fontSize: 16.sp),
                       ),
                       Text(
-                        '${NumberFormat('#,###', 'vi_VN').format(totalPrice - discountValue + shippingFee)} đ',
+                        '${NumberFormat('#,###', 'vi_VN').format(totalPrice - discountValue + shippingFee - (_isUsePoint ? maxApplicablePoints : 0))} đ',
                         style: defaultText20B.copyWith(
                           fontSize: 24.sp,
                           color: mainDarkGreen,

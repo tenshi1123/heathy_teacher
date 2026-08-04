@@ -212,33 +212,34 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
-            // BANNER HÌNH ẢNH (Chiếm phần dưới)
-            Expanded(
-              flex: 4,
-              child: Container(
-                width: double.infinity,
-                color: backGroundGreen, // Nền xanh lá của banner
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  // Thay 'assets/teacher_image.png' bằng đường dẫn ảnh cô giáo của bạn
-                  child: Image.asset(
-                    'assets/images/login_image.png',
-                    fit: BoxFit.contain,
-                    // Thuộc tính này đảm bảo ảnh chạm đáy đúng chuẩn thiết kế
+            // BANNER HÌNH ẢNH (Chiếm phần dưới) - Ẩn khi bàn phím được mở
+            if (MediaQuery.of(context).viewInsets.bottom == 0)
+              Expanded(
+                flex: 4,
+                child: Container(
+                  width: double.infinity,
+                  color: backGroundGreen, // Nền xanh lá của banner
+                  child: Align(
                     alignment: Alignment.bottomCenter,
-                    errorBuilder: (context, error, stackTrace) {
-                      // Đoạn này dùng để hiển thị tạm thời khi bạn chưa thêm file ảnh thật vào dự án
-                      return const Center(
-                        child: Text(
-                          '[ Thêm ảnh cô giáo vào assets ]',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      );
-                    },
+                    // Thay 'assets/teacher_image.png' bằng đường dẫn ảnh cô giáo của bạn
+                    child: Image.asset(
+                      'assets/images/login_image.png',
+                      fit: BoxFit.contain,
+                      // Thuộc tính này đảm bảo ảnh chạm đáy đúng chuẩn thiết kế
+                      alignment: Alignment.bottomCenter,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Đoạn này dùng để hiển thị tạm thời khi bạn chưa thêm file ảnh thật vào dự án
+                        return const Center(
+                          child: Text(
+                            '[ Thêm ảnh cô giáo vào assets ]',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),

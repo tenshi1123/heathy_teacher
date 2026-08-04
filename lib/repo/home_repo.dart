@@ -24,13 +24,19 @@ class HomeRepo {
     }
   }
 
-  Future<UserModel> getUserProfile() async {
+  static UserModel? cachedUser;
+
+  Future<UserModel> getUserProfile({bool forceRefresh = false}) async {
+    if (!forceRefresh && cachedUser != null) {
+      return cachedUser!;
+    }
     try {
       final dio = await DioClient.getInstance();
       final response = await dio.post(ApiPath.info);
 
       if (response.data != null && response.data['data']['value'] != null) {
-        return UserModel.fromJson(response.data['data']['value']);
+        cachedUser = UserModel.fromJson(response.data['data']['value']);
+        return cachedUser!;
       } else {
         throw Exception('Không tìm thấy dữ liệu khách hàng từ server.');
       }
@@ -60,6 +66,7 @@ class HomeRepo {
       );
       final data = response.data;
       if (data['status'] == 'true') {
+        cachedUser = null;
         return 'Cập nhật thông tin thành công';
       } else if (data['status'] == 'false') {
         final message = data['message'];
@@ -160,11 +167,30 @@ class HomeRepo {
       final dio = await DioClient.getInstance();
       final response = await dio.post(ApiPath.infoUuDai);
 
-      if (response.data != null && response.data['data'] != null && response.data['data']['value'] != null) {
+      if (response.data != null &&
+          response.data['data'] != null &&
+          response.data['data']['value'] != null) {
         final List<dynamic> listData = response.data['data']['value'];
         return listData.map((e) => InfoUuDaiModel.fromJson(e)).toList();
       } else {
         return [];
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi kết nối mạng: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi xử lý dữ liệu: $e');
+    }
+  }
+
+  Future<InfoUuDaiModel> getDetailInfo(String id) async {
+    try {
+      final dio = await DioClient.getInstance();
+      final response = await dio.post('${ApiPath.infoUuDai}/$id');
+
+      if (response.data != null && response.data['data'] != null) {
+        return InfoUuDaiModel.fromJson(response.data['data']['value']);
+      } else {
+        throw Exception('Không tìm thấy dữ liệu bài viết từ server.');
       }
     } on DioException catch (e) {
       throw Exception('Lỗi kết nối mạng: ${e.message}');

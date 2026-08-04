@@ -11,6 +11,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:heathy_teacher/utils/widget/custom_video_player.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({
@@ -45,10 +47,18 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future _pickImageFromGallery() async {
-    final returnedImage = await ImagePicker().pickMultiImage();
+    final returnedMedia = await ImagePicker().pickMultipleMedia();
     if (!mounted) return;
-    photos.addAll(List<File>.from((returnedImage).map((e) => File(e.path))));
+    photos.addAll(List<File>.from((returnedMedia).map((e) => File(e.path))));
     setState(() {});
+  }
+
+  bool _isVideo(String path) {
+    final ext = path.toLowerCase();
+    return ext.endsWith('.mp4') ||
+        ext.endsWith('.mov') ||
+        ext.endsWith('.avi') ||
+        ext.endsWith('.mkv');
   }
 
   Future<void> _getIdUser() async {
@@ -251,28 +261,85 @@ class _ChatScreenState extends State<ChatScreen> {
                                   constraints: BoxConstraints(maxHeight: 200.h),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10.r),
-                                    child: url.startsWith('http')
-                                        ? CachedNetworkImage(
-                                            imageUrl: url,
-                                            fit: BoxFit.cover,
-                                            errorWidget: (context, url, error) {
-                                              return Icon(
-                                                Icons.broken_image,
-                                                color: Colors.grey,
-                                              );
+                                    child: _isVideo(url)
+                                        ? GestureDetector(
+                                            onTap: () async {
+                                              if (url.startsWith('http')) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return CustomVideoPlayer(
+                                                      url: url,
+                                                    );
+                                                  },
+                                                );
+                                              } else {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return CustomVideoPlayer(
+                                                      url: url,
+                                                      isLocal: true,
+                                                    );
+                                                  },
+                                                );
+                                              }
                                             },
+                                            child: Container(
+                                              height: 150.h,
+                                              width: 200.w,
+                                              color: Colors.black12,
+                                              child: Stack(
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.videocam,
+                                                    size: 50.r,
+                                                    color: mainDarkGreen,
+                                                  ),
+                                                  if (url.startsWith('http'))
+                                                    Positioned(
+                                                      bottom: 10.h,
+                                                      child: Text(
+                                                        'Nhấn để xem',
+                                                        style: defaultText12M
+                                                            .copyWith(
+                                                              color:
+                                                                  mainDarkGreen,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
                                           )
-                                        : Image.file(
-                                            File(url),
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                                  return Icon(
-                                                    Icons.broken_image,
-                                                    color: Colors.grey,
-                                                  );
-                                                },
-                                          ),
+                                        : (url.startsWith('http')
+                                              ? CachedNetworkImage(
+                                                  imageUrl: url,
+                                                  fit: BoxFit.cover,
+                                                  errorWidget:
+                                                      (context, url, error) {
+                                                        return Icon(
+                                                          Icons.broken_image,
+                                                          color: Colors.grey,
+                                                        );
+                                                      },
+                                                )
+                                              : Image.file(
+                                                  File(url),
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder:
+                                                      (
+                                                        context,
+                                                        error,
+                                                        stackTrace,
+                                                      ) {
+                                                        return Icon(
+                                                          Icons.broken_image,
+                                                          color: Colors.grey,
+                                                        );
+                                                      },
+                                                )),
                                   ),
                                 );
                               }),
@@ -404,11 +471,36 @@ class _ChatScreenState extends State<ChatScreen> {
                               width: 70.h,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.r),
-                                image: DecorationImage(
-                                  image: FileImage(photos[index]),
-                                  fit: BoxFit.cover,
-                                ),
+                                image: _isVideo(photos[index].path)
+                                    ? null
+                                    : DecorationImage(
+                                        image: FileImage(photos[index]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                color: _isVideo(photos[index].path)
+                                    ? Colors.black12
+                                    : null,
                               ),
+                              child: _isVideo(photos[index].path)
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return CustomVideoPlayer(
+                                              url: photos[index].path,
+                                              isLocal: true,
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Icon(
+                                        Icons.videocam,
+                                        color: mainDarkGreen,
+                                        size: 30.r,
+                                      ),
+                                    )
+                                  : null,
                             ),
                             Positioned(
                               right: 5.w,

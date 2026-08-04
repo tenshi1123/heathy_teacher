@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:heathy_teacher/screens/drawer/chi_tiet_uu_dai_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
@@ -99,35 +100,32 @@ class _UuDaiScreenState extends State<UuDaiScreen> {
           ),
         ),
         child: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: mainDarkGreen,
-                ),
-              )
+            ? Center(child: CircularProgressIndicator(color: mainDarkGreen))
             : _infoList.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset('assets/images/uudai.png', height: 200.h),
-                        SizedBox(height: 16.h),
-                        Text(
-                          'Không có ưu đãi',
-                          style: defaultText16M,
+            ? Center(
+                child: Image.asset('assets/images/uudai.png', height: 200.h),
+              )
+            : ListView.separated(
+                padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
+                itemCount: _infoList.length,
+                separatorBuilder: (context, index) => Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                  child: Divider(color: Colors.grey.shade300, height: 1),
+                ),
+                itemBuilder: (context, index) {
+                  final item = _infoList[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChiTietUuDaiScreen(initialModel: item),
                         ),
-                      ],
-                    ),
-                  )
-                : ListView.separated(
-                    padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
-                    itemCount: _infoList.length,
-                    separatorBuilder: (context, index) => Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                      child: Divider(color: Colors.grey.shade300, height: 1),
-                    ),
-                    itemBuilder: (context, index) {
-                      final item = _infoList[index];
-                      return Column(
+                      );
+                    },
+                    child: Container(
+                      color: Colors.transparent, // to make the whole row clickable
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
@@ -137,7 +135,9 @@ class _UuDaiScreenState extends State<UuDaiScreen> {
                               Expanded(
                                 child: Text(
                                   item.name ?? "",
-                                  style: defaultText18B.copyWith(color: Colors.black),
+                                  style: defaultText18B.copyWith(
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                             ],
@@ -164,9 +164,11 @@ class _UuDaiScreenState extends State<UuDaiScreen> {
                             ],
                           ),
                         ],
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }

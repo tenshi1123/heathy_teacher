@@ -249,8 +249,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
 
-            // BANNER HÌNH ẢNH (Chiếm phần dưới)
-            Expanded(
+            // BANNER HÌNH ẢNH (Chiếm phần dưới) - Ẩn khi bàn phím được mở
+            if (MediaQuery.of(context).viewInsets.bottom == 0)
+              Expanded(
               flex: 4,
               child: Container(
                 width: double.infinity,

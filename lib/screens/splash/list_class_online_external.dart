@@ -298,26 +298,15 @@ class _CategoryExpandableOnlineItemState
 
                 return GestureDetector(
                   onTap: () {
-                    if (isBought && boughtCourse != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => CourseScreen(
-                            userModel: widget.userModel ?? UserModel(),
-                          )),
-                        ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => RegisterClassON(
-                            id: model.courseTypeId ?? '',
-                            model: model,
-                          )),
-                        ),
-                      );
-                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => RegisterClassON(
+                          id: model.courseTypeId ?? '',
+                          model: model,
+                        )),
+                      ),
+                    );
                   },
                   child: Container(
                     margin: EdgeInsets.only(bottom: 16.h),
@@ -506,30 +495,54 @@ class _CategoryExpandableOnlineItemState
                           ],
                         ),
                         SizedBox(height: 20.h),
-                        Center(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 80.w,
-                              vertical: 10.h,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.r),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: mainDarkGreen.withValues(alpha: 0.1),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
+                        GestureDetector(
+                          onTap: () {
+                            if (isBought && boughtCourse != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: ((context) => CourseScreen(
+                                    userModel: widget.userModel ?? UserModel(),
+                                  )),
                                 ),
-                              ],
-                              color: isBought
-                                  ? const Color(0xFFF26522)
-                                  : mainDarkGreen,
-                            ),
-                            child: Text(
-                              isBought ? 'Học ngay' : 'Đăng ký ngay',
-                              style: defaultText16B.copyWith(
-                                color: Colors.white,
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: ((context) => RegisterClassON(
+                                    id: model.courseTypeId ?? '',
+                                    model: model,
+                                  )),
+                                ),
+                              );
+                            }
+                          },
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 80.w,
+                                vertical: 10.h,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: mainDarkGreen.withValues(alpha: 0.1),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                                color: isBought
+                                    ? const Color(0xFFF26522)
+                                    : mainDarkGreen,
+                              ),
+                              child: Text(
+                                isBought ? 'Học ngay' : 'Đăng ký ngay',
+                                style: defaultText16B.copyWith(
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),

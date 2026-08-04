@@ -125,10 +125,7 @@ class PolicyModel {
   final PolicyItemModel? policyCustomer;
   final PolicyItemModel? policyPoint;
 
-  PolicyModel({
-    this.policyCustomer,
-    this.policyPoint,
-  });
+  PolicyModel({this.policyCustomer, this.policyPoint});
 
   factory PolicyModel.fromJson(Map<String, dynamic> json) {
     return PolicyModel(
@@ -148,12 +145,7 @@ class PolicyItemModel {
   final String? content;
   final String? createdAt;
 
-  PolicyItemModel({
-    this.id,
-    this.type,
-    this.content,
-    this.createdAt,
-  });
+  PolicyItemModel({this.id, this.type, this.content, this.createdAt});
 
   factory PolicyItemModel.fromJson(Map<String, dynamic> json) {
     return PolicyItemModel(
@@ -169,18 +161,15 @@ class InfoUuDaiModel {
   final String? id;
   final String? name;
   final String? createdAt;
-
-  InfoUuDaiModel({
-    this.id,
-    this.name,
-    this.createdAt,
-  });
+  final String? content;
+  InfoUuDaiModel({this.id, this.name, this.createdAt, this.content});
 
   factory InfoUuDaiModel.fromJson(Map<String, dynamic> json) {
     return InfoUuDaiModel(
       id: json['id']?.toString(),
       name: json['name']?.toString(),
       createdAt: json['created_at']?.toString(),
+      content: json['content']?.toString(),
     );
   }
 }

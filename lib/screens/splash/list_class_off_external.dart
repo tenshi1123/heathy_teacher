@@ -393,39 +393,52 @@ class _ListClassOffExternalState extends State<ListClassOffExternal> {
                                                 ],
                                               ),
                                               Spacer(),
-                                              Center(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 16.w,
-                                                    vertical: 10.h,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12.r,
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: ((context) => RegisterClassOff(
+                                                        id: model.id ?? '',
+                                                        model: model,
+                                                      )),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Center(
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(
+                                                      horizontal: 16.w,
+                                                      vertical: 10.h,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12.r,
+                                                          ),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: mainDarkGreen
+                                                              .withValues(
+                                                                alpha: 0.1,
+                                                              ),
+                                                          spreadRadius: 2,
+                                                          blurRadius: 5,
+                                                          offset: const Offset(
+                                                            0,
+                                                            3,
+                                                          ),
                                                         ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: mainDarkGreen
-                                                            .withValues(
-                                                              alpha: 0.1,
-                                                            ),
-                                                        spreadRadius: 2,
-                                                        blurRadius: 5,
-                                                        offset: const Offset(
-                                                          0,
-                                                          3,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                    color: mainDarkGreen,
-                                                  ),
-                                                  child: Text(
-                                                    'Đăng ký ngay',
-                                                    style: defaultText16B
-                                                        .copyWith(
-                                                          color: Colors.white,
-                                                        ),
+                                                      ],
+                                                      color: mainDarkGreen,
+                                                    ),
+                                                    child: Text(
+                                                      'Đăng ký ngay',
+                                                      style: defaultText16B
+                                                          .copyWith(
+                                                            color: Colors.white,
+                                                          ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
