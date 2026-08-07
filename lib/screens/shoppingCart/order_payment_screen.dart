@@ -237,6 +237,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   }
 
   int get shippingFee {
+    if (totalPrice >= 4000000) return 0;
     if (selectedCartItems.any((item) => item.isCourse)) return 0;
     if (selectedCartItems.any((item) => item.name.toLowerCase().contains('máy'))) return 0;
 

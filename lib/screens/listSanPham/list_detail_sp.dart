@@ -26,23 +26,30 @@ class ListDetailSpScreen extends StatefulWidget {
 
 class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
   bool isLoading = true;
+  List<CategoryDetail> _allCoursesDetail = [];
   List<CategoryDetail> coursesDetail = [];
   final ScrollController _scrollController = ScrollController();
-  int _page = 1;
-  final int _show = 10;
-  bool _hasMore = true;
-  bool _isLoadingMore = false;
+  final TextEditingController _searchController = TextEditingController();
+  final int _show = 100;
 
   @override
   void initState() {
     super.initState();
     _fetchData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 500 &&
-          !_isLoadingMore &&
-          _hasMore) {
-        _loadMore();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      if (query.isEmpty) {
+        coursesDetail = _allCoursesDetail;
+      } else {
+        coursesDetail = _allCoursesDetail
+            .where(
+              (item) => (item.productName ?? '').toLowerCase().contains(query),
+            )
+            .toList();
       }
     });
   }
@@ -50,44 +57,22 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
   Future<void> _fetchData() async {
     setState(() {
       isLoading = true;
-      _page = 1;
-      _hasMore = true;
     });
-    coursesDetail = await ProductRepo().getListProduct(
+    _allCoursesDetail = await ProductRepo().getListProduct(
       widget.model.categorySlug ?? '',
-      page: _page,
+      page: 1,
       show: _show,
     );
-    if (coursesDetail.length < _show) {
-      _hasMore = false;
-    }
+    _onSearchChanged();
     setState(() {
       isLoading = false;
-    });
-  }
-
-  Future<void> _loadMore() async {
-    setState(() {
-      _isLoadingMore = true;
-    });
-    _page++;
-    final moreCourses = await ProductRepo().getListProduct(
-      widget.model.categorySlug ?? '',
-      page: _page,
-      show: _show,
-    );
-    if (moreCourses.length < _show) {
-      _hasMore = false;
-    }
-    setState(() {
-      coursesDetail.addAll(moreCourses);
-      _isLoadingMore = false;
     });
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -113,9 +98,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                         const SizedBox(
                           height: 50,
                         ), // Khoảng cách cho status bar
-
                         DefaultAppBar(),
-
                         // 2. SEARCH BAR AREA
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -132,6 +115,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                               ),
                             ),
                             child: TextField(
+                              controller: _searchController,
                               decoration: InputDecoration(
                                 hintText: 'Nhập để tìm kiếm...',
                                 hintStyle: const TextStyle(color: Colors.grey),
@@ -490,29 +474,6 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
               BottomCustom(),
             ],
           ),
-          if (_isLoadingMore)
-            Positioned(
-              bottom: 80, // Hiện phía trên thanh BottomCustom
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 6,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: CircularProgressIndicator(color: mainDarkGreen),
-                ),
-              ),
-            ),
         ],
       ),
     );

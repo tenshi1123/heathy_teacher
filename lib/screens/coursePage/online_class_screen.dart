@@ -56,9 +56,14 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
     });
   }
 
+  bool _isVideo(String path) {
+    final lower = path.toLowerCase();
+    return lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi') || lower.endsWith('.mkv');
+  }
+
   Future<void> _pickImagesAndSubmit() async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile> medias = await picker.pickMultiImage();
+    final List<XFile> medias = await picker.pickMultipleMedia();
     if (medias.isNotEmpty) {
       if (!mounted) return;
       final TextEditingController textController = TextEditingController();
@@ -87,16 +92,25 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                       scrollDirection: Axis.horizontal,
                       itemCount: medias.length,
                       itemBuilder: (ctx, index) {
+                        final path = medias[index].path;
+                        final isVideo = _isVideo(path);
                         return Padding(
                           padding: EdgeInsets.only(right: 8.w),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8.r),
-                            child: Image.file(
-                              File(medias[index].path),
-                              height: 80.h,
-                              width: 80.h,
-                              fit: BoxFit.cover,
-                            ),
+                            child: isVideo
+                                ? Container(
+                                    height: 80.h,
+                                    width: 80.h,
+                                    color: Colors.black12,
+                                    child: Icon(Icons.videocam, color: mainDarkGreen, size: 30.r),
+                                  )
+                                : Image.file(
+                                    File(path),
+                                    height: 80.h,
+                                    width: 80.h,
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
                         );
                       },

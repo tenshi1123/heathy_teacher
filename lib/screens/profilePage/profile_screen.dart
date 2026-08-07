@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/models/home_model.dart';
+import 'package:heathy_teacher/repo/home_repo.dart';
 import 'package:heathy_teacher/screens/homePage/custom_drawer.dart';
 import 'package:heathy_teacher/screens/notification/notification_screen.dart';
 import 'package:heathy_teacher/screens/drawer/hoc_phi_screen.dart';
@@ -446,6 +447,7 @@ Future<void> dialogBuilder(BuildContext context, {required int type}) {
               await prefs.remove('token');
               await prefs.remove('id_user');
               await prefs.remove('remember_token');
+              HomeRepo.cachedUser = null;
               Navigator.push(
                 context,
                 MaterialPageRoute(

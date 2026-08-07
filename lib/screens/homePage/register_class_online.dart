@@ -40,6 +40,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
 
   List<CourseScheduleModel> myCourses = [];
   bool isLoadingMyCourses = true;
+  bool isLoggedIn = false;
 
   void _initWebView() {
     late final PlatformWebViewControllerCreationParams params;
@@ -87,8 +88,21 @@ class _RegisterClassONState extends State<RegisterClassON> {
 
   Future<void> _fetchData() async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('remember_token');
+      isLoggedIn = token != null;
+
       final data = await ExternalRepo().getDetailCourseExternal(widget.id);
-      final fetchedMyCourses = await CourseRepo().getCourse();
+      
+      List<CourseScheduleModel> fetchedMyCourses = [];
+      try {
+        if (isLoggedIn) {
+          fetchedMyCourses = await CourseRepo().getCourse();
+        }
+      } catch (e) {
+        print("Lỗi khi tải khoá học của tôi: $e");
+      }
+
       setState(() {
         courses = data;
         myCourses = fetchedMyCourses;
@@ -100,9 +114,11 @@ class _RegisterClassONState extends State<RegisterClassON> {
         isLoading = false;
         isLoadingMyCourses = false;
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+      }
     }
   }
 
@@ -467,7 +483,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
                               children: [
                                 Image.asset('assets/images/lingting.png'),
                                 Text(
-                                  (!isLoadingMyCourses && myCourses.isEmpty)
+                                  (!isLoggedIn || (!isLoadingMyCourses && myCourses.isEmpty))
                                       ? '  Đăng ký ngay để giảm 10%'
                                       : '  Đăng ký ngay',
                                   textAlign: TextAlign.center,

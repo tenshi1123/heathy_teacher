@@ -21,21 +21,40 @@ class ListSpScreen extends StatefulWidget {
 
 class _ListSpScreenState extends State<ListSpScreen> {
   bool isLoading = true;
+  List<CategoryModel> _allCourses = [];
   List<CategoryModel> courses = [];
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
   final int _show = 100;
 
   @override
   void initState() {
     super.initState();
     _fetchData();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      if (query.isEmpty) {
+        courses = _allCourses;
+      } else {
+        courses = _allCourses
+            .where(
+              (item) => (item.categoryName ?? '').toLowerCase().contains(query),
+            )
+            .toList();
+      }
+    });
   }
 
   Future<void> _fetchData() async {
     setState(() {
       isLoading = true;
     });
-    courses = await ProductRepo().getCategory(page: 1, show: _show);
+    _allCourses = await ProductRepo().getCategory(page: 1, show: _show);
+    _onSearchChanged();
     setState(() {
       isLoading = false;
     });
@@ -44,6 +63,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -81,8 +101,9 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                 width: 1.5,
                               ),
                             ),
-                            child: const TextField(
-                              decoration: InputDecoration(
+                            child: TextField(
+                              controller: _searchController,
+                              decoration: const InputDecoration(
                                 hintText: 'Nhập để tìm kiếm...',
                                 hintStyle: TextStyle(color: Colors.grey),
                                 prefixIcon: Icon(
@@ -149,108 +170,120 @@ class _ListSpScreenState extends State<ListSpScreen> {
                           itemBuilder: (context, index) {
                             final item = courses[index];
 
-                            return Container(
-                              padding: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 3),
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: ((context) =>
+                                        ListDetailSpScreen(model: item)),
                                   ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  /// IMAGE
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(16),
-                                      bottom: Radius.circular(16),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 3),
                                     ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: item.img ?? '',
-                                      height: 160.h,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      errorWidget: (context, url, error) {
-                                        return Container(
-                                          width: 50.dg,
-                                          height: 50.dg,
-                                          color: Colors.grey[200],
-                                          child: Icon(
-                                            Icons.error_outline,
-                                            size: 30.dg,
-                                            color: Colors.grey,
-                                          ),
-                                        );
-                                      },
-                                      // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
-                                      placeholder: (context, url) {
-                                        return Container(
-                                          width: 80.w,
-                                          height: 80.h,
-                                          color: Colors.grey[100],
-                                          child: const Center(
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        );
-                                      },
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    /// IMAGE
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(16),
+                                        bottom: Radius.circular(16),
+                                      ),
+                                      child: CachedNetworkImage(
+                                        imageUrl: item.img ?? '',
+                                        height: 160.h,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorWidget: (context, url, error) {
+                                          return Container(
+                                            width: 50.dg,
+                                            height: 50.dg,
+                                            color: Colors.grey[200],
+                                            child: Icon(
+                                              Icons.error_outline,
+                                              size: 30.dg,
+                                              color: Colors.grey,
+                                            ),
+                                          );
+                                        },
+                                        // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
+                                        placeholder: (context, url) {
+                                          return Container(
+                                            width: 80.w,
+                                            height: 80.h,
+                                            color: Colors.grey[100],
+                                            child: const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  ),
 
-                                  Text(
-                                    item.categoryName ?? '',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: defaultText16B.copyWith(
-                                      color: mainDarkGreen,
+                                    Text(
+                                      item.categoryName ?? '',
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: defaultText16B.copyWith(
+                                        color: mainDarkGreen,
+                                      ),
                                     ),
-                                  ),
 
-                                  const Spacer(),
+                                    const Spacer(),
 
-                                  /// BUTTON
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: ((context) =>
-                                                ListDetailSpScreen(
-                                                  model: item,
-                                                )),
+                                    /// BUTTON
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: ((context) =>
+                                                  ListDetailSpScreen(
+                                                    model: item,
+                                                  )),
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 4,
+                                            horizontal: 6,
                                           ),
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 4,
-                                          horizontal: 6,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: mainDarkGreen,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
+                                          decoration: BoxDecoration(
+                                            color: mainDarkGreen,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            "Xem tất cả",
-                                            style: defaultText14B.copyWith(
-                                              color: Colors.white,
+                                          child: Center(
+                                            child: Text(
+                                              "Xem tất cả",
+                                              style: defaultText14B.copyWith(
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             );
                           },
