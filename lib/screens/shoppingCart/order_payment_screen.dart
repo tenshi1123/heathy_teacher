@@ -237,17 +237,20 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   }
 
   int get shippingFee {
-    if (totalPrice >= 4000000) return 0;
+    if (totalPrice > 2000000) return 0;
     if (selectedCartItems.any((item) => item.isCourse)) return 0;
     if (selectedCartItems.any((item) => item.name.toLowerCase().contains('máy'))) return 0;
 
     final province = _provinceController.text.trim().toLowerCase();
     if (province.isEmpty) return 0;
 
-    if (province.contains('hà nội') || province.contains('ha noi')) {
-      return 40000;
+    bool isHanoi = province.contains('hà nội') || province.contains('ha noi');
+
+    if (totalPrice >= 1000000 && totalPrice <= 2000000) {
+      return isHanoi ? 20000 : 40000;
     }
-    return 50000;
+    
+    return isHanoi ? 40000 : 50000;
   }
 
   @override
