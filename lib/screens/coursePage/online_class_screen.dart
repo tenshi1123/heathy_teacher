@@ -72,7 +72,12 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
           child: Wrap(
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.photo_library, color: mainDarkGreen),
+                leading: SvgPicture.asset(
+                  'assets/icons/picture_icon.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(mainDarkGreen, BlendMode.srcIn),
+                ),
                 title: const Text('Chọn ảnh/video từ Thư viện'),
                 onTap: () async {
                   Navigator.of(context).pop();
@@ -84,7 +89,12 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.camera_alt, color: mainDarkGreen),
+                leading: SvgPicture.asset(
+                  'assets/icons/camera_icon.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(mainDarkGreen, BlendMode.srcIn),
+                ),
                 title: const Text('Chụp ảnh mới'),
                 onTap: () async {
                   Navigator.of(context).pop();
@@ -99,7 +109,12 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.videocam, color: mainDarkGreen),
+                leading: SvgPicture.asset(
+                  'assets/icons/video.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(mainDarkGreen, BlendMode.srcIn),
+                ),
                 title: const Text('Quay video mới'),
                 onTap: () async {
                   Navigator.of(context).pop();
@@ -159,7 +174,12 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                                     height: 80.h,
                                     width: 80.h,
                                     color: Colors.black12,
-                                    child: Icon(Icons.videocam, color: mainDarkGreen, size: 30.r),
+                                    child: SvgPicture.asset(
+                                      'assets/icons/video.svg',
+                                      width: 30.r,
+                                      height: 30.r,
+                                      colorFilter: ColorFilter.mode(mainDarkGreen, BlendMode.srcIn),
+                                    ),
                                   )
                                 : Image.file(
                                     File(path),

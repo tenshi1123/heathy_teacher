@@ -46,7 +46,12 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Wrap(
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.camera_alt, color: mainDarkGreen),
+                leading: SvgPicture.asset(
+                  'assets/icons/camera_icon.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(mainDarkGreen, BlendMode.srcIn),
+                ),
                 title: const Text('Chụp ảnh'),
                 onTap: () async {
                   Navigator.of(context).pop();
@@ -62,7 +67,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.videocam, color: mainDarkGreen),
+                leading: SvgPicture.asset(
+                  'assets/icons/video.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(mainDarkGreen, BlendMode.srcIn),
+                ),
                 title: const Text('Quay video'),
                 onTap: () async {
                   Navigator.of(context).pop();
