@@ -34,6 +34,7 @@ class ProductRepo {
     String categorySlug, {
     int page = 1,
     int show = 10,
+    String? query,
   }) async {
     try {
       final dio = await DioClient.getInstance();
@@ -44,6 +45,7 @@ class ProductRepo {
           'category_slug': categorySlug,
           "page": page.toString(),
           "show": show.toString(),
+          if (query != null && query.isNotEmpty) "query": query,
         }),
       );
       if (response.data != null && response.data['data'] != null) {
@@ -68,13 +70,12 @@ class ProductRepo {
       dio.options.headers['Token'] = 'Healthy1234567890HVG';
       final response = await dio.post(
         ApiPath.detailProduct,
-        data: jsonEncode({
-          'product_id': productId,
-        }),
+        data: jsonEncode({'product_id': productId}),
       );
       if (response.data != null && response.data['product'] != null) {
         return ProductDetailModel.fromJson(
-            response.data['product'] as Map<String, dynamic>);
+          response.data['product'] as Map<String, dynamic>,
+        );
       } else {
         throw Exception('Không tìm thấy dữ liệu sản phẩm');
       }

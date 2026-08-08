@@ -33,6 +33,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/screens/splash/sale_screen.dart';
 import 'package:heathy_teacher/screens/splash/list_class_off_external.dart';
 import 'package:heathy_teacher/screens/splash/list_class_online_external.dart';
+import 'package:heathy_teacher/screens/search/search_result_screen.dart';
 
 class CoGiaoHealthyScreen extends StatefulWidget {
   const CoGiaoHealthyScreen({
@@ -143,6 +144,17 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                             ),
                           ),
                           child: TextField(
+                            onSubmitted: (value) {
+                              if (value.trim().isNotEmpty) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SearchResultScreen(query: value.trim()),
+                                  ),
+                                );
+                              }
+                            },
                             decoration: InputDecoration(
                               hintText: 'Nhập để tìm kiếm...',
                               hintStyle: TextStyle(color: Colors.grey),
