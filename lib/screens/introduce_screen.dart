@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/screens/search/search_result_screen.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -31,8 +32,20 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
 
                   DefaultAppBar(),
 
-                  const CustomSearchBar(
+                  CustomSearchBar(
                     iconColor: secondaryGreen,
+                    onSubmitted: (value) {
+                      if (value.trim().isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SearchResultScreen(
+                              query: value.trim(),
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
 
                   Container(

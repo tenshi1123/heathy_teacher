@@ -136,9 +136,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SearchResultScreen(
-                                  query: value.trim(),
-                                ),
+                                builder: (context) =>
+                                    SearchResultScreen(query: value.trim()),
                               ),
                             );
                           }

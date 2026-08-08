@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/screens/search/search_result_screen.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -130,8 +131,20 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                     DefaultAppBar(),
 
                     // 2. SEARCH BAR AREA
-                    const CustomSearchBar(
+                    CustomSearchBar(
                       iconColor: secondaryGreen,
+                      onSubmitted: (value) {
+                        if (value.trim().isNotEmpty) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SearchResultScreen(
+                                query: value.trim(),
+                              ),
+                            ),
+                          );
+                        }
+                      },
                     ),
 
                     // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)

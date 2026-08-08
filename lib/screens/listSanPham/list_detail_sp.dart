@@ -10,6 +10,7 @@ import 'package:heathy_teacher/repo/product_repo.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
+import 'package:heathy_teacher/screens/search/search_result_screen.dart';
 import 'package:heathy_teacher/utils/widget/custom_dialog.dart';
 import 'package:heathy_teacher/utils/widget/custom_widget.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
@@ -103,6 +104,18 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                         CustomSearchBar(
                           controller: _searchController,
                           iconColor: mainGreen,
+                          onSubmitted: (value) {
+                            if (value.trim().isNotEmpty) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SearchResultScreen(
+                                    query: value.trim(),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
                         ),
 
                         // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)

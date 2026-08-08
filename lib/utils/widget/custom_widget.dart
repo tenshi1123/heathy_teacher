@@ -1643,3 +1643,58 @@ Widget buildImage(String iconPath, {double size = 28, VoidCallback? onTap}) {
     ),
   );
 }
+
+class CustomSearchBar extends StatelessWidget {
+  final TextEditingController? controller;
+  final void Function(String)? onSubmitted;
+  final void Function(String)? onChanged;
+  final Color borderColor;
+  final Color iconColor;
+
+  const CustomSearchBar({
+    super.key,
+    this.controller,
+    this.onSubmitted,
+    this.onChanged,
+    this.borderColor = const Color(0xFFC0CA33),
+    this.iconColor = const Color(0xFF7CB342),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 6.h,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(
+            color: borderColor,
+            width: 1.5,
+          ),
+        ),
+        child: TextField(
+          controller: controller,
+          onSubmitted: onSubmitted,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            hintText: 'Nhập để tìm kiếm...',
+            hintStyle: const TextStyle(color: Colors.grey),
+            prefixIcon: Icon(
+              Icons.search,
+              color: iconColor,
+            ),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 15,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
