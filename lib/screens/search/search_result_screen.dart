@@ -133,45 +133,16 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   const DefaultAppBar(),
 
                   // Search Bar
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 6.h,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: const Color(0xFFC0CA33),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: TextField(
-                        controller: _searchController,
-                        onSubmitted: (value) {
-                          if (value.trim().isNotEmpty) {
-                            setState(() {
-                              _currentQuery = value.trim();
-                            });
-                            _fetchData();
-                          }
-                        },
-                        decoration: const InputDecoration(
-                          hintText: 'Nhập để tìm kiếm...',
-                          hintStyle: TextStyle(color: Colors.grey),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Color(0xFF7CB342),
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 15,
-                          ),
-                        ),
-                      ),
-                    ),
+                  CustomSearchBar(
+                    controller: _searchController,
+                    onSubmitted: (value) {
+                      if (value.trim().isNotEmpty) {
+                        setState(() {
+                          _currentQuery = value.trim();
+                        });
+                        _fetchData();
+                      }
+                    },
                   ),
 
                   // Breadcrumb

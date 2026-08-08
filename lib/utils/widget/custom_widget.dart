@@ -1,4 +1,4 @@
-import 'package:heathy_teacher/models/home_model.dart';
+﻿import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/introduce_screen.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
@@ -28,7 +28,7 @@ class CustomDotLine extends StatelessWidget {
   final double dotSize;
   final double spacing;
   final Color color;
-  final double height; // chiều cao toàn bộ widget (mặc định 1 dòng)
+  final double height; // chiá»u cao toÃ n bá»™ widget (máº·c Ä‘á»‹nh 1 dÃ²ng)
 
   const CustomDotLine({
     super.key,
@@ -89,7 +89,7 @@ class _HinhThucHocDropdownState extends State<HinhThucHocDropdown> {
         child: DropdownButton<String>(
           value: widget.value,
           isExpanded: true,
-          hint: Text("Chọn hình thức học", style: defaultText14M),
+          hint: Text("Chá»n hÃ¬nh thá»©c há»c", style: defaultText14M),
           icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black54),
           items: options.map((String value) {
             return DropdownMenuItem<String>(
@@ -126,12 +126,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
       margin: EdgeInsets.only(right: 12.w, bottom: 12.h),
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F9FB), // nền giống ảnh
+        color: const Color(0xFFF7F9FB), // ná»n giá»‘ng áº£nh
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
         controller: widget.controller,
-        style: defaultText14B, // màu text nhập
+        style: defaultText14B, // mÃ u text nháº­p
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: widget.hintText,
@@ -211,14 +211,14 @@ class CartItemWidget extends StatelessWidget {
 
                 /// price
                 Text(
-                  '${formatPrice(item.price.toString())}đ',
+                  '${formatPrice(item.price.toString())}Ä‘',
                   style: defaultText14B,
                 ),
 
                 const SizedBox(height: 8),
 
                 /// quantity
-                const Text("Số lượng:"),
+                const Text("Sá»‘ lÆ°á»£ng:"),
                 const SizedBox(height: 6),
                 Row(
                   children: [
@@ -355,21 +355,21 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
                 //width: 150,
                 height: 150,
                 child: FittedBox(
-                  // FittedBox giúp Logo tự scale vừa khít SizedBox
+                  // FittedBox giÃºp Logo tá»± scale vá»«a khÃ­t SizedBox
                   fit: BoxFit.fitHeight,
-                  child: LogoWidget(), // Widget Logo của bạn
+                  child: LogoWidget(), // Widget Logo cá»§a báº¡n
                 ),
               ),
             ),
 
-            // 3. HAI NÚT HAI BÊN - GIỮ NGUYÊN KÍCH THƯỚC NHỎ
-            // Nhờ Row nằm trong Stack, nó chỉ cao bằng "content" của nó, không cao bằng Logo.
+            // 3. HAI NÃšT HAI BÃŠN - GIá»® NGUYÃŠN KÃCH THÆ¯á»šC NHá»Ž
+            // Nhá» Row náº±m trong Stack, nÃ³ chá»‰ cao báº±ng "content" cá»§a nÃ³, khÃ´ng cao báº±ng Logo.
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              // Rất quan trọng: Căn Row này vào giữa chiều cao của Stack
+              // Ráº¥t quan trá»ng: CÄƒn Row nÃ y vÃ o giá»¯a chiá»u cao cá»§a Stack
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Nút Đăng nhập (Bên trái - kích thước nhỏ)
+                // NÃºt ÄÄƒng nháº­p (BÃªn trÃ¡i - kÃ­ch thÆ°á»›c nhá»)
                 ElevatedButton(
                   onPressed: () {
                     if (_isLoggedIn) {
@@ -395,22 +395,22 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    // Padding nhỏ để nút gọn gàng
+                    // Padding nhá» Ä‘á»ƒ nÃºt gá»n gÃ ng
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
                     ),
                   ),
                   child: Text(
-                    _isLoggedIn ? 'Tài khoản' : 'Đăng nhập',
+                    _isLoggedIn ? 'TÃ i khoáº£n' : 'ÄÄƒng nháº­p',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12, // Giảm font size một chút nếu cần
+                      fontSize: 12, // Giáº£m font size má»™t chÃºt náº¿u cáº§n
                     ),
                   ),
                 ),
 
-                // Giỏ hàng (Bên phải - kích thước nhỏ)
+                // Giá» hÃ ng (BÃªn pháº£i - kÃ­ch thÆ°á»›c nhá»)
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -429,13 +429,13 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
                         Icon(
                           Icons.shopping_cart,
                           color: mainDarkGreen,
-                          size: 30.dg, // Giảm size Icon giỏ hàng một chút
+                          size: 30.dg, // Giáº£m size Icon giá» hÃ ng má»™t chÃºt
                         ),
                         Positioned(
                           right: 0,
                           top: 0,
                           child: Container(
-                            padding: const EdgeInsets.all(3), // Padding nhỏ hơn
+                            padding: const EdgeInsets.all(3), // Padding nhá» hÆ¡n
                             decoration: const BoxDecoration(
                               color: Colors.white,
                               shape: BoxShape.circle,
@@ -521,7 +521,7 @@ class CustomFooterInfo extends StatelessWidget {
                       ),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'Hà Nội:',
+                          text: 'HÃ  Ná»™i:',
                           style: defaultText14B.copyWith(
                             color: Colors.white,
                             decoration: TextDecoration.underline,
@@ -529,7 +529,7 @@ class CustomFooterInfo extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: ' 214 Lạc Long Quân, quận Tây Hồ, Hà Nội',
+                          text: ' 214 Láº¡c Long QuÃ¢n, quáº­n TÃ¢y Há»“, HÃ  Ná»™i',
                         ),
                       ],
                     ),
@@ -570,7 +570,7 @@ class CustomFooterInfo extends StatelessWidget {
                         ),
                         TextSpan(
                           text:
-                              ' SkyVilla P2406, Celadon City, số 02 Tân Thanh, phường Tân Sơn Nhì, thành phố Hồ Chí Minh',
+                              ' SkyVilla P2406, Celadon City, sá»‘ 02 TÃ¢n Thanh, phÆ°á»ng TÃ¢n SÆ¡n NhÃ¬, thÃ nh phá»‘ Há»“ ChÃ­ Minh',
                         ),
                       ],
                     ),
@@ -654,15 +654,15 @@ class CustomFooterInfo extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'CÔNG TY TNHH CÔ GIÁO HEALTHY',
+            'CÃ”NG TY TNHH CÃ” GIÃO HEALTHY',
             style: defaultText16B.copyWith(color: Colors.white),
           ),
           Text(
-            'MST: 0109187074 \nĐăng ký lần đầu ngày 19 háng 05 năm 2020 \nĐăng ký thay đổi lần thứ 4, ngày 20 tháng 06 năm 2024 \nNơi cấp: Sở kế hoạch và đầu tư thành phố Hà Nội - Phòng đăng ký kinh doanh \nĐịa chỉ trụ sở chính: Tầng 7, Tòa nhà Luxury Ofice, số 214 Lạc Long Quân, Phường Tây Hồ, Thành phố Hà Nội, Việt Nam',
+            'MST: 0109187074 \nÄÄƒng kÃ½ láº§n Ä‘áº§u ngÃ y 19 hÃ¡ng 05 nÄƒm 2020 \nÄÄƒng kÃ½ thay Ä‘á»•i láº§n thá»© 4, ngÃ y 20 thÃ¡ng 06 nÄƒm 2024 \nNÆ¡i cáº¥p: Sá»Ÿ káº¿ hoáº¡ch vÃ  Ä‘áº§u tÆ° thÃ nh phá»‘ HÃ  Ná»™i - PhÃ²ng Ä‘Äƒng kÃ½ kinh doanh \nÄá»‹a chá»‰ trá»¥ sá»Ÿ chÃ­nh: Táº§ng 7, TÃ²a nhÃ  Luxury Ofice, sá»‘ 214 Láº¡c Long QuÃ¢n, PhÆ°á»ng TÃ¢y Há»“, ThÃ nh phá»‘ HÃ  Ná»™i, Viá»‡t Nam',
             style: defaultText14M.copyWith(color: Colors.white),
           ),
           Text(
-            'Thông tin',
+            'ThÃ´ng tin',
             style: defaultText16B.copyWith(color: Colors.white),
           ),
           GestureDetector(
@@ -675,7 +675,7 @@ class CustomFooterInfo extends StatelessWidget {
               );
             },
             child: Text(
-              'Giới thiệu chung',
+              'Giá»›i thiá»‡u chung',
               style: defaultText14M.copyWith(
                 color: Colors.white,
                 decoration: TextDecoration.underline,
@@ -693,7 +693,7 @@ class CustomFooterInfo extends StatelessWidget {
               );
             },
             child: Text(
-              'Khóa học'.sanitizeForApple,
+              'KhÃ³a há»c'.sanitizeForApple,
               style: defaultText14M.copyWith(
                 color: Colors.white,
                 decoration: TextDecoration.underline,
@@ -709,7 +709,7 @@ class CustomFooterInfo extends StatelessWidget {
               );
             },
             child: Text(
-              'Sản phẩm',
+              'Sáº£n pháº©m',
               style: defaultText14M.copyWith(
                 color: Colors.white,
                 decoration: TextDecoration.underline,
@@ -727,7 +727,7 @@ class CustomFooterInfo extends StatelessWidget {
               );
             },
             child: Text(
-              'Chính sách bảo mật - học tập',
+              'ChÃ­nh sÃ¡ch báº£o máº­t - há»c táº­p',
               style: defaultText14M.copyWith(
                 color: Colors.white,
                 decoration: TextDecoration.underline,
@@ -748,11 +748,11 @@ class CustomFooterInfo extends StatelessWidget {
               children: [
                 SizedBox(height: 8.h),
                 Text(
-                  'Theo dõi Cô Giáo Healthy',
+                  'Theo dÃµi CÃ´ GiÃ¡o Healthy',
                   style: defaultText16B.copyWith(color: Colors.white),
                 ),
                 Text(
-                  'Nhận thông tin mới nhất về khoá học, kiến thức nấu ăn!'
+                  'Nháº­n thÃ´ng tin má»›i nháº¥t vá» khoÃ¡ há»c, kiáº¿n thá»©c náº¥u Äƒn!'
                       .sanitizeForApple,
                   style: defaultText14M.copyWith(color: Colors.white),
                 ),
@@ -823,7 +823,7 @@ class CustomFooterInfo extends StatelessWidget {
             ),
           ),
           Text(
-            '© 2025 Cô Giáo Healthy | All Rights Reserved.',
+            'Â© 2025 CÃ´ GiÃ¡o Healthy | All Rights Reserved.',
             style: defaultText14M.copyWith(color: Colors.white),
           ),
           SizedBox(height: 30.h),
@@ -844,18 +844,18 @@ class LogoWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: ((context) =>
-                const CoGiaoHealthyScreen(type: 'home', place: 'Hà Nội')),
+                const CoGiaoHealthyScreen(type: 'home', place: 'HÃ  Ná»™i')),
           ),
         );
       },
       child: Image.asset(
-        'assets/images/logo.png', // Hãy thay bằng logo thật của bạn
+        'assets/images/logo.png', // HÃ£y thay báº±ng logo tháº­t cá»§a báº¡n
         height: 88.h,
         fit: BoxFit.fitHeight,
         errorBuilder: (context, error, stackTrace) => Column(
           children: [
             Text(
-              'Cô Giáo',
+              'CÃ´ GiÃ¡o',
               style: TextStyle(
                 fontSize: 18,
                 color: accentBrown,
@@ -884,7 +884,7 @@ class CourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      //maxWidth: 380, // Giới hạn chiều rộng tối đa cho đẹp mắt
+      //maxWidth: 380, // Giá»›i háº¡n chiá»u rá»™ng tá»‘i Ä‘a cho Ä‘áº¹p máº¯t
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
@@ -900,19 +900,19 @@ class CourseCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Banner màu xanh trên cùng
+          // 1. Banner mÃ u xanh trÃªn cÃ¹ng
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
             decoration: const BoxDecoration(
-              color: Color(0xFF3B7E45), // Màu xanh lá chủ đạo
+              color: Color(0xFF3B7E45), // MÃ u xanh lÃ¡ chá»§ Ä‘áº¡o
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(24),
                 topRight: Radius.circular(24),
               ),
             ),
             child: Text(
-              'Khoá học nấu ăn Eatclean -\nHealthy - Vegan'.sanitizeForApple,
+              'KhoÃ¡ há»c náº¥u Äƒn Eatclean -\nHealthy - Vegan'.sanitizeForApple,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -923,13 +923,13 @@ class CourseCard extends StatelessWidget {
             ),
           ),
 
-          // Phần nội dung bên dưới Banner
+          // Pháº§n ná»™i dung bÃªn dÆ°á»›i Banner
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 2. Khu vực hình ảnh đan xen (Image Grid + Stack)
+                // 2. Khu vá»±c hÃ¬nh áº£nh Ä‘an xen (Image Grid + Stack)
                 SizedBox(
                   height: 240,
                   child: Stack(
@@ -937,20 +937,20 @@ class CourseCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          // Ảnh lớn bên trái
+                          // áº¢nh lá»›n bÃªn trÃ¡i
                           Expanded(
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: CachedNetworkImage(
                                 imageUrl:
-                                    'https://picsum.photos/300/400', // Thay bằng link ảnh thật
+                                    'https://picsum.photos/300/400', // Thay báº±ng link áº£nh tháº­t
                                 fit: BoxFit.cover,
                                 height: double.infinity,
                               ),
                             ),
                           ),
                           const SizedBox(width: 10),
-                          // 2 ảnh nhỏ bên phải
+                          // 2 áº£nh nhá» bÃªn pháº£i
                           Expanded(
                             child: Column(
                               children: [
@@ -959,7 +959,7 @@ class CourseCard extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(12),
                                     child: CachedNetworkImage(
                                       imageUrl:
-                                          'https://picsum.photos/300/200', // Thay bằng link ảnh thật
+                                          'https://picsum.photos/300/200', // Thay báº±ng link áº£nh tháº­t
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                     ),
@@ -973,12 +973,12 @@ class CourseCard extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(12),
                                         child: CachedNetworkImage(
                                           imageUrl:
-                                              'https://picsum.photos/300/200', // Thay bằng link ảnh thật
+                                              'https://picsum.photos/300/200', // Thay báº±ng link áº£nh tháº­t
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                         ),
                                       ),
-                                      // Tag chữ nhỏ đè góc phải dưới
+                                      // Tag chá»¯ nhá» Ä‘Ã¨ gÃ³c pháº£i dÆ°á»›i
                                       Positioned(
                                         bottom: 6,
                                         right: 6,
@@ -1000,7 +1000,7 @@ class CourseCard extends StatelessWidget {
                                             ),
                                           ),
                                           child: const Text(
-                                            'Nấu ăn eatclean - healthy',
+                                            'Náº¥u Äƒn eatclean - healthy',
                                             style: TextStyle(
                                               color: Color(0xFF3B7E45),
                                               fontSize: 9,
@@ -1017,7 +1017,7 @@ class CourseCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      // Logo hình tròn nằm chính giữa tổ hợp ảnh
+                      // Logo hÃ¬nh trÃ²n náº±m chÃ­nh giá»¯a tá»• há»£p áº£nh
                       Align(
                         alignment: Alignment.center,
                         child: Container(
@@ -1038,7 +1038,7 @@ class CourseCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
                               Text(
-                                'Cô Giáo',
+                                'CÃ´ GiÃ¡o',
                                 style: TextStyle(
                                   color: Color(0xFFCCA464),
                                   fontSize: 9,
@@ -1062,9 +1062,9 @@ class CourseCard extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
 
-                // 3. Tiêu đề khóa học
+                // 3. TiÃªu Ä‘á» khÃ³a há»c
                 Text(
-                  '[ONLINE] KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG...'
+                  '[ONLINE] KHÃ“A Há»ŒC MÃ” HÃŒNH KINH DOANH SUáº¤T Ä‚N SIÃŠU NÄ‚NG LÆ¯á»¢NG...'
                       .sanitizeForApple,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -1077,13 +1077,13 @@ class CourseCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
 
-                // 4. Giảng viên
+                // 4. Giáº£ng viÃªn
                 Row(
                   children: const [
                     Icon(Icons.co_present, color: Color(0xFF4A5568), size: 18),
                     SizedBox(width: 6),
                     Text(
-                      'Cô giáo Healthy',
+                      'CÃ´ giÃ¡o Healthy',
                       style: TextStyle(
                         color: Color(0xFF4A5568),
                         fontSize: 14,
@@ -1094,31 +1094,31 @@ class CourseCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
 
-                // 5. Chỉ số (Bài học & Lượt học)
+                // 5. Chá»‰ sá»‘ (BÃ i há»c & LÆ°á»£t há»c)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildStatBadge(
                       icon: Icons.play_circle_fill,
                       iconColor: const Color(0xFFECC94B),
-                      text: '56 bài học',
+                      text: '56 bÃ i há»c',
                     ),
                     _buildStatBadge(
                       icon: Icons.people_alt,
                       iconColor: const Color(0xFFED8936),
-                      text: '1141 lượt học',
+                      text: '1141 lÆ°á»£t há»c',
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
 
-                // 6. Nút "Học thử ngay"
+                // 6. NÃºt "Há»c thá»­ ngay"
                 SizedBox(
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Xử lý sự kiện khi ấn nút ở đây
+                      // Xá»­ lÃ½ sá»± kiá»‡n khi áº¥n nÃºt á»Ÿ Ä‘Ã¢y
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF3B7E45),
@@ -1128,7 +1128,7 @@ class CourseCard extends StatelessWidget {
                       ),
                     ),
                     child: const Text(
-                      'Học thử ngay',
+                      'Há»c thá»­ ngay',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -1145,7 +1145,7 @@ class CourseCard extends StatelessWidget {
     );
   }
 
-  // Hàm bổ trợ tạo các Badge thông số (Bài học / Lượt học)
+  // HÃ m bá»• trá»£ táº¡o cÃ¡c Badge thÃ´ng sá»‘ (BÃ i há»c / LÆ°á»£t há»c)
   Widget _buildStatBadge({
     required IconData icon,
     required Color iconColor,
@@ -1178,7 +1178,7 @@ class CourseCard extends StatelessWidget {
 
 class RecipeGridWidget extends StatelessWidget {
   final List<PostModel> recipes;
-  final int type; // 1: công thức, 2: bài viết
+  final int type; // 1: cÃ´ng thá»©c, 2: bÃ i viáº¿t
   const RecipeGridWidget({
     super.key,
     required this.recipes,
@@ -1188,15 +1188,15 @@ class RecipeGridWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      // Tối ưu cho danh sách dài bằng cách tải lười (lazy loading)
-      shrinkWrap: true, // <--- Ép co kích thước theo content
+      // Tá»‘i Æ°u cho danh sÃ¡ch dÃ i báº±ng cÃ¡ch táº£i lÆ°á»i (lazy loading)
+      shrinkWrap: true, // <--- Ã‰p co kÃ­ch thÆ°á»›c theo content
       physics: const NeverScrollableScrollPhysics(),
       itemCount: recipes.length,
       padding: const EdgeInsets.all(8),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // Chia làm 2 cột bên trái và bên phải
-        crossAxisSpacing: 12, // Khoảng cách giữa 2 cột
-        mainAxisSpacing: 12, // Khoảng cách giữa các hàng
+        crossAxisCount: 2, // Chia lÃ m 2 cá»™t bÃªn trÃ¡i vÃ  bÃªn pháº£i
+        crossAxisSpacing: 12, // Khoáº£ng cÃ¡ch giá»¯a 2 cá»™t
+        mainAxisSpacing: 12, // Khoáº£ng cÃ¡ch giá»¯a cÃ¡c hÃ ng
         childAspectRatio: type == 2 ? 0.65 : 0.8,
       ),
       itemBuilder: (context, index) {
@@ -1206,7 +1206,7 @@ class RecipeGridWidget extends StatelessWidget {
     );
   }
 
-  // Widget con đại diện cho từng ô sản phẩm/bài viết
+  // Widget con Ä‘áº¡i diá»‡n cho tá»«ng Ã´ sáº£n pháº©m/bÃ i viáº¿t
   Widget _buildRecipeCard(
     BuildContext context,
     PostModel item,
@@ -1232,7 +1232,7 @@ class RecipeGridWidget extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: backGroundGreen, // Màu nền xanh lá phía dưới card
+          color: backGroundGreen, // MÃ u ná»n xanh lÃ¡ phÃ­a dÆ°á»›i card
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
@@ -1245,11 +1245,11 @@ class RecipeGridWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Phần hình ảnh phía trên (Bo góc trên trái, trên phải)
+            // 1. Pháº§n hÃ¬nh áº£nh phÃ­a trÃªn (Bo gÃ³c trÃªn trÃ¡i, trÃªn pháº£i)
             Expanded(
               flex: type == 2
                   ? 12
-                  : 22, // Chiếm phần lớn diện tích cho ảnh hiển thị đẹp
+                  : 22, // Chiáº¿m pháº§n lá»›n diá»‡n tÃ­ch cho áº£nh hiá»ƒn thá»‹ Ä‘áº¹p
               child: ClipRRect(
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
@@ -1260,7 +1260,7 @@ class RecipeGridWidget extends StatelessWidget {
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
-                  // Xử lý khi ảnh lỗi hoặc đang tải
+                  // Xá»­ lÃ½ khi áº£nh lá»—i hoáº·c Ä‘ang táº£i
                   errorWidget: (context, url, error) => Container(
                     color: Colors.grey[300],
                     child: const Icon(
@@ -1272,9 +1272,9 @@ class RecipeGridWidget extends StatelessWidget {
               ),
             ),
 
-            // 2. Phần nội dung chữ phía dưới (Nền xanh)
+            // 2. Pháº§n ná»™i dung chá»¯ phÃ­a dÆ°á»›i (Ná»n xanh)
             Expanded(
-              flex: 11, // Tăng phần không gian dành cho chữ
+              flex: 11, // TÄƒng pháº§n khÃ´ng gian dÃ nh cho chá»¯
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 child: Column(
@@ -1301,7 +1301,7 @@ class RecipeGridWidget extends StatelessWidget {
 class VideoLessonPreviewWidget extends StatelessWidget {
   const VideoLessonPreviewWidget({super.key});
 
-  // Hàm xử lý mở link YouTube
+  // HÃ m xá»­ lÃ½ má»Ÿ link YouTube
   Future<void> _launchYouTubeVideo() async {
     const String urlString = 'https://www.youtube.com/watch?v=vW5ZnHW95WM';
     final Uri url = Uri.parse(urlString);
@@ -1310,10 +1310,10 @@ class VideoLessonPreviewWidget extends StatelessWidget {
       await launchUrl(
         url,
         mode: LaunchMode
-            .externalApplication, // Mở bằng app YouTube bên ngoài (hoặc trình duyệt nếu không có app)
+            .externalApplication, // Má»Ÿ báº±ng app YouTube bÃªn ngoÃ i (hoáº·c trÃ¬nh duyá»‡t náº¿u khÃ´ng cÃ³ app)
       );
     } else {
-      debugPrint('Không thể mở liên kết: $urlString');
+      debugPrint('KhÃ´ng thá»ƒ má»Ÿ liÃªn káº¿t: $urlString');
     }
   }
 
@@ -1323,7 +1323,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 1. Phần tiêu đề Giảng viên
+        // 1. Pháº§n tiÃªu Ä‘á» Giáº£ng viÃªn
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           child: Row(
@@ -1331,7 +1331,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
               Icon(Icons.co_present_outlined, color: Colors.black87, size: 22),
               SizedBox(width: 8),
               Text(
-                'Giảng viên: Linh Phan',
+                'Giáº£ng viÃªn: Linh Phan',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
@@ -1342,18 +1342,18 @@ class VideoLessonPreviewWidget extends StatelessWidget {
           ),
         ),
 
-        // 2. Khung Video chính (Dùng Stack)
+        // 2. Khung Video chÃ­nh (DÃ¹ng Stack)
         AspectRatio(
           aspectRatio: 16 / 10,
           child: Stack(
             children: [
-              // LỚP NỀN: ĐÃ ĐỔI THÀNH LINK THUMBNAIL CHUẨN CỦA VIDEO YOUTUBE BẠN CUNG CẤP
+              // Lá»šP Ná»€N: ÄÃƒ Äá»”I THÃ€NH LINK THUMBNAIL CHUáº¨N Cá»¦A VIDEO YOUTUBE Báº N CUNG Cáº¤P
               Positioned.fill(
                 child: CachedNetworkImage(
                   imageUrl:
                       'https://i.ytimg.com/vi/vW5ZnHW95WM/maxresdefault.jpg',
                   fit: BoxFit.cover,
-                  // Trường hợp ảnh lỗi hoặc đang tải thì hiện màu nền xám nhẹ
+                  // TrÆ°á»ng há»£p áº£nh lá»—i hoáº·c Ä‘ang táº£i thÃ¬ hiá»‡n mÃ u ná»n xÃ¡m nháº¹
                   errorWidget: (context, url, error) =>
                       Container(color: Colors.grey[300]),
                   placeholder: (context, url) {
@@ -1362,7 +1362,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                 ),
               ),
 
-              // Lớp phủ mờ màu đen để làm nổi bật text và nút play
+              // Lá»›p phá»§ má» mÃ u Ä‘en Ä‘á»ƒ lÃ m ná»•i báº­t text vÃ  nÃºt play
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -1381,11 +1381,11 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                 ),
               ),
 
-              // NÚT PLAY: ĐÃ THÊM HÀM MỞ LINK YOUTUBE KHI CLICK
+              // NÃšT PLAY: ÄÃƒ THÃŠM HÃ€M Má»ž LINK YOUTUBE KHI CLICK
               Center(
                 child: InkWell(
                   onTap:
-                      _launchYouTubeVideo, // Gọi hàm mở link khi nhấn vào nút Play
+                      _launchYouTubeVideo, // Gá»i hÃ m má»Ÿ link khi nháº¥n vÃ o nÃºt Play
                   splashColor: Colors.white24,
                   highlightColor: Colors.transparent,
                   borderRadius: BorderRadius.circular(14),
@@ -1393,7 +1393,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                     width: 68,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFF0000), // Đỏ YouTube
+                      color: const Color(0xFFFF0000), // Äá» YouTube
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: const Icon(
@@ -1405,7 +1405,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                 ),
               ),
 
-              // Thông tin tiêu đề video đè góc trên bên trái
+              // ThÃ´ng tin tiÃªu Ä‘á» video Ä‘Ã¨ gÃ³c trÃªn bÃªn trÃ¡i
               Positioned(
                 top: 12,
                 left: 12,
@@ -1426,7 +1426,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'KHÓA HỌC MÔ HÌNH KINH DOANH SUẤT ĂN SIÊU NĂNG LƯỢNG'
+                            'KHÃ“A Há»ŒC MÃ” HÃŒNH KINH DOANH SUáº¤T Ä‚N SIÃŠU NÄ‚NG LÆ¯á»¢NG'
                                 .sanitizeForApple,
                             style: TextStyle(
                               color: Colors.white,
@@ -1441,7 +1441,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                           ),
                           SizedBox(height: 2),
                           Text(
-                            'Cô Giáo Healthy',
+                            'CÃ´ GiÃ¡o Healthy',
                             style: TextStyle(
                               fontSize: 12,
                               color: Color(0xFFE0E0E0),
@@ -1457,7 +1457,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                 ),
               ),
 
-              // Nút Share & Watch Later góc dưới bên trái
+              // NÃºt Share & Watch Later gÃ³c dÆ°á»›i bÃªn trÃ¡i
               Positioned(
                 bottom: 12,
                 left: 12,
@@ -1476,13 +1476,13 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                 ),
               ),
 
-              // Chữ "Xem trên YouTube" góc dưới bên phải
+              // Chá»¯ "Xem trÃªn YouTube" gÃ³c dÆ°á»›i bÃªn pháº£i
               Positioned(
                 bottom: 12,
                 right: 12,
                 child: InkWell(
                   onTap:
-                      _launchYouTubeVideo, // Cho phép click luôn vào cụm chữ này để mở link
+                      _launchYouTubeVideo, // Cho phÃ©p click luÃ´n vÃ o cá»¥m chá»¯ nÃ y Ä‘á»ƒ má»Ÿ link
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
@@ -1495,7 +1495,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
                     child: Row(
                       children: const [
                         Text(
-                          'Xem trên ',
+                          'Xem trÃªn ',
                           style: TextStyle(color: Colors.white, fontSize: 13),
                         ),
                         Icon(Icons.play_circle, color: Colors.red, size: 16),
@@ -1516,13 +1516,13 @@ class VideoLessonPreviewWidget extends StatelessWidget {
           ),
         ),
 
-        // 3. Thanh thông tin liên hệ màu xanh lá dưới đáy video
+        // 3. Thanh thÃ´ng tin liÃªn há»‡ mÃ u xanh lÃ¡ dÆ°á»›i Ä‘Ã¡y video
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           color: const Color(0xFF467D43),
           child: const Text(
-            'Fanpage Linh Phan - Cô Giáo Healthy. Hotline: 0966 912 016. Địa chỉ: 214 Lạc Long Quân, Tây Hồ, Hà Nội',
+            'Fanpage Linh Phan - CÃ´ GiÃ¡o Healthy. Hotline: 0966 912 016. Äá»‹a chá»‰: 214 Láº¡c Long QuÃ¢n, TÃ¢y Há»“, HÃ  Ná»™i',
             style: TextStyle(
               color: Colors.white,
               fontSize: 13,
@@ -1643,3 +1643,59 @@ Widget buildImage(String iconPath, {double size = 28, VoidCallback? onTap}) {
     ),
   );
 }
+
+class CustomSearchBar extends StatelessWidget {
+  final TextEditingController? controller;
+  final void Function(String)? onSubmitted;
+  final void Function(String)? onChanged;
+  final Color borderColor;
+  final Color iconColor;
+
+  const CustomSearchBar({
+    super.key,
+    this.controller,
+    this.onSubmitted,
+    this.onChanged,
+    this.borderColor = const Color(0xFFC0CA33),
+    this.iconColor = const Color(0xFF7CB342),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 6.h,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(
+            color: borderColor,
+            width: 1.5,
+          ),
+        ),
+        child: TextField(
+          controller: controller,
+          onSubmitted: onSubmitted,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            hintText: 'Nh?p d? tìm ki?m...',
+            hintStyle: const TextStyle(color: Colors.grey),
+            prefixIcon: Icon(
+              Icons.search,
+              color: iconColor,
+            ),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 15,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+

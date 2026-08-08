@@ -61,9 +61,65 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
     return lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi') || lower.endsWith('.mkv');
   }
 
-  Future<void> _pickImagesAndSubmit() async {
-    final ImagePicker picker = ImagePicker();
-    final List<XFile> medias = await picker.pickMultipleMedia();
+  Future<void> _showSubmitOptions() async {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.photo_library, color: mainDarkGreen),
+                title: const Text('Chọn ảnh/video từ Thư viện'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final ImagePicker picker = ImagePicker();
+                  final List<XFile> medias = await picker.pickMultipleMedia();
+                  if (medias.isNotEmpty) {
+                    _processSelectedMedias(medias);
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt, color: mainDarkGreen),
+                title: const Text('Chụp ảnh mới'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? file = await picker.pickImage(
+                    source: ImageSource.camera,
+                    imageQuality: 90,
+                  );
+                  if (file != null) {
+                    _processSelectedMedias([file]);
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.videocam, color: mainDarkGreen),
+                title: const Text('Quay video mới'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? file = await picker.pickVideo(
+                    source: ImageSource.camera,
+                  );
+                  if (file != null) {
+                    _processSelectedMedias([file]);
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _processSelectedMedias(List<XFile> medias) {
     if (medias.isNotEmpty) {
       if (!mounted) return;
       final TextEditingController textController = TextEditingController();
@@ -572,7 +628,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: _pickImagesAndSubmit,
+                            onTap: _showSubmitOptions,
                             child: Container(
                               height: 44.h,
                               width: 162.w,

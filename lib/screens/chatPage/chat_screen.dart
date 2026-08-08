@@ -35,15 +35,52 @@ class _ChatScreenState extends State<ChatScreen> {
   List<File> photos = <File>[];
   String id = '';
   final ImagePicker _picker = ImagePicker();
-  Future<void> openCamera() async {
-    final XFile? file = await _picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 90,
+  Future<void> _showCameraOptions() async {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.camera_alt, color: mainDarkGreen),
+                title: const Text('Chụp ảnh'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final XFile? file = await _picker.pickImage(
+                    source: ImageSource.camera,
+                    imageQuality: 90,
+                  );
+                  if (file != null) {
+                    setState(() {
+                      photos.add(File(file.path));
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.videocam, color: mainDarkGreen),
+                title: const Text('Quay video'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final XFile? file = await _picker.pickVideo(
+                    source: ImageSource.camera,
+                  );
+                  if (file != null) {
+                    setState(() {
+                      photos.add(File(file.path));
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
-    if (file != null) {
-      photos.add(File(file.path));
-      setState(() {});
-    }
   }
 
   Future _pickImageFromGallery() async {
@@ -362,7 +399,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () {
-                        openCamera();
+                        _showCameraOptions();
                       },
                       child: SvgPicture.asset('assets/icons/camera_icon.svg'),
                     ),

@@ -130,36 +130,8 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                     DefaultAppBar(),
 
                     // 2. SEARCH BAR AREA
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 6.h,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(
-                            color: const Color(0xFFC0CA33),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: const TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Nhập để tìm kiếm...',
-                            hintStyle: TextStyle(color: Colors.grey),
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: secondaryGreen,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 15,
-                            ),
-                          ),
-                        ),
-                      ),
+                    const CustomSearchBar(
+                      iconColor: secondaryGreen,
                     ),
 
                     // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)

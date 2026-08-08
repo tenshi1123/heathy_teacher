@@ -100,37 +100,9 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                         ), // Khoảng cách cho status bar
                         DefaultAppBar(),
                         // 2. SEARCH BAR AREA
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 6.h,
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(
-                                color: const Color(0xFFC0CA33),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: TextField(
-                              controller: _searchController,
-                              decoration: InputDecoration(
-                                hintText: 'Nhập để tìm kiếm...',
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: mainGreen,
-                                ),
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 15,
-                                ),
-                              ),
-                            ),
-                          ),
+                        CustomSearchBar(
+                          controller: _searchController,
+                          iconColor: mainGreen,
                         ),
 
                         // 4. SLIDE SHOW AREA (Phần bạn yêu cầu)

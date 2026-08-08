@@ -3,6 +3,7 @@ import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:heathy_teacher/repo/external_repo.dart';
 import 'package:heathy_teacher/utils/global_data.dart';
@@ -85,13 +86,19 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
                 title: Text('Cập nhật hoàn tất', style: defaultText16B),
                 content: Text(
-                  'Vui lòng khởi động lại ứng dụng để áp dụng thay đổi mới nhất.',
+                  Platform.isIOS
+                      ? 'Vui lòng thoát ứng dụng khỏi màn hình đa nhiệm và mở lại để áp dụng thay đổi mới nhất.'
+                      : 'Vui lòng khởi động lại ứng dụng để áp dụng thay đổi mới nhất.',
                   style: defaultText14M,
                 ),
                 actions: [
                   ElevatedButton(
                     onPressed: () {
-                      Restart.restartApp();
+                      if (Platform.isIOS) {
+                        exit(0);
+                      } else {
+                        Restart.restartApp();
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: mainDarkGreen,
@@ -100,7 +107,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                     ),
                     child: Text(
-                      'Khởi động lại ngay',
+                      Platform.isIOS ? 'Thoát ứng dụng' : 'Khởi động lại ngay',
                       style: defaultText16B.copyWith(color: Colors.white),
                     ),
                   ),

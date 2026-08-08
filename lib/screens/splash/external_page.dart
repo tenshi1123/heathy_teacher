@@ -129,47 +129,20 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                       DefaultAppBar(),
 
                       // 2. SEARCH BAR AREA
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 6.h,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: const Color(0xFFC0CA33),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: TextField(
-                            onSubmitted: (value) {
-                              if (value.trim().isNotEmpty) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        SearchResultScreen(query: value.trim()),
-                                  ),
-                                );
-                              }
-                            },
-                            decoration: InputDecoration(
-                              hintText: 'Nhập để tìm kiếm...',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: mainDarkGreen,
+                      CustomSearchBar(
+                        iconColor: mainDarkGreen,
+                        onSubmitted: (value) {
+                          if (value.trim().isNotEmpty) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SearchResultScreen(
+                                  query: value.trim(),
+                                ),
                               ),
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 15,
-                              ),
-                            ),
-                          ),
-                        ),
+                            );
+                          }
+                        },
                       ),
 
                       const CustomImageCarousel(),
