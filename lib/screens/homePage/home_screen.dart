@@ -70,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawerEnableOpenDragGesture: false,
       drawer: MyCustomDrawer(userModel: userModel, selectedIndex: 0),
       backgroundColor: Colors.white,
       body: RefreshIndicator(
@@ -441,7 +442,9 @@ class _HomeSaleSectionState extends State<HomeSaleSection> {
         saleProducts = products.where((element) {
           final priceOld = element.priceOld ?? '0';
           final price = element.price ?? '0';
-          final isOutOfStock = element.inventoryQuantity == '0' && element.allowShortSelling == '0';
+          final isOutOfStock =
+              element.inventoryQuantity == '0' &&
+              element.allowShortSelling == '0';
           return priceOld != '0' && priceOld != price && !isOutOfStock;
         }).toList();
 

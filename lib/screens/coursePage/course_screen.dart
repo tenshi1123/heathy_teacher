@@ -90,6 +90,7 @@ class _CourseScreenState extends State<CourseScreen> {
           SizedBox(width: 16.w),
         ],
       ),
+      drawerEnableOpenDragGesture: false,
       drawer: MyCustomDrawer(userModel: widget.userModel, selectedIndex: 1),
       body: Container(
         width: double.infinity,

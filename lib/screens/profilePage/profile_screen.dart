@@ -32,6 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      drawerEnableOpenDragGesture: false,
       drawer: MyCustomDrawer(userModel: widget.userModel, selectedIndex: 0),
       body: Column(
         children: [

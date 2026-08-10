@@ -301,6 +301,7 @@ class _ProductScreenState extends State<ProductScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainDarkGreen,
+      drawerEnableOpenDragGesture: false,
       drawer: MyCustomDrawer(userModel: widget.userModel, selectedIndex: 0),
       appBar: AppBar(
         backgroundColor: mainDarkGreen,

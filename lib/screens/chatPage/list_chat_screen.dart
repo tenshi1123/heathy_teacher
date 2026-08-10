@@ -85,6 +85,7 @@ class _ListChatScreenState extends State<ListChatScreen> {
           SizedBox(width: 16.w),
         ],
       ),
+      drawerEnableOpenDragGesture: false,
       drawer: MyCustomDrawer(userModel: widget.userModel, selectedIndex: 0),
       body: Container(
         width: double.infinity,
