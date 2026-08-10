@@ -32,22 +32,6 @@ class _ListSpScreenState extends State<ListSpScreen> {
   void initState() {
     super.initState();
     _fetchData();
-    _searchController.addListener(_onSearchChanged);
-  }
-
-  void _onSearchChanged() {
-    String query = _searchController.text.toLowerCase();
-    setState(() {
-      if (query.isEmpty) {
-        courses = _allCourses;
-      } else {
-        courses = _allCourses
-            .where(
-              (item) => (item.categoryName ?? '').toLowerCase().contains(query),
-            )
-            .toList();
-      }
-    });
   }
 
   Future<void> _fetchData() async {
@@ -55,7 +39,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
       isLoading = true;
     });
     _allCourses = await ProductRepo().getCategory(page: 1, show: _show);
-    _onSearchChanged();
+    courses = _allCourses;
     setState(() {
       isLoading = false;
     });
@@ -98,6 +82,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                 MaterialPageRoute(
                                   builder: (context) => SearchResultScreen(
                                     query: value.trim(),
+                                    showProductsOnly: true,
                                   ),
                                 ),
                               );

@@ -17,7 +17,12 @@ import 'package:heathy_teacher/screens/homePage/register_class.dart';
 
 class SearchResultScreen extends StatefulWidget {
   final String query;
-  const SearchResultScreen({super.key, required this.query});
+  final bool showProductsOnly;
+  const SearchResultScreen({
+    super.key,
+    required this.query,
+    this.showProductsOnly = false,
+  });
 
   @override
   State<SearchResultScreen> createState() => _SearchResultScreenState();
@@ -49,43 +54,53 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
     setState(() {
       _isLoadingOnline = true;
       _isLoadingOffline = true;
+      _isLoadingProducts = true;
     });
 
-    try {
-      final courses = await ExternalRepo().getListCourse(
-        query: _currentQuery,
-        show: 20,
-        type: 'online',
-      );
-      if (mounted) {
-        setState(() {
-          _onlineCourses = courses;
-          _isLoadingOnline = false;
-        });
+    if (!widget.showProductsOnly) {
+      try {
+        final courses = await ExternalRepo().getListCourse(
+          query: _currentQuery,
+          show: 20,
+          type: 'online',
+        );
+        if (mounted) {
+          setState(() {
+            _onlineCourses = courses;
+            _isLoadingOnline = false;
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoadingOnline = false;
+          });
+        }
       }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoadingOnline = false;
-        });
-      }
-    }
 
-    try {
-      final offCourses = await ExternalRepo().getListCourse(
-        query: _currentQuery,
-        show: 20,
-        type: 'off',
-      );
-      if (mounted) {
-        setState(() {
-          _offlineCourses = offCourses;
-          _isLoadingOffline = false;
-        });
+      try {
+        final offCourses = await ExternalRepo().getListCourse(
+          query: _currentQuery,
+          show: 20,
+          type: 'off',
+        );
+        if (mounted) {
+          setState(() {
+            _offlineCourses = offCourses;
+            _isLoadingOffline = false;
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoadingOffline = false;
+          });
+        }
       }
-    } catch (e) {
+    } else {
       if (mounted) {
         setState(() {
+          _isLoadingOnline = false;
           _isLoadingOffline = false;
         });
       }
@@ -166,64 +181,66 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
 
                   // KHÓA HỌC ONLINE SECTION
-                  SizedBox(height: 16.h),
-                  Text(
-                    'KHÓA HỌC ONLINE',
-                    style: defaultText18B.copyWith(color: mainDarkGreen),
-                  ),
-                  SizedBox(height: 8.h),
-                  if (_isLoadingOnline)
-                    const Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: CircularProgressIndicator(),
-                    )
-                  else if (_onlineCourses.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: Text('Không tìm thấy khóa học online nào.'),
-                    )
-                  else
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      itemCount: _onlineCourses.length,
-                      itemBuilder: (context, index) {
-                        return Center(
-                          child: _buildOnlineClassCard(_onlineCourses[index]),
-                        );
-                      },
+                  if (!widget.showProductsOnly) ...[
+                    SizedBox(height: 16.h),
+                    Text(
+                      'KHÓA HỌC ONLINE',
+                      style: defaultText18B.copyWith(color: mainDarkGreen),
                     ),
+                    SizedBox(height: 8.h),
+                    if (_isLoadingOnline)
+                      const Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: CircularProgressIndicator(),
+                      )
+                    else if (_onlineCourses.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Text('Không tìm thấy khóa học online nào.'),
+                      )
+                    else
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        itemCount: _onlineCourses.length,
+                        itemBuilder: (context, index) {
+                          return Center(
+                            child: _buildOnlineClassCard(_onlineCourses[index]),
+                          );
+                        },
+                      ),
 
-                  // KHÓA HỌC TRỰC TIẾP SECTION
-                  SizedBox(height: 24.h),
-                  Text(
-                    'KHÓA HỌC TRỰC TIẾP',
-                    style: defaultText18B.copyWith(color: mainDarkGreen),
-                  ),
-                  SizedBox(height: 8.h),
-                  if (_isLoadingOffline)
-                    const Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: CircularProgressIndicator(),
-                    )
-                  else if (_offlineCourses.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: Text('Không tìm thấy khóa học trực tiếp nào.'),
-                    )
-                  else
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      itemCount: _offlineCourses.length,
-                      itemBuilder: (context, index) {
-                        return Center(
-                          child: _buildOfflineClassCard(_offlineCourses[index]),
-                        );
-                      },
+                    // KHÓA HỌC TRỰC TIẾP SECTION
+                    SizedBox(height: 24.h),
+                    Text(
+                      'KHÓA HỌC TRỰC TIẾP',
+                      style: defaultText18B.copyWith(color: mainDarkGreen),
                     ),
+                    SizedBox(height: 8.h),
+                    if (_isLoadingOffline)
+                      const Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: CircularProgressIndicator(),
+                      )
+                    else if (_offlineCourses.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Text('Không tìm thấy khóa học trực tiếp nào.'),
+                      )
+                    else
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        itemCount: _offlineCourses.length,
+                        itemBuilder: (context, index) {
+                          return Center(
+                            child: _buildOfflineClassCard(_offlineCourses[index]),
+                          );
+                        },
+                      ),
+                  ],
 
                   // NGUYÊN LIỆU - MÁY MÓC SECTION
                   SizedBox(height: 24.h),

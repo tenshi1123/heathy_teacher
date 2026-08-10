@@ -34,7 +34,9 @@ class _CourseScreenState extends State<CourseScreen> {
   }
 
   Future<void> _fetchData() async {
-    isLoading = true;
+    setState(() {
+      isLoading = true;
+    });
     final List<CourseScheduleModel> fetchedCourses = await CourseRepo()
         .getCourse();
     courses = isShow == 'true'

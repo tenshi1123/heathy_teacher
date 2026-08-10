@@ -37,22 +37,6 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
   void initState() {
     super.initState();
     _fetchData();
-    _searchController.addListener(_onSearchChanged);
-  }
-
-  void _onSearchChanged() {
-    String query = _searchController.text.toLowerCase();
-    setState(() {
-      if (query.isEmpty) {
-        coursesDetail = _allCoursesDetail;
-      } else {
-        coursesDetail = _allCoursesDetail
-            .where(
-              (item) => (item.productName ?? '').toLowerCase().contains(query),
-            )
-            .toList();
-      }
-    });
   }
 
   Future<void> _fetchData() async {
@@ -64,7 +48,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
       page: 1,
       show: _show,
     );
-    _onSearchChanged();
+    coursesDetail = _allCoursesDetail;
     setState(() {
       isLoading = false;
     });
@@ -111,6 +95,7 @@ class _ListDetailSpScreenState extends State<ListDetailSpScreen> {
                                 MaterialPageRoute(
                                   builder: (context) => SearchResultScreen(
                                     query: value.trim(),
+                                    showProductsOnly: true,
                                   ),
                                 ),
                               );

@@ -37,6 +37,7 @@ class BottomBarScreenState extends State<BottomBarScreen> {
 
   bool isLoading = true;
   int currentIndex = 4; // Default to Account tab (index 4)
+  final List<bool> _loadedTabs = [false, false, false, false, true];
 
   @override
   void initState() {
@@ -117,43 +118,56 @@ class BottomBarScreenState extends State<BottomBarScreen> {
             body: IndexedStack(
               index: currentIndex,
               children: [
-                HomeScreen(
-                  userModel: userModel!,
-                  customerModel: customerModel!,
-                  onCourseTabRequested: () {
-                    setState(() {
-                      currentIndex = 1;
-                    });
-                  },
-                  onProductTabRequested: () {
-                    setState(() {
-                      currentIndex = 3;
-                    });
-                  },
-                ),
-                CourseScreen(userModel: userModel!),
-                ListChatScreen(userModel: userModel!),
-                ListProductScreen(userModel: userModel!),
-                HomeScreen(
-                  userModel: userModel!,
-                  customerModel: customerModel!,
-                  onCourseTabRequested: () {
-                    setState(() {
-                      currentIndex = 1;
-                    });
-                  },
-                  onProductTabRequested: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductScreen(
-                          type: 1,
-                          userModel: userModel!,
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                _loadedTabs[0]
+                    ? HomeScreen(
+                        userModel: userModel!,
+                        customerModel: customerModel!,
+                        onCourseTabRequested: () {
+                          setState(() {
+                            currentIndex = 1;
+                            _loadedTabs[1] = true;
+                          });
+                        },
+                        onProductTabRequested: () {
+                          setState(() {
+                            currentIndex = 3;
+                            _loadedTabs[3] = true;
+                          });
+                        },
+                      )
+                    : const SizedBox.shrink(),
+                _loadedTabs[1]
+                    ? CourseScreen(userModel: userModel!)
+                    : const SizedBox.shrink(),
+                _loadedTabs[2]
+                    ? ListChatScreen(userModel: userModel!)
+                    : const SizedBox.shrink(),
+                _loadedTabs[3]
+                    ? ListProductScreen(userModel: userModel!)
+                    : const SizedBox.shrink(),
+                _loadedTabs[4]
+                    ? HomeScreen(
+                        userModel: userModel!,
+                        customerModel: customerModel!,
+                        onCourseTabRequested: () {
+                          setState(() {
+                            currentIndex = 1;
+                            _loadedTabs[1] = true;
+                          });
+                        },
+                        onProductTabRequested: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductScreen(
+                                type: 1,
+                                userModel: userModel!,
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : const SizedBox.shrink(),
                 //ofileScreen(userModel: userModel!),
               ],
             ),
@@ -171,7 +185,10 @@ class BottomBarScreenState extends State<BottomBarScreen> {
                     ),
                   );
                 } else {
-                  setState(() => currentIndex = i);
+                  setState(() {
+                    currentIndex = i;
+                    _loadedTabs[i] = true;
+                  });
                 }
               },
             ),

@@ -58,7 +58,10 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
 
   bool _isVideo(String path) {
     final lower = path.toLowerCase();
-    return lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi') || lower.endsWith('.mkv');
+    return lower.endsWith('.mp4') ||
+        lower.endsWith('.mov') ||
+        lower.endsWith('.avi') ||
+        lower.endsWith('.mkv');
   }
 
   Future<void> _showSubmitOptions() async {
@@ -178,7 +181,10 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                                       'assets/icons/video.svg',
                                       width: 30.r,
                                       height: 30.r,
-                                      colorFilter: ColorFilter.mode(mainDarkGreen, BlendMode.srcIn),
+                                      colorFilter: ColorFilter.mode(
+                                        mainDarkGreen,
+                                        BlendMode.srcIn,
+                                      ),
                                     ),
                                   )
                                 : Image.file(
@@ -245,7 +251,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                           '',
                       content: textContent,
                       courseTypeId: widget.course.settingCourseTypeId ?? '1',
-                      isPointAcc: 1,
+                      isPointAcc: 0,
                       files: medias.map((e) => e.path).toList(),
                     );
 
@@ -1047,16 +1053,25 @@ class _LessonItemState extends State<LessonItem> {
                         );
                       }
 
-                      if (widget.percentLearning == 0 || widget.percentLearning == 0.0) {
-                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                        bool hasAgreed = prefs.getBool('agreed_commitment_${widget.courses?.id}') ?? false;
+                      if (widget.percentLearning == 0 ||
+                          widget.percentLearning == 0.0) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        bool hasAgreed =
+                            prefs.getBool(
+                              'agreed_commitment_${widget.courses?.id}',
+                            ) ??
+                            false;
 
                         if (!hasAgreed) {
                           if (mounted) {
                             showStudentCommitmentDialog(
                               context,
                               onAgree: () async {
-                                await prefs.setBool('agreed_commitment_${widget.courses?.id}', true);
+                                await prefs.setBool(
+                                  'agreed_commitment_${widget.courses?.id}',
+                                  true,
+                                );
                                 openVideo();
                               },
                             );
@@ -1064,7 +1079,7 @@ class _LessonItemState extends State<LessonItem> {
                           return;
                         }
                       }
-                      
+
                       openVideo();
                     },
                     child: DetailItem(
