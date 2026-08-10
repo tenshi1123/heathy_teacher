@@ -113,7 +113,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
               ),
               ListTile(
                 leading: SvgPicture.asset(
-                  'assets/icons/video.svg',
+                  'assets/icons/camera_icon.svg',
                   width: 24,
                   height: 24,
                   colorFilter: ColorFilter.mode(mainDarkGreen, BlendMode.srcIn),
