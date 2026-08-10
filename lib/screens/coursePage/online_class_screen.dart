@@ -250,7 +250,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                           widget.course.courseScheduleId ??
                           '',
                       content: textContent,
-                      courseTypeId: widget.course.settingCourseTypeId ?? '1',
+                      courseTypeId: widget.course.courseTypeId ?? '1',
                       isPointAcc: 0,
                       files: medias.map((e) => e.path).toList(),
                     );
