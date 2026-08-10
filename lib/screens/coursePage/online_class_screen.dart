@@ -236,6 +236,48 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                   final textContent = textController.text;
                   Navigator.pop(dialogContext);
 
+                  int pointAcc = 0;
+                  if (widget.course.percentLearning == 100) {
+                    final int? choice = await showDialog<int>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(
+                            'Hình thức trả bài',
+                            style: defaultText16B,
+                          ),
+                          content: Text(
+                            'Bạn muốn trả bài lớp học hay trả bài tích điểm?',
+                            style: defaultText14Re,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 0),
+                              child: Text(
+                                'Trả bài lớp học',
+                                style: defaultText14SB.copyWith(
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 1),
+                              child: Text(
+                                'Trả bài tích điểm',
+                                style: defaultText14SB.copyWith(
+                                  color: mainDarkGreen,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    if (choice == null) return;
+                    pointAcc = choice;
+                  }
+
                   try {
                     showDialog(
                       context: context,
@@ -251,7 +293,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                           '',
                       content: textContent,
                       courseTypeId: widget.course.courseTypeId ?? '1',
-                      isPointAcc: 0,
+                      isPointAcc: pointAcc,
                       files: medias.map((e) => e.path).toList(),
                     );
 
