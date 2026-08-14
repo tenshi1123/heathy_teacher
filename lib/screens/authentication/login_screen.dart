@@ -7,7 +7,8 @@ import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final bool isReturnBack;
+  const LoginScreen({super.key, this.isReturnBack = false});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -151,13 +152,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             return;
                           }
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: ((context) => (BottomBarScreen())),
-                            ),
-                            (Route<dynamic> route) => false,
-                          );
+                          if (widget.isReturnBack) {
+                            Navigator.pop(context, true);
+                          } else {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: ((context) => (BottomBarScreen())),
+                              ),
+                              (Route<dynamic> route) => false,
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: backGroundGreen,

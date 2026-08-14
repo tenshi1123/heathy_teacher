@@ -93,7 +93,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
       isLoggedIn = token != null;
 
       final data = await ExternalRepo().getDetailCourseExternal(widget.id);
-      
+
       List<CourseScheduleModel> fetchedMyCourses = [];
       try {
         if (isLoggedIn) {
@@ -446,21 +446,26 @@ class _RegisterClassONState extends State<RegisterClassON> {
                             );
 
                             if (token == null) {
-                              showLoginDialog(context);
-                            } else {
-                              globalListCart.clear();
-                              globalListCart.add(
-                                CartItem(
-                                  id: courses.id ?? '',
-                                  name: courses.title ?? '',
-                                  image: courses.image ?? '',
-                                  price:
-                                      int.tryParse(courses.price ?? '0') ?? 0,
-                                  isCourse: true,
-                                  isOnlineCourse: true,
-                                  courseTypeId: courses.courseTypeId,
-                                ),
+                              final bool? isLogin = await showLoginDialog(
+                                context,
+                                isReturnBack: true,
                               );
+                              if (isLogin != true) return;
+                            }
+
+                            globalListCart.clear();
+                            globalListCart.add(
+                              CartItem(
+                                id: courses.id ?? '',
+                                name: courses.title ?? '',
+                                image: courses.image ?? '',
+                                price: int.tryParse(courses.price ?? '0') ?? 0,
+                                isCourse: true,
+                                isOnlineCourse: true,
+                                courseTypeId: courses.courseTypeId,
+                              ),
+                            );
+                            if (context.mounted) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -483,7 +488,9 @@ class _RegisterClassONState extends State<RegisterClassON> {
                               children: [
                                 Image.asset('assets/images/lingting.png'),
                                 Text(
-                                  (!isLoggedIn || (!isLoadingMyCourses && myCourses.isEmpty))
+                                  (!isLoggedIn ||
+                                          (!isLoadingMyCourses &&
+                                              myCourses.isEmpty))
                                       ? '  Đăng ký ngay để giảm 10%'
                                       : '  Đăng ký ngay',
                                   textAlign: TextAlign.center,

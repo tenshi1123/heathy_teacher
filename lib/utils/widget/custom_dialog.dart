@@ -164,16 +164,17 @@ class ScreenshotWarningDialog extends StatelessWidget {
   }
 }
 
-void showLoginDialog(BuildContext context) {
-  showDialog(
+Future<bool?> showLoginDialog(BuildContext context, {bool isReturnBack = false}) {
+  return showDialog<bool>(
     context: context,
     barrierDismissible: true,
-    builder: (_) => const LoginDialog(),
+    builder: (_) => LoginDialog(isReturnBack: isReturnBack),
   );
 }
 
 class LoginDialog extends StatelessWidget {
-  const LoginDialog({super.key});
+  final bool isReturnBack;
+  const LoginDialog({super.key, this.isReturnBack = false});
 
   @override
   Widget build(BuildContext context) {
@@ -210,11 +211,14 @@ class LoginDialog extends StatelessWidget {
 
             /// BUTTON FACEBOOK
             GestureDetector(
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                final result = await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: ((context) => (LoginScreen()))),
+                  MaterialPageRoute(builder: ((context) => LoginScreen(isReturnBack: isReturnBack))),
                 );
+                if (result == true) {
+                  if (context.mounted) Navigator.pop(context, true);
+                }
               },
               child: Container(
                 width: double.infinity,

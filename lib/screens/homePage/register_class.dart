@@ -296,23 +296,29 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                                       'remember_token',
                                     );
                                     if (token == null) {
-                                      showLoginDialog(context);
-                                    } else {
-                                      globalListCart.clear();
-                                      globalListCart.add(
-                                        CartItem(
-                                          id: courses.id ?? '',
-                                          name: courses.title ?? '',
-                                          image: courses.image ?? '',
-                                          price:
-                                              int.tryParse(
-                                                courses.price ?? '0',
-                                              ) ??
-                                              0,
-                                          isCourse: true,
-                                          courseTypeId: courses.courseTypeId,
-                                        ),
+                                      final bool? isLogin = await showLoginDialog(
+                                        context,
+                                        isReturnBack: true,
                                       );
+                                      if (isLogin != true) return;
+                                    }
+                                    
+                                    globalListCart.clear();
+                                    globalListCart.add(
+                                      CartItem(
+                                        id: courses.id ?? '',
+                                        name: courses.title ?? '',
+                                        image: courses.image ?? '',
+                                        price:
+                                            int.tryParse(
+                                              courses.price ?? '0',
+                                            ) ??
+                                            0,
+                                        isCourse: true,
+                                        courseTypeId: courses.courseTypeId,
+                                      ),
+                                    );
+                                    if (context.mounted) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
