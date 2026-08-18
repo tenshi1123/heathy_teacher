@@ -1,4 +1,4 @@
-﻿import 'package:heathy_teacher/repo/course_repo.dart';
+import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
@@ -323,7 +323,8 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                             /// IMAGE (giữ kích thước mong muốn)
                             SizedBox(
                               height: 150.h, // 👈 bạn control size ảnh ở đây
-                              child: CachedNetworkImage(memCacheWidth: 800, 
+                              child: CachedNetworkImage(
+                                memCacheWidth: 800,
                                 imageUrl:
                                     'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                                 fit: BoxFit.contain,
@@ -637,6 +638,7 @@ class ServiceGrid extends StatelessWidget {
           "Các dịch vụ nổi bật tại Cô giáo healthy",
           style: defaultText14M.copyWith(color: mainDarkGreen),
         ),
+        SizedBox(height: 8.h),
         //const StatisticsBannerWidget(),
         Padding(
           padding: EdgeInsets.symmetric(
@@ -721,15 +723,15 @@ class BottomCustom extends StatelessWidget {
         'type': 'url',
       },
       {
+        'title': 'Trang chủ',
+        'iconPath': 'assets/icons/icon_home.svg',
+        'type': 'external_home',
+      },
+      {
         'title': 'Gọi hotline',
         'iconPath': 'assets/images/call.png',
         'url': '0966912016',
         'type': 'phone',
-      },
-      {
-        'title': 'Hỗ trợ ngay',
-        'iconPath': 'assets/images/suport.png',
-        'type': 'login',
       },
     ];
 
@@ -763,6 +765,17 @@ class BottomCustom extends StatelessWidget {
                 await _launchUrl(context, item['url']);
               } else if (item['type'] == 'phone') {
                 await _launchUrl(context, item['url'], isPhone: true);
+              } else if (item['type'] == 'external_home') {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CoGiaoHealthyScreen(
+                      type: 'home',
+                      place: 'Hà Nội',
+                    ),
+                  ),
+                  (Route<dynamic> route) => false,
+                );
               } else if (item['type'] == 'login') {
                 final prefs = await SharedPreferences.getInstance();
                 final token = prefs.getString('token');
@@ -1117,7 +1130,8 @@ class _OfflineClassCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CachedNetworkImage(memCacheWidth: 800, 
+            CachedNetworkImage(
+              memCacheWidth: 800,
               imageUrl: model.img ?? '',
               width: 184.w,
               fit: BoxFit.fitWidth,
@@ -1235,7 +1249,8 @@ class _OnlineClassCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.r),
                   child: AspectRatio(
                     aspectRatio: 483 / 397.76,
-                    child: CachedNetworkImage(memCacheWidth: 800, 
+                    child: CachedNetworkImage(
+                      memCacheWidth: 800,
                       imageUrl:
                           model.img ??
                           'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg',

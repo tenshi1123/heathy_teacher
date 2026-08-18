@@ -1,4 +1,4 @@
-﻿import 'package:heathy_teacher/utils/apple_sanitizer.dart';
+import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -125,18 +125,13 @@ class _ListSpScreenState extends State<ListSpScreen> {
                             ),
                           ],
                         ),
-                        GridView.builder(
+                        ListView.separated(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           padding: const EdgeInsets.all(12),
                           itemCount: courses.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 12,
-                                childAspectRatio: 0.6,
-                              ),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 12),
                           itemBuilder: (context, index) {
                             final item = courses[index];
 
@@ -172,48 +167,55 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                         top: Radius.circular(16),
                                         bottom: Radius.circular(16),
                                       ),
-                                      child: CachedNetworkImage(memCacheWidth: 800, 
-                                        imageUrl: item.img ?? '',
-                                        height: 160.h,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (context, url, error) {
-                                          return Container(
-                                            width: 50.dg,
-                                            height: 50.dg,
-                                            color: Colors.grey[200],
-                                            child: Icon(
-                                              Icons.error_outline,
-                                              size: 30.dg,
-                                              color: Colors.grey,
-                                            ),
-                                          );
-                                        },
-                                        // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
-                                        placeholder: (context, url) {
-                                          return Container(
-                                            width: 80.w,
-                                            height: 80.h,
-                                            color: Colors.grey[100],
-                                            child: const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          );
-                                        },
+                                      child: AspectRatio(
+                                        aspectRatio: 1,
+                                        child: CachedNetworkImage(
+                                          memCacheWidth: 800,
+                                          imageUrl: item.img ?? '',
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, url, error) {
+                                            return Container(
+                                              width: 50.dg,
+                                              height: 50.dg,
+                                              color: Colors.grey[200],
+                                              child: Icon(
+                                                Icons.error_outline,
+                                                size: 30.dg,
+                                                color: Colors.grey,
+                                              ),
+                                            );
+                                          },
+                                          // (Tuỳ chọn) Hiển thị vòng xoay loading trong lúc đang tải ảnh
+                                          placeholder: (context, url) {
+                                            return Container(
+                                              width: 80.w,
+                                              height: 80.h,
+                                              color: Colors.grey[100],
+                                              child: const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
 
-                                    Text(
-                                      item.categoryName ?? '',
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: defaultText16B.copyWith(
-                                        color: mainDarkGreen,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0,
+                                        horizontal: 4.0,
+                                      ),
+                                      child: Text(
+                                        item.categoryName ?? '',
+                                        style: defaultText16B.copyWith(
+                                          color: mainDarkGreen,
+                                        ),
                                       ),
                                     ),
 
-                                    const Spacer(),
+                                    const SizedBox(height: 8),
 
                                     /// BUTTON
                                     Padding(
@@ -323,7 +325,8 @@ class _ListSpScreenState extends State<ListSpScreen> {
                               /// IMAGE (giữ kích thước mong muốn)
                               SizedBox(
                                 height: 140.h, // 👈 bạn control size ảnh ở đây
-                                child: CachedNetworkImage(memCacheWidth: 800, 
+                                child: CachedNetworkImage(
+                                  memCacheWidth: 800,
                                   imageUrl:
                                       'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                                   fit: BoxFit.contain,

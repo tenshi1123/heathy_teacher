@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -106,7 +106,9 @@ class _SaleScreenState extends State<SaleScreen> {
         saleProducts = products.where((element) {
           final priceOld = element.priceOld ?? '0';
           final price = element.price ?? '0';
-          final isOutOfStock = element.inventoryQuantity == '0' && element.allowShortSelling == '0';
+          final isOutOfStock =
+              element.inventoryQuantity == '0' &&
+              element.allowShortSelling == '0';
           return priceOld != '0' && priceOld != price && !isOutOfStock;
         }).toList();
 
@@ -305,13 +307,12 @@ class _SaleScreenState extends State<SaleScreen> {
                     ],
                     SizedBox(height: 20.h),
                     CustomFooterInfo(),
-
-                    BottomCustom(),
                   ],
                 ),
               ),
             ),
           ),
+          BottomCustom(),
         ],
       ),
     );
@@ -350,7 +351,8 @@ class _SaleScreenState extends State<SaleScreen> {
               borderRadius: BorderRadius.circular(8.r),
               child: AspectRatio(
                 aspectRatio: 483 / 397.76,
-                child: CachedNetworkImage(memCacheWidth: 800, 
+                child: CachedNetworkImage(
+                  memCacheWidth: 800,
                   imageUrl: (model.img != null && model.img!.startsWith('http'))
                       ? model.img!
                       : (model.img != null && model.img!.isNotEmpty
@@ -547,7 +549,8 @@ class _SaleScreenState extends State<SaleScreen> {
                 top: Radius.circular(16),
                 bottom: Radius.circular(16),
               ),
-              child: CachedNetworkImage(memCacheWidth: 800, 
+              child: CachedNetworkImage(
+                memCacheWidth: 800,
                 imageUrl: (item.img != null && item.img!.startsWith('http'))
                     ? item.img!
                     : (item.img != null && item.img!.isNotEmpty
