@@ -1,4 +1,4 @@
-import 'package:heathy_teacher/utils/apple_sanitizer.dart';
+﻿import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -250,7 +250,7 @@ class _ListFreeCourseState extends State<ListFreeCourse> {
                           /// IMAGE (giữ kích thước mong muốn)
                           SizedBox(
                             height: 140.h, // 👈 bạn control size ảnh ở đây
-                            child: CachedNetworkImage(
+                            child: CachedNetworkImage(memCacheWidth: 800, 
                               imageUrl:
                                   'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                               fit: BoxFit.contain,
@@ -399,7 +399,7 @@ class FreeCourseItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.r),
             child: AspectRatio(
               aspectRatio: 483 / 397.76,
-              child: CachedNetworkImage(
+              child: CachedNetworkImage(memCacheWidth: 800, 
                 imageUrl:
                     model.img ??
                     'https://lms.cogiaohealthy.vn/images/AVAMOI/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20%E1%BA%A2nh%20%C4%91%E1%BA%A1i%20di%E1%BB%87n%20kho%C3%A1%20h%E1%BB%8Dc%20tr%C3%AAn%20website%20%285%29.jpg',

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
 import 'package:heathy_teacher/utils/constants/styles.dart';
@@ -166,7 +166,7 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                       Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: CachedNetworkImage(
+                          child: CachedNetworkImage(memCacheWidth: 800, 
                             imageUrl:
                                 (productDetail!.img != null &&
                                     productDetail!.img!.startsWith('http'))

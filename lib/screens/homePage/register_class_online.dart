@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -191,7 +191,7 @@ class _RegisterClassONState extends State<RegisterClassON> {
                       ),
                     ),
                     SizedBox(height: 6.h),
-                    CachedNetworkImage(
+                    CachedNetworkImage(memCacheWidth: 800, 
                       imageUrl: courses.image ?? '',
                       width: 343.w,
                       height: 280.h,
@@ -882,7 +882,7 @@ class _FeedbackCarouselState extends State<_FeedbackCarousel> {
                             child: hasImage
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(16.r),
-                                    child: CachedNetworkImage(
+                                    child: CachedNetworkImage(memCacheWidth: 800, 
                                       imageUrl: imageUrl,
                                       fit: BoxFit.cover,
                                       errorWidget: (context, url, error) =>

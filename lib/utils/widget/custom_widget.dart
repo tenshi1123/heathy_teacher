@@ -1,4 +1,4 @@
-import 'package:heathy_teacher/models/home_model.dart';
+﻿import 'package:heathy_teacher/models/home_model.dart';
 import 'package:heathy_teacher/screens/introduce_screen.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_detail_sp.dart';
 import 'package:heathy_teacher/screens/listSanPham/list_sp.dart';
@@ -171,7 +171,7 @@ class CartItemWidget extends StatelessWidget {
           /// image
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: CachedNetworkImage(
+            child: CachedNetworkImage(memCacheWidth: 800, 
               imageUrl: item.image,
               width: 60,
               height: 60,
@@ -493,7 +493,7 @@ class CustomFooterInfo extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CachedNetworkImage(
+          CachedNetworkImage(memCacheWidth: 800, 
             imageUrl:
                 'https://cogiaohealthy.vn/wp-content/uploads/2025/07/logo_footer.png',
             height: 60.h,
@@ -941,7 +941,7 @@ class CourseCard extends StatelessWidget {
                           Expanded(
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: CachedNetworkImage(
+                              child: CachedNetworkImage(memCacheWidth: 800, 
                                 imageUrl:
                                     'https://picsum.photos/300/400', // Thay bằng link ảnh thật
                                 fit: BoxFit.cover,
@@ -957,7 +957,7 @@ class CourseCard extends StatelessWidget {
                                 Expanded(
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
-                                    child: CachedNetworkImage(
+                                    child: CachedNetworkImage(memCacheWidth: 800, 
                                       imageUrl:
                                           'https://picsum.photos/300/200', // Thay bằng link ảnh thật
                                       fit: BoxFit.cover,
@@ -971,7 +971,7 @@ class CourseCard extends StatelessWidget {
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
-                                        child: CachedNetworkImage(
+                                        child: CachedNetworkImage(memCacheWidth: 800, 
                                           imageUrl:
                                               'https://picsum.photos/300/200', // Thay bằng link ảnh thật
                                           fit: BoxFit.cover,
@@ -1255,7 +1255,7 @@ class RecipeGridWidget extends StatelessWidget {
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),
-                child: CachedNetworkImage(
+                child: CachedNetworkImage(memCacheWidth: 800, 
                   imageUrl: item.thumbnail,
                   width: double.infinity,
                   height: double.infinity,
@@ -1349,7 +1349,7 @@ class VideoLessonPreviewWidget extends StatelessWidget {
             children: [
               // LỚP NỀN: ĐÃ ĐỔI THÀNH LINK THUMBNAIL CHUẨN CỦA VIDEO YOUTUBE BẠN CUNG CẤP
               Positioned.fill(
-                child: CachedNetworkImage(
+                child: CachedNetworkImage(memCacheWidth: 800, 
                   imageUrl:
                       'https://i.ytimg.com/vi/vW5ZnHW95WM/maxresdefault.jpg',
                   fit: BoxFit.cover,
@@ -1591,7 +1591,7 @@ class AppImage extends StatelessWidget {
       );
     }
 
-    final image = CachedNetworkImage(
+    final image = CachedNetworkImage(memCacheWidth: 800, 
       imageUrl: url,
       width: width,
       height: height,

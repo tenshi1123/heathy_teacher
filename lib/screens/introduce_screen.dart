@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/constants/color.dart';
@@ -141,7 +141,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(16.r)),
                     ),
 
-                    child: CachedNetworkImage(
+                    child: CachedNetworkImage(memCacheWidth: 800, 
                       imageUrl:
                           'https://cogiaohealthy.vn/wp-content/uploads/2025/08/174-90.png',
                       height: 200.h,
@@ -161,7 +161,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(16.r)),
                     ),
 
-                    child: CachedNetworkImage(
+                    child: CachedNetworkImage(memCacheWidth: 800, 
                       imageUrl:
                           'https://cogiaohealthy.vn/wp-content/uploads/2025/08/intro-img-2.png',
                       height: 200.h,

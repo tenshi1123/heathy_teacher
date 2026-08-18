@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/course_model.dart';
@@ -117,7 +117,7 @@ class _RegisterClassOffState extends State<RegisterClassOff> {
                     SizedBox(height: 6.h),
                     AspectRatio(
                       aspectRatio: 483 / 397.76,
-                      child: CachedNetworkImage(
+                      child: CachedNetworkImage(memCacheWidth: 800, 
                         imageUrl: courses.image ?? '',
                         width: 343.w,
                         height: 280.h,
@@ -640,7 +640,7 @@ class _FeedbackCarouselState extends State<_FeedbackCarousel> {
                             child: hasImage
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(16.r),
-                                    child: CachedNetworkImage(
+                                    child: CachedNetworkImage(memCacheWidth: 800, 
                                       imageUrl: imageUrl,
                                       fit: BoxFit.cover,
                                       errorWidget: (context, url, error) =>

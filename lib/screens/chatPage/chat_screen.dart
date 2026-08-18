@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -160,7 +160,7 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Row(
           children: [
             ClipOval(
-              child: CachedNetworkImage(
+              child: CachedNetworkImage(memCacheWidth: 800, 
                 imageUrl: widget.model.avatar ?? '',
                 height: 42.r,
                 width: 42.r,
@@ -361,7 +361,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                             ),
                                           )
                                         : (url.startsWith('http')
-                                              ? CachedNetworkImage(
+                                              ? CachedNetworkImage(memCacheWidth: 800, 
                                                   imageUrl: url,
                                                   fit: BoxFit.cover,
                                                   errorWidget:

@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -550,7 +550,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
                     },
                     child: Padding(
                       padding: EdgeInsets.only(top: 16.h, bottom: 16.h),
-                      child: CachedNetworkImage(
+                      child: CachedNetworkImage(memCacheWidth: 800, 
                         imageUrl:
                             'https://lms.cogiaohealthy.vn/images/${widget.courses?.loTrinh}',
                         width: 343.w,

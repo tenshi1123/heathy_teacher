@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:heathy_teacher/models/payment_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -141,7 +141,7 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                     controller: _screenshotController,
                     child: Container(
                       color: Colors.white,
-                      child: CachedNetworkImage(
+                      child: CachedNetworkImage(memCacheWidth: 800, 
                         imageUrl: bankInfo.qrUrl!,
                         width: 250,
                         fit: BoxFit.contain,

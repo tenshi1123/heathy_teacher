@@ -1,4 +1,4 @@
-import 'package:heathy_teacher/utils/apple_sanitizer.dart';
+﻿import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -172,7 +172,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
                                         top: Radius.circular(16),
                                         bottom: Radius.circular(16),
                                       ),
-                                      child: CachedNetworkImage(
+                                      child: CachedNetworkImage(memCacheWidth: 800, 
                                         imageUrl: item.img ?? '',
                                         height: 160.h,
                                         width: double.infinity,
@@ -323,7 +323,7 @@ class _ListSpScreenState extends State<ListSpScreen> {
                               /// IMAGE (giữ kích thước mong muốn)
                               SizedBox(
                                 height: 140.h, // 👈 bạn control size ảnh ở đây
-                                child: CachedNetworkImage(
+                                child: CachedNetworkImage(memCacheWidth: 800, 
                                   imageUrl:
                                       'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                                   fit: BoxFit.contain,

@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/screens/drawer/thong_tin_uu_dai.dart';
 import 'package:heathy_teacher/screens/homePage/home_screen.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
@@ -431,7 +431,7 @@ class _ExpandablePaymentHistoryState extends State<_ExpandablePaymentHistory> {
 
 Widget avatar(String? img) {
   return ClipOval(
-    child: CachedNetworkImage(
+    child: CachedNetworkImage(memCacheWidth: 800, 
       imageUrl: img!.contains('https://')
           ? img
           : 'https://lms.cogiaohealthy.vn/$img',

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/course_model.dart';
 import 'package:heathy_teacher/models/product_model.dart';
@@ -327,7 +327,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               borderRadius: BorderRadius.circular(8.r),
               child: AspectRatio(
                 aspectRatio: 483 / 397.76,
-                child: CachedNetworkImage(
+                child: CachedNetworkImage(memCacheWidth: 800, 
                   imageUrl: model.img ?? '',
                   width: double.infinity,
                   height: 180.h,
@@ -561,7 +561,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               borderRadius: BorderRadius.circular(8.r),
               child: AspectRatio(
                 aspectRatio: 483 / 397.76,
-                child: CachedNetworkImage(
+                child: CachedNetworkImage(memCacheWidth: 800, 
                   imageUrl: model.img ?? '',
                   width: double.infinity,
                   height: 280.h,
@@ -780,7 +780,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                 top: Radius.circular(16),
                 bottom: Radius.circular(16),
               ),
-              child: CachedNetworkImage(
+              child: CachedNetworkImage(memCacheWidth: 800, 
                 imageUrl: (item.img != null && item.img!.contains('https://'))
                     ? item.img ?? ''
                     : 'https://lms.cogiaohealthy.vn/images/${item.img}',

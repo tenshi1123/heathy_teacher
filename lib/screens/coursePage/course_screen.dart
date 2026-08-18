@@ -1,4 +1,4 @@
-import 'package:heathy_teacher/main.dart';
+﻿import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/repo/chat_repo.dart';
 import 'package:heathy_teacher/screens/chatPage/chat_screen.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
@@ -153,7 +153,7 @@ class _CourseScreenState extends State<CourseScreen> {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8.r),
-                            child: CachedNetworkImage(
+                            child: CachedNetworkImage(memCacheWidth: 800, 
                               imageUrl:
                                   'https://lms.cogiaohealthy.vn/images/${course.img}',
                               width: 40.w,

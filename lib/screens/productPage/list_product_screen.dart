@@ -1,4 +1,4 @@
-import 'dart:math';
+﻿import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -199,7 +199,7 @@ class _ListProductScreenState extends State<ListProductScreen> {
                                       top: Radius.circular(16),
                                       bottom: Radius.circular(16),
                                     ),
-                                    child: CachedNetworkImage(
+                                    child: CachedNetworkImage(memCacheWidth: 800, 
                                       imageUrl: item.img ?? '',
                                       height: 160.h,
                                       width: double.infinity,

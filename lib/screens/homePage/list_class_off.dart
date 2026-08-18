@@ -1,4 +1,4 @@
-import 'package:heathy_teacher/utils/apple_sanitizer.dart';
+﻿import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -175,7 +175,7 @@ class _ListClassOffState extends State<ListClassOff> {
                         ),
                         child: Row(
                           children: [
-                            CachedNetworkImage(
+                            CachedNetworkImage(memCacheWidth: 800, 
                               imageUrl: model.img ?? '',
                               height: 90.h,
                               width: 90.w,

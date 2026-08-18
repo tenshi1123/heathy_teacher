@@ -1,4 +1,4 @@
-import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
+﻿import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -333,7 +333,7 @@ class _CategoryExpandableOnlineItemState
                           borderRadius: BorderRadius.circular(8.r),
                           child: AspectRatio(
                             aspectRatio: 483 / 397.76,
-                            child: CachedNetworkImage(
+                            child: CachedNetworkImage(memCacheWidth: 800, 
                               imageUrl: model.img ?? '',
                               width: double.infinity,
                               height: 180.h,

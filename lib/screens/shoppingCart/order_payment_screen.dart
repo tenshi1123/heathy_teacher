@@ -835,7 +835,8 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         "phone": _phoneController.text.trim(),
                         "promo_code": _selectedPromoCode?.code ?? "",
                         "payment_method_id": 1,
-                        "price_promo_code_online": discountValue,
+                        if (_selectedPromoCode == null)
+                          "price_promo_code_online": discountValue,
                         "free_ship": shippingFee,
                         "accumulate_point": _isUsePoint
                             ? maxApplicablePoints

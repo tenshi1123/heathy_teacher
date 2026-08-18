@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -181,7 +181,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
           ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
             child: images.isNotEmpty
-                ? CachedNetworkImage(
+                ? CachedNetworkImage(memCacheWidth: 800, 
                     imageUrl: images.first,
                     height: 200.h,
                     width: double.infinity,

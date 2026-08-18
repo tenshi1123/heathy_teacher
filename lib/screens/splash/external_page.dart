@@ -1,4 +1,4 @@
-import 'package:heathy_teacher/repo/course_repo.dart';
+﻿import 'package:heathy_teacher/repo/course_repo.dart';
 import 'package:heathy_teacher/screens/bottomNavBar/bottom_bar_screen.dart';
 import 'package:heathy_teacher/screens/coursePage/course_screen.dart';
 import 'package:heathy_teacher/utils/widget/custom_home_widget.dart';
@@ -323,7 +323,7 @@ class _CoGiaoHealthyScreenState extends State<CoGiaoHealthyScreen> {
                             /// IMAGE (giữ kích thước mong muốn)
                             SizedBox(
                               height: 150.h, // 👈 bạn control size ảnh ở đây
-                              child: CachedNetworkImage(
+                              child: CachedNetworkImage(memCacheWidth: 800, 
                                 imageUrl:
                                     'https://cogiaohealthy.vn/wp-content/uploads/2025/07/cogiao.png',
                                 fit: BoxFit.contain,
@@ -1117,7 +1117,7 @@ class _OfflineClassCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CachedNetworkImage(
+            CachedNetworkImage(memCacheWidth: 800, 
               imageUrl: model.img ?? '',
               width: 184.w,
               fit: BoxFit.fitWidth,
@@ -1235,7 +1235,7 @@ class _OnlineClassCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.r),
                   child: AspectRatio(
                     aspectRatio: 483 / 397.76,
-                    child: CachedNetworkImage(
+                    child: CachedNetworkImage(memCacheWidth: 800, 
                       imageUrl:
                           model.img ??
                           'https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg',

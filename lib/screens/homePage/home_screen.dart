@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:heathy_teacher/main.dart';
@@ -643,7 +643,7 @@ class _HomeSaleSectionState extends State<HomeSaleSection> {
               borderRadius: BorderRadius.circular(8.r),
               child: AspectRatio(
                 aspectRatio: 483 / 397.76,
-                child: CachedNetworkImage(
+                child: CachedNetworkImage(memCacheWidth: 800, 
                   imageUrl: (model.img != null && model.img!.startsWith('http'))
                       ? model.img!
                       : (model.img != null && model.img!.isNotEmpty
@@ -840,7 +840,7 @@ class _HomeSaleSectionState extends State<HomeSaleSection> {
                 top: Radius.circular(16),
                 bottom: Radius.circular(16),
               ),
-              child: CachedNetworkImage(
+              child: CachedNetworkImage(memCacheWidth: 800, 
                 imageUrl: (item.img != null && item.img!.startsWith('http'))
                     ? item.img!
                     : (item.img != null && item.img!.isNotEmpty

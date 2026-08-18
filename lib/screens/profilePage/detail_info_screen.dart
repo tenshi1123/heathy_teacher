@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +111,7 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
                         shape: BoxShape.circle,
                       ),
                       child: ClipOval(
-                        child: CachedNetworkImage(
+                        child: CachedNetworkImage(memCacheWidth: 800, 
                           imageUrl: widget.model!.img!.contains('https://')
                               ? '${widget.model!.img}'
                               : 'https://lms.cogiaohealthy.vn/${widget.model!.img}',

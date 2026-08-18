@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -133,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: ClipOval(
-                      child: CachedNetworkImage(
+                      child: CachedNetworkImage(memCacheWidth: 800, 
                         imageUrl: widget.userModel.img!.contains('https://')
                             ? '${widget.userModel.img}'
                             : 'https://lms.cogiaohealthy.vn/${widget.userModel.img}',

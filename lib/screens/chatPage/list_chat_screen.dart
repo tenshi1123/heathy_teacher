@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/chat_models.dart';
 import 'package:heathy_teacher/models/home_model.dart';
@@ -177,7 +177,7 @@ class ConversationItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ClipOval(
-              child: CachedNetworkImage(
+              child: CachedNetworkImage(memCacheWidth: 800, 
                 imageUrl: model.avatar ?? '',
                 height: 42.r,
                 width: 42.r,

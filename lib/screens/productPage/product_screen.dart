@@ -1,4 +1,4 @@
-import 'package:heathy_teacher/utils/apple_sanitizer.dart';
+﻿import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:heathy_teacher/models/home_model.dart';
@@ -196,7 +196,7 @@ class _ProductScreenState extends State<ProductScreen>
                                             borderRadius: BorderRadius.circular(
                                               8.r,
                                             ),
-                                            child: CachedNetworkImage(
+                                            child: CachedNetworkImage(memCacheWidth: 800, 
                                               imageUrl:
                                                   product.detail?[0].img ??
                                                   'https://lms.cogiaohealthy.vn/${product.img}',

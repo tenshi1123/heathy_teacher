@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:heathy_teacher/main.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
@@ -593,7 +593,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                     children: [
                       AspectRatio(
                         aspectRatio: 483 / 397.76,
-                        child: CachedNetworkImage(
+                        child: CachedNetworkImage(memCacheWidth: 800, 
                           imageUrl: courses!.image!.contains('https://')
                               ? courses!.image!
                               : 'https://lms.cogiaohealthy.vn/${courses!.image}',
@@ -918,7 +918,7 @@ class _OnlineClassScreenState extends State<OnlineClassScreen> {
                                   top: 16.h,
                                   bottom: 16.h,
                                 ),
-                                child: CachedNetworkImage(
+                                child: CachedNetworkImage(memCacheWidth: 800, 
                                   imageUrl:
                                       'https://lms.cogiaohealthy.vn/images/${courses?.loTrinh}',
                                   width: 343.w,

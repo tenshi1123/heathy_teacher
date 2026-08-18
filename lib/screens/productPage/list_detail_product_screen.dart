@@ -1,4 +1,4 @@
-import 'dart:math';
+﻿import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -239,7 +239,7 @@ class _ListDetailProductScreenState extends State<ListDetailProductScreen> {
                                         top: Radius.circular(16),
                                         bottom: Radius.circular(16),
                                       ),
-                                      child: CachedNetworkImage(
+                                      child: CachedNetworkImage(memCacheWidth: 800, 
                                         imageUrl: item.img!.contains('https://')
                                             ? item.img ?? ''
                                             : 'https://lms.cogiaohealthy.vn/images/${item.img}',
