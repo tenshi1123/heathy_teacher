@@ -736,10 +736,12 @@ class BottomCustom extends StatelessWidget {
     ];
 
     return Container(
-      // Padding dọc rất thấp để giảm khoảng trắng
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding,
-        vertical: verticalPadding,
+      // Tăng padding dọc một chút để chứa vừa text và icon
+      padding: EdgeInsets.only(
+        left: horizontalPadding,
+        right: horizontalPadding,
+        top: 8.h,
+        bottom: 4.h,
       ),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -756,53 +758,57 @@ class BottomCustom extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: items.map((item) {
-          return GestureDetector(
-            onTap: () async {
-              if (item['type'] == 'url') {
-                await _launchUrl(context, item['url']);
-              } else if (item['type'] == 'phone') {
-                await _launchUrl(context, item['url'], isPhone: true);
-              } else if (item['type'] == 'external_home') {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CoGiaoHealthyScreen(
-                      type: 'home',
-                      place: 'Hà Nội',
-                    ),
-                  ),
-                  (Route<dynamic> route) => false,
-                );
-              } else if (item['type'] == 'login') {
-                final prefs = await SharedPreferences.getInstance();
-                final token = prefs.getString('token');
-                if (token != null && token.isNotEmpty) {
+      child: SafeArea(
+        top: false,
+        minimum: EdgeInsets.only(bottom: 12.h), // Luôn giữ tối thiểu một khoảng cách an toàn với cạnh dưới màn hình
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: items.map((item) {
+            return GestureDetector(
+              onTap: () async {
+                if (item['type'] == 'url') {
+                  await _launchUrl(context, item['url']);
+                } else if (item['type'] == 'phone') {
+                  await _launchUrl(context, item['url'], isPhone: true);
+                } else if (item['type'] == 'external_home') {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: ((context) => const BottomBarScreen()),
+                      builder: (context) => const CoGiaoHealthyScreen(
+                        type: 'home',
+                        place: 'Hà Nội',
+                      ),
                     ),
                     (Route<dynamic> route) => false,
                   );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: ((context) => const LoginScreen()),
-                    ),
-                  );
+                } else if (item['type'] == 'login') {
+                  final prefs = await SharedPreferences.getInstance();
+                  final token = prefs.getString('token');
+                  if (token != null && token.isNotEmpty) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => const BottomBarScreen()),
+                      ),
+                      (Route<dynamic> route) => false,
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => const LoginScreen()),
+                      ),
+                    );
+                  }
                 }
-              }
-            },
-            child: _BottomNavItem(
-              title: item['title'],
-              iconPath: item['iconPath'],
-            ),
-          );
-        }).toList(),
+              },
+              child: _BottomNavItem(
+                title: item['title'],
+                iconPath: item['iconPath'],
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
