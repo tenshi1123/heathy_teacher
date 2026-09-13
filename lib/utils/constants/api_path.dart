@@ -39,7 +39,8 @@ class ApiPath {
   static String productCatalog = '$baseUrl/danh-muc-san-pham';
   static String detailProduct = '$baseUrl/chi-tiet-san-pham';
   static String productPayment = '$baseUrl/thanh-toan-san-pham';
-
+  // thanh toán
+  static String updateInfoOrder = '$baseUrl/update-info-order';
   // mã giảm giá
   static String listPromoCode = '$baseUrl/list-promo-code';
   //feedback và bài viết

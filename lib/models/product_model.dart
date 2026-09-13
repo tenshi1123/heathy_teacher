@@ -317,14 +317,21 @@ class CategoryDetail {
   });
 
   factory CategoryDetail.fromJson(Map<String, dynamic> json) {
+    String? variantName = json['variant_name'] as String?;
+    String? productName = json['product_name'] as String?;
+
+    if (productName != null && variantName != null && variantName != 'Default Title' && variantName.isNotEmpty) {
+      productName = '$productName ($variantName)';
+    }
+
     return CategoryDetail(
       id: json['id'] as String?,
-      productName: (json['product_name'] as String?).sanitizeForApple,
+      productName: (productName).sanitizeForApple,
       slug: json['slug'] as String?,
       img: json['img'] as String?,
       price: json['price'] as String?,
       priceOld: json['price_old'] as String?,
-      variantName: json['variant_name'] as String?,
+      variantName: variantName,
       offersMonth: json['offers_month'] as String?,
       inventoryQuantity: json['inventory_quantity'] as String?,
       allowShortSelling: json['allow_short_selling'] as String?,
