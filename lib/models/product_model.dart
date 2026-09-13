@@ -320,7 +320,10 @@ class CategoryDetail {
     String? variantName = json['variant_name'] as String?;
     String? productName = json['product_name'] as String?;
 
-    if (productName != null && variantName != null && variantName != 'Default Title' && variantName.isNotEmpty) {
+    if (productName != null &&
+        variantName != null &&
+        variantName != 'Default Title' &&
+        variantName.isNotEmpty) {
       productName = '$productName ($variantName)';
     }
 
@@ -347,6 +350,7 @@ class ProductDetailModel {
   final String? img;
   final String? price;
   final String? priceOld;
+  final String? variantName;
   final String? description;
   final String? content;
   final String? inventoryQuantity;
@@ -359,6 +363,7 @@ class ProductDetailModel {
     this.img,
     this.price,
     this.priceOld,
+    this.variantName,
     this.description,
     this.content,
     this.inventoryQuantity,
@@ -366,9 +371,18 @@ class ProductDetailModel {
   });
 
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
+    String? variantName = json['variant_name'] as String?;
+    String? productName = json['name'] as String?;
+
+    if (productName != null &&
+        variantName != null &&
+        variantName != 'Default Title' &&
+        variantName.isNotEmpty) {
+      productName = '$productName ($variantName)';
+    }
     return ProductDetailModel(
       id: json['id'] as String?,
-      name: (json['name'] as String?).sanitizeForApple,
+      name: (productName).sanitizeForApple,
       slug: json['slug'] as String?,
       img: json['img'] as String?,
       price: json['price'] as String?,
