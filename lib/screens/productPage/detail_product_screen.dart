@@ -166,7 +166,8 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                       Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: CachedNetworkImage(memCacheWidth: 800, 
+                          child: CachedNetworkImage(
+                            memCacheWidth: 800,
                             imageUrl:
                                 (productDetail!.img != null &&
                                     productDetail!.img!.startsWith('http'))
@@ -186,7 +187,13 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                       SizedBox(height: 18.h),
                       SizedBox(),
                       SizedBox(height: 6.h),
-                      Text(productDetail!.name ?? '', style: defaultText18B),
+                      Text(
+                        productDetail!.name ?? '',
+                        style: defaultText18B.copyWith(color: mainDarkGreen),
+                      ),
+                      Text(
+                        'Thương hiệu: ${productDetail?.brand == '' ? "Đang cập nhật" : productDetail?.brand}',
+                      ),
                       if (isShow == 'true') ...[
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,6 +230,7 @@ class _DetailProductScreenState extends State<DetailProductScreen>
                             ],
                           ],
                         ),
+
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 16.h),
                           child: SizedBox(

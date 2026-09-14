@@ -353,6 +353,7 @@ class ProductDetailModel {
   final String? variantName;
   final String? description;
   final String? content;
+  final String? brand;
   final String? inventoryQuantity;
   final String? allowShortSelling;
 
@@ -366,6 +367,7 @@ class ProductDetailModel {
     this.variantName,
     this.description,
     this.content,
+    this.brand,
     this.inventoryQuantity,
     this.allowShortSelling,
   });
@@ -389,22 +391,10 @@ class ProductDetailModel {
       priceOld: json['price_old'] as String?,
       description: (json['description'] as String?).sanitizeForApple,
       content: (json['content'] as String?).sanitizeForApple,
+      brand: json['branch'] as String?,
       inventoryQuantity: json['inventory_quantity'] as String?,
       allowShortSelling: json['allow_short_selling'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'slug': slug,
-      'img': img,
-      'price': price,
-      'price_old': priceOld,
-      'description': description,
-      'inventory_quantity': inventoryQuantity,
-    };
   }
 
   int get priceInt => int.tryParse(price ?? '0') ?? 0;
