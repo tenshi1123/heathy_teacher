@@ -2,7 +2,6 @@
 import 'package:heathy_teacher/screens/drawer/thong_tin_uu_dai.dart';
 import 'package:heathy_teacher/screens/homePage/home_screen.dart';
 import 'package:heathy_teacher/screens/productPage/product_screen.dart';
-import 'package:heathy_teacher/screens/splash/external_page.dart';
 import 'package:heathy_teacher/utils/apple_sanitizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -127,15 +126,19 @@ class MyCustomDrawer extends StatelessWidget {
                   title: 'Tổng quan',
                   isSelected: selectedIndex == 0,
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => const CoGiaoHealthyScreen(
-                          type: 'home',
-                          place: 'Hà Nội',
-                        )),
-                      ),
-                    );
+                    Navigator.pop(context);
+                    final bottomBarState = context
+                        .findAncestorStateOfType<BottomBarScreenState>();
+                    if (bottomBarState != null) {
+                      bottomBarState.changeTab(4);
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BottomBarScreen(),
+                        ),
+                      );
+                    }
                   },
                 ),
                 _buildMenuItem(

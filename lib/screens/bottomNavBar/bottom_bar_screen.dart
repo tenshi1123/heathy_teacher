@@ -29,6 +29,7 @@ class BottomBarScreenState extends State<BottomBarScreen> {
   void changeTab(int index) {
     setState(() {
       currentIndex = index;
+      _loadedTabs[index] = true;
     });
   }
 
